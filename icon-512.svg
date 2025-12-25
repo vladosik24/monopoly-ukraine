@@ -1,0 +1,14 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Фон -->
+  <rect width="512" height="512" fill="#1565c0" rx="100"/>
+  
+  <!-- Верхня смуга прапора -->
+  <rect x="80" y="120" width="352" height="100" fill="#0057B7"/>
+  
+  <!-- Нижня смуга прапора -->
+  <rect x="80" y="220" width="352" height="100" fill="#FFD700"/>
+  
+  <!-- Текст -->
+  <text x="256" y="400" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="white" text-anchor="middle">Монополія</text>
+  <text x="256" y="470" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="white" text-anchor="middle">Україна</text>
+</svg>
