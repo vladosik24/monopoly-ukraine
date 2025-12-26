@@ -1,266 +1,30 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#1565c0">
-<link rel="icon" href="./icon-192.png">
-<link rel="apple-touch-icon" href="./icon-192.png">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Монополія Україна 🇺🇦</title>
-    <meta name="theme-color" content="#1565c0">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #e3f2fd 0%, #fff9c4 100%);
-            min-height: 100vh;
-            padding: 10px;
-        }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1 { text-align: center; color: #1565c0; margin-bottom: 15px; font-size: 1.8rem; }
-        .game-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; }
-        @media (max-width: 768px) { .game-layout { grid-template-columns: 1fr; } }
-        .board-container { background: #c8e6c9; padding: 12px; border-radius: 10px; }
-        .board { display: grid; grid-template-columns: repeat(11, 1fr); gap: 1px; aspect-ratio: 1; }
-        .space { background: white; border: 2px solid #333; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3px; font-size: 9px; position: relative; font-weight: bold; }
-        .space-name { text-align: center; line-height: 1.1; }
-        .space-price { color: #666; font-size: 8px; }
-        .center-space { grid-column: span 9; background: #a5d6a7; display: flex; align-items: center; justify-content: center; }
-        .center-title { font-size: 1.2rem; color: #2e7d32; font-weight: bold; text-align: center; }
-        .dice { display: flex; gap: 8px; margin-top: 8px; font-size: 1.5rem; justify-content: center; }
-        .player-token { width: 10px; height: 10px; border-radius: 50%; border: 2px solid white; position: absolute; top: 2px; }
-        .sidebar { display: flex; flex-direction: column; gap: 12px; }
-        .card { background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .card h2 { font-size: 1.1rem; margin-bottom: 8px; }
-        .player-card { padding: 10px; margin-bottom: 8px; border-radius: 6px; border: 2px solid #ddd; }
-        .player-card.active { background: #e3f2fd; border-color: #2196f3; }
-        .player-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-        .player-color { width: 14px; height: 14px; border-radius: 50%; }
-        .player-money { font-size: 1.1rem; color: #2e7d32; font-weight: bold; }
-        .player-props { font-size: 0.85rem; color: #666; }
-        .btn { width: 100%; padding: 12px; font-size: 1rem; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; background: #2196f3; color: white; margin-bottom: 8px; }
-        .btn:active { transform: scale(0.95); }
-        .log { max-height: 120px; overflow-y: auto; font-size: 0.85rem; }
-        .log-entry { padding: 6px; border-bottom: 1px solid #f0f0f0; color: #555; }
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
-        .modal.show { display: flex; }
-        .modal-content { background: white; padding: 20px; border-radius: 12px; max-width: 400px; width: 100%; }
-        .modal-title { font-size: 1.3rem; margin-bottom: 15px; font-weight: bold; }
-        .modal-buttons { display: flex; gap: 10px; margin-top: 15px; }
-        .modal-buttons button { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Монополія Україна</title>
+<link rel="manifest" href="manifest.json">
+<style>
+body { font-family: Arial; margin:0; padding:0; background:#f2f2f2; }
+#game { max-width: 480px; margin: auto; padding:10px; }
+button { padding: 10px 20px; margin:5px; font-size:16px; }
+#log { height:200px; overflow-y:scroll; border:1px solid #ccc; padding:5px; background:#fff; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>🇺🇦 Монополія Україна</h1>
-        <div class="game-layout">
-            <div class="board-container">
-                <div class="board" id="board"></div>
-            </div>
-            <div class="sidebar">
-                <div class="card">
-                    <h2>🏆 Гравці</h2>
-                    <div id="players"></div>
-                </div>
-                <div class="card">
-                    <button class="btn" id="rollBtn">🎲 Кинути кубики</button>
-                    <button class="btn" style="background:#4caf50" onclick="saveGame()">💾 Зберегти</button>
-                    <button class="btn" style="background:#ff9800" onclick="if(confirm('Нова гра?'))location.reload()">🔄 Нова гра</button>
-                </div>
-                <div class="card">
-                    <h2>📋 Журнал</h2>
-                    <div class="log" id="log"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="propertyModal">
-        <div class="modal-content">
-            <div class="modal-title" id="propModalTitle"></div>
-            <div id="propModalBody"></div>
-            <div class="modal-buttons">
-                <button style="background:#4caf50;color:white" id="buyBtn">Купити</button>
-                <button style="background:#757575;color:white" id="skipBtn">Пропустити</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const SPACES = [
-            {id:0,name:'Старт',type:'start'},{id:1,name:'Луцьк',type:'property',color:'#8B4513',price:600,rent:20},
-            {id:2,name:'Скарбниця',type:'chest'},{id:3,name:'Тернопіль',type:'property',color:'#8B4513',price:600,rent:40},
-            {id:4,name:'Податок',type:'tax',price:2000},{id:5,name:'Залізниця',type:'railroad',price:2000,rent:250},
-            {id:6,name:'Чернігів',type:'property',color:'#87CEEB',price:1000,rent:60},{id:7,name:'Шанс',type:'chance'},
-            {id:8,name:'Суми',type:'property',color:'#87CEEB',price:1000,rent:60},{id:9,name:'Полтава',type:'property',color:'#87CEEB',price:1200,rent:80},
-            {id:10,name:'В\'язниця',type:'jail'},{id:11,name:'Житомир',type:'property',color:'#FF1493',price:1400,rent:100},
-            {id:12,name:'Електро',type:'utility',price:1500},{id:13,name:'Вінниця',type:'property',color:'#FF1493',price:1400,rent:100},
-            {id:14,name:'Черкаси',type:'property',color:'#FF1493',price:1600,rent:120},{id:15,name:'Залізниця',type:'railroad',price:2000,rent:250},
-            {id:16,name:'Рівне',type:'property',color:'#FFA500',price:1800,rent:140},{id:17,name:'Скарбниця',type:'chest'},
-            {id:18,name:'Хмельницький',type:'property',color:'#FFA500',price:1800,rent:140},{id:19,name:'Франківськ',type:'property',color:'#FFA500',price:2000,rent:160},
-            {id:20,name:'Відпочинок',type:'parking'},{id:21,name:'Запоріжжя',type:'property',color:'#DC143C',price:2200,rent:180},
-            {id:22,name:'Шанс',type:'chance'},{id:23,name:'Дніпро',type:'property',color:'#DC143C',price:2200,rent:180},
-            {id:24,name:'Харків',type:'property',color:'#DC143C',price:2400,rent:200},{id:25,name:'Залізниця',type:'railroad',price:2000,rent:250},
-            {id:26,name:'Миколаїв',type:'property',color:'#FFD700',price:2600,rent:220},{id:27,name:'Херсон',type:'property',color:'#FFD700',price:2600,rent:220},
-            {id:28,name:'Водоканал',type:'utility',price:1500},{id:29,name:'Одеса',type:'property',color:'#FFD700',price:2800,rent:240},
-            {id:30,name:'→В\'язниця',type:'gotojail'},{id:31,name:'Ужгород',type:'property',color:'#228B22',price:3000,rent:260},
-            {id:32,name:'Чернівці',type:'property',color:'#228B22',price:3000,rent:260},{id:33,name:'Скарбниця',type:'chest'},
-            {id:34,name:'Львів',type:'property',color:'#228B22',price:3200,rent:280},{id:35,name:'Залізниця',type:'railroad',price:2000,rent:250},
-            {id:36,name:'Шанс',type:'chance'},{id:37,name:'Маріуполь',type:'property',color:'#0000CD',price:3500,rent:350},
-            {id:38,name:'Податок',type:'tax',price:1000},{id:39,name:'Київ',type:'property',color:'#0000CD',price:4000,rent:500}
-        ];
-        const COLORS = ['#FF6B6B','#4ECDC4','#FFE66D','#A8E6CF'];
-        let players = [{id:0,name:'Гравець 1',pos:0,money:15000,props:[],color:COLORS[0]},{id:1,name:'Гравець 2',pos:0,money:15000,props:[],color:COLORS[1]},{id:2,name:'Гравець 3',pos:0,money:15000,props:[],color:COLORS[2]},{id:3,name:'Гравець 4',pos:0,money:15000,props:[],color:COLORS[3]}];
-        let current = 0, dice1 = 1, dice2 = 1, logs = ['🎮 Гра почалася!'], selectedProp = null;
-
-        function addLog(msg) {
-            logs.push(msg);
-            if(logs.length > 10) logs.shift();
-            document.getElementById('log').innerHTML = logs.map(l => `<div class="log-entry">${l}</div>`).join('');
-        }
-
-        function renderBoard() {
-            const board = document.getElementById('board');
-            board.innerHTML = '';
-            for(let i = 10; i >= 0; i--) renderSpace(SPACES[i]);
-            for(let i = 0; i < 9; i++) {
-                if(SPACES[30-i]) renderSpace(SPACES[30-i]);
-                const center = document.createElement('div');
-                center.className = 'center-space';
-                if(i === 4) center.innerHTML = `<div><div class="center-title">МОНОПОЛІЯ<br>УКРАЇНА</div><div class="dice">🎲${dice1} 🎲${dice2}</div></div>`;
-                board.appendChild(center);
-                if(SPACES[11+i]) renderSpace(SPACES[11+i]);
-            }
-            for(let i = 20; i <= 30; i++) renderSpace(SPACES[i]);
-        }
-
-        function renderSpace(space) {
-            const div = document.createElement('div');
-            div.className = 'space';
-            if(space.color) { div.style.borderTopColor = space.color; div.style.borderTopWidth = '6px'; }
-            div.innerHTML = `<div class="space-name">${space.name}</div>${space.price ? `<div class="space-price">${space.price}₴</div>` : ''}`;
-            players.filter(p => p.pos === space.id).forEach((p, idx) => {
-                const token = document.createElement('div');
-                token.className = 'player-token';
-                token.style.backgroundColor = p.color;
-                token.style.left = (idx * 12 + 5) + 'px';
-                div.appendChild(token);
-            });
-            document.getElementById('board').appendChild(div);
-        }
-
-        function renderPlayers() {
-            document.getElementById('players').innerHTML = players.map((p,i) => `
-                <div class="player-card ${i===current?'active':''}">
-                    <div class="player-header">
-                        <div class="player-color" style="background:${p.color}"></div>
-                        <strong>${p.name}</strong>
-                    </div>
-                    <div class="player-money">${p.money}₴</div>
-                    <div class="player-props">Власність: ${p.props.length}</div>
-                </div>
-            `).join('');
-        }
-
-        function roll() {
-            dice1 = Math.floor(Math.random()*6)+1;
-            dice2 = Math.floor(Math.random()*6)+1;
-            const p = players[current];
-            const newPos = (p.pos + dice1 + dice2) % 40;
-            if(newPos < p.pos) { p.money += 2000; addLog(`${p.name} пройшов Старт +2000₴`); }
-            p.pos = newPos;
-            const space = SPACES[newPos];
-            addLog(`${p.name}: 🎲${dice1}+${dice2} → ${space.name}`);
-            
-            if(space.type === 'property' && !players.find(pl => pl.props.includes(space.id))) {
-                selectedProp = space;
-                showModal(space);
-            } else if(space.type === 'property') {
-                const owner = players.find(pl => pl.props.includes(space.id));
-                if(owner && owner.id !== p.id) {
-                    p.money -= space.rent;
-                    owner.money += space.rent;
-                    addLog(`${p.name} платить ${space.rent}₴ → ${owner.name}`);
-                }
-                nextTurn();
-            } else if(space.type === 'tax') {
-                p.money -= space.price;
-                addLog(`${p.name} податок -${space.price}₴`);
-                nextTurn();
-            } else {
-                nextTurn();
-            }
-            render();
-        }
-
-        function showModal(space) {
-            document.getElementById('propModalTitle').textContent = space.name;
-            document.getElementById('propModalBody').innerHTML = `
-                <p style="font-size:1.1rem;margin:10px 0">Ціна: <strong style="color:#2e7d32">${space.price}₴</strong></p>
-                <p style="color:#666">Орендна плата: ${space.rent}₴</p>
-                <p style="margin-top:10px">Ваші гроші: <strong>${players[current].money}₴</strong></p>
-            `;
-            document.getElementById('propertyModal').classList.add('show');
-        }
-
-        function hideModal() {
-            document.getElementById('propertyModal').classList.remove('show');
-            selectedProp = null;
-        }
-
-        function buyProperty() {
-            const p = players[current];
-            if(selectedProp && p.money >= selectedProp.price) {
-                p.money -= selectedProp.price;
-                p.props.push(selectedProp.id);
-                addLog(`${p.name} купив ${selectedProp.name}`);
-            }
-            hideModal();
-            nextTurn();
-            render();
-        }
-
-        function skipProperty() {
-            hideModal();
-            nextTurn();
-            render();
-        }
-
-        function nextTurn() {
-            current = (current + 1) % players.length;
-        }
-
-        function render() {
-            renderBoard();
-            renderPlayers();
-        }
-
-        function saveGame() {
-            localStorage.setItem('monopoly-game', JSON.stringify({players, current, dice1, dice2, logs}));
-            addLog('💾 Гру збережено!');
-        }
-
-        function loadGame() {
-            const saved = localStorage.getItem('monopoly-game');
-            if(saved) {
-                const data = JSON.parse(saved);
-                players = data.players;
-                current = data.current;
-                dice1 = data.dice1;
-                dice2 = data.dice2;
-                logs = data.logs;
-                addLog('💾 Гру завантажено!');
-            }
-        }
-
-        document.getElementById('rollBtn').onclick = roll;
-        document.getElementById('buyBtn').onclick = buyProperty;
-        document.getElementById('skipBtn').onclick = skipProperty;
-        window.onclick = e => { if(e.target.classList.contains('modal')) hideModal(); }
-
-        loadGame();
-        render();
-    </script>
+<div id="game">
+<h2>Монополія Україна</h2>
+<div id="diceResult">🎲 Киньте кубики</div>
+<button id="rollBtn">Кинути кубики</button>
+<div id="propertyPanel" style="display:none;">
+<p id="propertyName"></p>
+<p id="propertyPrice"></p>
+<button id="buyBtn">Купити</button>
+<button id="skipBtn">Пропустити</button>
+</div>
+<div id="log"></div>
+</div>
+<script src="game.js"></script>
 </body>
 </html>
