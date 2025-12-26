@@ -1,21 +1,3 @@
-const CACHE_NAME = 'monopoly-cache-v1';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/game.js',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
-];
-
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
-  );
-});
-
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(response => response || fetch(e.request))
-  );
-});
+self.addEventListener('install', e=>{self.skipWaiting();});
+self.addEventListener('activate', e=>{clients.claim();});
+self.addEventListener('fetch', e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));});
