@@ -3,38 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Монополія Україна</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1565c0">
+<title>Монополія Україна 🇺🇦</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png" sizes="192x192">
 <style>
-body{font-family:Arial;margin:0;background:#f2f2f2}
-#app{max-width:420px;margin:auto;padding:10px}
-button{width:100%;padding:15px;font-size:16px;margin:5px 0}
-#log{height:200px;overflow:auto;background:#fff;border:1px solid #ccc;padding:5px}
+/* --- Базові стилі --- */
+body { font-family: Arial, sans-serif; background:#f2f2f2; margin:0; padding:0;}
+.container { max-width:480px; margin:auto; padding:10px; }
+button { padding:10px 20px; margin:5px; font-size:16px; cursor:pointer;}
+input { width:100%; padding:10px; margin:5px 0;}
+#log { height:150px; overflow-y:scroll; border:1px solid #ccc; background:#fff; padding:5px;}
+.hidden { display:none; }
 </style>
 </head>
 <body>
-<div id="app">
-<h2>🇺🇦 Монополія Україна</h2>
-<div id="dice">🎲 Натисни кнопку</div>
-<button onclick="roll()">Кинути кубики</button>
-<div id="log"></div>
+<div class="container">
+<h1>🇺🇦 Монополія Україна - Онлайн</h1>
+
+<!-- Лобі -->
+<div id="lobbyScreen">
+    <div id="connectionStatus">Підключення...</div>
+    <div id="lobbyContent" class="hidden">
+        <input type="text" id="playerName" placeholder="Ваше ім'я" value="Гравець">
+        <button onclick="createRoom()">Створити гру</button>
+        <div style="text-align:center;">або</div>
+        <input type="text" id="roomCodeInput" placeholder="Код кімнати">
+        <button onclick="joinRoom()">Приєднатися</button>
+        <div id="waitingRoom" class="hidden">
+            <div>Код кімнати: <span id="roomCodeDisplay"></span></div>
+            <div id="playersList"></div>
+            <button id="startGameBtn" onclick="startGame()" disabled>Почати гру</button>
+        </div>
+    </div>
 </div>
 
-<script>
-let pos=0,money=15000;
-const board=["Старт","Київ","Львів","Одеса","Харків"];
+<!-- Гра -->
+<div id="gameScreen" class="hidden">
+    <div>Кімната: <span id="gameRoomCode"></span></div>
+    <div id="onlineCount">0 онлайн</div>
+    <button onclick="rollDice()">🎲 Кинути кубики</button>
+    <button onclick="leaveGame()">🚪 Вийти</button>
+    <div id="log"></div>
+</div>
+</div>
 
-function log(t){
- document.getElementById("log").innerHTML+=t+"<br>";
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getDatabase, ref, set, onValue, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+const firebaseConfig = {
+    apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
+    authDomain: "monopoly-ukraine.firebaseapp.com",
+    databaseURL: "https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "monopoly-ukraine",
+    storageBucket: "monopoly-ukraine.firebasestorage.app",
+    messagingSenderId: "1046709502750",
+    appId: "1:1046709502750:web:ba8ad3c1f11780d1a6bf0f"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let myPlayerId = 'player_' + Date.now();
+let myPlayerName = null;
+let currentRoomCode = null;
+
+function generateRoomCode() { return 'GAME-' + Math.random().toString(36).substr(2,4).toUpperCase(); }
+
+window.createRoom = async function() {
+    const name = document.getElementById('playerName').value.trim() || 'Гравець';
+    myPlayerName = name;
+    currentRoomCode = generateRoomCode();
+
+    const roomData = {
+        code: currentRoomCode,
+        status: 'waiting',
+        players: {
+            [myPlayerId]: {id: myPlayerId, name: myPlayerName, money:15000, pos:0, online:true}
+        }
+    };
+    await set(ref(db, 'rooms/'+currentRoomCode), roomData);
+    document.getElementById('roomCodeDisplay').textContent = currentRoomCode;
+    document.getElementById('waitingRoom').classList.remove('hidden');
+    listenToRoom();
+};
+
+window.joinRoom = async function() {
+    const name = document.getElementById('playerName').value.trim() || 'Гравець';
+    const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+    if(!code) return alert('Введіть код!');
+
+    myPlayerName = name;
+    currentRoomCode = code;
+
+    const roomRef = ref(db, 'rooms/'+code);
+    onValue(roomRef, async snapshot => {
+        const room = snapshot.val();
+        if(!room) return alert('Кімнату не знайдено!');
+        const playerCount = Object.keys(room.players||{}).length;
+        if(playerCount>=4) return alert('Кімната повна!');
+        await set(ref(db,'rooms/'+code+'/players/'+myPlayerId), {id:myPlayerId,name:myPlayerName,money:15000,pos:0,online:true});
+        document.getElementById('roomCodeDisplay').textContent = code;
+        document.getElementById('waitingRoom').classList.remove('hidden');
+        listenToRoom();
+    }, {onlyOnce:true});
+};
+
+function listenToRoom(){
+    const roomRef = ref(db, 'rooms/'+currentRoomCode);
+    onValue(roomRef, snapshot => {
+        const room = snapshot.val();
+        if(!room) return;
+        const playerArray = Object.values(room.players||{});
+        document.getElementById('playersList').innerHTML = playerArray.map(p=>`<div>${p.name} ${p.online?'🟢':'🔴'}</div>`).join('');
+        document.getElementById('startGameBtn').disabled = playerArray.length<2;
+        if(room.status==='playing'){
+            document.getElementById('lobbyScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('gameRoomCode').textContent = currentRoomCode;
+        }
+    });
 }
 
-function roll(){
- const d1=Math.floor(Math.random()*6)+1;
- const d2=Math.floor(Math.random()*6)+1;
- pos=(pos+d1+d2)%board.length;
- document.getElementById("dice").innerText=`🎲 ${d1}+${d2}`;
- log("Хід → "+board[pos]);
+window.startGame = async function() {
+    await update(ref(db,'rooms/'+currentRoomCode),{status:'playing'});
+};
+
+window.rollDice = function() { alert('Хід працює! (спрощена версія)'); };
+window.leaveGame = function() { location.reload(); };
+
+// Firebase connection test
+const statusDiv = document.getElementById('connectionStatus');
+onValue(ref(db,'.info/connected'), snap=>{
+    if(snap.val()===true){
+        statusDiv.textContent = '✅ Підключено';
+        document.getElementById('lobbyContent').classList.remove('hidden');
+    } else { statusDiv.textContent = '❌ Помилка підключення'; }
+});
+</script>
+
+<script>
+if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('./sw.js').then(r=>console.log('✅ SW зареєстрований')).catch(e=>console.error('❌ SW помилка',e));
 }
 </script>
 </body>
