@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Генератор іконок</h1>
+<canvas id="c192" width="192" height="192"></canvas>
+<canvas id="c512" width="512" height="512"></canvas>
+<script>
+function draw(size) {
+    const c = document.getElementById('c'+size).getContext('2d');
+    c.fillStyle = '#1565c0';
+    c.fillRect(0,0,size,size);
+    c.fillStyle = '#0057B7';
+    c.fillRect(size*0.15,size*0.2,size*0.7,size*0.15);
+    c.fillStyle = '#FFD700';
+    c.fillRect(size*0.15,size*0.35,size*0.7,size*0.15);
+    c.fillStyle = 'white';
+    c.font = 'bold '+(size*0.12)+'px Arial';
+    c.textAlign = 'center';
+    c.fillText('МОНОПОЛІЯ',size/2,size*0.65);
+    c.font = 'bold '+(size*0.08)+'px Arial';
+    c.fillText('УКРАЇНА',size/2,size*0.78);
+    
+    const a = document.createElement('a');
+    a.download = 'icon-'+size+'.png';
+    a.href = document.getElementById('c'+size).toDataURL();
+    a.click();
+}
+draw(192);
+draw(512);
+alert('Іконки завантажено!');
+</script>
+</body>
+</html>
