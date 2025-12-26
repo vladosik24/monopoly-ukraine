@@ -1,20 +1,12 @@
 {
-  "short_name": "Монополія",
-  "name": "Монополія Україна 🇺🇦",
-  "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ],
+  "name": "Монополія Україна",
+  "short_name": "МонополіяUA",
   "start_url": "./index.html",
   "display": "standalone",
+  "background_color": "#f5f5f5",
   "theme_color": "#1565c0",
-  "background_color": "#e3f2fd"
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
 }
