@@ -1,45 +1,41 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Монополія Україна 🇺🇦</title>
-    <link rel="stylesheet" href="style.css"> <!-- якщо є окремий CSS -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Монополія Україна</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1565c0">
+<style>
+body{font-family:Arial;margin:0;background:#f2f2f2}
+#app{max-width:420px;margin:auto;padding:10px}
+button{width:100%;padding:15px;font-size:16px;margin:5px 0}
+#log{height:200px;overflow:auto;background:#fff;border:1px solid #ccc;padding:5px}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>🇺🇦 Монополія Україна - Онлайн</h1>
-        <div class="lobby" id="lobbyScreen">
-            <h2>🎮 Онлайн мультиплеєр</h2>
-            <div id="connectionStatus" class="connection-status status-loading">
-                <div class="spinner"></div>
-                <div>Підключення...</div>
-            </div>
-            <div id="lobbyContent" style="display:none;">
-                <input type="text" id="playerName" placeholder="Ваше ім'я" maxlength="20" value="Гравець">
-                <button class="btn-create" id="createBtn">🎯 Створити гру</button>
-                <div style="text-align: center; margin: 15px 0; color: #666;">або</div>
-                <input type="text" id="roomCodeInput" placeholder="Код кімнати" maxlength="10" style="text-transform: uppercase;">
-                <button class="btn-join" id="joinBtn">🚪 Приєднатися</button>
-                <div id="waitingRoom" style="display: none;">
-                    <div class="room-code">
-                        <div>Код кімнати:</div>
-                        <div class="room-code-display" id="roomCodeDisplay"></div>
-                    </div>
-                    <div class="players-waiting">
-                        <h3 style="margin-bottom: 10px;">👥 Гравці:</h3>
-                        <div id="playersList"></div>
-                    </div>
-                    <button class="btn-start-game" id="startGameBtn" disabled>Почати гру</button>
-                </div>
-            </div>
-        </div>
-        <div class="game-screen" id="gameScreen">
-            <!-- тут твій ігровий екран -->
-        </div>
-    </div>
+<div id="app">
+<h2>🇺🇦 Монополія Україна</h2>
+<div id="dice">🎲 Натисни кнопку</div>
+<button onclick="roll()">Кинути кубики</button>
+<div id="log"></div>
+</div>
 
-    <!-- Підключення скрипту після DOM -->
-    <script type="module" src="game.js"></script>
+<script>
+let pos=0,money=15000;
+const board=["Старт","Київ","Львів","Одеса","Харків"];
+
+function log(t){
+ document.getElementById("log").innerHTML+=t+"<br>";
+}
+
+function roll(){
+ const d1=Math.floor(Math.random()*6)+1;
+ const d2=Math.floor(Math.random()*6)+1;
+ pos=(pos+d1+d2)%board.length;
+ document.getElementById("dice").innerText=`🎲 ${d1}+${d2}`;
+ log("Хід → "+board[pos]);
+}
+</script>
 </body>
 </html>
