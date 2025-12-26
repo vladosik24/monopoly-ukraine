@@ -1,24 +1,23 @@
 {
   "name": "Монополія Україна",
   "short_name": "Монополія",
-  "description": "Українська версія класичної настільної гри",
-  "start_url": "/monopoly-ukraine/",
-  "scope": "/monopoly-ukraine/",
+  "description": "Українська версія Монополії",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#e3f2fd",
   "theme_color": "#1565c0",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/monopoly-ukraine/icon-192.png",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect fill='%231565c0' width='192' height='192'/%3E%3Crect fill='%230057B7' x='30' y='50' width='132' height='35'/%3E%3Crect fill='%23FFD700' x='30' y='85' width='132' height='35'/%3E%3Ctext x='96' y='155' fill='white' font-family='Arial' font-size='40' font-weight='bold' text-anchor='middle'%3EМУ%3C/text%3E%3C/svg%3E",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "/monopoly-ukraine/icon-512.png",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect fill='%231565c0' width='512' height='512'/%3E%3Crect fill='%230057B7' x='80' y='130' width='352' height='100'/%3E%3Crect fill='%23FFD700' x='80' y='230' width='352' height='100'/%3E%3Ctext x='256' y='390' fill='white' font-family='Arial' font-size='70' font-weight='bold' text-anchor='middle'%3EМонополія%3C/text%3E%3Ctext x='256' y='460' fill='white' font-family='Arial' font-size='50' font-weight='bold' text-anchor='middle'%3EУкраїна%3C/text%3E%3C/svg%3E",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ]
