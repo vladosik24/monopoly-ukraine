@@ -312,12 +312,12 @@
             installButton.style.display = 'none';
         });
 
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
+        // Service Worker Registration (тільки на продакшені)
+        if ('serviceWorker' in navigator && location.hostname !== 'www.claudeusercontent.com') {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
                     .then(reg => console.log('✅ Service Worker зареєстровано:', reg.scope))
-                    .catch(err => console.log('❌ Помилка SW:', err));
+                    .catch(err => console.log('⚠️ SW недоступний (це нормально для тестування)'));
             });
         }
 
