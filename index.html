@@ -4,52 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Монополія Україна 🇺🇦</title>
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1565c0">
     <meta name="description" content="Онлайн мультиплеєрна гра Монополія з українськими містами">
-    
-    <!-- Icons -->
-    <link rel="apple-touch-icon" href="icon-192.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-    
-    <!-- Mobile Web App -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Монополія UA">
     
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogItCc0L7QvdC+0L/QvtC70ZbRjyDQo9C60YDQsNGX0L3QsCIsCiAgInNob3J0X25hbWUiOiAi0JzQvtC90L7Qv9C+0LvRltGPIiwKICAiZGVzY3JpcHRpb24iOiAi0J7QvdC70LDQudC9INC80YPQu9GM0YLQuNC/0LvQtNGU0YDQvdCwINCz0YDQsCIsCiAgInN0YXJ0X3VybCI6ICIuLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2UzZjJmZCIsCiAgInRoZW1lX2NvbG9yIjogIiMxNTY1YzAiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3BuZztiYXNlNjQsaVZCT1J3MEtHZ29BQUFBTlNVaEVVZ0FBQUJBQUFBQVFDQVlBQUFBZjhhTk5BQUFBQzNScGRYTWdJR05vYVc1d0lDZHBZeTlwWTJ0ekp5QXdNREFBTG1WeVp5QnhaWFVBQUFBQUlIUWdaVzBBS0FBQUFDb0FBQUE4QUFBQVRRQUE9IiwKICAgICAgInNpemVzIjogIjE5MngxOTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9LAogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBZ0FBQUFJQUNBWUFBQUFxKzNBZ0FBQUFDblJwZFhNZ0lHTm9hVzV3SUNkcFl5OXBZMnR6SnlBd01EQUFMbVZ5WnlCeFpYVUFBQUFBSUhRZ1pXMEFLQUFBQURVQUFBQThBQUFBVFFBQT0iLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIKICAgIH0KICBdCn0=">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #e3f2fd; }
         
-        /* Install Button */
-        #installButton {
+        #installPrompt {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 24px;
-            background: #4caf50;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border: none;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 9999;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            z-index: 10000;
             display: none;
-            animation: pulse 2s infinite;
+            animation: slideUp 0.5s, pulse 2s infinite;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        @keyframes slideUp {
+            from { bottom: -100px; opacity: 0; }
+            to { bottom: 20px; opacity: 1; }
         }
         
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
         }
         
-        #installButton:hover {
-            background: #45a049;
+        #installPrompt:hover {
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
         }
         
         .board-container { 
@@ -230,18 +228,15 @@
             .corner { font-size: 0.6rem; }
             .price { font-size: 0.5rem; }
             .player-token { width: 10px; height: 10px; }
-            #installButton {
-                top: 10px;
-                right: 10px;
-                padding: 10px 20px;
+            #installPrompt {
                 font-size: 14px;
+                padding: 12px 24px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Install Button -->
-    <button id="installButton">📥 Встановити додаток</button>
+    <div id="installPrompt">📥 Встановити додаток</div>
 
     <div id="lobby" class="modal" style="display: flex;">
         <div class="modal-content">
@@ -288,38 +283,45 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
-        // PWA Install Prompt
+        // PWA Install Prompt - покращена версія
         let deferredPrompt;
-        const installButton = document.getElementById('installButton');
+        const installPrompt = document.getElementById('installPrompt');
 
         window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('✅ beforeinstallprompt спрацював!');
             e.preventDefault();
             deferredPrompt = e;
-            installButton.style.display = 'block';
+            installPrompt.style.display = 'block';
         });
 
-        installButton.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
+        installPrompt.addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                alert('Функція встановлення недоступна. Спробуйте через меню браузера: "Додати на головний екран"');
+                return;
+            }
+            installPrompt.style.display = 'none';
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            console.log(`Користувач ${outcome === 'accepted' ? 'прийняв' : 'відхилив'} встановлення`);
+            console.log(`Результат встановлення: ${outcome}`);
             deferredPrompt = null;
-            installButton.style.display = 'none';
         });
 
         window.addEventListener('appinstalled', () => {
-            console.log('✅ PWA встановлено!');
-            installButton.style.display = 'none';
+            console.log('✅ Додаток встановлено!');
+            installPrompt.style.display = 'none';
         });
 
-        // Service Worker Registration (тільки на продакшені)
-        if ('serviceWorker' in navigator && location.hostname !== 'www.claudeusercontent.com') {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('✅ Service Worker зареєстровано:', reg.scope))
-                    .catch(err => console.log('⚠️ SW недоступний (це нормально для тестування)'));
-            });
-        }
+        // Показуємо промпт через 3 секунди якщо браузер не показав автоматично
+        setTimeout(() => {
+            if (!deferredPrompt && installPrompt.style.display === 'none') {
+                console.log('⚠️ beforeinstallprompt не спрацював. Показуємо інструкцію...');
+                installPrompt.textContent = '💡 Додати на головний екран (через меню браузера)';
+                installPrompt.style.display = 'block';
+                installPrompt.onclick = () => {
+                    alert('Натисніть меню браузера (⋮) → "Додати на головний екран"');
+                };
+            }
+        }, 3000);
 
         const config = {
             apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
@@ -398,9 +400,6 @@
                         status.style.display = 'none';
                         document.getElementById('lobbyContent').style.display = 'block';
                     }, 1500);
-                } else {
-                    status.innerHTML = '⏳ Підключення...';
-                    status.style.background = '#fff3e0';
                 }
             });
         });
