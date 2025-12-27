@@ -13,6 +13,7 @@
     <!-- Icons -->
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     
     <!-- Mobile Web App -->
     <meta name="mobile-web-app-capable" content="yes">
@@ -23,6 +24,33 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #e3f2fd; }
+        
+        /* Install Button */
+        #installButton {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 9999;
+            display: none;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        #installButton:hover {
+            background: #45a049;
+        }
         
         .board-container { 
             max-width: 800px; 
@@ -193,7 +221,6 @@
             border: 3px solid #2196f3;
         }
 
-        /* Адаптивний дизайн */
         @media (max-width: 768px) {
             .board-container { 
                 padding: 10px; 
@@ -203,10 +230,19 @@
             .corner { font-size: 0.6rem; }
             .price { font-size: 0.5rem; }
             .player-token { width: 10px; height: 10px; }
+            #installButton {
+                top: 10px;
+                right: 10px;
+                padding: 10px 20px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Install Button -->
+    <button id="installButton">📥 Встановити додаток</button>
+
     <div id="lobby" class="modal" style="display: flex;">
         <div class="modal-content">
             <h2 style="text-align: center; color: #1565c0; margin-bottom: 20px;">🇺🇦 Монополія Україна</h2>
@@ -252,6 +288,39 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
+        // PWA Install Prompt
+        let deferredPrompt;
+        const installButton = document.getElementById('installButton');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.style.display = 'block';
+        });
+
+        installButton.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Користувач ${outcome === 'accepted' ? 'прийняв' : 'відхилив'} встановлення`);
+            deferredPrompt = null;
+            installButton.style.display = 'none';
+        });
+
+        window.addEventListener('appinstalled', () => {
+            console.log('✅ PWA встановлено!');
+            installButton.style.display = 'none';
+        });
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('✅ Service Worker зареєстровано:', reg.scope))
+                    .catch(err => console.log('❌ Помилка SW:', err));
+            });
+        }
+
         const config = {
             apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
             authDomain: "monopoly-ukraine.firebaseapp.com",
