@@ -1,12 +1,13 @@
 {
-  "name": "Монополія Україна",
+  "name": "Монополія Україна - Онлайн гра",
   "short_name": "Монополія UA",
-  "description": "Онлайн мультиплеєрна гра Монополія з українськими містами",
+  "description": "Мультиплеєрна онлайн гра Монополія з українськими містами. Грайте з друзями через інтернет!",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#e3f2fd",
   "theme_color": "#1565c0",
-  "orientation": "portrait",
+  "orientation": "any",
   "icons": [
     {
       "src": "icon-192.png",
