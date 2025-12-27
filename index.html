@@ -1,151 +1,215 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Монополія Україна 🇺🇦</title>
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" href="./icon-192.png" sizes="192x192">
-<style>
-/* --- Базові стилі --- */
-body { font-family: Arial, sans-serif; background:#f2f2f2; margin:0; padding:0;}
-.container { max-width:480px; margin:auto; padding:10px; }
-button { padding:10px 20px; margin:5px; font-size:16px; cursor:pointer;}
-input { width:100%; padding:10px; margin:5px 0;}
-#log { height:150px; overflow-y:scroll; border:1px solid #ccc; background:#fff; padding:5px;}
-.hidden { display:none; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Монополія Україна 🇺🇦</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
-<body>
-<div class="container">
-<h1>🇺🇦 Монополія Україна - Онлайн</h1>
-
-<!-- Лобі -->
-<div id="lobbyScreen">
-    <div id="connectionStatus">Підключення...</div>
-    <div id="lobbyContent" class="hidden">
-        <input type="text" id="playerName" placeholder="Ваше ім'я" value="Гравець">
-        <button onclick="createRoom()">Створити гру</button>
-        <div style="text-align:center;">або</div>
-        <input type="text" id="roomCodeInput" placeholder="Код кімнати">
-        <button onclick="joinRoom()">Приєднатися</button>
-        <div id="waitingRoom" class="hidden">
-            <div>Код кімнати: <span id="roomCodeDisplay"></span></div>
-            <div id="playersList"></div>
-            <button id="startGameBtn" onclick="startGame()" disabled>Почати гру</button>
+<body style="font-family:Arial;background:#e3f2fd;padding:20px;">
+    <div style="max-width:500px;margin:0 auto;background:white;padding:30px;border-radius:15px;">
+        <h1 style="text-align:center;color:#1565c0;">🇺🇦 Монополія Україна - Онлайн</h1>
+        
+        <div id="status" style="padding:15px;background:#fff3e0;border-radius:8px;text-align:center;margin:20px 0;">
+            Підключення...
+        </div>
+        
+        <div id="lobby" style="display:none;">
+            <input type="text" id="playerName" placeholder="Ваше ім'я" value="Гравець" style="width:100%;padding:15px;margin:10px 0;border:2px solid #ddd;border-radius:8px;font-size:16px;">
+            
+            <button onclick="createRoom()" style="width:100%;padding:15px;margin:10px 0;background:#4caf50;color:white;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;">
+                🎯 Створити гру
+            </button>
+            
+            <div style="text-align:center;margin:15px 0;color:#666;">— АБО —</div>
+            
+            <input type="text" id="roomCode" placeholder="Код кімнати" style="width:100%;padding:15px;margin:10px 0;border:2px solid #ddd;border-radius:8px;font-size:16px;text-transform:uppercase;">
+            
+            <button onclick="joinRoom()" style="width:100%;padding:15px;margin:10px 0;background:#2196f3;color:white;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;">
+                🚪 Приєднатися
+            </button>
+            
+            <div id="waiting" style="display:none;">
+                <div style="background:#f5f5f5;padding:20px;border-radius:8px;text-align:center;margin:20px 0;">
+                    <div style="font-size:0.9rem;margin-bottom:10px;">📋 Код:</div>
+                    <div id="codeDisplay" style="font-size:2rem;font-weight:bold;color:#1565c0;letter-spacing:3px;"></div>
+                </div>
+                
+                <div id="playersList" style="background:#f9f9f9;padding:15px;border-radius:8px;margin:15px 0;"></div>
+                
+                <button onclick="startGame()" id="startBtn" disabled style="width:100%;padding:15px;background:#ff9800;color:white;border:none;border-radius:8px;font-size:18px;font-weight:bold;cursor:pointer;">
+                    Очікування...
+                </button>
+            </div>
+        </div>
+        
+        <div id="game" style="display:none;">
+            <div style="background:#1565c0;color:white;padding:12px 20px;border-radius:8px;margin-bottom:15px;">
+                <div>🎮 Кімната: <span id="gameCode"></span></div>
+            </div>
+            <div id="gamePlayers"></div>
+            <button onclick="rollDice()" id="rollBtn" style="width:100%;padding:15px;background:#2196f3;color:white;border:none;border-radius:8px;font-size:16px;font-weight:bold;margin:10px 0;cursor:pointer;">
+                🎲 Кинути кубики
+            </button>
+            <div id="gameLog" style="background:#f9f9f9;padding:15px;border-radius:8px;max-height:150px;overflow-y:auto;"></div>
         </div>
     </div>
-</div>
 
-<!-- Гра -->
-<div id="gameScreen" class="hidden">
-    <div>Кімната: <span id="gameRoomCode"></span></div>
-    <div id="onlineCount">0 онлайн</div>
-    <button onclick="rollDice()">🎲 Кинути кубики</button>
-    <button onclick="leaveGame()">🚪 Вийти</button>
-    <div id="log"></div>
-</div>
-</div>
+    <script>
+        const config = {
+            apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
+            authDomain: "monopoly-ukraine.firebaseapp.com",
+            databaseURL: "https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "monopoly-ukraine",
+            storageBucket: "monopoly-ukraine.firebasestorage.app",
+            messagingSenderId: "1046709502750",
+            appId: "1:1046709502750:web:ba8ad3c1f11780d1a6bf0f"
+        };
 
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getDatabase, ref, set, onValue, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-
-const firebaseConfig = {
-    apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
-    authDomain: "monopoly-ukraine.firebaseapp.com",
-    databaseURL: "https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "monopoly-ukraine",
-    storageBucket: "monopoly-ukraine.firebasestorage.app",
-    messagingSenderId: "1046709502750",
-    appId: "1:1046709502750:web:ba8ad3c1f11780d1a6bf0f"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-let myPlayerId = 'player_' + Date.now();
-let myPlayerName = null;
-let currentRoomCode = null;
-
-function generateRoomCode() { return 'GAME-' + Math.random().toString(36).substr(2,4).toUpperCase(); }
-
-window.createRoom = async function() {
-    const name = document.getElementById('playerName').value.trim() || 'Гравець';
-    myPlayerName = name;
-    currentRoomCode = generateRoomCode();
-
-    const roomData = {
-        code: currentRoomCode,
-        status: 'waiting',
-        players: {
-            [myPlayerId]: {id: myPlayerId, name: myPlayerName, money:15000, pos:0, online:true}
+        let db;
+        try {
+            firebase.initializeApp(config);
+            db = firebase.database();
+            
+            db.ref('.info/connected').on('value', snap => {
+                const status = document.getElementById('status');
+                if (snap.val()) {
+                    status.innerHTML = '✅ Підключено!';
+                    status.style.background = '#e8f5e9';
+                    setTimeout(() => {
+                        status.style.display = 'none';
+                        document.getElementById('lobby').style.display = 'block';
+                    }, 1500);
+                }
+            });
+        } catch(e) {
+            document.getElementById('status').innerHTML = '❌ Помилка: ' + e.message;
+            document.getElementById('status').style.background = '#ffebee';
         }
-    };
-    await set(ref(db, 'rooms/'+currentRoomCode), roomData);
-    document.getElementById('roomCodeDisplay').textContent = currentRoomCode;
-    document.getElementById('waitingRoom').classList.remove('hidden');
-    listenToRoom();
-};
 
-window.joinRoom = async function() {
-    const name = document.getElementById('playerName').value.trim() || 'Гравець';
-    const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
-    if(!code) return alert('Введіть код!');
+        const myId = 'p' + Date.now();
+        let myRoom = null;
+        let myName = null;
 
-    myPlayerName = name;
-    currentRoomCode = code;
-
-    const roomRef = ref(db, 'rooms/'+code);
-    onValue(roomRef, async snapshot => {
-        const room = snapshot.val();
-        if(!room) return alert('Кімнату не знайдено!');
-        const playerCount = Object.keys(room.players||{}).length;
-        if(playerCount>=4) return alert('Кімната повна!');
-        await set(ref(db,'rooms/'+code+'/players/'+myPlayerId), {id:myPlayerId,name:myPlayerName,money:15000,pos:0,online:true});
-        document.getElementById('roomCodeDisplay').textContent = code;
-        document.getElementById('waitingRoom').classList.remove('hidden');
-        listenToRoom();
-    }, {onlyOnce:true});
-};
-
-function listenToRoom(){
-    const roomRef = ref(db, 'rooms/'+currentRoomCode);
-    onValue(roomRef, snapshot => {
-        const room = snapshot.val();
-        if(!room) return;
-        const playerArray = Object.values(room.players||{});
-        document.getElementById('playersList').innerHTML = playerArray.map(p=>`<div>${p.name} ${p.online?'🟢':'🔴'}</div>`).join('');
-        document.getElementById('startGameBtn').disabled = playerArray.length<2;
-        if(room.status==='playing'){
-            document.getElementById('lobbyScreen').classList.add('hidden');
-            document.getElementById('gameScreen').classList.remove('hidden');
-            document.getElementById('gameRoomCode').textContent = currentRoomCode;
+        function generateCode() {
+            return 'GAME-' + Math.random().toString(36).substr(2, 4).toUpperCase();
         }
-    });
-}
 
-window.startGame = async function() {
-    await update(ref(db,'rooms/'+currentRoomCode),{status:'playing'});
-};
+        async function createRoom() {
+            myName = document.getElementById('playerName').value.trim() || 'Гравець';
+            myRoom = generateCode();
 
-window.rollDice = function() { alert('Хід працює! (спрощена версія)'); };
-window.leaveGame = function() { location.reload(); };
+            await db.ref('rooms/' + myRoom).set({
+                status: 'waiting',
+                players: {
+                    [myId]: { id: myId, name: myName, pos: 0, money: 15000, online: true }
+                },
+                game: { current: 0, dice1: 1, dice2: 1 }
+            });
 
-// Firebase connection test
-const statusDiv = document.getElementById('connectionStatus');
-onValue(ref(db,'.info/connected'), snap=>{
-    if(snap.val()===true){
-        statusDiv.textContent = '✅ Підключено';
-        document.getElementById('lobbyContent').classList.remove('hidden');
-    } else { statusDiv.textContent = '❌ Помилка підключення'; }
-});
-</script>
+            document.getElementById('codeDisplay').textContent = myRoom;
+            document.getElementById('waiting').style.display = 'block';
+            
+            listen();
+        }
 
-<script>
-if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('./sw.js').then(r=>console.log('✅ SW зареєстрований')).catch(e=>console.error('❌ SW помилка',e));
-}
-</script>
+        async function joinRoom() {
+            myName = document.getElementById('playerName').value.trim() || 'Гравець';
+            myRoom = document.getElementById('roomCode').value.trim().toUpperCase();
+
+            if (!myRoom) {
+                alert('Введіть код!');
+                return;
+            }
+
+            const snap = await db.ref('rooms/' + myRoom).once('value');
+            if (!snap.val()) {
+                alert('Кімнату не знайдено!');
+                return;
+            }
+
+            await db.ref('rooms/' + myRoom + '/players/' + myId).set({
+                id: myId, name: myName, pos: 0, money: 15000, online: true
+            });
+
+            document.getElementById('codeDisplay').textContent = myRoom;
+            document.getElementById('waiting').style.display = 'block';
+            
+            listen();
+        }
+
+        function listen() {
+            db.ref('rooms/' + myRoom).on('value', snap => {
+                const room = snap.val();
+                if (!room) return;
+
+                if (room.status === 'waiting') {
+                    const players = Object.values(room.players || {});
+                    document.getElementById('playersList').innerHTML = players.map(p => 
+                        '<div style="padding:10px;margin:5px 0;background:white;border-radius:6px;border-left:4px solid #4caf50;">' + 
+                        p.name + (p.online ? ' 🟢' : ' 🔴') + '</div>'
+                    ).join('');
+
+                    const btn = document.getElementById('startBtn');
+                    btn.disabled = players.length < 2;
+                    btn.textContent = 'Почати гру (' + players.length + ' гравців)';
+                } else if (room.status === 'playing') {
+                    showGame(room);
+                }
+            });
+        }
+
+        async function startGame() {
+            await db.ref('rooms/' + myRoom).update({ status: 'playing' });
+        }
+
+        function showGame(room) {
+            document.getElementById('lobby').style.display = 'none';
+            document.getElementById('game').style.display = 'block';
+            document.getElementById('gameCode').textContent = myRoom;
+
+            const players = Object.values(room.players || {});
+            document.getElementById('gamePlayers').innerHTML = players.map((p, i) => 
+                '<div style="padding:10px;margin:5px 0;background:' + 
+                (i === room.game.current ? '#e3f2fd' : 'white') + 
+                ';border-radius:6px;border:2px solid ' + 
+                (i === room.game.current ? '#2196f3' : '#ddd') + ';">' +
+                '<strong>' + p.name + (p.id === myId ? ' (Ви)' : '') + '</strong><br>' +
+                'Гроші: ' + p.money + '₴' +
+                '</div>'
+            ).join('');
+
+            const btn = document.getElementById('rollBtn');
+            const isMyTurn = players[room.game.current].id === myId;
+            btn.disabled = !isMyTurn;
+            btn.textContent = isMyTurn ? '🎲 Ваш хід' : '⏳ Чекайте...';
+        }
+
+        async function rollDice() {
+            const snap = await db.ref('rooms/' + myRoom).once('value');
+            const room = snap.val();
+            const players = Object.values(room.players);
+            
+            if (players[room.game.current].id !== myId) {
+                alert('Не ваш хід!');
+                return;
+            }
+
+            const d1 = Math.floor(Math.random() * 6) + 1;
+            const d2 = Math.floor(Math.random() * 6) + 1;
+
+            await db.ref('rooms/' + myRoom + '/game').update({ 
+                dice1: d1, 
+                dice2: d2,
+                current: (room.game.current + 1) % players.length
+            });
+
+            const log = myName + ' викинув ' + d1 + '+' + d2;
+            await db.ref('rooms/' + myRoom + '/logs').push({ text: log, time: Date.now() });
+        }
+
+        console.log('✅ Готово!');
+    </script>
 </body>
 </html>
