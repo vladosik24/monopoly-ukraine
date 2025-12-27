@@ -4,22 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Монополія Україна 🇺🇦</title>
-    
-    <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1565c0">
     <meta name="description" content="Онлайн мультиплеєрна гра Монополія з українськими містами">
-    
-    <!-- Icons -->
-    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-    <link rel="apple-touch-icon" href="icon-192.png">
-    
-    <!-- Mobile -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Монополія UA">
+    
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogItCc0L7QvdC+0L/QvtC70ZbRjyDQo9C60YDQsNGX0L3QsCIsCiAgInNob3J0X25hbWUiOiAi0JzQvtC90L7Qv9C+0LvRltGPIiwKICAiZGVzY3JpcHRpb24iOiAi0J7QvdC70LDQudC9INC80YPQu9GM0YLQuNC/0LvQtNGU0YDQvdCwINCz0YDQsCIsCiAgInN0YXJ0X3VybCI6ICIuLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2UzZjJmZCIsCiAgInRoZW1lX2NvbG9yIjogIiMxNTY1YzAiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3BuZztiYXNlNjQsaVZCT1J3MEtHZ29BQUFBTlNVaEVVZ0FBQUJBQUFBQVFDQVlBQUFBZjhhTk5BQUFBQzNScGRYTWdJR05vYVc1d0lDZHBZeTlwWTJ0ekp5QXdNREFBTG1WeVp5QnhaWFVBQUFBQUlIUWdaVzBBS0FBQUFDb0FBQUE4QUFBQVRRQUE9IiwKICAgICAgInNpemVzIjogIjE5MngxOTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9LAogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBZ0FBQUFJQUNBWUFBQUFxKzNBZ0FBQUFDblJwZFhNZ0lHTm9hVzV3SUNkcFl5OXBZMnR6SnlBd01EQUFMbVZ5WnlCeFpYVUFBQUFBSUhRZ1pXMEFLQUFBQURVQUFBQThBQUFBVFFBQT0iLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIKICAgIH0KICBdCn0=">
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -41,7 +33,6 @@
             cursor: pointer;
             font-weight: bold;
             font-size: 16px;
-            border: none;
         }
         
         @keyframes slideUp {
@@ -61,8 +52,8 @@
         
         .board-container { 
             max-width: 800px; 
-            margin: 10px auto; 
-            padding: 10px;
+            margin: 20px auto; 
+            padding: 20px;
             background: white;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
@@ -76,9 +67,8 @@
             grid-template-rows: repeat(11, 1fr);
             gap: 0;
             background: #d4e6d4;
-            border: 2px solid #2c5f2d;
+            border: 3px solid #2c5f2d;
             position: relative;
-            max-height: 85vh;
         }
         
         .cell {
@@ -231,76 +221,22 @@
 
         @media (max-width: 768px) {
             .board-container { 
-                padding: 5px; 
-                margin: 5px;
-                border-radius: 10px;
+                padding: 10px; 
+                margin: 10px;
             }
-            .board {
-                max-height: 75vh;
-                border: 1px solid #2c5f2d;
-            }
-            .cell { 
-                font-size: 0.45rem; 
-                padding: 1px;
-                min-height: 0;
-            }
-            .corner { 
-                font-size: 0.5rem;
-                padding: 2px;
-            }
-            .price { 
-                font-size: 0.4rem;
-                margin-top: 1px;
-            }
-            .color-bar {
-                height: 15%;
-            }
-            .player-token { 
-                width: 8px; 
-                height: 8px;
-                border-width: 1px;
-            }
+            .cell { font-size: 0.5rem; padding: 2px; }
+            .corner { font-size: 0.6rem; }
+            .price { font-size: 0.5rem; }
+            .player-token { width: 10px; height: 10px; }
             #installPrompt {
-                font-size: 13px;
-                padding: 10px 20px;
-                bottom: 10px;
-            }
-            .info-panel {
-                padding: 10px;
-                margin-top: 10px;
-            }
-            .player-card {
-                padding: 8px;
-                margin: 5px 0;
-                font-size: 0.9rem;
-            }
-            button {
-                padding: 10px 16px;
                 font-size: 14px;
-            }
-            h2 {
-                font-size: 1.3rem;
-            }
-        }
-        
-        @media (max-width: 400px) {
-            .board {
-                max-height: 70vh;
-            }
-            .cell {
-                font-size: 0.35rem;
-            }
-            .corner {
-                font-size: 0.4rem;
-            }
-            .price {
-                font-size: 0.3rem;
+                padding: 12px 24px;
             }
         }
     </style>
 </head>
 <body>
-    <button id="installPrompt">📥 Встановити додаток</button>
+    <div id="installPrompt">📥 Встановити додаток</div>
 
     <div id="lobby" class="modal" style="display: flex;">
         <div class="modal-content">
@@ -328,9 +264,9 @@
 
     <div id="gameContainer" style="display: none;">
         <div class="board-container">
-            <div style="text-align: center; margin-bottom: 10px;">
-                <h2 style="color: #1565c0; font-size: 1.5rem;">🇺🇦 Монополія</h2>
-                <div style="color: #666; font-size: 0.85rem;">Кімната: <span id="gameCode" style="font-weight: bold;"></span></div>
+            <div style="text-align: center; margin-bottom: 15px;">
+                <h2 style="color: #1565c0;">🇺🇦 Монополія Україна</h2>
+                <div style="color: #666;">Кімната: <span id="gameCode" style="font-weight: bold;"></span></div>
             </div>
             
             <div class="board" id="board"></div>
@@ -347,35 +283,45 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
-        // PWA Install
+        // PWA Install Prompt - покращена версія
         let deferredPrompt;
-        const installBtn = document.getElementById('installPrompt');
+        const installPrompt = document.getElementById('installPrompt');
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            console.log('✅ PWA готовий до встановлення!');
+            console.log('✅ beforeinstallprompt спрацював!');
             e.preventDefault();
             deferredPrompt = e;
-            installBtn.style.display = 'block';
+            installPrompt.style.display = 'block';
         });
 
-        installBtn.addEventListener('click', async () => {
+        installPrompt.addEventListener('click', async () => {
             if (!deferredPrompt) {
-                alert('Встановлення через меню браузера:\nChrome: Меню (⋮) → "Додати на головний екран"\niOS Safari: Поділитися → "На головний екран"');
+                alert('Функція встановлення недоступна. Спробуйте через меню браузера: "Додати на головний екран"');
                 return;
             }
-            installBtn.style.display = 'none';
+            installPrompt.style.display = 'none';
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            console.log('Результат:', outcome);
+            console.log(`Результат встановлення: ${outcome}`);
             deferredPrompt = null;
         });
 
-        // Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('✅ SW:', reg.scope))
-                .catch(err => console.log('⚠️ SW помилка:', err));
-        }
+        window.addEventListener('appinstalled', () => {
+            console.log('✅ Додаток встановлено!');
+            installPrompt.style.display = 'none';
+        });
+
+        // Показуємо промпт через 3 секунди якщо браузер не показав автоматично
+        setTimeout(() => {
+            if (!deferredPrompt && installPrompt.style.display === 'none') {
+                console.log('⚠️ beforeinstallprompt не спрацював. Показуємо інструкцію...');
+                installPrompt.textContent = '💡 Додати на головний екран (через меню браузера)';
+                installPrompt.style.display = 'block';
+                installPrompt.onclick = () => {
+                    alert('Натисніть меню браузера (⋮) → "Додати на головний екран"');
+                };
+            }
+        }, 3000);
 
         const config = {
             apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
@@ -436,6 +382,12 @@
         let db, myId = 'p' + Date.now(), myRoom = null, myName = null;
 
         window.addEventListener('load', function() {
+            if (typeof firebase === 'undefined') {
+                document.getElementById('status').innerHTML = '❌ Помилка завантаження Firebase';
+                document.getElementById('status').style.background = '#ffebee';
+                return;
+            }
+
             firebase.initializeApp(config);
             db = firebase.database();
 
@@ -674,3 +626,6 @@
                 current: (room.game.current + 1) % players.length
             });
         }
+    </script>
+</body>
+</html>
