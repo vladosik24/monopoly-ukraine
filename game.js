@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getDatabase, ref, set, onValue, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { getDatabase, ref, set, onValue, update, get, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
@@ -40,6 +40,7 @@ onValue(testRef, (snap) => {
 // --- ЛОБІ ---
 document.getElementById('createBtn').addEventListener('click', createRoom);
 document.getElementById('joinBtn').addEventListener('click', joinRoom);
+document.getElementById('startGameBtn').addEventListener('click', startGame);
 
 function generateRoomCode() {
     return 'GAME-' + Math.random().toString(36).substr(2, 4).toUpperCase();
@@ -53,12 +54,24 @@ async function createRoom() {
         code: currentRoomCode,
         status: 'waiting',
         players: {
-            [myPlayerId]: { id: myPlayerId, name: myPlayerName, pos: 0, money: 15000, props: [], color: COLORS[0], online: true }
+            [myPlayerId]: { 
+                id: myPlayerId, 
+                name: myPlayerName, 
+                pos: 0, 
+                money: 15000, 
+                props: [], 
+                color: COLORS[0], 
+                online: true 
+            }
         },
         game: { currentPlayer: 0, dice1: 1, dice2: 1, started: false }
     };
 
     await set(ref(db, 'rooms/' + currentRoomCode), roomData);
+
+    // Відстеження від'єднання
+    const playerRef = ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`);
+    onDisconnect(playerRef).update({ online: false });
 
     document.getElementById('roomCodeDisplay').textContent = currentRoomCode;
     document.getElementById('waitingRoom').style.display = 'block';
@@ -71,27 +84,31 @@ async function joinRoom() {
     if (!code) return alert('Введіть код кімнати!');
 
     const roomRef = ref(db, 'rooms/' + code);
-    onValue(roomRef, async (snapshot) => {
-        const room = snapshot.val();
-        if (!room) return alert('Кімнату не знайдено!');
-        const playerCount = Object.keys(room.players || {}).length;
-        if (playerCount >= 4) return alert('Кімната повна!');
+    const snapshot = await get(roomRef);
+    const room = snapshot.val();
+    
+    if (!room) return alert('Кімнату не знайдено!');
+    const playerCount = Object.keys(room.players || {}).length;
+    if (playerCount >= 4) return alert('Кімната повна!');
 
-        await set(ref(db, `rooms/${code}/players/${myPlayerId}`), {
-            id: myPlayerId,
-            name: myPlayerName,
-            pos: 0,
-            money: 15000,
-            props: [],
-            color: COLORS[playerCount],
-            online: true
-        });
+    await set(ref(db, `rooms/${code}/players/${myPlayerId}`), {
+        id: myPlayerId,
+        name: myPlayerName,
+        pos: 0,
+        money: 15000,
+        props: [],
+        color: COLORS[playerCount],
+        online: true
+    });
 
-        currentRoomCode = code;
-        document.getElementById('roomCodeDisplay').textContent = code;
-        document.getElementById('waitingRoom').style.display = 'block';
-        listenToRoom();
-    }, { onlyOnce: true });
+    // Відстеження від'єднання
+    const playerRef = ref(db, `rooms/${code}/players/${myPlayerId}`);
+    onDisconnect(playerRef).update({ online: false });
+
+    currentRoomCode = code;
+    document.getElementById('roomCodeDisplay').textContent = code;
+    document.getElementById('waitingRoom').style.display = 'block';
+    listenToRoom();
 }
 
 function listenToRoom() {
@@ -99,7 +116,12 @@ function listenToRoom() {
     onValue(roomRef, (snapshot) => {
         const room = snapshot.val();
         if (!room) return;
-        updatePlayersList(room.players);
+        
+        if (room.status === 'waiting') {
+            updatePlayersList(room.players);
+        } else if (room.status === 'playing') {
+            showGameBoard(room);
+        }
     });
 }
 
@@ -112,4 +134,19 @@ function updatePlayersList(players) {
     const startBtn = document.getElementById('startGameBtn');
     startBtn.disabled = playerArray.length < 2;
     startBtn.textContent = `Почати гру (${playerArray.length} гравців)`;
+}
+
+async function startGame() {
+    const roomRef = ref(db, 'rooms/' + currentRoomCode);
+    await update(roomRef, { 
+        'game/started': true,
+        status: 'playing' 
+    });
+}
+
+function showGameBoard(room) {
+    document.getElementById('waitingRoom').style.display = 'none';
+    document.getElementById('gameBoard').style.display = 'block';
+    // Тут додайте код для відображення ігрової дошки
+    console.log('Гра почалася!', room);
 }
