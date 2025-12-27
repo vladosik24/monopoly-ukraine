@@ -10,10 +10,11 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+  console.log('SW: Install');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
-      .catch(err => console.log('Cache error:', err))
+      .catch(err => console.error('Cache error:', err))
   );
 });
 
@@ -25,6 +26,7 @@ self.addEventListener('fetch', event => {
 });
 
 self.addEventListener('activate', event => {
+  console.log('SW: Activate');
   event.waitUntil(
     caches.keys().then(keys => 
       Promise.all(
