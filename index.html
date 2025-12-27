@@ -1,13 +1,25 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1565c0">
-<meta name="description" content="Онлайн мультиплеєрна гра Монополія з українськими містами">
-<link rel="apple-touch-icon" href="icon-192.png">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Монополія Україна 🇺🇦</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1565c0">
+    <meta name="description" content="Онлайн мультиплеєрна гра Монополія з українськими містами">
+    
+    <!-- Icons -->
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    
+    <!-- Mobile Web App -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Монополія UA">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #e3f2fd; }
@@ -69,6 +81,7 @@
             display: flex;
             gap: 2px;
             flex-wrap: wrap;
+            justify-content: center;
         }
         
         .player-token {
@@ -95,11 +108,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s;
         }
         
         .player-card.active {
             background: #e3f2fd;
             border-left-width: 8px;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
         }
         
         button {
@@ -112,15 +127,26 @@
             transition: 0.3s;
         }
         
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
         .btn-primary { background: #2196f3; color: white; }
-        .btn-primary:hover { background: #1976d2; }
+        .btn-primary:hover:not(:disabled) { background: #1976d2; }
         .btn-success { background: #4caf50; color: white; }
-        .btn-success:hover { background: #45a049; }
+        .btn-success:hover:not(:disabled) { background: #45a049; }
         
         .dice-display {
             font-size: 3rem;
             text-align: center;
             margin: 15px 0;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
         }
         
         .modal {
@@ -154,12 +180,29 @@
             font-size: 16px;
         }
         
+        input:focus {
+            outline: none;
+            border-color: #2196f3;
+        }
+        
         .property-card {
             background: white;
             padding: 20px;
             border-radius: 10px;
             margin-top: 15px;
             border: 3px solid #2196f3;
+        }
+
+        /* Адаптивний дизайн */
+        @media (max-width: 768px) {
+            .board-container { 
+                padding: 10px; 
+                margin: 10px;
+            }
+            .cell { font-size: 0.5rem; padding: 2px; }
+            .corner { font-size: 0.6rem; }
+            .price { font-size: 0.5rem; }
+            .player-token { width: 10px; height: 10px; }
         }
     </style>
 </head>
@@ -173,13 +216,13 @@
             <div id="lobbyContent" style="display: none;">
                 <input type="text" id="playerName" placeholder="Ваше ім'я" value="Гравець">
                 <button class="btn-success" onclick="createRoom()" style="width: 100%; margin: 10px 0;">🎯 Створити гру</button>
-                <div style="text-align: center; margin: 15px 0; color: #666;">— АБО —</div>
+                <div style="text-align: center; margin: 15px 0; color: #666; font-weight: bold;">— АБО —</div>
                 <input type="text" id="roomCode" placeholder="Код кімнати" style="text-transform: uppercase;">
                 <button class="btn-primary" onclick="joinRoom()" style="width: 100%; margin: 10px 0;">🚪 Приєднатися</button>
             </div>
             <div id="waiting" style="display: none;">
                 <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
-                    <div style="font-size: 0.9rem; margin-bottom: 10px;">📋 Код кімнати:</div>
+                    <div style="font-size: 0.9rem; margin-bottom: 10px; color: #666;">📋 Код кімнати:</div>
                     <div id="codeDisplay" style="font-size: 2rem; font-weight: bold; color: #1565c0; letter-spacing: 3px;"></div>
                 </div>
                 <div id="playersList"></div>
@@ -267,7 +310,6 @@
 
         let db, myId = 'p' + Date.now(), myRoom = null, myName = null;
 
-        // Чекаємо завантаження Firebase
         window.addEventListener('load', function() {
             if (typeof firebase === 'undefined') {
                 document.getElementById('status').innerHTML = '❌ Помилка завантаження Firebase';
@@ -457,17 +499,45 @@
 
             const currentPos = players[room.game.current].pos;
             const prop = PROPERTIES[currentPos];
-            if (prop.price) {
-                document.getElementById('propertyInfo').innerHTML = `
-                    <div class="property-card">
-                        <h3 style="color: ${prop.color}; margin-bottom: 10px;">${prop.name}</h3>
-                        <p style="font-size: 1.2rem; font-weight: bold;">Ціна: ${prop.price}₴</p>
-                        <button class="btn-success" style="width: 100%; margin-top: 10px;">💰 Купити</button>
-                    </div>
-                `;
+            if (prop.price && isMyTurn) {
+                const owned = players.find(pl => pl.props && pl.props.includes(currentPos));
+                if (!owned) {
+                    document.getElementById('propertyInfo').innerHTML = `
+                        <div class="property-card">
+                            <h3 style="color: ${prop.color}; margin-bottom: 10px;">${prop.name}</h3>
+                            <p style="font-size: 1.2rem; font-weight: bold;">Ціна: ${prop.price}₴</p>
+                            <button class="btn-success" onclick="buyProperty(${currentPos}, ${prop.price})" style="width: 100%; margin-top: 10px;">💰 Купити</button>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('propertyInfo').innerHTML = `
+                        <div class="property-card" style="border-color: ${owned.color};">
+                            <h3 style="color: ${prop.color}; margin-bottom: 10px;">${prop.name}</h3>
+                            <p style="color: #666;">Власник: <strong>${owned.name}</strong></p>
+                        </div>
+                    `;
+                }
             } else {
                 document.getElementById('propertyInfo').innerHTML = '';
             }
+        }
+
+        async function buyProperty(pos, price) {
+            const snap = await db.ref('rooms/' + myRoom).once('value');
+            const room = snap.val();
+            const players = Object.values(room.players);
+            const currentPlayer = players[room.game.current];
+
+            if (currentPlayer.id !== myId) return;
+            if (currentPlayer.money < price) return alert('Недостатньо грошей!');
+
+            const newProps = [...(currentPlayer.props || []), pos];
+            const newMoney = currentPlayer.money - price;
+
+            await db.ref('rooms/' + myRoom + '/players/' + myId).update({
+                props: newProps,
+                money: newMoney
+            });
         }
 
         async function rollDice() {
