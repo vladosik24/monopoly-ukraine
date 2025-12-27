@@ -4,246 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Монополія Україна 🇺🇦</title>
+    
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1565c0">
     <meta name="description" content="Онлайн мультиплеєрна гра Монополія з українськими містами">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Монополія UA">
     
-    <link rel="manifest" href="manifest.json">
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #e3f2fd; }
-        
-        #installPrompt {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            z-index: 10000;
-            display: none;
-            animation: slideUp 0.5s, pulse 2s infinite;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        
-        @keyframes slideUp {
-            from { bottom: -100px; opacity: 0; }
-            to { bottom: 20px; opacity: 1; }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.05); }
-        }
-        
-        #installPrompt:hover {
-            transform: translateX(-50%) scale(1.1);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
-        }
-        
-        .board-container { 
-            max-width: 800px; 
-            margin: 20px auto; 
-            padding: 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        }
-        
-        .board { 
-            width: 100%; 
-            aspect-ratio: 1;
-            display: grid;
-            grid-template-columns: repeat(11, 1fr);
-            grid-template-rows: repeat(11, 1fr);
-            gap: 0;
-            background: #d4e6d4;
-            border: 3px solid #2c5f2d;
-            position: relative;
-        }
-        
-        .cell {
-            border: 1px solid #2c5f2d;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.7rem;
-            font-weight: bold;
-            text-align: center;
-            padding: 4px;
-            position: relative;
-            background: white;
-        }
-        
+        #installPrompt { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; border-radius: 50px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); z-index: 10000; display: none; animation: slideUp 0.5s, pulse 2s infinite; cursor: pointer; font-weight: bold; font-size: 16px; border: none; }
+        @keyframes slideUp { from { bottom: -100px; opacity: 0; } to { bottom: 20px; opacity: 1; } }
+        @keyframes pulse { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05); } }
+        #installPrompt:hover { transform: translateX(-50%) scale(1.1); box-shadow: 0 12px 35px rgba(0,0,0,0.4); }
+        .board-container { max-width: 800px; margin: 10px auto; padding: 10px; background: white; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .board { width: 100%; aspect-ratio: 1; display: grid; grid-template-columns: repeat(11, 1fr); grid-template-rows: repeat(11, 1fr); gap: 0; background: #d4e6d4; border: 2px solid #2c5f2d; position: relative; max-height: 85vh; }
+        .cell { border: 1px solid #2c5f2d; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 0.7rem; font-weight: bold; text-align: center; padding: 4px; position: relative; background: white; }
         .corner { font-size: 0.8rem; }
-        
-        .color-bar {
-            width: 100%;
-            height: 20%;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        
-        .price { 
-            font-size: 0.6rem; 
-            color: #666; 
-            margin-top: 2px;
-        }
-        
-        .players-on-cell {
-            position: absolute;
-            bottom: 2px;
-            display: flex;
-            gap: 2px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .player-token {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-        }
-        
-        .info-panel {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 10px;
-        }
-        
-        .player-card {
-            padding: 12px;
-            margin: 8px 0;
-            background: white;
-            border-radius: 8px;
-            border-left: 6px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s;
-        }
-        
-        .player-card.active {
-            background: #e3f2fd;
-            border-left-width: 8px;
-            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
-        }
-        
-        button {
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
+        .color-bar { width: 100%; height: 20%; position: absolute; top: 0; left: 0; }
+        .price { font-size: 0.6rem; color: #666; margin-top: 2px; }
+        .players-on-cell { position: absolute; bottom: 2px; display: flex; gap: 2px; flex-wrap: wrap; justify-content: center; }
+        .player-token { width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        .info-panel { margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 10px; }
+        .player-card { padding: 12px; margin: 8px 0; background: white; border-radius: 8px; border-left: 6px solid #ddd; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s; }
+        .player-card.active { background: #e3f2fd; border-left-width: 8px; box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3); }
+        button { padding: 12px 24px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-primary { background: #2196f3; color: white; }
         .btn-primary:hover:not(:disabled) { background: #1976d2; }
         .btn-success { background: #4caf50; color: white; }
         .btn-success:hover:not(:disabled) { background: #45a049; }
-        
-        .dice-display {
-            font-size: 3rem;
-            text-align: center;
-            margin: 15px 0;
-            animation: fadeIn 0.5s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-        
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: #2196f3;
-        }
-        
-        .property-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 15px;
-            border: 3px solid #2196f3;
-        }
-
+        .dice-display { font-size: 3rem; text-align: center; margin: 15px 0; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; }
+        input:focus { outline: none; border-color: #2196f3; }
+        .property-card { background: white; padding: 20px; border-radius: 10px; margin-top: 15px; border: 3px solid #2196f3; }
         @media (max-width: 768px) {
-            .board-container { 
-                padding: 10px; 
-                margin: 10px;
-            }
-            .cell { font-size: 0.5rem; padding: 2px; }
-            .corner { font-size: 0.6rem; }
-            .price { font-size: 0.5rem; }
-            .player-token { width: 10px; height: 10px; }
-            #installPrompt {
-                font-size: 14px;
-                padding: 12px 24px;
-            }
+            .board-container { padding: 5px; margin: 5px; border-radius: 10px; }
+            .board { max-height: 75vh; border: 1px solid #2c5f2d; }
+            .cell { font-size: 0.45rem; padding: 1px; min-height: 0; }
+            .corner { font-size: 0.5rem; padding: 2px; }
+            .price { font-size: 0.4rem; margin-top: 1px; }
+            .color-bar { height: 15%; }
+            .player-token { width: 8px; height: 8px; border-width: 1px; }
+            #installPrompt { font-size: 13px; padding: 10px 20px; bottom: 10px; }
+            .info-panel { padding: 10px; margin-top: 10px; }
+            .player-card { padding: 8px; margin: 5px 0; font-size: 0.9rem; }
+            button { padding: 10px 16px; font-size: 14px; }
+            h2 { font-size: 1.3rem; }
+        }
+        @media (max-width: 400px) {
+            .board { max-height: 70vh; }
+            .cell { font-size: 0.35rem; }
+            .corner { font-size: 0.4rem; }
+            .price { font-size: 0.3rem; }
         }
     </style>
 </head>
 <body>
-    <div id="installPrompt">📥 Встановити додаток</div>
-
+    <button id="installPrompt">📥 Встановити додаток</button>
     <div id="lobby" class="modal" style="display: flex;">
         <div class="modal-content">
             <h2 style="text-align: center; color: #1565c0; margin-bottom: 20px;">🇺🇦 Монополія Україна</h2>
-            <div id="status" style="padding: 12px; background: #fff3e0; border-radius: 8px; text-align: center; margin-bottom: 15px;">
-                Підключення...
-            </div>
+            <div id="status" style="padding: 12px; background: #fff3e0; border-radius: 8px; text-align: center; margin-bottom: 15px;">Підключення...</div>
             <div id="lobbyContent" style="display: none;">
                 <input type="text" id="playerName" placeholder="Ваше ім'я" value="Гравець">
                 <button class="btn-success" onclick="createRoom()" style="width: 100%; margin: 10px 0;">🎯 Створити гру</button>
@@ -261,16 +92,13 @@
             </div>
         </div>
     </div>
-
     <div id="gameContainer" style="display: none;">
         <div class="board-container">
-            <div style="text-align: center; margin-bottom: 15px;">
-                <h2 style="color: #1565c0;">🇺🇦 Монополія Україна</h2>
-                <div style="color: #666;">Кімната: <span id="gameCode" style="font-weight: bold;"></span></div>
+            <div style="text-align: center; margin-bottom: 10px;">
+                <h2 style="color: #1565c0; font-size: 1.5rem;">🇺🇦 Монополія</h2>
+                <div style="color: #666; font-size: 0.85rem;">Кімната: <span id="gameCode" style="font-weight: bold;"></span></div>
             </div>
-            
             <div class="board" id="board"></div>
-            
             <div class="info-panel">
                 <div id="diceResult" class="dice-display"></div>
                 <div id="gamePlayers"></div>
@@ -279,352 +107,144 @@
             </div>
         </div>
     </div>
-
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
-        // PWA Install Prompt - покращена версія
+        (function() {
+            const scripts = [
+                { app: 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js', db: 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js' },
+                { app: 'https://cdn.jsdelivr.net/npm/firebase@10.7.0/firebase-app-compat.js', db: 'https://cdn.jsdelivr.net/npm/firebase@10.7.0/firebase-database-compat.js' }
+            ];
+            function loadFirebase(index) {
+                if (index >= scripts.length) {
+                    document.getElementById('status').innerHTML = '❌ Не вдалося завантажити Firebase<br><small>Перевірте інтернет</small>';
+                    document.getElementById('status').style.background = '#ffebee';
+                    return;
+                }
+                const script1 = document.createElement('script');
+                script1.src = scripts[index].app;
+                script1.onerror = () => { console.warn('CDN #' + (index+1) + ' не працює'); loadFirebase(index + 1); };
+                script1.onload = () => {
+                    const script2 = document.createElement('script');
+                    script2.src = scripts[index].db;
+                    script2.onerror = () => loadFirebase(index + 1);
+                    script2.onload = () => { console.log('✅ Firebase з CDN #' + (index+1)); initApp(); };
+                    document.body.appendChild(script2);
+                };
+                document.body.appendChild(script1);
+            }
+            loadFirebase(0);
+        })();
+        
         let deferredPrompt;
         const installPrompt = document.getElementById('installPrompt');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            console.log('✅ beforeinstallprompt спрацював!');
-            e.preventDefault();
-            deferredPrompt = e;
-            installPrompt.style.display = 'block';
-        });
-
+        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; installPrompt.style.display = 'block'; });
         installPrompt.addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                alert('Функція встановлення недоступна. Спробуйте через меню браузера: "Додати на головний екран"');
-                return;
-            }
-            installPrompt.style.display = 'none';
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`Результат встановлення: ${outcome}`);
-            deferredPrompt = null;
+            if (!deferredPrompt) { alert('Меню → "Додати на головний екран"'); return; }
+            installPrompt.style.display = 'none'; deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice; deferredPrompt = null;
         });
-
-        window.addEventListener('appinstalled', () => {
-            console.log('✅ Додаток встановлено!');
-            installPrompt.style.display = 'none';
-        });
-
-        // Показуємо промпт через 3 секунди якщо браузер не показав автоматично
-        setTimeout(() => {
-            if (!deferredPrompt && installPrompt.style.display === 'none') {
-                console.log('⚠️ beforeinstallprompt не спрацював. Показуємо інструкцію...');
-                installPrompt.textContent = '💡 Додати на головний екран (через меню браузера)';
-                installPrompt.style.display = 'block';
-                installPrompt.onclick = () => {
-                    alert('Натисніть меню браузера (⋮) → "Додати на головний екран"');
-                };
-            }
-        }, 3000);
-
-        const config = {
-            apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
-            authDomain: "monopoly-ukraine.firebaseapp.com",
-            databaseURL: "https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "monopoly-ukraine",
-            storageBucket: "monopoly-ukraine.firebasestorage.app",
-            messagingSenderId: "1046709502750",
-            appId: "1:1046709502750:web:ba8ad3c1f11780d1a6bf0f"
-        };
-
+        window.addEventListener('appinstalled', () => installPrompt.style.display = 'none');
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').then(r => console.log('✅ SW')).catch(e => console.log('⚠️ SW:', e.message)));
+        }
+        
+        const config = { apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ", authDomain: "monopoly-ukraine.firebaseapp.com", databaseURL: "https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app", projectId: "monopoly-ukraine", storageBucket: "monopoly-ukraine.firebasestorage.app", messagingSenderId: "1046709502750", appId: "1:1046709502750:web:ba8ad3c1f11780d1a6bf0f" };
         const COLORS = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#A8E6CF'];
         const COLOR_NAMES = ['🔴 Червоний', '🔵 Блакитний', '🟡 Жовтий', '🟢 Зелений'];
-
         const PROPERTIES = [
-            { name: 'СТАРТ', type: 'corner', pos: 0 },
-            { name: 'Луцьк', price: 600, color: '#8B4513', pos: 1 },
-            { name: 'Шанс', type: 'chance', pos: 2 },
-            { name: 'Рівне', price: 600, color: '#8B4513', pos: 3 },
-            { name: 'Податок', type: 'tax', amount: 2000, pos: 4 },
-            { name: 'Вокзал Київ', price: 2000, type: 'station', pos: 5 },
-            { name: 'Житомир', price: 1000, color: '#87CEEB', pos: 6 },
-            { name: 'Шанс', type: 'chance', pos: 7 },
-            { name: 'Чернігів', price: 1000, color: '#87CEEB', pos: 8 },
-            { name: 'Суми', price: 1200, color: '#87CEEB', pos: 9 },
-            { name: 'В\'ЯЗНИЦЯ', type: 'corner', pos: 10 },
-            { name: 'Полтава', price: 1400, color: '#FF69B4', pos: 11 },
-            { name: 'Електростанція', price: 1500, type: 'utility', pos: 12 },
-            { name: 'Черкаси', price: 1400, color: '#FF69B4', pos: 13 },
-            { name: 'Кропивницький', price: 1600, color: '#FF69B4', pos: 14 },
-            { name: 'Вокзал Львів', price: 2000, type: 'station', pos: 15 },
-            { name: 'Вінниця', price: 1800, color: '#FFA500', pos: 16 },
-            { name: 'Шанс', type: 'chance', pos: 17 },
-            { name: 'Хмельницький', price: 1800, color: '#FFA500', pos: 18 },
-            { name: 'Тернопіль', price: 2000, color: '#FFA500', pos: 19 },
-            { name: 'ПАРКОВКА', type: 'corner', pos: 20 },
-            { name: 'Івано-Франківськ', price: 2200, color: '#FF0000', pos: 21 },
-            { name: 'Шанс', type: 'chance', pos: 22 },
-            { name: 'Чернівці', price: 2200, color: '#FF0000', pos: 23 },
-            { name: 'Ужгород', price: 2400, color: '#FF0000', pos: 24 },
-            { name: 'Вокзал Одеса', price: 2000, type: 'station', pos: 25 },
-            { name: 'Львів', price: 2600, color: '#FFFF00', pos: 26 },
-            { name: 'Миколаїв', price: 2600, color: '#FFFF00', pos: 27 },
-            { name: 'Водоканал', price: 1500, type: 'utility', pos: 28 },
-            { name: 'Херсон', price: 2800, color: '#FFFF00', pos: 29 },
-            { name: 'ПОЛІЦІЯ', type: 'corner', pos: 30 },
-            { name: 'Запоріжжя', price: 3000, color: '#00FF00', pos: 31 },
-            { name: 'Дніпро', price: 3000, color: '#00FF00', pos: 32 },
-            { name: 'Шанс', type: 'chance', pos: 33 },
-            { name: 'Кривий Ріг', price: 3200, color: '#00FF00', pos: 34 },
-            { name: 'Вокзал Харків', price: 2000, type: 'station', pos: 35 },
-            { name: 'Шанс', type: 'chance', pos: 36 },
-            { name: 'Харків', price: 3500, color: '#0000FF', pos: 37 },
-            { name: 'Податок', type: 'tax', amount: 1000, pos: 38 },
-            { name: 'Київ', price: 4000, color: '#0000FF', pos: 39 }
+            { name: 'СТАРТ', type: 'corner', pos: 0 }, { name: 'Луцьк', price: 600, color: '#8B4513', pos: 1 }, { name: 'Шанс', type: 'chance', pos: 2 }, { name: 'Рівне', price: 600, color: '#8B4513', pos: 3 }, { name: 'Податок', type: 'tax', amount: 2000, pos: 4 }, { name: 'Вокзал Київ', price: 2000, type: 'station', pos: 5 }, { name: 'Житомир', price: 1000, color: '#87CEEB', pos: 6 }, { name: 'Шанс', type: 'chance', pos: 7 }, { name: 'Чернігів', price: 1000, color: '#87CEEB', pos: 8 }, { name: 'Суми', price: 1200, color: '#87CEEB', pos: 9 }, { name: 'В\'ЯЗНИЦЯ', type: 'corner', pos: 10 }, { name: 'Полтава', price: 1400, color: '#FF69B4', pos: 11 }, { name: 'Електростанція', price: 1500, type: 'utility', pos: 12 }, { name: 'Черкаси', price: 1400, color: '#FF69B4', pos: 13 }, { name: 'Кропивницький', price: 1600, color: '#FF69B4', pos: 14 }, { name: 'Вокзал Львів', price: 2000, type: 'station', pos: 15 }, { name: 'Вінниця', price: 1800, color: '#FFA500', pos: 16 }, { name: 'Шанс', type: 'chance', pos: 17 }, { name: 'Хмельницький', price: 1800, color: '#FFA500', pos: 18 }, { name: 'Тернопіль', price: 2000, color: '#FFA500', pos: 19 }, { name: 'ПАРКОВКА', type: 'corner', pos: 20 }, { name: 'Івано-Франківськ', price: 2200, color: '#FF0000', pos: 21 }, { name: 'Шанс', type: 'chance', pos: 22 }, { name: 'Чернівці', price: 2200, color: '#FF0000', pos: 23 }, { name: 'Ужгород', price: 2400, color: '#FF0000', pos: 24 }, { name: 'Вокзал Одеса', price: 2000, type: 'station', pos: 25 }, { name: 'Львів', price: 2600, color: '#FFFF00', pos: 26 }, { name: 'Миколаїв', price: 2600, color: '#FFFF00', pos: 27 }, { name: 'Водоканал', price: 1500, type: 'utility', pos: 28 }, { name: 'Херсон', price: 2800, color: '#FFFF00', pos: 29 }, { name: 'ПОЛІЦІЯ', type: 'corner', pos: 30 }, { name: 'Запоріжжя', price: 3000, color: '#00FF00', pos: 31 }, { name: 'Дніпро', price: 3000, color: '#00FF00', pos: 32 }, { name: 'Шанс', type: 'chance', pos: 33 }, { name: 'Кривий Ріг', price: 3200, color: '#00FF00', pos: 34 }, { name: 'Вокзал Харків', price: 2000, type: 'station', pos: 35 }, { name: 'Шанс', type: 'chance', pos: 36 }, { name: 'Харків', price: 3500, color: '#0000FF', pos: 37 }, { name: 'Податок', type: 'tax', amount: 1000, pos: 38 }, { name: 'Київ', price: 4000, color: '#0000FF', pos: 39 }
         ];
-
         let db, myId = 'p' + Date.now(), myRoom = null, myName = null;
-
-        window.addEventListener('load', function() {
-            if (typeof firebase === 'undefined') {
-                document.getElementById('status').innerHTML = '❌ Помилка завантаження Firebase';
-                document.getElementById('status').style.background = '#ffebee';
-                return;
-            }
-
-            firebase.initializeApp(config);
-            db = firebase.database();
-
-            db.ref('.info/connected').on('value', snap => {
-                const status = document.getElementById('status');
-                if (snap.val()) {
-                    status.innerHTML = '✅ Підключено!';
-                    status.style.background = '#e8f5e9';
-                    setTimeout(() => {
-                        status.style.display = 'none';
-                        document.getElementById('lobbyContent').style.display = 'block';
-                    }, 1500);
-                }
-            });
-        });
-
-        function generateCode() {
-            return 'GAME-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+        
+        function initApp() {
+            if (typeof firebase === 'undefined') { document.getElementById('status').innerHTML = '❌ Firebase помилка'; return; }
+            try {
+                firebase.initializeApp(config); db = firebase.database();
+                db.ref('.info/connected').on('value', snap => {
+                    const status = document.getElementById('status');
+                    if (snap.val() === true) {
+                        status.innerHTML = '✅ Підключено!'; status.style.background = '#e8f5e9';
+                        setTimeout(() => { status.style.display = 'none'; document.getElementById('lobbyContent').style.display = 'block'; }, 1000);
+                    }
+                });
+            } catch(e) { document.getElementById('status').innerHTML = '❌ Помилка'; }
         }
-
+        
+        function generateCode() { return 'GAME-' + Math.random().toString(36).substr(2, 4).toUpperCase(); }
         async function createRoom() {
-            myName = document.getElementById('playerName').value.trim() || 'Гравець';
-            myRoom = generateCode();
-
-            await db.ref('rooms/' + myRoom).set({
-                status: 'waiting',
-                players: {
-                    [myId]: { id: myId, name: myName, pos: 0, money: 15000, props: [], online: true, color: COLORS[0], colorName: COLOR_NAMES[0] }
-                },
-                game: { current: 0, dice1: 0, dice2: 0 }
-            });
-
-            document.getElementById('codeDisplay').textContent = myRoom;
-            document.getElementById('waiting').style.display = 'block';
-            document.getElementById('lobbyContent').style.display = 'none';
-            listen();
+            myName = document.getElementById('playerName').value.trim() || 'Гравець'; myRoom = generateCode();
+            await db.ref('rooms/' + myRoom).set({ status: 'waiting', players: { [myId]: { id: myId, name: myName, pos: 0, money: 15000, props: [], online: true, color: COLORS[0], colorName: COLOR_NAMES[0] } }, game: { current: 0, dice1: 0, dice2: 0 } });
+            document.getElementById('codeDisplay').textContent = myRoom; document.getElementById('waiting').style.display = 'block'; document.getElementById('lobbyContent').style.display = 'none'; listen();
         }
-
         async function joinRoom() {
-            myName = document.getElementById('playerName').value.trim() || 'Гравець';
-            myRoom = document.getElementById('roomCode').value.trim().toUpperCase();
+            myName = document.getElementById('playerName').value.trim() || 'Гравець'; myRoom = document.getElementById('roomCode').value.trim().toUpperCase();
             if (!myRoom) return alert('Введіть код!');
-
             const snap = await db.ref('rooms/' + myRoom).once('value');
             if (!snap.val()) return alert('Кімнату не знайдено!');
-
             const players = Object.values(snap.val().players || {});
             if (players.length >= 4) return alert('Кімната повна!');
-
-            await db.ref('rooms/' + myRoom + '/players/' + myId).set({
-                id: myId, name: myName, pos: 0, money: 15000, props: [], online: true,
-                color: COLORS[players.length], colorName: COLOR_NAMES[players.length]
-            });
-
-            document.getElementById('codeDisplay').textContent = myRoom;
-            document.getElementById('waiting').style.display = 'block';
-            document.getElementById('lobbyContent').style.display = 'none';
-            listen();
+            await db.ref('rooms/' + myRoom + '/players/' + myId).set({ id: myId, name: myName, pos: 0, money: 15000, props: [], online: true, color: COLORS[players.length], colorName: COLOR_NAMES[players.length] });
+            document.getElementById('codeDisplay').textContent = myRoom; document.getElementById('waiting').style.display = 'block'; document.getElementById('lobbyContent').style.display = 'none'; listen();
         }
-
         function listen() {
             db.ref('rooms/' + myRoom).on('value', snap => {
-                const room = snap.val();
-                if (!room) return;
-
+                const room = snap.val(); if (!room) return;
                 if (room.status === 'waiting') {
                     const players = Object.values(room.players || {});
-                    document.getElementById('playersList').innerHTML = players.map(p => 
-                        `<div style="padding:10px;margin:5px 0;background:white;border-radius:6px;border-left:4px solid ${p.color};">
-                            <strong>${p.name}</strong> ${p.colorName}
-                        </div>`
-                    ).join('');
-
-                    const btn = document.getElementById('startBtn');
-                    btn.disabled = players.length < 2;
-                    btn.textContent = `Почати гру (${players.length} гравців)`;
-                } else if (room.status === 'playing') {
-                    showGame(room);
-                }
+                    document.getElementById('playersList').innerHTML = players.map(p => `<div style="padding:10px;margin:5px 0;background:white;border-radius:6px;border-left:4px solid ${p.color};"><strong>${p.name}</strong> ${p.colorName}</div>`).join('');
+                    const btn = document.getElementById('startBtn'); btn.disabled = players.length < 2; btn.textContent = `Почати гру (${players.length} гравців)`;
+                } else if (room.status === 'playing') { showGame(room); }
             });
         }
-
-        async function startGame() {
-            await db.ref('rooms/' + myRoom).update({ status: 'playing' });
-        }
-
+        async function startGame() { await db.ref('rooms/' + myRoom).update({ status: 'playing' }); }
         function showGame(room) {
-            document.getElementById('lobby').style.display = 'none';
-            document.getElementById('gameContainer').style.display = 'block';
-            document.getElementById('gameCode').textContent = myRoom;
-
-            drawBoard();
-            updatePlayers(room);
+            document.getElementById('lobby').style.display = 'none'; document.getElementById('gameContainer').style.display = 'block'; document.getElementById('gameCode').textContent = myRoom;
+            drawBoard(); updatePlayers(room);
         }
-
         function drawBoard() {
-            const board = document.getElementById('board');
-            board.innerHTML = '';
-
-            const positions = [
-                ...Array(11).fill(0).map((_, i) => [10, i]),
-                ...Array(9).fill(0).map((_, i) => [9-i, 10]),
-                ...Array(9).fill(0).map((_, i) => [0, 9-i]),
-                ...Array(9).fill(0).map((_, i) => [i+1, 0])
-            ];
-
+            const board = document.getElementById('board'); board.innerHTML = '';
+            const positions = [ ...Array(11).fill(0).map((_, i) => [10, i]), ...Array(9).fill(0).map((_, i) => [9-i, 10]), ...Array(9).fill(0).map((_, i) => [0, 9-i]), ...Array(9).fill(0).map((_, i) => [i+1, 0]) ];
             positions.forEach(([row, col], idx) => {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.id = 'cell-' + idx;
-                cell.style.gridRow = row + 1;
-                cell.style.gridColumn = col + 1;
-
+                const cell = document.createElement('div'); cell.className = 'cell'; cell.id = 'cell-' + idx; cell.style.gridRow = row + 1; cell.style.gridColumn = col + 1;
                 const prop = PROPERTIES[idx];
-                
-                if (prop.type === 'corner') {
-                    cell.classList.add('corner');
-                    cell.innerHTML = `<div>${prop.name}</div>`;
-                } else if (prop.color) {
-                    cell.innerHTML = `
-                        <div class="color-bar" style="background: ${prop.color}"></div>
-                        <div style="margin-top: 20%;">${prop.name}</div>
-                        <div class="price">${prop.price}₴</div>
-                    `;
-                } else {
-                    cell.innerHTML = `<div>${prop.name}</div>`;
-                }
-
+                if (prop.type === 'corner') { cell.classList.add('corner'); cell.innerHTML = `<div>${prop.name}</div>`; }
+                else if (prop.color) { cell.innerHTML = `<div class="color-bar" style="background: ${prop.color}"></div><div style="margin-top: 20%;">${prop.name}</div><div class="price">${prop.price}₴</div>`; }
+                else { cell.innerHTML = `<div>${prop.name}</div>`; }
                 board.appendChild(cell);
             });
         }
-
         function updatePlayers(room) {
             const players = Object.values(room.players || {});
-            
             document.querySelectorAll('.players-on-cell').forEach(el => el.remove());
-
             players.forEach(p => {
                 const cell = document.getElementById('cell-' + p.pos);
                 if (cell) {
                     let container = cell.querySelector('.players-on-cell');
-                    if (!container) {
-                        container = document.createElement('div');
-                        container.className = 'players-on-cell';
-                        cell.appendChild(container);
-                    }
-                    const token = document.createElement('div');
-                    token.className = 'player-token';
-                    token.style.background = p.color;
-                    token.title = p.name;
-                    container.appendChild(token);
+                    if (!container) { container = document.createElement('div'); container.className = 'players-on-cell'; cell.appendChild(container); }
+                    const token = document.createElement('div'); token.className = 'player-token'; token.style.background = p.color; token.title = p.name; container.appendChild(token);
                 }
             });
-
-            document.getElementById('gamePlayers').innerHTML = players.map((p, i) =>
-                `<div class="player-card ${i === room.game.current ? 'active' : ''}" style="border-left-color: ${p.color}">
-                    <div>
-                        <strong>${p.name}${p.id === myId ? ' (Ви)' : ''}</strong><br>
-                        <small>${p.colorName}</small>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 1.2rem; font-weight: bold; color: #4caf50;">${p.money}₴</div>
-                        <small>Позиція: ${p.pos}</small>
-                    </div>
-                </div>`
-            ).join('');
-
-            const btn = document.getElementById('rollBtn');
-            const isMyTurn = players[room.game.current].id === myId;
-            btn.disabled = !isMyTurn;
-            btn.textContent = isMyTurn ? '🎲 Ваш хід' : '⏳ Чекайте...';
-
-            if (room.game.dice1) {
-                document.getElementById('diceResult').innerHTML = 
-                    `🎲 ${room.game.dice1} + ${room.game.dice2} = ${room.game.dice1 + room.game.dice2}`;
-            }
-
-            const currentPos = players[room.game.current].pos;
-            const prop = PROPERTIES[currentPos];
+            document.getElementById('gamePlayers').innerHTML = players.map((p, i) => `<div class="player-card ${i === room.game.current ? 'active' : ''}" style="border-left-color: ${p.color}"><div><strong>${p.name}${p.id === myId ? ' (Ви)' : ''}</strong><br><small>${p.colorName}</small></div><div style="text-align: right;"><div style="font-size: 1.2rem; font-weight: bold; color: #4caf50;">${p.money}₴</div><small>Позиція: ${p.pos}</small></div></div>`).join('');
+            const btn = document.getElementById('rollBtn'); const isMyTurn = players[room.game.current].id === myId; btn.disabled = !isMyTurn; btn.textContent = isMyTurn ? '🎲 Ваш хід' : '⏳ Чекайте...';
+            if (room.game.dice1) { document.getElementById('diceResult').innerHTML = `🎲 ${room.game.dice1} + ${room.game.dice2} = ${room.game.dice1 + room.game.dice2}`; }
+            const currentPos = players[room.game.current].pos; const prop = PROPERTIES[currentPos];
             if (prop.price && isMyTurn) {
                 const owned = players.find(pl => pl.props && pl.props.includes(currentPos));
-                if (!owned) {
-                    document.getElementById('propertyInfo').innerHTML = `
-                        <div class="property-card">
-                            <h3 style="color: ${prop.color}; margin-bottom: 10px;">${prop.name}</h3>
-                            <p style="font-size: 1.2rem; font-weight: bold;">Ціна: ${prop.price}₴</p>
-                            <button class="btn-success" onclick="buyProperty(${currentPos}, ${prop.price})" style="width: 100%; margin-top: 10px;">💰 Купити</button>
-                        </div>
-                    `;
-                } else {
-                    document.getElementById('propertyInfo').innerHTML = `
-                        <div class="property-card" style="border-color: ${owned.color};">
-                            <h3 style="color: ${prop.color}; margin-bottom: 10px;">${prop.name}</h3>
-                            <p style="color: #666;">Власник: <strong>${owned.name}</strong></p>
-                        </div>
-                    `;
-                }
-            } else {
-                document.getElementById('propertyInfo').innerHTML = '';
-            }
+                if (!owned) { document.getElementById('propertyInfo').innerHTML = `<div class="property-card"><h3 style="color: ${prop.color}; margin-bottom: 10px;">${prop.name}</h3><p style="font-size: 1.2rem; font-weight: bold;">Ціна: ${prop.price}₴</p><button class="btn-success" onclick="buyProperty(${currentPos}, ${prop.price})" style="width: 100%; margin-top: 10px;">💰 Купити</button></div>`; }
+                else { document.getElementById('propertyInfo').innerHTML = `<div class="property-card" style="border-color: ${owned.color};"><h3 style="color: ${prop.color}; margin-bottom: 10px;">${prop.name}</h3><p style="color: #666;">Власник: <strong>${owned.name}</strong></p></div>`; }
+            } else { document.getElementById('propertyInfo').innerHTML = ''; }
         }
-
         async function buyProperty(pos, price) {
-            const snap = await db.ref('rooms/' + myRoom).once('value');
-            const room = snap.val();
-            const players = Object.values(room.players);
-            const currentPlayer = players[room.game.current];
-
-            if (currentPlayer.id !== myId) return;
-            if (currentPlayer.money < price) return alert('Недостатньо грошей!');
-
-            const newProps = [...(currentPlayer.props || []), pos];
-            const newMoney = currentPlayer.money - price;
-
-            await db.ref('rooms/' + myRoom + '/players/' + myId).update({
-                props: newProps,
-                money: newMoney
-            });
+            const snap = await db.ref('rooms/' + myRoom).once('value'); const room = snap.val(); const players = Object.values(room.players); const currentPlayer = players[room.game.current];
+            if (currentPlayer.id !== myId) return; if (currentPlayer.money < price) return alert('Недостатньо грошей!');
+            const newProps = [...(currentPlayer.props || []), pos]; const newMoney = currentPlayer.money - price;
+            await db.ref('rooms/' + myRoom + '/players/' + myId).update({ props: newProps, money: newMoney });
         }
-
         async function rollDice() {
-            const snap = await db.ref('rooms/' + myRoom).once('value');
-            const room = snap.val();
-            const players = Object.values(room.players);
-            
+            const snap = await db.ref('rooms/' + myRoom).once('value'); const room = snap.val(); const players = Object.values(room.players);
             if (players[room.game.current].id !== myId) return alert('Не ваш хід!');
-
-            const d1 = Math.floor(Math.random() * 6) + 1;
-            const d2 = Math.floor(Math.random() * 6) + 1;
-            const currentPlayer = players[room.game.current];
-            const newPos = (currentPlayer.pos + d1 + d2) % 40;
-
+            const d1 = Math.floor(Math.random() * 6) + 1; const d2 = Math.floor(Math.random() * 6) + 1; const currentPlayer = players[room.game.current]; const newPos = (currentPlayer.pos + d1 + d2) % 40;
             await db.ref('rooms/' + myRoom + '/players/' + currentPlayer.id).update({ pos: newPos });
-            await db.ref('rooms/' + myRoom + '/game').update({ 
-                dice1: d1, dice2: d2,
-                current: (room.game.current + 1) % players.length
-            });
+            await db.ref('rooms/' + myRoom + '/game').update({ dice1: d1, dice2: d2, current: (room.game.current + 1) % players.length });
         }
     </script>
 </body>
