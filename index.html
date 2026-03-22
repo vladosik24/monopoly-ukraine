@@ -245,73 +245,81 @@
         }
 
         /* ===== BOARD ===== */
+        /* ===== BOARD ===== */
         .board-wrapper { padding:4px; flex-shrink:0; }
 
         .board {
-            width:100%; aspect-ratio:1;
+            /* Чітко обмежена висота — ~46% висоти вьюпорту, але не більше ширини */
+            width:100%;
+            height:min(98vw, 46vh);
             display:grid;
-            grid-template-columns: 1.7fr repeat(9,1fr) 1.7fr;
-            grid-template-rows: 1.7fr repeat(9,1fr) 1.7fr;
+            grid-template-columns: 1.65fr repeat(9,1fr) 1.65fr;
+            grid-template-rows: 1.65fr repeat(9,1fr) 1.65fr;
             background:#030d06;
             border:2px solid #14532d;
-            border-radius:9px; overflow:hidden;
-            position:relative;
-            /* Займаємо весь доступний простір по ширині */
-            max-width:100%;
+            border-radius:8px; overflow:hidden;
         }
 
         .cell {
-            border:0.5px solid rgba(20,83,45,0.55);
-            display:flex; flex-direction:column;
-            justify-content:flex-end; align-items:center;
+            border:0.5px solid rgba(20,83,45,0.5);
+            display:flex;
             font-weight:700; text-align:center;
-            padding:0; position:relative;
             background:#060f09; overflow:hidden; color:#86efac;
             min-width:0; min-height:0;
         }
 
-        /* смужки орієнтовані по стороні дошки */
-        .c-bottom .cbar { bottom:0; top:auto; height:24%; width:100%; position:absolute; z-index:2; }
-        .c-top    .cbar { top:0; bottom:auto; height:24%; width:100%; position:absolute; z-index:2; }
-        .c-left   .cbar { left:0; right:auto; width:24%; height:100%; top:0; position:absolute; z-index:2; }
-        .c-right  .cbar { right:0; left:auto; width:24%; height:100%; top:0; position:absolute; z-index:2; }
+        /* Кольорова смужка — частина flex layout, не absolute */
+        .c-bottom { flex-direction:column; }
+        .c-bottom .cbar { order:0; flex-shrink:0; height:23%; width:100%; }
+        .c-bottom .cell-in { order:1; flex:1; }
+
+        .c-top { flex-direction:column-reverse; }
+        .c-top .cbar { order:0; flex-shrink:0; height:23%; width:100%; }
+        .c-top .cell-in { order:1; flex:1; }
+
+        .c-right { flex-direction:row; }
+        .c-right .cbar { order:0; flex-shrink:0; width:23%; height:100%; }
+        .c-right .cell-in { order:1; flex:1; }
+
+        .c-left { flex-direction:row-reverse; }
+        .c-left .cbar { order:0; flex-shrink:0; width:23%; height:100%; }
+        .c-left .cell-in { order:1; flex:1; }
 
         .cell-in {
             display:flex; flex-direction:column;
             align-items:center; justify-content:center;
-            width:100%; height:100%;
-            padding:1px 0.5px; z-index:1;
-            position:relative;
+            padding:1px; overflow:hidden;
         }
 
-        /* Текст клітинок — адаптивний через контейнерний підхід */
+        /* Бічні — вертикальний текст */
+        .c-right .cell-in { writing-mode:vertical-rl; }
+        .c-left  .cell-in { writing-mode:vertical-rl; transform:rotate(180deg); }
+
         .cell-nm {
-            line-height:1.1; word-break:break-word; text-align:center;
-            font-size:clamp(3px, 1vw, 7px);
-            hyphens:auto;
-            max-height:75%; overflow:hidden;
+            font-size:clamp(3px, 0.92vw, 6.5px);
+            line-height:1.15; word-break:break-word;
+            text-align:center; overflow:hidden;
         }
         .cell-pr {
-            font-size:clamp(2.5px, 0.8vw, 5px);
-            color:#4ade80; margin-top:0.5px; line-height:1;
+            font-size:clamp(2.5px, 0.72vw, 5px);
+            color:#4ade80; line-height:1; margin-top:0.5px;
         }
 
-        /* Для клітинок з кольоровою смужкою — відступ від смужки */
-        .c-bottom .cell-in { padding-bottom:26%; padding-top:2px; }
-        .c-top    .cell-in { padding-top:26%; padding-bottom:2px; }
-        /* Бічні — writing-mode вертикальний, тому відступ по горизонталі */
-        .c-left   .cell-in { padding-left:26%; }
-        .c-right  .cell-in { padding-right:26%; }
+        /* Спецклітинки без кольору (шанс/вокзал) */
+        .cell.no-color { flex-direction:column; align-items:center; justify-content:center; }
+        .cell.no-color .cell-in { width:100%; height:100%; }
+        .cell.no-color.side-r .cell-in { writing-mode:vertical-rl; }
+        .cell.no-color.side-l .cell-in { writing-mode:vertical-rl; transform:rotate(180deg); }
 
-        .cell.corner { background:#020a04; justify-content:center; }
+        .cell.corner { background:#020a04; flex-direction:column; align-items:center; justify-content:center; }
         .corner-in {
             display:flex; flex-direction:column;
-            align-items:center; justify-content:center; gap:1px;
-            width:100%; height:100%; padding:2px;
+            align-items:center; justify-content:center;
+            width:100%; height:100%; gap:1px; padding:2px;
         }
-        .corner-em { font-size:clamp(8px,2.2vw,16px); line-height:1; }
+        .corner-em { font-size:clamp(7px,2vw,14px); line-height:1; }
         .corner-lb {
-            font-size:clamp(3px,0.75vw,6px); color:#86efac; font-weight:800;
+            font-size:clamp(2.5px,0.68vw,5px); color:#86efac; font-weight:800;
             line-height:1.1; text-align:center; word-break:break-word;
         }
 
@@ -320,26 +328,25 @@
             grid-column:2/11; grid-row:2/11;
             display:flex; flex-direction:column;
             align-items:center; justify-content:center;
-            background:#020a04; border:1px solid rgba(20,83,45,0.35); z-index:2;
-            gap:2px;
+            background:#020a04; z-index:1; gap:2px;
         }
-        .bc-flag { font-size:clamp(14px,4.5vw,30px); }
+        .bc-flag { font-size:clamp(12px,4vw,24px); }
         .bc-title {
             font-family:'Unbounded',sans-serif;
-            font-size:clamp(5px,1.8vw,12px); font-weight:900;
+            font-size:clamp(4px,1.5vw,9px); font-weight:900;
             color:#166534; text-align:center; line-height:1.4;
         }
 
-        /* Жетони */
+        /* Жетони поверх усього */
         .tokens {
             position:absolute; bottom:1px; left:0; right:0;
             display:flex; justify-content:center; flex-wrap:wrap; gap:0.5px;
-            padding:0 0.5px; z-index:4;
+            padding:0 0.5px; z-index:10; pointer-events:none;
         }
         .token {
-            width:clamp(5px,1.5vw,9px); height:clamp(5px,1.5vw,9px);
-            border-radius:50%; border:1px solid rgba(255,255,255,0.65);
-            box-shadow:0 1px 4px rgba(0,0,0,0.8);
+            width:clamp(4px,1.4vw,8px); height:clamp(4px,1.4vw,8px);
+            border-radius:50%; border:1px solid rgba(255,255,255,0.75);
+            box-shadow:0 1px 3px rgba(0,0,0,0.9);
             flex-shrink:0; overflow:hidden;
         }
         .token img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
@@ -930,13 +937,12 @@ function buildBoard(){
                     <div class="cell-pr">${p.price}₴</div>
                 </div>`;
         } else {
-            // Шанс, податок, вокзал, комунальні
-            let innerStyle='';
-            if(side==='left'||side==='right'){
-                innerStyle='writing-mode:vertical-rl;text-orientation:mixed;';
-                if(side==='left') innerStyle+='transform:rotate(180deg);';
-            }
-            cell.innerHTML=`<div class="cell-in" style="${innerStyle}">
+            // Шанс, податок, вокзал, комунальні — без кольорової смужки
+            cell.classList.add('no-color');
+            if(side==='right') cell.classList.add('side-r');
+            if(side==='left')  cell.classList.add('side-l');
+            const isVert = side==='left'||side==='right';
+            cell.innerHTML=`<div class="cell-in">
                 <div style="font-size:clamp(6px,1.8vw,11px);line-height:1;">${p.emoji||'?'}</div>
                 <div class="cell-nm">${p.name}</div>
             </div>`;
