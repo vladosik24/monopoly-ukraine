@@ -2,423 +2,1301 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Монополія Україна 🇺🇦</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1565c0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Монополія Україна</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #e3f2fd; }
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; padding: 30px; border-radius: 15px; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
-        .mode-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
-        .mode-card { padding: 20px; border: 3px solid #ddd; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; background: white; }
-        .mode-card:hover { border-color: #2196f3; transform: scale(1.05); }
-        .mode-card.selected { border-color: #2196f3; background: #e3f2fd; }
-        .mode-icon { font-size: 3rem; margin-bottom: 10px; }
-        button { padding: 12px 24px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        .btn-primary { background: #2196f3; color: white; width: 100%; margin-top: 15px; }
-        .btn-primary:hover { background: #1976d2; }
-        .btn-success { background: #4caf50; color: white; }
-        .btn-success:hover { background: #45a049; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; }
-        input:focus { outline: none; border-color: #2196f3; }
-        .board-container { max-width: 800px; margin: 5px auto; padding: 5px; background: white; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-        .board { width: 100%; aspect-ratio: 1; display: grid; grid-template-columns: repeat(11, 1fr); grid-template-rows: repeat(11, 1fr); gap: 0; background: #d4e6d4; border: 2px solid #2c5f2d; position: relative; max-height: 60vh; }
-        .cell { border: 1px solid #2c5f2d; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 0.5rem; font-weight: bold; text-align: center; padding: 2px; position: relative; background: white; }
-        .corner { font-size: 0.55rem; }
-        .color-bar { width: 100%; height: 15%; position: absolute; top: 0; left: 0; }
-        .price { font-size: 0.45rem; color: #666; margin-top: 1px; }
-        .players-on-cell { position: absolute; bottom: 1px; display: flex; gap: 1px; flex-wrap: wrap; justify-content: center; }
-        .player-token { width: 8px; height: 8px; border-radius: 50%; border: 1px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
-        .info-panel { margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 10px; }
-        .player-card { padding: 12px; margin: 8px 0; background: white; border-radius: 8px; border-left: 6px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
-        .player-card.active { background: #e3f2fd; border-left-width: 8px; }
-        .team-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; margin-left: 5px; color: white; }
-        .bot-badge { background: #9c27b0; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; margin-left: 5px; }
-        @media (max-width: 768px) {
-            .board-container { padding: 5px; margin: 5px; }
-            .board { max-height: 70vh; }
-            .cell { font-size: 0.45rem; padding: 1px; }
-            .corner { font-size: 0.5rem; }
-            .mode-selector { grid-template-columns: 1fr; }
+        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Nunito:wght@400;600;700;800&display=swap');
+
+        :root {
+            --tg-bg: var(--tg-theme-bg-color, #0f172a);
+            --tg-text: var(--tg-theme-text-color, #f1f5f9);
+            --tg-hint: var(--tg-theme-hint-color, #94a3b8);
+            --tg-button: var(--tg-theme-button-color, #3b82f6);
+            --tg-button-text: var(--tg-theme-button-text-color, #ffffff);
+            --accent: #3b82f6;
+            --accent2: #22d3ee;
+            --gold: #f59e0b;
+            --red: #ef4444;
+            --green: #22c55e;
+            --surface: rgba(255,255,255,0.06);
+            --border: rgba(255,255,255,0.1);
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+        }
+
+        /* Фоновий ефект */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 10%, rgba(59,130,246,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 80%, rgba(34,211,238,0.1) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 50% 50%, rgba(245,158,11,0.05) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+
+        /* ЕКРАНИ */
+        .screen { display: none; flex-direction: column; min-height: 100dvh; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); position: relative; z-index: 1; }
+        .screen.active { display: flex; }
+
+        /* СТАРТОВИЙ ЕКРАН */
+        #screen-start {
+            align-items: center; justify-content: center;
+            padding: 24px;
+            gap: 0;
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-flag {
+            font-size: 64px;
+            line-height: 1;
+            filter: drop-shadow(0 0 20px rgba(59,130,246,0.6));
+            animation: pulse-flag 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-flag {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(59,130,246,0.6)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 35px rgba(34,211,238,0.8)); transform: scale(1.05); }
+        }
+
+        .logo-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #3b82f6, #22d3ee, #f59e0b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-top: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-sub {
+            font-size: 13px;
+            color: var(--tg-hint);
+            margin-top: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        /* РЕЖИМИ ГРИ */
+        .modes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .mode-card {
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .mode-card:active { transform: scale(0.96); }
+
+        .mode-card.selected {
+            border-color: var(--accent);
+            background: rgba(59,130,246,0.15);
+        }
+
+        .mode-card.selected::before { opacity: 0.1; }
+
+        .mode-emoji { font-size: 30px; margin-bottom: 6px; }
+        .mode-name { font-family: 'Unbounded', sans-serif; font-size: 11px; font-weight: 700; color: #f1f5f9; }
+        .mode-desc { font-size: 11px; color: var(--tg-hint); margin-top: 3px; }
+
+        /* ФОРМА */
+        .form-section {
+            width: 100%;
+            max-width: 380px;
+            margin-top: 16px;
+        }
+
+        .input-group { margin-bottom: 12px; }
+
+        .input-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--tg-hint);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            color: #f1f5f9;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus { border-color: var(--accent); }
+        select option { background: #1e293b; }
+
+        /* КНОПКИ */
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #2563eb);
+            color: white;
+            box-shadow: 0 4px 20px rgba(59,130,246,0.35);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            color: #f1f5f9;
+            margin-top: 10px;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--green), #16a34a);
+            color: white;
+            box-shadow: 0 4px 20px rgba(34,197,94,0.35);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--red), #dc2626);
+            color: white;
+        }
+
+        .btn:disabled { opacity: 0.4; pointer-events: none; }
+
+        .divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 14px 0; color: var(--tg-hint); font-size: 13px;
+        }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        /* ЛОБІ */
+        #screen-lobby {
+            padding: 0;
+        }
+
+        .lobby-header {
+            padding: 20px 16px 16px;
+            background: linear-gradient(180deg, rgba(59,130,246,0.1) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .room-code-display {
+            text-align: center;
+            margin: 8px 0;
+        }
+
+        .room-code-label { font-size: 12px; color: var(--tg-hint); text-transform: uppercase; letter-spacing: 1px; }
+
+        .room-code-value {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--accent2);
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(34,211,238,0.5);
+        }
+
+        .mode-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: rgba(59,130,246,0.15);
+            border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .players-list { padding: 12px 16px; flex: 1; overflow-y: auto; }
+
+        .player-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: 0.2s;
+        }
+
+        .player-item.active-turn { border-color: var(--gold); background: rgba(245,158,11,0.08); }
+
+        .player-avatar {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            border: 2px solid;
+            flex-shrink: 0;
+        }
+
+        .player-info { flex: 1; min-width: 0; }
+        .player-name { font-weight: 700; font-size: 14px; }
+        .player-detail { font-size: 12px; color: var(--tg-hint); margin-top: 2px; }
+
+        .player-money {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--green);
+            white-space: nowrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 7px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .badge-bot { background: rgba(168,85,247,0.2); color: #a855f7; border: 1px solid rgba(168,85,247,0.3); }
+        .badge-you { background: rgba(34,211,238,0.15); color: var(--accent2); border: 1px solid rgba(34,211,238,0.3); }
+        .badge-red { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+
+        .lobby-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ІГРОВИЙ ЕКРАН */
+        #screen-game {
+            padding: 0;
+            flex-direction: column;
+        }
+
+        .game-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 14px;
+            background: rgba(15,23,42,0.9);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 50;
+        }
+
+        .game-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .game-room {
+            font-size: 11px;
+            color: var(--tg-hint);
+        }
+
+        /* ДОШКА */
+        .board-wrapper {
+            padding: 8px;
+            flex-shrink: 0;
+        }
+
+        .board {
+            width: 100%;
+            aspect-ratio: 1;
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+            grid-template-rows: repeat(11, 1fr);
+            gap: 0;
+            background: #0d3b1e;
+            border: 2px solid #1a5c30;
+            border-radius: 8px;
+            overflow: hidden;
+            max-height: 55vw;
+        }
+
+        .cell {
+            border: 0.5px solid rgba(26,92,48,0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: clamp(4px, 1.1vw, 7px);
+            font-weight: 700;
+            text-align: center;
+            padding: 1px;
+            position: relative;
+            background: #0f2d1a;
+            overflow: hidden;
+            color: #c8e6c9;
+        }
+
+        .cell.corner {
+            background: #0a2410;
+            font-size: clamp(5px, 1.2vw, 8px);
+        }
+
+        .cell .color-bar {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 18%;
+        }
+
+        .cell .cell-name {
+            font-size: clamp(3.5px, 0.9vw, 6px);
+            line-height: 1.1;
+            margin-top: 20%;
+            padding: 0 1px;
+        }
+
+        .cell .cell-price {
+            font-size: clamp(3px, 0.7vw, 5px);
+            color: #81c784;
+            margin-top: 1px;
+        }
+
+        .tokens-container {
+            position: absolute;
+            bottom: 1px; left: 0; right: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1px;
+            padding: 0 1px;
+        }
+
+        .token {
+            width: clamp(5px, 1.5vw, 9px);
+            height: clamp(5px, 1.5vw, 9px);
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        /* ПАНЕЛЬ ГРИ */
+        .game-panel {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 12px;
+        }
+
+        .dice-display {
+            text-align: center;
+            font-size: 36px;
+            padding: 8px;
+            background: var(--surface);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+            min-height: 58px;
+        }
+
+        .dice-label {
+            font-size: 12px;
+            color: var(--tg-hint);
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .action-btn:active { transform: scale(0.97); }
+        .action-btn.roll {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            box-shadow: 0 4px 20px rgba(245,158,11,0.4);
+        }
+
+        .action-btn.wait {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--tg-hint);
+            pointer-events: none;
+        }
+
+        /* Власність */
+        .property-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+
+        .property-header {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .property-color-dot {
+            width: 16px; height: 16px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .property-name {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .property-price-big {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        /* НОТИФІКАЦІЇ */
+        .toast {
+            position: fixed;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #1e293b;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            z-index: 9999;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            white-space: nowrap;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* ПЕРЕМОЖЕЦЬ */
+        #screen-winner {
+            align-items: center; justify-content: center;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .winner-emoji { font-size: 80px; animation: winner-bounce 1s ease-in-out infinite alternate; }
+        @keyframes winner-bounce { from { transform: scale(1) rotate(-5deg); } to { transform: scale(1.1) rotate(5deg); } }
+
+        .winner-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f59e0b, #ef4444, #3b82f6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin: 16px 0 8px;
+        }
+
+        .winner-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: #f1f5f9;
+            margin-bottom: 6px;
+        }
+
+        .winner-money {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 32px;
+            color: var(--green);
+        }
+
+        /* Центр дошки */
+        .board-center {
+            grid-column: 2 / 11;
+            grid-row: 2 / 11;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a2410;
+            border: 1px solid rgba(26,92,48,0.3);
+        }
+
+        .board-center-text {
+            font-family: 'Unbounded', sans-serif;
+            font-size: clamp(8px, 2.5vw, 16px);
+            font-weight: 900;
+            color: #1a5c30;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        /* Анімація входу */
+        @keyframes slide-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-up { animation: slide-up 0.4s ease forwards; }
+
+        .section-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--tg-hint);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <div id="modeSelect" class="modal" style="display: flex;">
-        <div class="modal-content">
-            <h2 style="text-align: center; color: #1565c0; margin-bottom: 20px;">🇺🇦 Монополія Україна</h2>
-            <div id="status" style="padding: 12px; background: #fff3e0; border-radius: 8px; text-align: center; margin-bottom: 15px;">Підключення...</div>
-            
-            <div id="modeSelection" style="display: none;">
-                <h3 style="margin-bottom: 15px; text-align: center;">Оберіть режим гри:</h3>
-                <div class="mode-selector">
-                    <div class="mode-card" onclick="selectMode('classic')">
-                        <div class="mode-icon">🎲</div>
-                        <h4>Класичний</h4>
-                        <p style="font-size: 0.85rem; color: #666; margin-top: 5px;">2-4 гравці</p>
-                    </div>
-                    <div class="mode-card" onclick="selectMode('teams')">
-                        <div class="mode-icon">👥</div>
-                        <h4>Команди 2×2</h4>
-                        <p style="font-size: 0.85rem; color: #666; margin-top: 5px;">4 гравці</p>
-                    </div>
-                    <div class="mode-card" onclick="selectMode('vsbot')">
-                        <div class="mode-icon">🤖</div>
-                        <h4>Проти бота</h4>
-                        <p style="font-size: 0.85rem; color: #666; margin-top: 5px;">1 vs 1-3 боти</p>
-                    </div>
-                    <div class="mode-card" onclick="selectMode('mixed')">
-                        <div class="mode-icon">🎯</div>
-                        <h4>Змішаний</h4>
-                        <p style="font-size: 0.85rem; color: #666; margin-top: 5px;">Гравці + боти</p>
-                    </div>
-                </div>
-                
-                <div id="playerNameInput" style="display: none;">
-                    <input type="text" id="playerName" placeholder="Ваше ім'я" value="Гравець">
-                    <div id="botCountSelector" style="display: none; margin: 15px 0;">
-                        <label style="display: block; margin-bottom: 10px; font-weight: bold;">Кількість ботів:</label>
-                        <select id="botCount" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
-                            <option value="1">1 бот</option>
-                            <option value="2">2 боти</option>
-                            <option value="3">3 боти</option>
-                        </select>
-                    </div>
-                    <button class="btn-primary" onclick="createRoomWithMode()">🎯 Створити гру</button>
-                    <div style="text-align: center; margin: 15px 0; color: #666; font-weight: bold;">— АБО —</div>
-                    <input type="text" id="roomCode" placeholder="Код кімнати" style="text-transform: uppercase;">
-                    <button class="btn-primary" onclick="joinRoom()">🚪 Приєднатися</button>
-                </div>
+
+    <!-- СТАРТОВИЙ ЕКРАН -->
+    <div id="screen-start" class="screen active">
+        <div class="logo-area animate-up">
+            <div class="logo-flag">🇺🇦</div>
+            <div class="logo-title">МОНОПОЛІЯ</div>
+            <div class="logo-sub">УКРАЇНА · MULTIPLAYER</div>
+        </div>
+
+        <div class="modes-grid animate-up" id="modesGrid">
+            <div class="mode-card" onclick="selectMode('classic', this)">
+                <div class="mode-emoji">🎲</div>
+                <div class="mode-name">Класичний</div>
+                <div class="mode-desc">2–4 гравці</div>
             </div>
-            
-            <div id="waiting" style="display: none;">
-                <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
-                    <div style="font-size: 0.9rem; margin-bottom: 10px; color: #666;">📋 Код кімнати:</div>
-                    <div id="codeDisplay" style="font-size: 2rem; font-weight: bold; color: #1565c0; letter-spacing: 3px;"></div>
-                    <div id="modeDisplay" style="margin-top: 10px; color: #666; font-size: 0.9rem;"></div>
-                </div>
-                <div id="playersList"></div>
-                <button class="btn-success" onclick="startGame()" id="startBtn" disabled style="width: 100%; margin-top: 15px;">Очікування...</button>
+            <div class="mode-card" onclick="selectMode('teams', this)">
+                <div class="mode-emoji">👥</div>
+                <div class="mode-name">Команди</div>
+                <div class="mode-desc">2×2</div>
             </div>
+            <div class="mode-card" onclick="selectMode('vsbot', this)">
+                <div class="mode-emoji">🤖</div>
+                <div class="mode-name">Проти бота</div>
+                <div class="mode-desc">1 vs боти</div>
+            </div>
+            <div class="mode-card" onclick="selectMode('mixed', this)">
+                <div class="mode-emoji">🎯</div>
+                <div class="mode-name">Змішаний</div>
+                <div class="mode-desc">Гравці + боти</div>
+            </div>
+        </div>
+
+        <div class="form-section animate-up" id="formSection" style="display:none;">
+            <div class="input-group">
+                <div class="input-label">Ваше ім'я</div>
+                <input type="text" id="playerName" placeholder="Гравець 1" maxlength="20">
+            </div>
+
+            <div class="input-group" id="botCountGroup" style="display:none;">
+                <div class="input-label">Кількість ботів</div>
+                <select id="botCount">
+                    <option value="1">1 бот</option>
+                    <option value="2">2 боти</option>
+                    <option value="3">3 боти</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary" onclick="createRoom()">🎮 Створити кімнату</button>
+
+            <div class="divider">або</div>
+
+            <div class="input-group">
+                <div class="input-label">Код кімнати</div>
+                <input type="text" id="roomCode" placeholder="GAME-XXXX" maxlength="9" style="text-transform: uppercase; letter-spacing: 2px;">
+            </div>
+            <button class="btn btn-secondary" onclick="joinRoom()">🚪 Приєднатися</button>
         </div>
     </div>
 
-    <div id="gameContainer" style="display: none;">
-        <div class="board-container">
-            <div style="text-align: center; margin-bottom: 10px;">
-                <h2 style="color: #1565c0; font-size: 1.5rem;">🇺🇦 Монополія</h2>
-                <div style="color: #666; font-size: 0.85rem;">Кімната: <span id="gameCode"></span> | <span id="gameModeDisplay"></span></div>
+    <!-- ЛОБІ -->
+    <div id="screen-lobby" class="screen">
+        <div class="lobby-header">
+            <div class="room-code-display">
+                <div class="room-code-label">Код кімнати</div>
+                <div class="room-code-value" id="lobbyCode">----</div>
             </div>
-            <div class="board" id="board"></div>
-            <div class="info-panel">
-                <div id="diceResult" style="font-size: 2.5rem; text-align: center; margin: 10px 0;"></div>
-                <div id="gamePlayers"></div>
-                <button class="btn-primary" onclick="rollDice()" id="rollBtn" style="width: 100%; margin: 10px 0;">🎲 Кинути кубики</button>
-                <div id="propertyInfo"></div>
+            <div style="text-align: center; margin-top: 8px;">
+                <span class="mode-chip" id="modeChip">🎲 Класичний</span>
             </div>
         </div>
+
+        <div class="players-list" id="playersList"></div>
+
+        <div class="lobby-footer">
+            <button class="btn btn-success" id="startBtn" onclick="startGame()" disabled>⏳ Очікування гравців...</button>
+            <button class="btn btn-secondary" onclick="leaveRoom()" style="margin-top:10px;">← Вийти</button>
+        </div>
     </div>
+
+    <!-- ІГРОВИЙ ЕКРАН -->
+    <div id="screen-game" class="screen">
+        <div class="game-header">
+            <div>
+                <div class="game-title">🇺🇦 Монополія</div>
+                <div class="game-room">Кімната: <span id="gameRoomCode">—</span></div>
+            </div>
+            <button class="btn btn-secondary" onclick="leaveRoom()" style="width:auto; padding:7px 14px; font-size:12px; border-radius:8px; margin:0;">✕</button>
+        </div>
+
+        <div class="board-wrapper">
+            <div class="board" id="board"></div>
+        </div>
+
+        <div class="game-panel">
+            <div class="dice-display" id="diceDisplay">
+                <div class="dice-label">Кубики</div>
+                🎲
+            </div>
+
+            <button class="action-btn roll" id="rollBtn" onclick="rollDice()">🎲 Кинути кубики</button>
+
+            <div class="section-title">Гравці</div>
+            <div id="gamePlayers"></div>
+
+            <div id="propertyInfo"></div>
+        </div>
+    </div>
+
+    <!-- ПЕРЕМОЖЕЦЬ -->
+    <div id="screen-winner" class="screen">
+        <div class="winner-emoji">🏆</div>
+        <div class="winner-title">ПЕРЕМОЖЕЦЬ!</div>
+        <div class="winner-name" id="winnerName"></div>
+        <div class="winner-money" id="winnerMoney"></div>
+        <div style="margin-top: 32px; width: 100%; max-width: 300px;">
+            <button class="btn btn-primary" onclick="showScreen('screen-start')">🔄 Нова гра</button>
+        </div>
+    </div>
+
+    <!-- ТОСТ -->
+    <div class="toast" id="toast"></div>
 
     <script>
-        (function() {
-            const scripts = [
-                { app: 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js', db: 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js' },
-                { app: 'https://cdn.jsdelivr.net/npm/firebase@10.7.0/firebase-app-compat.js', db: 'https://cdn.jsdelivr.net/npm/firebase@10.7.0/firebase-database-compat.js' }
-            ];
-            function loadFirebase(index) {
-                if (index >= scripts.length) { document.getElementById('status').innerHTML = '❌ Firebase помилка'; return; }
-                const script1 = document.createElement('script');
-                script1.src = scripts[index].app;
-                script1.onerror = () => loadFirebase(index + 1);
-                script1.onload = () => {
-                    const script2 = document.createElement('script');
-                    script2.src = scripts[index].db;
-                    script2.onerror = () => loadFirebase(index + 1);
-                    script2.onload = () => initApp();
-                    document.body.appendChild(script2);
+        // =================== TELEGRAM WEBAPP ===================
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.setHeaderColor('#0f172a');
+            tg.setBackgroundColor('#0f172a');
+        }
+
+        // Отримуємо ім'я із Telegram
+        const tgUser = tg?.initDataUnsafe?.user;
+        if (tgUser) {
+            const name = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
+            document.getElementById('playerName').value = name;
+        }
+
+        // =================== FIREBASE ===================
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
+            authDomain: "monopoly-ukraine.firebaseapp.com",
+            databaseURL: "https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "monopoly-ukraine",
+            storageBucket: "monopoly-ukraine.firebasestorage.app",
+            messagingSenderId: "1046709502750",
+            appId: "1:1046709502750:web:ba8ad3c1f11780d1a6bf0f"
+        };
+
+        let db = null;
+
+        function loadFirebase() {
+            return new Promise((resolve, reject) => {
+                const s1 = document.createElement('script');
+                s1.src = 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js';
+                s1.onload = () => {
+                    const s2 = document.createElement('script');
+                    s2.src = 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js';
+                    s2.onload = () => resolve();
+                    s2.onerror = reject;
+                    document.body.appendChild(s2);
                 };
-                document.body.appendChild(script1);
-            }
-            loadFirebase(0);
-        })();
-
-        const config = { apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ", authDomain: "monopoly-ukraine.firebaseapp.com", databaseURL: "https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app", projectId: "monopoly-ukraine", storageBucket: "monopoly-ukraine.firebasestorage.app", messagingSenderId: "1046709502750", appId: "1:1046709502750:web:ba8ad3c1f11780d1a6bf0f" };
-        const COLORS = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#A8E6CF'];
-        const COLOR_NAMES = ['🔴 Червоний', '🔵 Блакитний', '🟡 Жовтий', '🟢 Зелений'];
-        const TEAM_COLORS = { red: '#e53935', blue: '#1e88e5' };
-        const PROPERTIES = [
-            { name: 'СТАРТ', type: 'corner', pos: 0 }, { name: 'Луцьк', price: 600, color: '#8B4513', pos: 1 }, { name: 'Шанс', type: 'chance', pos: 2 }, { name: 'Рівне', price: 600, color: '#8B4513', pos: 3 }, { name: 'Податок', type: 'tax', amount: 2000, pos: 4 }, { name: 'Вокзал Київ', price: 2000, type: 'station', pos: 5 }, { name: 'Житомир', price: 1000, color: '#87CEEB', pos: 6 }, { name: 'Шанс', type: 'chance', pos: 7 }, { name: 'Чернігів', price: 1000, color: '#87CEEB', pos: 8 }, { name: 'Суми', price: 1200, color: '#87CEEB', pos: 9 }, { name: 'В\'ЯЗНИЦЯ', type: 'corner', pos: 10 }, { name: 'Полтава', price: 1400, color: '#FF69B4', pos: 11 }, { name: 'Електростанція', price: 1500, type: 'utility', pos: 12 }, { name: 'Черкаси', price: 1400, color: '#FF69B4', pos: 13 }, { name: 'Кропивницький', price: 1600, color: '#FF69B4', pos: 14 }, { name: 'Вокзал Львів', price: 2000, type: 'station', pos: 15 }, { name: 'Вінниця', price: 1800, color: '#FFA500', pos: 16 }, { name: 'Шанс', type: 'chance', pos: 17 }, { name: 'Хмельницький', price: 1800, color: '#FFA500', pos: 18 }, { name: 'Тернопіль', price: 2000, color: '#FFA500', pos: 19 }, { name: 'ПАРКОВКА', type: 'corner', pos: 20 }, { name: 'Івано-Франківськ', price: 2200, color: '#FF0000', pos: 21 }, { name: 'Шанс', type: 'chance', pos: 22 }, { name: 'Чернівці', price: 2200, color: '#FF0000', pos: 23 }, { name: 'Ужгород', price: 2400, color: '#FF0000', pos: 24 }, { name: 'Вокзал Одеса', price: 2000, type: 'station', pos: 25 }, { name: 'Львів', price: 2600, color: '#FFFF00', pos: 26 }, { name: 'Миколаїв', price: 2600, color: '#FFFF00', pos: 27 }, { name: 'Водоканал', price: 1500, type: 'utility', pos: 28 }, { name: 'Херсон', price: 2800, color: '#FFFF00', pos: 29 }, { name: 'ПОЛІЦІЯ', type: 'corner', pos: 30 }, { name: 'Запоріжжя', price: 3000, color: '#00FF00', pos: 31 }, { name: 'Дніпро', price: 3000, color: '#00FF00', pos: 32 }, { name: 'Шанс', type: 'chance', pos: 33 }, { name: 'Кривий Ріг', price: 3200, color: '#00FF00', pos: 34 }, { name: 'Вокзал Харків', price: 2000, type: 'station', pos: 35 }, { name: 'Шанс', type: 'chance', pos: 36 }, { name: 'Харків', price: 3500, color: '#0000FF', pos: 37 }, { name: 'Податок', type: 'tax', amount: 1000, pos: 38 }, { name: 'Київ', price: 4000, color: '#0000FF', pos: 39 }
-        ];
-
-        let db, myId = 'p' + Date.now(), myRoom = null, myName = null, selectedMode = null;
-
-        function initApp() {
-            if (typeof firebase === 'undefined') return;
-            firebase.initializeApp(config); db = firebase.database();
-            db.ref('.info/connected').on('value', snap => {
-                if (snap.val()) {
-                    document.getElementById('status').innerHTML = '✅ Підключено!';
-                    document.getElementById('status').style.background = '#e8f5e9';
-                    setTimeout(() => { document.getElementById('status').style.display = 'none'; document.getElementById('modeSelection').style.display = 'block'; }, 1000);
-                }
+                s1.onerror = reject;
+                document.body.appendChild(s1);
             });
         }
 
-        function selectMode(mode) {
-            selectedMode = mode;
-            document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
-            event.target.closest('.mode-card').classList.add('selected');
-            document.getElementById('playerNameInput').style.display = 'block';
-            document.getElementById('botCountSelector').style.display = (mode === 'vsbot' || mode === 'mixed') ? 'block' : 'none';
+        loadFirebase().then(() => {
+            firebase.initializeApp(FIREBASE_CONFIG);
+            db = firebase.database();
+        }).catch(() => showToast('❌ Помилка підключення'));
+
+        // =================== СТАН ===================
+        const COLORS = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b'];
+        const COLOR_NAMES = ['🔵 Синій', '🔴 Червоний', '🟢 Зелений', '🟡 Жовтий'];
+        const MODE_NAMES = { classic: '🎲 Класичний', teams: '👥 Команди 2×2', vsbot: '🤖 Проти бота', mixed: '🎯 Змішаний' };
+
+        const PROPERTIES = [
+            { name: 'СТАРТ', type: 'corner', emoji: '🏁', pos: 0 },
+            { name: 'Луцьк', price: 600, color: '#8B6914', pos: 1 },
+            { name: 'Шанс', type: 'chance', emoji: '❓', pos: 2 },
+            { name: 'Рівне', price: 600, color: '#8B6914', pos: 3 },
+            { name: 'Податок', type: 'tax', amount: 2000, emoji: '💸', pos: 4 },
+            { name: 'Вокзал Київ', price: 2000, type: 'station', emoji: '🚂', pos: 5 },
+            { name: 'Житомир', price: 1000, color: '#60a5fa', pos: 6 },
+            { name: 'Шанс', type: 'chance', emoji: '❓', pos: 7 },
+            { name: 'Чернігів', price: 1000, color: '#60a5fa', pos: 8 },
+            { name: 'Суми', price: 1200, color: '#60a5fa', pos: 9 },
+            { name: "В'ЯЗНИЦЯ", type: 'corner', emoji: '⛓', pos: 10 },
+            { name: 'Полтава', price: 1400, color: '#f472b6', pos: 11 },
+            { name: 'Електро-станція', price: 1500, type: 'utility', emoji: '⚡', pos: 12 },
+            { name: 'Черкаси', price: 1400, color: '#f472b6', pos: 13 },
+            { name: 'Кропивницький', price: 1600, color: '#f472b6', pos: 14 },
+            { name: 'Вокзал Львів', price: 2000, type: 'station', emoji: '🚂', pos: 15 },
+            { name: 'Вінниця', price: 1800, color: '#fb923c', pos: 16 },
+            { name: 'Шанс', type: 'chance', emoji: '❓', pos: 17 },
+            { name: 'Хмельницький', price: 1800, color: '#fb923c', pos: 18 },
+            { name: 'Тернопіль', price: 2000, color: '#fb923c', pos: 19 },
+            { name: 'ПАРКІНГ', type: 'corner', emoji: '🅿️', pos: 20 },
+            { name: 'Івано-Франківськ', price: 2200, color: '#f87171', pos: 21 },
+            { name: 'Шанс', type: 'chance', emoji: '❓', pos: 22 },
+            { name: 'Чернівці', price: 2200, color: '#f87171', pos: 23 },
+            { name: 'Ужгород', price: 2400, color: '#f87171', pos: 24 },
+            { name: 'Вокзал Одеса', price: 2000, type: 'station', emoji: '🚂', pos: 25 },
+            { name: 'Львів', price: 2600, color: '#facc15', pos: 26 },
+            { name: 'Миколаїв', price: 2600, color: '#facc15', pos: 27 },
+            { name: 'Водоканал', price: 1500, type: 'utility', emoji: '💧', pos: 28 },
+            { name: 'Херсон', price: 2800, color: '#facc15', pos: 29 },
+            { name: 'ПОЛІЦІЯ', type: 'corner', emoji: '👮', pos: 30 },
+            { name: 'Запоріжжя', price: 3000, color: '#4ade80', pos: 31 },
+            { name: 'Дніпро', price: 3000, color: '#4ade80', pos: 32 },
+            { name: 'Шанс', type: 'chance', emoji: '❓', pos: 33 },
+            { name: 'Кривий Ріг', price: 3200, color: '#4ade80', pos: 34 },
+            { name: 'Вокзал Харків', price: 2000, type: 'station', emoji: '🚂', pos: 35 },
+            { name: 'Шанс', type: 'chance', emoji: '❓', pos: 36 },
+            { name: 'Харків', price: 3500, color: '#818cf8', pos: 37 },
+            { name: 'Податок', type: 'tax', amount: 1000, emoji: '💸', pos: 38 },
+            { name: 'Київ', price: 4000, color: '#818cf8', pos: 39 }
+        ];
+
+        let myId = 'p' + Date.now() + Math.random().toString(36).substr(2,4);
+        let myRoom = null;
+        let myName = 'Гравець';
+        let selectedMode = null;
+        let roomListener = null;
+        let botTimer = null;
+
+        // =================== UI HELPERS ===================
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
-        function generateCode() { return 'GAME-' + Math.random().toString(36).substr(2, 4).toUpperCase(); }
+        function showToast(msg, duration = 2500) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), duration);
+        }
 
-        async function createRoomWithMode() {
-            if (!selectedMode) return alert('Оберіть режим гри!');
+        // Haptic
+        function haptic(type = 'light') {
+            tg?.HapticFeedback?.impactOccurred(type);
+        }
+
+        // =================== РЕЖИМ ===================
+        function selectMode(mode, el) {
+            selectedMode = mode;
+            document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('formSection').style.display = 'block';
+            document.getElementById('botCountGroup').style.display =
+                (mode === 'vsbot' || mode === 'mixed') ? 'block' : 'none';
+            haptic('light');
+        }
+
+        // =================== КІМНАТИ ===================
+        function generateCode() {
+            return 'GAME-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+        }
+
+        async function createRoom() {
+            if (!selectedMode) { showToast('⚠️ Оберіть режим гри'); return; }
             myName = document.getElementById('playerName').value.trim() || 'Гравець';
             myRoom = generateCode();
 
-            const roomData = {
-                code: myRoom,
-                mode: selectedMode,
-                status: 'waiting',
-                players: {},
-                game: { current: 0, dice1: 0, dice2: 0 }
-            };
-
-            // Додаємо гравця
-            roomData.players[myId] = { 
-                id: myId, name: myName, pos: 0, money: 15000, props: [], 
+            const players = {};
+            players[myId] = {
+                id: myId, name: myName, pos: 0, money: 15000, props: [],
                 online: true, color: COLORS[0], colorName: COLOR_NAMES[0], isBot: false
             };
 
-            // Додаємо команди для режиму 2×2
             if (selectedMode === 'teams') {
-                roomData.teams = { red: [myId], blue: [] };
-                roomData.players[myId].team = 'red';
+                players[myId].team = 'red';
             }
 
-            // Додаємо ботів
             if (selectedMode === 'vsbot' || selectedMode === 'mixed') {
                 const botCount = parseInt(document.getElementById('botCount').value);
                 for (let i = 0; i < botCount; i++) {
                     const botId = 'bot_' + i;
-                    roomData.players[botId] = {
+                    players[botId] = {
                         id: botId, name: 'Бот ' + (i + 1), pos: 0, money: 15000, props: [],
                         online: true, color: COLORS[i + 1], colorName: COLOR_NAMES[i + 1], isBot: true
                     };
                 }
             }
 
+            const roomData = {
+                code: myRoom, mode: selectedMode,
+                status: 'waiting', players,
+                game: { current: 0, dice1: 0, dice2: 0, lastRoll: 0 }
+            };
+
+            if (selectedMode === 'teams') {
+                roomData.teams = { red: [myId], blue: [] };
+            }
+
             await db.ref('rooms/' + myRoom).set(roomData);
-            document.getElementById('codeDisplay').textContent = myRoom;
-            const modeNames = { classic: '🎲 Класичний', teams: '👥 Команди 2×2', vsbot: '🤖 Проти бота', mixed: '🎯 Змішаний' };
-            document.getElementById('modeDisplay').textContent = 'Режим: ' + modeNames[selectedMode];
-            document.getElementById('waiting').style.display = 'block';
-            document.getElementById('modeSelection').style.display = 'none';
-            listen();
+            openLobby();
+            haptic('medium');
         }
 
         async function joinRoom() {
             myName = document.getElementById('playerName').value.trim() || 'Гравець';
-            myRoom = document.getElementById('roomCode').value.trim().toUpperCase();
-            if (!myRoom) return alert('Введіть код!');
-            const snap = await db.ref('rooms/' + myRoom).once('value');
-            if (!snap.val()) return alert('Кімнату не знайдено!');
+            const code = document.getElementById('roomCode').value.trim().toUpperCase();
+            if (!code) { showToast('⚠️ Введіть код кімнати'); return; }
+
+            const snap = await db.ref('rooms/' + code).once('value');
+            if (!snap.val()) { showToast('❌ Кімнату не знайдено'); return; }
+
             const room = snap.val();
             const players = Object.values(room.players || {});
-            if (players.length >= 4) return alert('Кімната повна!');
+            if (players.length >= 4) { showToast('❌ Кімната повна'); return; }
+            if (room.status !== 'waiting') { showToast('❌ Гра вже йде'); return; }
 
-            const newPlayer = { id: myId, name: myName, pos: 0, money: 15000, props: [], online: true, color: COLORS[players.length], colorName: COLOR_NAMES[players.length], isBot: false };
-            
+            myRoom = code;
+            const idx = players.length;
+            const newPlayer = {
+                id: myId, name: myName, pos: 0, money: 15000, props: [],
+                online: true, color: COLORS[idx], colorName: COLOR_NAMES[idx], isBot: false
+            };
+
             if (room.mode === 'teams') {
                 const redCount = Object.values(room.players).filter(p => p.team === 'red').length;
                 newPlayer.team = redCount < 2 ? 'red' : 'blue';
-                await db.ref('rooms/' + myRoom + '/teams/' + newPlayer.team).set([...room.teams[newPlayer.team], myId]);
             }
 
             await db.ref('rooms/' + myRoom + '/players/' + myId).set(newPlayer);
-            document.getElementById('codeDisplay').textContent = myRoom;
-            document.getElementById('waiting').style.display = 'block';
-            document.getElementById('modeSelection').style.display = 'none';
-            listen();
+            openLobby();
+            haptic('medium');
         }
 
-        function listen() {
-            db.ref('rooms/' + myRoom).on('value', snap => {
-                const room = snap.val(); if (!room) return;
-                if (room.status === 'waiting') {
-                    const players = Object.values(room.players || {});
-                    let html = players.map(p => {
-                        let badge = p.isBot ? '<span class="bot-badge">🤖 БОТ</span>' : '';
-                        if (room.mode === 'teams' && p.team) {
-                            badge += `<span class="team-badge" style="background: ${TEAM_COLORS[p.team]}">${p.team === 'red' ? 'Червона' : 'Синя'}</span>`;
-                        }
-                        return `<div style="padding:10px;margin:5px 0;background:white;border-radius:6px;border-left:4px solid ${p.color};"><strong>${p.name}</strong> ${p.colorName} ${badge}</div>`;
-                    }).join('');
-                    document.getElementById('playersList').innerHTML = html;
-                    const btn = document.getElementById('startBtn');
-                    const minPlayers = room.mode === 'teams' ? 4 : (room.mode === 'vsbot' ? 1 : 2);
-                    btn.disabled = players.length < minPlayers;
-                    btn.textContent = `Почати гру (${players.length} гравців)`;
-                } else if (room.status === 'playing') {
-                    showGame(room);
-                }
-            });
+        function openLobby() {
+            document.getElementById('lobbyCode').textContent = myRoom;
+            document.getElementById('modeChip').textContent = MODE_NAMES[selectedMode] || '🎲 Гра';
+            showScreen('screen-lobby');
+            listenRoom();
         }
 
         async function startGame() {
             await db.ref('rooms/' + myRoom).update({ status: 'playing' });
+            haptic('heavy');
         }
 
-        function showGame(room) {
-            document.getElementById('modeSelect').style.display = 'none';
-            document.getElementById('gameContainer').style.display = 'block';
-            document.getElementById('gameCode').textContent = myRoom;
-            const modeNames = { classic: '🎲 Класичний', teams: '👥 Команди', vsbot: '🤖 Проти бота', mixed: '🎯 Змішаний' };
-            document.getElementById('gameModeDisplay').textContent = modeNames[room.mode];
-            drawBoard();
-            updatePlayers(room);
+        async function leaveRoom() {
+            if (roomListener) { db.ref('rooms/' + myRoom).off('value', roomListener); roomListener = null; }
+            if (myRoom) await db.ref('rooms/' + myRoom + '/players/' + myId).remove();
+            myRoom = null; selectedMode = null;
+            document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('formSection').style.display = 'none';
+            showScreen('screen-start');
         }
 
-        function drawBoard() {
-            const board = document.getElementById('board'); board.innerHTML = '';
-            const positions = [ ...Array(11).fill(0).map((_, i) => [10, i]), ...Array(9).fill(0).map((_, i) => [9-i, 10]), ...Array(9).fill(0).map((_, i) => [0, 9-i]), ...Array(9).fill(0).map((_, i) => [i+1, 0]) ];
+        // =================== СЛУХАЧ ===================
+        function listenRoom() {
+            if (roomListener) db.ref('rooms/' + myRoom).off('value', roomListener);
+            roomListener = db.ref('rooms/' + myRoom).on('value', snap => {
+                const room = snap.val();
+                if (!room) return;
+                if (room.status === 'waiting') renderLobby(room);
+                else if (room.status === 'playing') renderGame(room);
+                else if (room.status === 'finished') showWinner(room);
+            });
+        }
+
+        // =================== ЛОБІ ===================
+        function renderLobby(room) {
+            const players = Object.values(room.players || {});
+            const minP = room.mode === 'teams' ? 4 : (room.mode === 'vsbot' ? 1 : 2);
+
+            const html = players.map(p => {
+                let badges = '';
+                if (p.id === myId) badges += '<span class="badge badge-you">Ви</span> ';
+                if (p.isBot) badges += '<span class="badge badge-bot">🤖 БОТ</span> ';
+                if (p.team === 'red') badges += '<span class="badge badge-red">Червона</span>';
+                if (p.team === 'blue') badges += '<span class="badge badge-blue">Синя</span>';
+
+                return `<div class="player-item">
+                    <div class="player-avatar" style="background: ${p.color}20; border-color: ${p.color}; color: ${p.color};">
+                        ${p.isBot ? '🤖' : p.name[0].toUpperCase()}
+                    </div>
+                    <div class="player-info">
+                        <div class="player-name">${p.name}</div>
+                        <div class="player-detail">${p.colorName} ${badges}</div>
+                    </div>
+                    <div class="player-money">${p.money.toLocaleString()}₴</div>
+                </div>`;
+            }).join('');
+
+            document.getElementById('playersList').innerHTML = html;
+
+            const btn = document.getElementById('startBtn');
+            const isHost = players[0]?.id === myId || players.some(p => !p.isBot && p.id === myId && Object.keys(room.players)[0] === myId);
+            btn.disabled = players.length < minP;
+            btn.textContent = players.length < minP
+                ? `⏳ Потрібно ще ${minP - players.length} гравців`
+                : `▶️ Почати гру (${players.length} гравців)`;
+        }
+
+        // =================== ДОШКА ===================
+        function buildBoard() {
+            const board = document.getElementById('board');
+            board.innerHTML = '';
+
+            // Позиції клітинок на сітці 11×11
+            const positions = [];
+            for (let i = 0; i <= 10; i++) positions.push([10, i]);      // низ
+            for (let i = 9; i >= 1; i--) positions.push([i, 10]);        // права
+            for (let i = 10; i >= 0; i--) positions.push([0, i]);        // верх
+            for (let i = 1; i <= 9; i++) positions.push([i, 0]);          // ліва
+
+            // Центр
+            const center = document.createElement('div');
+            center.className = 'board-center';
+            center.style.gridColumn = '2 / 11';
+            center.style.gridRow = '2 / 11';
+            center.innerHTML = `<div class="board-center-text">🇺🇦<br>МОНОПОЛІЯ<br>УКРАЇНА</div>`;
+            board.appendChild(center);
+
             positions.forEach(([row, col], idx) => {
-                const cell = document.createElement('div'); cell.className = 'cell'; cell.id = 'cell-' + idx; cell.style.gridRow = row + 1; cell.style.gridColumn = col + 1;
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.id = 'cell-' + idx;
+                cell.style.gridRow = (row + 1);
+                cell.style.gridColumn = (col + 1);
+
                 const prop = PROPERTIES[idx];
-                if (prop.type === 'corner') { cell.classList.add('corner'); cell.innerHTML = `<div>${prop.name}</div>`; }
-                else if (prop.color) { cell.innerHTML = `<div class="color-bar" style="background: ${prop.color}"></div><div style="margin-top: 20%;">${prop.name}</div><div class="price">${prop.price}₴</div>`; }
-                else { cell.innerHTML = `<div>${prop.name}</div>`; }
+                if (!prop) return;
+
+                if (prop.type === 'corner') {
+                    cell.classList.add('corner');
+                    cell.innerHTML = `<div>${prop.emoji}</div><div style="font-size:clamp(3px,0.8vw,5px);line-height:1.1;">${prop.name}</div>`;
+                } else if (prop.color) {
+                    cell.innerHTML = `<div class="color-bar" style="background:${prop.color}"></div>
+                        <div class="cell-name">${prop.name}</div>
+                        <div class="cell-price">${prop.price}₴</div>`;
+                } else {
+                    cell.innerHTML = `<div style="font-size:clamp(5px,1.5vw,10px);">${prop.emoji || '?'}</div>
+                        <div class="cell-name">${prop.name}</div>`;
+                }
+
+                const tokens = document.createElement('div');
+                tokens.className = 'tokens-container';
+                tokens.id = 'tokens-' + idx;
+                cell.appendChild(tokens);
+
                 board.appendChild(cell);
             });
         }
 
-        function updatePlayers(room) {
+        // =================== ГРА ===================
+        function renderGame(room) {
+            if (document.getElementById('screen-game').style.display === 'none' ||
+                !document.getElementById('screen-game').classList.contains('active')) {
+                document.getElementById('gameRoomCode').textContent = myRoom;
+                buildBoard();
+                showScreen('screen-game');
+            }
+
             const players = Object.values(room.players || {});
-            document.querySelectorAll('.players-on-cell').forEach(el => el.remove());
+
+            // Жетони
+            document.querySelectorAll('.tokens-container').forEach(el => el.innerHTML = '');
             players.forEach(p => {
-                const cell = document.getElementById('cell-' + p.pos);
-                if (cell) {
-                    let container = cell.querySelector('.players-on-cell');
-                    if (!container) { container = document.createElement('div'); container.className = 'players-on-cell'; cell.appendChild(container); }
-                    const token = document.createElement('div'); token.className = 'player-token'; token.style.background = p.color; container.appendChild(token);
+                const container = document.getElementById('tokens-' + p.pos);
+                if (container) {
+                    const token = document.createElement('div');
+                    token.className = 'token';
+                    token.style.background = p.color;
+                    container.appendChild(token);
                 }
             });
-            
-            document.getElementById('gamePlayers').innerHTML = players.map((p, i) => {
-                let badge = p.isBot ? '<span class="bot-badge">🤖</span>' : '';
-                return `<div class="player-card ${i === room.game.current ? 'active' : ''}" style="border-left-color: ${p.color}"><div><strong>${p.name}${p.id === myId ? ' (Ви)' : ''}</strong> ${badge}<br><small>${p.colorName}</small></div><div style="text-align: right;"><div style="font-size: 1.2rem; font-weight: bold; color: #4caf50;">${p.money}₴</div><small>Позиція: ${p.pos}</small></div></div>`;
+
+            // Гравці
+            const playersHtml = players.map((p, i) => {
+                const isActive = i === room.game.current;
+                let badges = '';
+                if (p.id === myId) badges += '<span class="badge badge-you">Ви</span>';
+                if (p.isBot) badges += '<span class="badge badge-bot">🤖</span>';
+
+                return `<div class="player-item ${isActive ? 'active-turn' : ''}">
+                    <div class="player-avatar" style="background:${p.color}20;border-color:${p.color};color:${p.color};">
+                        ${isActive ? '▶' : p.name[0].toUpperCase()}
+                    </div>
+                    <div class="player-info">
+                        <div class="player-name">${p.name} ${badges}</div>
+                        <div class="player-detail">${PROPERTIES[p.pos]?.name || '?'} · ${p.props?.length || 0} 🏠</div>
+                    </div>
+                    <div class="player-money">${p.money.toLocaleString()}₴</div>
+                </div>`;
             }).join('');
+            document.getElementById('gamePlayers').innerHTML = playersHtml;
 
-            const btn = document.getElementById('rollBtn');
-            const currentPlayer = players[room.game.current];
-            const isMyTurn = currentPlayer.id === myId;
-            btn.disabled = !isMyTurn;
-            btn.textContent = isMyTurn ? '🎲 Ваш хід' : '⏳ Чекайте...';
-
+            // Кубики
             if (room.game.dice1) {
-                document.getElementById('diceResult').innerHTML = `🎲 ${room.game.dice1} + ${room.game.dice2} = ${room.game.dice1 + room.game.dice2}`;
+                document.getElementById('diceDisplay').innerHTML =
+                    `<div style="font-size:28px;">🎲 ${room.game.dice1} &nbsp;+&nbsp; ${room.game.dice2} &nbsp;= &nbsp;<strong style="color:var(--gold)">${room.game.dice1 + room.game.dice2}</strong></div>`;
+            }
+
+            // Кнопка
+            const currentPlayer = players[room.game.current];
+            const isMyTurn = currentPlayer?.id === myId;
+            const rollBtn = document.getElementById('rollBtn');
+            rollBtn.disabled = !isMyTurn;
+            rollBtn.className = 'action-btn ' + (isMyTurn ? 'roll' : 'wait');
+            rollBtn.textContent = isMyTurn ? '🎲 Ваш хід — кинути кубики!' : `⏳ Хід: ${currentPlayer?.name}`;
+
+            // Власність
+            if (isMyTurn && currentPlayer) {
+                const pos = currentPlayer.pos;
+                const prop = PROPERTIES[pos];
+                let propHtml = '';
+                if (prop?.price) {
+                    const owned = players.find(pl => pl.props?.includes(pos));
+                    if (!owned) {
+                        propHtml = `<div class="property-card">
+                            <div class="property-header">
+                                ${prop.color ? `<div class="property-color-dot" style="background:${prop.color}"></div>` : '<span>🏢</span>'}
+                                <div class="property-name">${prop.name}</div>
+                            </div>
+                            <div class="property-price-big">${prop.price.toLocaleString()}₴</div>
+                            <button class="btn btn-success" onclick="buyProperty(${pos}, ${prop.price})">💰 Купити</button>
+                        </div>`;
+                    } else if (owned.id !== myId) {
+                        const rent = Math.floor(prop.price * 0.1);
+                        propHtml = `<div class="property-card">
+                            <div class="property-header">
+                                ${prop.color ? `<div class="property-color-dot" style="background:${prop.color}"></div>` : ''}
+                                <div class="property-name">${prop.name}</div>
+                            </div>
+                            <div style="color:var(--tg-hint); font-size:13px;">Власник: <strong style="color:${owned.color}">${owned.name}</strong></div>
+                            <div style="color:var(--red); font-weight:700; margin-top:6px;">Оренда: ${rent.toLocaleString()}₴</div>
+                        </div>`;
+                    }
+                } else if (prop?.type === 'tax') {
+                    propHtml = `<div class="property-card">
+                        <div style="font-size:24px; text-align:center;">💸</div>
+                        <div class="property-name" style="text-align:center; margin-top:6px;">${prop.name}</div>
+                        <div style="color:var(--red); font-weight:700; text-align:center; font-size:18px; margin-top:6px;">-${prop.amount?.toLocaleString()}₴</div>
+                    </div>`;
+                } else if (prop?.type === 'chance') {
+                    propHtml = `<div class="property-card" style="text-align:center;">
+                        <div style="font-size:32px;">❓</div>
+                        <div class="property-name" style="margin-top:6px;">Картка Шансу</div>
+                    </div>`;
+                }
+                document.getElementById('propertyInfo').innerHTML = propHtml;
+            } else {
+                document.getElementById('propertyInfo').innerHTML = '';
             }
 
             // Автохід бота
-            if (currentPlayer.isBot && room.status === 'playing') {
-                setTimeout(() => botMove(room), 1500);
+            if (currentPlayer?.isBot && room.status === 'playing') {
+                clearTimeout(botTimer);
+                botTimer = setTimeout(() => doBotMove(room), 2000);
             }
 
-            const currentPos = currentPlayer.pos; const prop = PROPERTIES[currentPos];
-            if (prop.price && isMyTurn) {
-                const owned = players.find(pl => pl.props && pl.props.includes(currentPos));
-                if (!owned) {
-                    document.getElementById('propertyInfo').innerHTML = `<div class="property-card"><h3 style="color: ${prop.color};">${prop.name}</h3><p style="font-size: 1.2rem; font-weight: bold;">Ціна: ${prop.price}₴</p><button class="btn-success" onclick="buyProperty(${currentPos}, ${prop.price})" style="width: 100%; margin-top: 10px;">💰 Купити</button></div>`;
-                } else {
-                    document.getElementById('propertyInfo').innerHTML = `<div class="property-card" style="border-color: ${owned.color};"><h3>${prop.name}</h3><p>Власник: <strong>${owned.name}</strong></p></div>`;
-                }
-            } else { document.getElementById('propertyInfo').innerHTML = ''; }
+            // Перевірка переможця
+            checkWinner(room);
         }
 
-        async function botMove(room) {
+        // =================== ХІД ===================
+        async function rollDice() {
+            const snap = await db.ref('rooms/' + myRoom).once('value');
+            const room = snap.val();
+            if (!room) return;
             const players = Object.values(room.players);
-            const currentPlayer = players[room.game.current];
-            if (!currentPlayer.isBot) return;
+            if (players[room.game.current]?.id !== myId) { showToast('⚠️ Не ваш хід!'); return; }
 
-            // Бот кидає кубики
-            const d1 = Math.floor(Math.random() * 6) + 1;
-            const d2 = Math.floor(Math.random() * 6) + 1;
-            const newPos = (currentPlayer.pos + d1 + d2) % 40;
+            haptic('medium');
+            const d1 = Math.ceil(Math.random() * 6);
+            const d2 = Math.ceil(Math.random() * 6);
+            const cur = players[room.game.current];
+            const newPos = (cur.pos + d1 + d2) % 40;
 
-            await db.ref('rooms/' + myRoom + '/players/' + currentPlayer.id).update({ pos: newPos });
-            await db.ref('rooms/' + myRoom + '/game').update({ 
+            await db.ref('rooms/' + myRoom + '/players/' + myId).update({ pos: newPos });
+            await db.ref('rooms/' + myRoom + '/game').update({
                 dice1: d1, dice2: d2,
-                current: (room.game.current + 1) % players.length
+                current: (room.game.current + 1) % players.length,
+                lastRoll: Date.now()
             });
 
-            // Бот приймає рішення про купівлю
-            setTimeout(async () => {
-                const prop = PROPERTIES[newPos];
-                if (prop.price && currentPlayer.money >= prop.price) {
-                    const owned = players.find(pl => pl.props && pl.props.includes(newPos));
-                    if (!owned) {
-                        // Бот купує якщо є гроші та ціна менша за 70% бюджету
-                        if (prop.price < currentPlayer.money * 0.7) {
-                            const newProps = [...(currentPlayer.props || []), newPos];
-                            const newMoney = currentPlayer.money - prop.price;
-                            await db.ref('rooms/' + myRoom + '/players/' + currentPlayer.id).update({
-                                props: newProps,
-                                money: newMoney
-                            });
-                            console.log(`🤖 ${currentPlayer.name} купив ${prop.name} за ${prop.price}₴`);
-                        }
-                    }
+            // Орендна плата
+            const prop = PROPERTIES[newPos];
+            if (prop?.price) {
+                const owned = players.find(p => p.props?.includes(newPos) && p.id !== myId);
+                if (owned) {
+                    const rent = Math.floor(prop.price * 0.1);
+                    await db.ref('rooms/' + myRoom + '/players/' + myId).update({ money: Math.max(0, cur.money - rent) });
+                    await db.ref('rooms/' + myRoom + '/players/' + owned.id).update({ money: owned.money + rent });
+                    showToast(`💸 Оренда ${owned.name}: ${rent}₴`);
                 }
-            }, 1000);
+            }
+
+            if (prop?.type === 'tax') {
+                const tax = prop.amount || 1000;
+                await db.ref('rooms/' + myRoom + '/players/' + myId).update({ money: Math.max(0, cur.money - tax) });
+                showToast(`💸 Сплачено податок: ${tax}₴`);
+                haptic('heavy');
+            }
+
+            if (newPos < cur.pos) {
+                await db.ref('rooms/' + myRoom + '/players/' + myId).update({ money: cur.money + 2000 });
+                showToast('🏁 +2000₴ за проходження Старту!');
+                haptic('heavy');
+            }
         }
 
         async function buyProperty(pos, price) {
             const snap = await db.ref('rooms/' + myRoom).once('value');
             const room = snap.val();
             const players = Object.values(room.players);
-            const currentPlayer = players[room.game.current];
-            if (currentPlayer.id !== myId) return;
-            if (currentPlayer.money < price) return alert('Недостатньо грошей!');
+            const me = players.find(p => p.id === myId);
+            if (!me) return;
+            if (me.money < price) { showToast('❌ Недостатньо грошей!'); haptic('heavy'); return; }
 
-            const newProps = [...(currentPlayer.props || []), pos];
-            const newMoney = currentPlayer.money - price;
+            const newProps = [...(me.props || []), pos];
+            await db.ref('rooms/' + myRoom + '/players/' + myId).update({
+                props: newProps,
+                money: me.money - price
+            });
+            haptic('medium');
+            showToast(`🏠 ${PROPERTIES[pos].name} куплено!`);
+        }
 
-            // Для режиму команд - оновлюємо спільний бюджет
-            if (room.mode === 'teams') {
-                const team = currentPlayer.team;
-                const teamPlayers = players.filter(p => p.team === team);
-                for (let p of teamPlayers) {
-                    await db.ref('rooms/' + myRoom + '/players/' + p.id).update({ money: newMoney });
+        // =================== БОТ ===================
+        async function doBotMove(room) {
+            const players = Object.values(room.players);
+            const bot = players[room.game.current];
+            if (!bot?.isBot) return;
+
+            const d1 = Math.ceil(Math.random() * 6);
+            const d2 = Math.ceil(Math.random() * 6);
+            const newPos = (bot.pos + d1 + d2) % 40;
+
+            let botMoney = bot.money;
+
+            // Бонус за СТАРТ
+            if (newPos < bot.pos) botMoney += 2000;
+
+            // Оренда
+            const prop = PROPERTIES[newPos];
+            if (prop?.price) {
+                const owned = players.find(p => p.props?.includes(newPos) && p.id !== bot.id);
+                if (owned) {
+                    const rent = Math.floor(prop.price * 0.1);
+                    botMoney = Math.max(0, botMoney - rent);
+                    await db.ref('rooms/' + myRoom + '/players/' + owned.id).update({ money: owned.money + rent });
                 }
             }
 
-            await db.ref('rooms/' + myRoom + '/players/' + myId).update({
-                props: newProps,
-                money: newMoney
+            // Податок
+            if (prop?.type === 'tax') botMoney = Math.max(0, botMoney - (prop.amount || 1000));
+
+            await db.ref('rooms/' + myRoom + '/players/' + bot.id).update({ pos: newPos, money: botMoney });
+            await db.ref('rooms/' + myRoom + '/game').update({
+                dice1: d1, dice2: d2,
+                current: (room.game.current + 1) % players.length,
+                lastRoll: Date.now()
             });
+
+            // Бот купує власність
+            setTimeout(async () => {
+                const snap2 = await db.ref('rooms/' + myRoom).once('value');
+                const r2 = snap2.val();
+                const pl2 = Object.values(r2.players || {});
+                const b2 = pl2.find(p => p.id === bot.id);
+                const p2 = PROPERTIES[newPos];
+                if (p2?.price && b2.money >= p2.price) {
+                    const alreadyOwned = pl2.find(p => p.props?.includes(newPos));
+                    if (!alreadyOwned && p2.price < b2.money * 0.65) {
+                        await db.ref('rooms/' + myRoom + '/players/' + bot.id).update({
+                            props: [...(b2.props || []), newPos],
+                            money: b2.money - p2.price
+                        });
+                    }
+                }
+            }, 800);
         }
 
-        async function rollDice() {
-            const snap = await db.ref('rooms/' + myRoom).once('value');
-            const room = snap.val();
-            const players = Object.values(room.players);
-            if (players[room.game.current].id !== myId) return alert('Не ваш хід!');
+        // =================== ПЕРЕМОЖЕЦЬ ===================
+        function checkWinner(room) {
+            const players = Object.values(room.players || {});
+            const broke = players.filter(p => p.money <= 0);
+            if (broke.length >= players.length - 1 && players.length >= 2) {
+                const winner = players.reduce((a, b) => a.money > b.money ? a : b);
+                db.ref('rooms/' + myRoom).update({ status: 'finished', winner: winner.id });
+            }
+        }
 
-            const d1 = Math.floor(Math.random() * 6) + 1;
-            const d2 = Math.floor(Math.random() * 6) + 1;
-            const currentPlayer = players[room.game.current];
-            const newPos = (currentPlayer.pos + d1 + d2) % 40;
-
-            await db.ref('rooms/' + myRoom + '/players/' + currentPlayer.id).update({ pos: newPos });
-            await db.ref('rooms/' + myRoom + '/game').update({ 
-                dice1: d1, dice2: d2,
-                current: (room.game.current + 1) % players.length
-            });
+        function showWinner(room) {
+            const players = Object.values(room.players || {});
+            const winner = players.find(p => p.id === room.winner) || players[0];
+            if (!winner) return;
+            document.getElementById('winnerName').textContent = winner.name + (winner.id === myId ? ' (Ви!)' : '');
+            document.getElementById('winnerMoney').textContent = winner.money.toLocaleString() + '₴';
+            showScreen('screen-winner');
+            if (winner.id === myId) {
+                haptic('heavy');
+                tg?.HapticFeedback?.notificationOccurred('success');
+            }
         }
     </script>
 </body>
