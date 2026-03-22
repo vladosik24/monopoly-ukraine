@@ -245,47 +245,75 @@
         }
 
         /* ===== BOARD ===== */
-        .board-wrapper { padding:5px; flex-shrink:0; }
+        .board-wrapper { padding:4px; flex-shrink:0; }
 
         .board {
             width:100%; aspect-ratio:1;
             display:grid;
-            grid-template-columns:repeat(11,1fr);
-            grid-template-rows:repeat(11,1fr);
+            grid-template-columns: 1.7fr repeat(9,1fr) 1.7fr;
+            grid-template-rows: 1.7fr repeat(9,1fr) 1.7fr;
             background:#030d06;
             border:2px solid #14532d;
             border-radius:9px; overflow:hidden;
-            position:relative; max-height:56vw;
+            position:relative;
+            /* Займаємо весь доступний простір по ширині */
+            max-width:100%;
         }
 
         .cell {
             border:0.5px solid rgba(20,83,45,0.55);
             display:flex; flex-direction:column;
             justify-content:flex-end; align-items:center;
-            font-size:clamp(3px,0.85vw,6px);
             font-weight:700; text-align:center;
-            padding:0.5px; position:relative;
+            padding:0; position:relative;
             background:#060f09; overflow:hidden; color:#86efac;
+            min-width:0; min-height:0;
         }
 
         /* смужки орієнтовані по стороні дошки */
-        .c-bottom .cbar { bottom:0; top:auto; height:21%; width:100%; position:absolute; }
-        .c-top    .cbar { top:0; bottom:auto; height:21%; width:100%; position:absolute; }
-        .c-left   .cbar { left:0; right:auto; width:21%; height:100%; top:0; position:absolute; }
-        .c-right  .cbar { right:0; left:auto; width:21%; height:100%; top:0; position:absolute; }
+        .c-bottom .cbar { bottom:0; top:auto; height:24%; width:100%; position:absolute; z-index:2; }
+        .c-top    .cbar { top:0; bottom:auto; height:24%; width:100%; position:absolute; z-index:2; }
+        .c-left   .cbar { left:0; right:auto; width:24%; height:100%; top:0; position:absolute; z-index:2; }
+        .c-right  .cbar { right:0; left:auto; width:24%; height:100%; top:0; position:absolute; z-index:2; }
 
         .cell-in {
             display:flex; flex-direction:column;
             align-items:center; justify-content:center;
-            width:100%; flex:1; padding:1px; z-index:1;
+            width:100%; height:100%;
+            padding:1px 0.5px; z-index:1;
+            position:relative;
         }
-        .cell-nm { line-height:1.1; word-break:break-word; text-align:center; }
-        .cell-pr { font-size:clamp(2.5px,0.6vw,4.5px); color:#4ade80; margin-top:0.5px; }
+
+        /* Текст клітинок — адаптивний через контейнерний підхід */
+        .cell-nm {
+            line-height:1.1; word-break:break-word; text-align:center;
+            font-size:clamp(3px, 1vw, 7px);
+            hyphens:auto;
+            max-height:75%; overflow:hidden;
+        }
+        .cell-pr {
+            font-size:clamp(2.5px, 0.8vw, 5px);
+            color:#4ade80; margin-top:0.5px; line-height:1;
+        }
+
+        /* Для клітинок з кольоровою смужкою — відступ від смужки */
+        .c-bottom .cell-in { padding-bottom:26%; padding-top:2px; }
+        .c-top    .cell-in { padding-top:26%; padding-bottom:2px; }
+        /* Бічні — writing-mode вертикальний, тому відступ по горизонталі */
+        .c-left   .cell-in { padding-left:26%; }
+        .c-right  .cell-in { padding-right:26%; }
 
         .cell.corner { background:#020a04; justify-content:center; }
-        .corner-in { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.5px; }
-        .corner-em { font-size:clamp(6px,1.9vw,13px); }
-        .corner-lb { font-size:clamp(2.5px,0.65vw,5px); color:#86efac; font-weight:800; }
+        .corner-in {
+            display:flex; flex-direction:column;
+            align-items:center; justify-content:center; gap:1px;
+            width:100%; height:100%; padding:2px;
+        }
+        .corner-em { font-size:clamp(8px,2.2vw,16px); line-height:1; }
+        .corner-lb {
+            font-size:clamp(3px,0.75vw,6px); color:#86efac; font-weight:800;
+            line-height:1.1; text-align:center; word-break:break-word;
+        }
 
         /* Центр */
         .board-center {
@@ -293,12 +321,13 @@
             display:flex; flex-direction:column;
             align-items:center; justify-content:center;
             background:#020a04; border:1px solid rgba(20,83,45,0.35); z-index:2;
+            gap:2px;
         }
-        .bc-flag { font-size:clamp(12px,4vw,26px); }
+        .bc-flag { font-size:clamp(14px,4.5vw,30px); }
         .bc-title {
             font-family:'Unbounded',sans-serif;
-            font-size:clamp(4.5px,1.6vw,10px); font-weight:900;
-            color:#166534; text-align:center; line-height:1.3;
+            font-size:clamp(5px,1.8vw,12px); font-weight:900;
+            color:#166534; text-align:center; line-height:1.4;
         }
 
         /* Жетони */
@@ -325,11 +354,10 @@
             min-height:54px;
         }
         .die {
-            width:32px; height:32px; background:white; border-radius:7px;
-            display:flex; align-items:center; justify-content:center;
-            font-size:19px; box-shadow:0 2px 8px rgba(0,0,0,0.3); flex-shrink:0;
+            width:36px; height:36px; flex-shrink:0;
         }
-        .dice-sum { font-family:'Unbounded',sans-serif; font-size:20px; font-weight:900; color:var(--gold); }
+        .die svg { width:36px; height:36px; }
+        .dice-sum { font-family:'Unbounded',sans-serif; font-size:22px; font-weight:900; color:var(--gold); }
         .dice-plus, .dice-eq { color:#334155; font-size:14px; font-weight:700; }
 
         .roll-btn {
@@ -562,7 +590,24 @@ const COLORS=['#3b82f6','#ef4444','#22c55e','#f59e0b'];
 const CNAMES=['🔵 Синій','🔴 Червоний','🟢 Зелений','🟡 Жовтий'];
 const MICONS={classic:'🎲',teams:'👥',vsbot:'🤖',mixed:'🎯'};
 const MNAMES={classic:'Класичний',teams:'Команди 2×2',vsbot:'Проти бота',mixed:'Змішаний'};
-const DFACE=['','⚀','⚁','⚂','⚃','⚄','⚅'];
+
+// SVG кості — малюємо точки самі
+function dieSVG(n){
+    const dots={
+        1:[[50,50]],
+        2:[[25,25],[75,75]],
+        3:[[25,25],[50,50],[75,75]],
+        4:[[25,25],[75,25],[25,75],[75,75]],
+        5:[[25,25],[75,25],[50,50],[25,75],[75,75]],
+        6:[[25,20],[75,20],[25,50],[75,50],[25,80],[75,80]]
+    };
+    const d=dots[n]||dots[1];
+    const circles=d.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="8" fill="#1e293b"/>`).join('');
+    return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="18" fill="white" stroke="#e2e8f0" stroke-width="3"/>
+        ${circles}
+    </svg>`;
+}
 
 const PROPS=[
     {name:'СТАРТ',type:'corner',emoji:'🏁',pos:0},
@@ -850,6 +895,7 @@ function buildBoard(){
     board.appendChild(c);
 
     // Позиції: низ→права→верх→ліва
+    // side визначає де малювати кольорову смужку
     const posMap=[];
     for(let i=0;i<=10;i++) posMap.push({row:10,col:i,side:'bottom'});
     for(let i=9;i>=1;i--) posMap.push({row:i,col:10,side:'right'});
@@ -872,14 +918,26 @@ function buildBoard(){
             </div>`;
         } else if(p.color){
             cell.classList.add('c-'+side);
+            // Для бічних клітинок текст треба повертати
+            let innerStyle='';
+            if(side==='left'||side==='right'){
+                innerStyle='writing-mode:vertical-rl;text-orientation:mixed;';
+                if(side==='left') innerStyle+='transform:rotate(180deg);';
+            }
             cell.innerHTML=`<div class="cbar" style="background:${p.color};"></div>
-                <div class="cell-in">
+                <div class="cell-in" style="${innerStyle}">
                     <div class="cell-nm">${p.name}</div>
                     <div class="cell-pr">${p.price}₴</div>
                 </div>`;
         } else {
-            cell.innerHTML=`<div class="cell-in">
-                <div style="font-size:clamp(5px,1.7vw,10px);">${p.emoji||'?'}</div>
+            // Шанс, податок, вокзал, комунальні
+            let innerStyle='';
+            if(side==='left'||side==='right'){
+                innerStyle='writing-mode:vertical-rl;text-orientation:mixed;';
+                if(side==='left') innerStyle+='transform:rotate(180deg);';
+            }
+            cell.innerHTML=`<div class="cell-in" style="${innerStyle}">
+                <div style="font-size:clamp(6px,1.8vw,11px);line-height:1;">${p.emoji||'?'}</div>
                 <div class="cell-nm">${p.name}</div>
             </div>`;
         }
@@ -934,9 +992,9 @@ function renderGame(room){
     // Кубики
     if(room.game.dice1&&room.game.dice2){
         document.getElementById('diceRow').innerHTML=`
-            <div class="die">${DFACE[room.game.dice1]||room.game.dice1}</div>
+            <div class="die">${dieSVG(room.game.dice1)}</div>
             <span class="dice-plus">+</span>
-            <div class="die">${DFACE[room.game.dice2]||room.game.dice2}</div>
+            <div class="die">${dieSVG(room.game.dice2)}</div>
             <span class="dice-eq">=</span>
             <span class="dice-sum">${room.game.dice1+room.game.dice2}</span>`;
     }
