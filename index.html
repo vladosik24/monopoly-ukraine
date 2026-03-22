@@ -245,11 +245,9 @@
         }
 
         /* ===== BOARD ===== */
-        /* ===== BOARD ===== */
         .board-wrapper { padding:3px 4px 2px; flex-shrink:0; }
 
         .board {
-            /* Чітко обмежена висота — ~46% висоти вьюпорту, але не більше ширини */
             width:100%;
             height:min(96vw, 38vh);
             display:grid;
@@ -262,54 +260,47 @@
 
         .cell {
             border:0.5px solid rgba(20,83,45,0.5);
-            display:flex;
+            display:flex; flex-direction:column;
             font-weight:700; text-align:center;
             background:#060f09; overflow:hidden; color:#86efac;
             min-width:0; min-height:0;
         }
 
-        /* Кольорова смужка — частина flex layout, не absolute */
+        /* Кольорова смужка — flex-item, не absolute */
         .c-bottom { flex-direction:column; }
-        .c-bottom .cbar { order:0; flex-shrink:0; height:23%; width:100%; }
-        .c-bottom .cell-in { order:1; flex:1; }
+        .c-bottom .cbar { flex-shrink:0; height:22%; width:100%; }
+        .c-bottom .cell-in { flex:1; min-height:0; }
 
         .c-top { flex-direction:column-reverse; }
-        .c-top .cbar { order:0; flex-shrink:0; height:23%; width:100%; }
-        .c-top .cell-in { order:1; flex:1; }
+        .c-top .cbar { flex-shrink:0; height:22%; width:100%; }
+        .c-top .cell-in { flex:1; min-height:0; }
 
         .c-right { flex-direction:row; }
-        .c-right .cbar { order:0; flex-shrink:0; width:23%; height:100%; }
-        .c-right .cell-in { order:1; flex:1; }
+        .c-right .cbar { flex-shrink:0; width:20%; height:100%; }
+        .c-right .cell-in { flex:1; min-width:0; }
 
         .c-left { flex-direction:row-reverse; }
-        .c-left .cbar { order:0; flex-shrink:0; width:23%; height:100%; }
-        .c-left .cell-in { order:1; flex:1; }
+        .c-left .cbar { flex-shrink:0; width:20%; height:100%; }
+        .c-left .cell-in { flex:1; min-width:0; }
 
         .cell-in {
             display:flex; flex-direction:column;
             align-items:center; justify-content:center;
-            padding:1px; overflow:hidden;
+            padding:1px 0.5px; overflow:hidden;
         }
 
-        /* Бічні — вертикальний текст */
-        .c-right .cell-in { writing-mode:vertical-rl; }
-        .c-left  .cell-in { writing-mode:vertical-rl; transform:rotate(180deg); }
-
         .cell-nm {
-            font-size:clamp(3px, 0.92vw, 6.5px);
-            line-height:1.15; word-break:break-word;
+            font-size:clamp(2.5px, 0.85vw, 5.5px);
+            line-height:1.1; word-break:break-all;
             text-align:center; overflow:hidden;
         }
         .cell-pr {
-            font-size:clamp(2.5px, 0.72vw, 5px);
-            color:#4ade80; line-height:1; margin-top:0.5px;
+            font-size:clamp(2px, 0.65vw, 4.5px);
+            color:#4ade80; line-height:1; margin-top:0.5px; white-space:nowrap;
         }
 
-        /* Спецклітинки без кольору (шанс/вокзал) */
         .cell.no-color { flex-direction:column; align-items:center; justify-content:center; }
         .cell.no-color .cell-in { width:100%; height:100%; }
-        .cell.no-color.side-r .cell-in { writing-mode:vertical-rl; }
-        .cell.no-color.side-l .cell-in { writing-mode:vertical-rl; transform:rotate(180deg); }
 
         .cell.corner { background:#020a04; flex-direction:column; align-items:center; justify-content:center; }
         .corner-in {
@@ -319,11 +310,10 @@
         }
         .corner-em { font-size:clamp(7px,2vw,14px); line-height:1; }
         .corner-lb {
-            font-size:clamp(2.5px,0.68vw,5px); color:#86efac; font-weight:800;
+            font-size:clamp(2.5px,0.65vw,5px); color:#86efac; font-weight:800;
             line-height:1.1; text-align:center; word-break:break-word;
         }
 
-        /* Центр */
         .board-center {
             grid-column:2/11; grid-row:2/11;
             display:flex; flex-direction:column;
@@ -337,14 +327,13 @@
             color:#166534; text-align:center; line-height:1.4;
         }
 
-        /* Жетони поверх усього */
         .tokens {
-            position:absolute; bottom:1px; left:0; right:0;
+            position:absolute; bottom:0; left:0; right:0;
             display:flex; justify-content:center; flex-wrap:wrap; gap:0.5px;
             padding:0 0.5px; z-index:10; pointer-events:none;
         }
         .token {
-            width:clamp(4px,1.4vw,8px); height:clamp(4px,1.4vw,8px);
+            width:clamp(4px,1.3vw,8px); height:clamp(4px,1.3vw,8px);
             border-radius:50%; border:1px solid rgba(255,255,255,0.75);
             box-shadow:0 1px 3px rgba(0,0,0,0.9);
             flex-shrink:0; overflow:hidden;
@@ -617,46 +606,46 @@ function dieSVG(n){
 }
 
 const PROPS=[
-    {name:'СТАРТ',type:'corner',emoji:'🏁',pos:0},
-    {name:'Луцьк',price:600,color:'#b45309',pos:1},
-    {name:'Шанс',type:'chance',emoji:'❓',pos:2},
-    {name:'Рівне',price:600,color:'#b45309',pos:3},
-    {name:'Податок',type:'tax',amount:2000,emoji:'💸',pos:4},
-    {name:'Вокзал Київ',price:2000,type:'station',emoji:'🚂',pos:5},
-    {name:'Житомир',price:1000,color:'#1d4ed8',pos:6},
-    {name:'Шанс',type:'chance',emoji:'❓',pos:7},
-    {name:'Чернігів',price:1000,color:'#1d4ed8',pos:8},
-    {name:'Суми',price:1200,color:'#1d4ed8',pos:9},
-    {name:"В'ЯЗНИЦЯ",type:'corner',emoji:'⛓',pos:10},
-    {name:'Полтава',price:1400,color:'#be185d',pos:11},
-    {name:'Електростанція',price:1500,type:'utility',emoji:'⚡',pos:12},
-    {name:'Черкаси',price:1400,color:'#be185d',pos:13},
-    {name:'Кропивницький',price:1600,color:'#be185d',pos:14},
-    {name:'Вокзал Львів',price:2000,type:'station',emoji:'🚂',pos:15},
-    {name:'Вінниця',price:1800,color:'#c2410c',pos:16},
-    {name:'Шанс',type:'chance',emoji:'❓',pos:17},
-    {name:'Хмельницький',price:1800,color:'#c2410c',pos:18},
-    {name:'Тернопіль',price:2000,color:'#c2410c',pos:19},
-    {name:'ПАРКІНГ',type:'corner',emoji:'🅿️',pos:20},
-    {name:'Івано-Франківськ',price:2200,color:'#b91c1c',pos:21},
-    {name:'Шанс',type:'chance',emoji:'❓',pos:22},
-    {name:'Чернівці',price:2200,color:'#b91c1c',pos:23},
-    {name:'Ужгород',price:2400,color:'#b91c1c',pos:24},
-    {name:'Вокзал Одеса',price:2000,type:'station',emoji:'🚂',pos:25},
-    {name:'Львів',price:2600,color:'#a16207',pos:26},
-    {name:'Миколаїв',price:2600,color:'#a16207',pos:27},
-    {name:'Водоканал',price:1500,type:'utility',emoji:'💧',pos:28},
-    {name:'Херсон',price:2800,color:'#a16207',pos:29},
-    {name:'ПОЛІЦІЯ',type:'corner',emoji:'👮',pos:30},
-    {name:'Запоріжжя',price:3000,color:'#15803d',pos:31},
-    {name:'Дніпро',price:3000,color:'#15803d',pos:32},
-    {name:'Шанс',type:'chance',emoji:'❓',pos:33},
-    {name:'Кривий Ріг',price:3200,color:'#15803d',pos:34},
-    {name:'Вокзал Харків',price:2000,type:'station',emoji:'🚂',pos:35},
-    {name:'Шанс',type:'chance',emoji:'❓',pos:36},
-    {name:'Харків',price:3500,color:'#6d28d9',pos:37},
-    {name:'Податок',type:'tax',amount:1000,emoji:'💸',pos:38},
-    {name:'Київ',price:4000,color:'#6d28d9',pos:39}
+    {name:'СТАРТ',      short:'СТАРТ',   type:'corner',emoji:'🏁',pos:0},
+    {name:'Луцьк',      short:'Луцьк',   price:600, color:'#b45309',pos:1},
+    {name:'Шанс',       short:'?',       type:'chance',emoji:'❓',pos:2},
+    {name:'Рівне',      short:'Рівне',   price:600, color:'#b45309',pos:3},
+    {name:'Податок',    short:'Пода-ток',type:'tax',amount:2000,emoji:'💸',pos:4},
+    {name:'Вокзал Київ',short:'Вокзал',  price:2000,type:'station',emoji:'🚂',pos:5},
+    {name:'Житомир',    short:'Житомир', price:1000,color:'#1d4ed8',pos:6},
+    {name:'Шанс',       short:'?',       type:'chance',emoji:'❓',pos:7},
+    {name:'Чернігів',   short:'Чернігів',price:1000,color:'#1d4ed8',pos:8},
+    {name:'Суми',       short:'Суми',    price:1200,color:'#1d4ed8',pos:9},
+    {name:"В'ЯЗНИЦЯ",  short:"В'ЯЗН",   type:'corner',emoji:'⛓',pos:10},
+    {name:'Полтава',    short:'Полтава', price:1400,color:'#be185d',pos:11},
+    {name:'Електростанція',short:'Елек-тро',price:1500,type:'utility',emoji:'⚡',pos:12},
+    {name:'Черкаси',    short:'Черкаси', price:1400,color:'#be185d',pos:13},
+    {name:'Кропивницький',short:'Кропив',price:1600,color:'#be185d',pos:14},
+    {name:'Вокзал Львів',short:'Вокзал', price:2000,type:'station',emoji:'🚂',pos:15},
+    {name:'Вінниця',    short:'Вінниця', price:1800,color:'#c2410c',pos:16},
+    {name:'Шанс',       short:'?',       type:'chance',emoji:'❓',pos:17},
+    {name:'Хмельницький',short:'Хмель',  price:1800,color:'#c2410c',pos:18},
+    {name:'Тернопіль',  short:'Терноп',  price:2000,color:'#c2410c',pos:19},
+    {name:'ПАРКІНГ',    short:'ПАРКІНГ', type:'corner',emoji:'🅿️',pos:20},
+    {name:'Івано-Франківськ',short:'І-Фр',price:2200,color:'#b91c1c',pos:21},
+    {name:'Шанс',       short:'?',       type:'chance',emoji:'❓',pos:22},
+    {name:'Чернівці',   short:'Чернівці',price:2200,color:'#b91c1c',pos:23},
+    {name:'Ужгород',    short:'Ужгород', price:2400,color:'#b91c1c',pos:24},
+    {name:'Вокзал Одеса',short:'Вокзал', price:2000,type:'station',emoji:'🚂',pos:25},
+    {name:'Львів',      short:'Львів',   price:2600,color:'#a16207',pos:26},
+    {name:'Миколаїв',   short:'Миколаїв',price:2600,color:'#a16207',pos:27},
+    {name:'Водоканал',  short:'Водо-кан',price:1500,type:'utility',emoji:'💧',pos:28},
+    {name:'Херсон',     short:'Херсон',  price:2800,color:'#a16207',pos:29},
+    {name:'ПОЛІЦІЯ',    short:'ПОЛІЦІЯ', type:'corner',emoji:'👮',pos:30},
+    {name:'Запоріжжя',  short:'Запор',   price:3000,color:'#15803d',pos:31},
+    {name:'Дніпро',     short:'Дніпро',  price:3000,color:'#15803d',pos:32},
+    {name:'Шанс',       short:'?',       type:'chance',emoji:'❓',pos:33},
+    {name:'Кривий Ріг', short:'Кр.Ріг',  price:3200,color:'#15803d',pos:34},
+    {name:'Вокзал Харків',short:'Вокзал',price:2000,type:'station',emoji:'🚂',pos:35},
+    {name:'Шанс',       short:'?',       type:'chance',emoji:'❓',pos:36},
+    {name:'Харків',     short:'Харків',  price:3500,color:'#6d28d9',pos:37},
+    {name:'Податок',    short:'Пода-ток',type:'tax',amount:1000,emoji:'💸',pos:38},
+    {name:'Київ',       short:'Київ',    price:4000,color:'#6d28d9',pos:39}
 ];
 
 // ===== STATE =====
@@ -926,14 +915,9 @@ function buildBoard(){
         } else if(p.color){
             cell.classList.add('c-'+side);
             // Для бічних клітинок текст треба повертати
-            let innerStyle='';
-            if(side==='left'||side==='right'){
-                innerStyle='writing-mode:vertical-rl;text-orientation:mixed;';
-                if(side==='left') innerStyle+='transform:rotate(180deg);';
-            }
             cell.innerHTML=`<div class="cbar" style="background:${p.color};"></div>
-                <div class="cell-in" style="${innerStyle}">
-                    <div class="cell-nm">${p.name}</div>
+                <div class="cell-in">
+                    <div class="cell-nm">${p.short||p.name}</div>
                     <div class="cell-pr">${p.price}₴</div>
                 </div>`;
         } else {
@@ -943,8 +927,8 @@ function buildBoard(){
             if(side==='left')  cell.classList.add('side-l');
             const isVert = side==='left'||side==='right';
             cell.innerHTML=`<div class="cell-in">
-                <div style="font-size:clamp(6px,1.8vw,11px);line-height:1;">${p.emoji||'?'}</div>
-                <div class="cell-nm">${p.name}</div>
+                <div style="font-size:clamp(5px,1.6vw,9px);line-height:1;">${p.emoji||'?'}</div>
+                <div class="cell-nm">${p.short||p.name}</div>
             </div>`;
         }
 
