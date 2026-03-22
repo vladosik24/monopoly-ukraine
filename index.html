@@ -328,25 +328,48 @@
             color:#166534; text-align:center; line-height:1.4;
         }
 
+        /* Контейнер жетонів — по центру клітинки */
         .tokens {
             position:absolute;
-            top:50%; left:50%;
-            transform:translate(-50%, -50%);
-            display:flex; justify-content:center;
-            align-items:center; flex-wrap:wrap; gap:1px;
-            z-index:10; pointer-events:none;
-            width:90%; max-height:90%;
+            inset:0;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-wrap:wrap;
+            gap:1px;
+            z-index:10;
+            pointer-events:none;
+            padding:1px;
+        }
+        /* Один жетон — великий, займає ~70% клітинки */
+        .tokens:has(.token:only-child) .token {
+            width:clamp(7px, 2.8vw, 18px);
+            height:clamp(7px, 2.8vw, 18px);
         }
         .token {
-            /* Жетон займає ~55% ширини клітинки якщо один, менше якщо декілька */
-            width:clamp(6px, 2vw, 13px);
-            height:clamp(6px, 2vw, 13px);
+            width:clamp(5px, 2vw, 12px);
+            height:clamp(5px, 2vw, 12px);
             border-radius:50%;
-            border:1.5px solid white;
-            box-shadow:0 0 4px rgba(0,0,0,1), 0 0 8px rgba(0,0,0,0.8);
-            flex-shrink:0; overflow:hidden;
+            border:1.5px solid rgba(255,255,255,0.9);
+            box-shadow:0 0 0 1px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,1);
+            flex-shrink:0;
+            overflow:hidden;
+            background:#555;
         }
-        .token img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
+        .token img {
+            width:100%; height:100%;
+            border-radius:50%; object-fit:cover;
+            display:block;
+        }
+        /* Fallback — ініціали якщо немає фото */
+        .token-letter {
+            width:100%; height:100%;
+            display:flex; align-items:center; justify-content:center;
+            font-size:clamp(3px,1vw,7px);
+            font-weight:900; color:white;
+            font-family:'Unbounded',sans-serif;
+            line-height:1;
+        }
 
         /* ===== GAME PANEL ===== */
         .game-panel { flex:1; overflow-y:auto; padding:6px 11px 10px; }
@@ -961,22 +984,39 @@ function renderGame(room){
 
     const pl=Object.values(room.players||{});
 
-    // Жетони — рендеримо поверх усіх елементів клітинки
+    // Жетони з аватарами або ініціалами
     document.querySelectorAll('.tokens').forEach(el=>el.innerHTML='');
     pl.forEach(p=>{
-        const tokContainer=document.getElementById('tok-'+p.pos); if(!tokContainer) return;
+        const tokContainer=document.getElementById('tok-'+p.pos);
+        if(!tokContainer) return;
+
         const t=document.createElement('div');
         t.className='token';
         t.style.background=p.color;
-        t.style.border='2px solid white';
-        t.style.boxShadow=`0 0 0 1px ${p.color}, 0 2px 6px rgba(0,0,0,0.9)`;
+        t.style.boxShadow=`0 0 0 1.5px rgba(0,0,0,0.9), 0 0 0 2.5px white, 0 0 0 3.5px ${p.color}`;
+
         if(p.photoUrl){
+            // Аватар з Telegram
             const img=document.createElement('img');
             img.src=p.photoUrl;
-            img.style.cssText='width:100%;height:100%;border-radius:50%;object-fit:cover;';
-            img.onerror=()=>{ img.remove(); };
+            img.alt=p.name;
+            img.onerror=()=>{
+                img.remove();
+                // fallback — ініціали
+                const span=document.createElement('div');
+                span.className='token-letter';
+                span.textContent=(p.name||'?')[0].toUpperCase();
+                t.appendChild(span);
+            };
             t.appendChild(img);
+        } else {
+            // Ініціали якщо немає фото
+            const span=document.createElement('div');
+            span.className='token-letter';
+            span.textContent=p.isBot ? '🤖' : (p.name||'?')[0].toUpperCase();
+            t.appendChild(span);
         }
+
         tokContainer.appendChild(t);
     });
 
