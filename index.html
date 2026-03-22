@@ -264,6 +264,7 @@
             font-weight:700; text-align:center;
             background:#060f09; overflow:hidden; color:#86efac;
             min-width:0; min-height:0;
+            position:relative;
         }
 
         /* Кольорова смужка — flex-item, не absolute */
@@ -328,14 +329,21 @@
         }
 
         .tokens {
-            position:absolute; bottom:0; left:0; right:0;
-            display:flex; justify-content:center; flex-wrap:wrap; gap:0.5px;
-            padding:0 0.5px; z-index:10; pointer-events:none;
+            position:absolute;
+            top:50%; left:50%;
+            transform:translate(-50%, -50%);
+            display:flex; justify-content:center;
+            align-items:center; flex-wrap:wrap; gap:1px;
+            z-index:10; pointer-events:none;
+            width:90%; max-height:90%;
         }
         .token {
-            width:clamp(4px,1.3vw,8px); height:clamp(4px,1.3vw,8px);
-            border-radius:50%; border:1px solid rgba(255,255,255,0.75);
-            box-shadow:0 1px 3px rgba(0,0,0,0.9);
+            /* Жетон займає ~55% ширини клітинки якщо один, менше якщо декілька */
+            width:clamp(6px, 2vw, 13px);
+            height:clamp(6px, 2vw, 13px);
+            border-radius:50%;
+            border:1.5px solid white;
+            box-shadow:0 0 4px rgba(0,0,0,1), 0 0 8px rgba(0,0,0,0.8);
             flex-shrink:0; overflow:hidden;
         }
         .token img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
@@ -953,16 +961,23 @@ function renderGame(room){
 
     const pl=Object.values(room.players||{});
 
-    // Жетони
+    // Жетони — рендеримо поверх усіх елементів клітинки
     document.querySelectorAll('.tokens').forEach(el=>el.innerHTML='');
     pl.forEach(p=>{
-        const c=document.getElementById('tok-'+p.pos); if(!c) return;
+        const tokContainer=document.getElementById('tok-'+p.pos); if(!tokContainer) return;
         const t=document.createElement('div');
-        t.className='token'; t.style.background=p.color;
+        t.className='token';
+        t.style.background=p.color;
+        t.style.border='2px solid white';
+        t.style.boxShadow=`0 0 0 1px ${p.color}, 0 2px 6px rgba(0,0,0,0.9)`;
         if(p.photoUrl){
-            t.innerHTML=`<img src="${p.photoUrl}" onerror="this.parentElement.style.background='${p.color}'" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+            const img=document.createElement('img');
+            img.src=p.photoUrl;
+            img.style.cssText='width:100%;height:100%;border-radius:50%;object-fit:cover;';
+            img.onerror=()=>{ img.remove(); };
+            t.appendChild(img);
         }
-        c.appendChild(t);
+        tokContainer.appendChild(t);
     });
 
     // Гравці
