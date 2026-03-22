@@ -846,13 +846,17 @@ function listenRoom(){
 // ===== LOBBY =====
 function renderLobby(room){
     const pl=Object.values(room.players||{});
-    const hostId=Object.keys(room.players||{})[0];
-    const minP=room.mode==='teams'?4:(room.mode==='vsbot'?1:2);
+    // Хост — перший живий (не бот) гравець
+    const hostPlayer=pl.find(p=>!p.isBot);
+    const hostId=hostPlayer?.id||null;
+    // vsbot/mixed: потрібен лише 1 живий гравець (боти вже є)
+    const minHumans=room.mode==='teams'?4:(room.mode==='vsbot'||room.mode==='mixed')?1:2;
+    const humanCount=pl.filter(p=>!p.isBot).length;
 
     document.getElementById('lobbyList').innerHTML=pl.map((p,i)=>{
         let b='';
         if(p.id===myId) b+='<span class="badge b-you">Ви</span> ';
-        if(p.id===hostId&&!p.isBot) b+='<span class="badge b-host">👑</span> ';
+        if(p.id===hostId) b+='<span class="badge b-host">👑</span> ';
         if(p.isBot) b+='<span class="badge b-bot">🤖</span>';
         if(p.team==='red') b+=' <span class="badge b-red">Червона</span>';
         if(p.team==='blue') b+=' <span class="badge b-blue">Синя</span>';
@@ -871,9 +875,10 @@ function renderLobby(room){
 
     const btn=document.getElementById('startBtn');
     const isHost=hostId===myId;
-    btn.disabled=pl.length<minP||!isHost;
+    const canStart=humanCount>=minHumans;
+    btn.disabled=!canStart||!isHost;
     btn.textContent=!isHost?'⏳ Чекаємо хоста...'
-        :pl.length<minP?`⏳ Ще ${minP-pl.length} гравців`
+        :!canStart?`⏳ Ще ${minHumans-humanCount} гравців`
         :`▶️ Почати (${pl.length} гравців)`;
 }
 
