@@ -6,7 +6,7 @@
 <title>Монополія Україна – 4 карти</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-/* ========== СТИЛЬ (сучасний, як у наданому коді) ========== */
+/* ========== БАЗОВІ СТИЛІ ========== */
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Nunito:wght@600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -26,7 +26,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text)
 .screen{display:none;flex-direction:column;min-height:100dvh;position:relative;z-index:1}
 .screen.active{display:flex}
 
-/* ══ ГОЛОВНИЙ ЕКРАН ══ */
+/* ========== ГОЛОВНИЙ ЕКРАН ========== */
 #s-main{background:var(--bg-dark);overflow-y:auto}
 .main-header{
   background:linear-gradient(180deg,var(--bg-panel),var(--bg-main));
@@ -46,7 +46,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text)
   font-size:20px;font-weight:800;
   background:#154038;color:var(--gold);
 }
-.prof-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}.prof-info{flex:1;min-width:0}
+.prof-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.prof-info{flex:1;min-width:0}
 .prof-name{
   font-family:'Unbounded',sans-serif;
   font-size:13px;font-weight:900;
@@ -318,7 +319,7 @@ select option{background:var(--bg-main)}
 }
 .tdot.on{border-color:white;box-shadow:0 0 8px rgba(255,255,255,.5)}
 
-/* ══ ЛОБІ ══ */
+/* ========== ЛОБІ ========== */
 #s-lobby{background:var(--bg-dark);padding:0}
 .lhd{
   padding:12px 16px;
@@ -391,7 +392,7 @@ select option{background:var(--bg-main)}
 .bred{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.3)}
 .bbl{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
 
-/* ══ ГРА - СУЧАСНИЙ ДИЗАЙН ══ */
+/* ========== ГРА ========== */
 #s-game{
   background:var(--bg-dark);
   height:100dvh;
@@ -407,6 +408,8 @@ select option{background:var(--bg-main)}
   align-items:center;
   border-bottom:2px solid var(--accent2);
   flex-shrink:0;
+  flex-wrap:wrap;
+  gap:8px;
 }
 .game-info{
   display:flex;
@@ -418,7 +421,6 @@ select option{background:var(--bg-main)}
   font-size:14px;
   color:var(--gold);
 }
-.timer-display span{color:var(--accent)}
 .move-display{
   font-family:'Unbounded',sans-serif;
   font-size:14px;
@@ -430,15 +432,16 @@ select option{background:var(--bg-main)}
   gap:15px;
   flex:1;
   justify-content:center;
+  flex-wrap:wrap;
 }
 .player-card{
   background:rgba(0,0,0,.3);
   border-radius:12px;
-  padding:8px 12px;
+  padding:6px 10px;
   display:flex;
   align-items:center;
-  gap:10px;
-  min-width:180px;
+  gap:8px;
+  min-width:150px;
   border:2px solid transparent;
   transition:.2s;
 }
@@ -447,51 +450,62 @@ select option{background:var(--bg-main)}
   background:rgba(45,212,191,.1);
 }
 .player-avatar{
-  width:50px;height:50px;border-radius:50%;
-  border:3px solid var(--accent);
+  width:40px;height:40px;border-radius:50%;
+  border:2px solid var(--accent);
   overflow:hidden;
   display:flex;align-items:center;justify-content:center;
-  font-size:24px;flex-shrink:0;position:relative;
+  font-size:18px;flex-shrink:0;position:relative;
 }
 .player-avatar img{width:100%;height:100%;object-fit:cover}
 .player-avatar .crown{
   position:absolute;bottom:-5px;right:-5px;
-  font-size:16px;background:var(--gold);
-  border-radius:50%;width:20px;height:20px;
+  font-size:14px;background:var(--gold);
+  border-radius:50%;width:18px;height:18px;
   display:flex;align-items:center;justify-content:center;
 }
 .player-info{flex:1;min-width:0}
 .player-name{
   font-family:'Unbounded',sans-serif;
-  font-size:12px;font-weight:900;
+  font-size:11px;font-weight:900;
   color:var(--text);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.player-rank{font-size:10px;color:var(--accent);margin-top:2px}
+.player-rank{font-size:9px;color:var(--accent);margin-top:1px}
 .player-money{
   font-family:'Unbounded',sans-serif;
-  font-size:11px;color:var(--gold);
-  margin-top:3px;
+  font-size:10px;color:var(--gold);
+  margin-top:2px;
 }
 .player-property{
-  font-size:10px;color:var(--sub);
+  font-size:8px;color:var(--sub);
   display:flex;align-items:center;gap:3px;
   margin-top:1px;
 }
 .btn-exit{
   background:linear-gradient(135deg,var(--green),#16a34a);
   color:white;border:none;border-radius:8px;
-  padding:10px 20px;
+  padding:6px 12px;
   font-family:'Unbounded',sans-serif;
-  font-size:12px;font-weight:700;
+  font-size:11px;font-weight:700;
   cursor:pointer;text-transform:uppercase;flex-shrink:0;
 }
 .btn-exit:active{transform:scale(.95)}
+.timer-bar{
+  height:3px;
+  background:rgba(255,255,255,.08);
+  flex-shrink:0;
+}
+.timer-fill{
+  height:100%;
+  background:var(--gold);
+  transition:width 1s linear;
+  width:100%;
+}
 .game-main{
   flex:1;
   display:grid;
-  grid-template-columns:110px 1fr 110px;
-  grid-template-rows:110px 1fr 110px;
+  grid-template-columns:100px 1fr 100px;
+  grid-template-rows:100px 1fr 100px;
   gap:4px;
   padding:4px;
   overflow:hidden;
@@ -506,6 +520,9 @@ select option{background:var(--bg-main)}
 }
 .board-side.horizontal.top{grid-row:1}
 .board-side.horizontal.bottom{grid-row:3}
+.board-side.vertical{
+  flex-direction:column;
+}
 .board-side.vertical.left{grid-column:1;grid-row:2}
 .board-side.vertical.right{grid-column:3;grid-row:2}
 
@@ -513,11 +530,17 @@ select option{background:var(--bg-main)}
   background:var(--bg-panel);
   border:2px solid rgba(45,212,191,.3);
   border-radius:8px;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:6px;position:relative;
-  flex:1;min-width:0;min-height:0;
-  cursor:pointer;transition:.15s;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:4px;
+  position:relative;
+  flex:1;
+  min-width:0;
+  min-height:0;
+  cursor:pointer;
+  transition:.15s;
 }
 .cell:active{transform:scale(.95)}
 .cell.corner{
@@ -525,23 +548,35 @@ select option{background:var(--bg-main)}
   border-color:var(--accent);
   border-width:3px;
 }
+/* 🔧 ВИПРАВЛЕННЯ: горизонтальні клітинки на вертикальних сторонах */
+.board-side.vertical .cell{
+  transform:rotate(-90deg);
+  transform-origin:center center;
+  position:relative;
+  width:100%;
+  height:100%;
+}
+/* Компенсація для внутрішніх елементів – вони не повинні бути повернуті */
+.board-side.vertical .cell > *{
+  transform:rotate(90deg);
+}
 .cell-color-bar{
   position:absolute;top:0;left:0;right:0;
   height:5px;border-radius:6px 6px 0 0;
 }
 .cell-icon{
-  font-size:clamp(16px,4vw,28px);
-  margin-bottom:3px;
+  font-size:clamp(14px,3.5vw,24px);
+  margin-bottom:2px;
   line-height:1;
 }
 .cell-name{
-  font-size:clamp(9px,2.2vw,12px);
+  font-size:clamp(8px,2vw,10px);
   text-align:center;color:var(--text);
   font-weight:700;line-height:1.2;
   word-break:break-word;
 }
 .cell-price{
-  font-size:clamp(10px,2.5vw,13px);
+  font-size:clamp(8px,2.2vw,11px);
   color:var(--gold);font-weight:800;
   margin-top:2px;
 }
@@ -555,8 +590,8 @@ select option{background:var(--bg-main)}
   z-index:10;pointer-events:none;
 }
 .tok{
-  width:clamp(8px,2.5vw,14px);
-  height:clamp(8px,2.5vw,14px);
+  width:clamp(8px,2.2vw,12px);
+  height:clamp(8px,2.2vw,12px);
   border-radius:50%;
   border:2px solid white;
   box-shadow:0 0 0 1px rgba(0,0,0,.9),0 2px 4px rgba(0,0,0,.5);
@@ -565,17 +600,17 @@ select option{background:var(--bg-main)}
 }
 .tok img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .tok-ltr{
-  font-size:clamp(4px,1.2vw,7px);
+  font-size:clamp(4px,1vw,6px);
   font-weight:900;color:white;
   line-height:1;
 }
 .houses{
-  position:absolute;bottom:8px;left:0;right:0;
+  position:absolute;bottom:6px;left:0;right:0;
   display:flex;justify-content:center;gap:2px;
 }
 .house-dot{
-  width:clamp(4px,1.2vw,6px);
-  height:clamp(4px,1.2vw,6px);
+  width:clamp(4px,1vw,5px);
+  height:clamp(4px,1vw,5px);
   border-radius:50%;
 }
 .game-center{
@@ -588,12 +623,12 @@ select option{background:var(--bg-main)}
 }
 .game-log{
   flex:1;overflow-y:auto;
-  padding:10px;
-  font-size:11px;line-height:1.6;
+  padding:8px;
+  font-size:11px;line-height:1.5;
   background:rgba(0,0,0,.2);
 }
 .game-log p{
-  margin:4px 0;padding:6px 8px;
+  margin:3px 0;padding:4px 6px;
   background:rgba(45,212,191,.05);
   border-radius:6px;
   border-left:3px solid var(--accent);
@@ -608,18 +643,18 @@ select option{background:var(--bg-main)}
   display:flex;flex-direction:column;flex-shrink:0;
 }
 .chat-messages{
-  max-height:100px;overflow-y:auto;
-  padding:8px;
+  max-height:90px;overflow-y:auto;
+  padding:6px;
   background:rgba(0,0,0,.2);
 }
 .chat-message{
-  margin:3px 0;padding:5px 8px;
+  margin:2px 0;padding:4px 6px;
   background:rgba(45,212,191,.1);
-  border-radius:6px;font-size:11px;
+  border-radius:6px;font-size:10px;
 }
 .chat-input-row{
   display:flex;gap:6px;
-  padding:8px;
+  padding:6px;
   background:var(--bg-panel);
 }
 .chat-input{
@@ -627,22 +662,22 @@ select option{background:var(--bg-main)}
   background:rgba(0,0,0,.3);
   border:1px solid var(--accent2);
   border-radius:8px;
-  padding:8px 12px;
+  padding:6px 8px;
   color:var(--text);
   font-family:'Nunito',sans-serif;
-  font-size:12px;outline:none;
+  font-size:11px;outline:none;
 }
 .chat-input::placeholder{color:var(--sub)}
 .chat-send{
-  width:36px;height:36px;border-radius:8px;
+  width:32px;height:32px;border-radius:6px;
   background:var(--accent);border:none;
   color:var(--bg-dark);
-  font-size:16px;cursor:pointer;
+  font-size:14px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
 }
 .control-panel{
   background:var(--bg-panel);
-  padding:12px;
+  padding:10px;
   display:flex;gap:12px;
   align-items:center;justify-content:center;
   border-top:2px solid var(--accent2);
@@ -652,24 +687,24 @@ select option{background:var(--bg-main)}
   display:flex;gap:12px;align-items:center;
 }
 .dice{
-  width:50px;height:50px;
+  width:45px;height:45px;
   background:white;border-radius:10px;
   display:grid;grid-template-columns:repeat(3,1fr);
   grid-template-rows:repeat(3,1fr);
-  padding:6px;gap:3px;
+  padding:5px;gap:2px;
   box-shadow:0 4px 8px rgba(0,0,0,.3);
 }
 .dice-dot{
   background:#1e293b;border-radius:50%;
   align-self:center;justify-self:center;
-  width:8px;height:8px;
+  width:7px;height:7px;
 }
 .btn-roll{
   background:linear-gradient(135deg,var(--gold),#f59e0b);
   color:#0a1f1a;border:none;border-radius:12px;
-  padding:14px 35px;
+  padding:12px 28px;
   font-family:'Unbounded',sans-serif;
-  font-size:14px;font-weight:900;
+  font-size:13px;font-weight:900;
   cursor:pointer;text-transform:uppercase;
   box-shadow:0 4px 15px rgba(251,191,36,.4);
 }
@@ -683,30 +718,28 @@ select option{background:var(--bg-main)}
 .prop-buy{
   background:var(--bg-panel);
   border-top:1px solid rgba(45,212,191,.2);
-  padding:8px 12px;
-  display:none;align-items:center;gap:10px;
+  padding:6px 10px;
+  display:none;align-items:center;gap:8px;
   flex-shrink:0;
 }
 .pb-clr{
-  width:12px;height:35px;border-radius:4px;
+  width:10px;height:30px;border-radius:3px;
   flex-shrink:0;
 }
 .pb-inf{flex:1;min-width:0}
-.pb-nm{font-weight:800;font-size:13px}
+.pb-nm{font-weight:800;font-size:12px}
 .pb-pr{
   font-family:'Unbounded',sans-serif;
-  font-size:14px;font-weight:900;
+  font-size:13px;font-weight:900;
   color:var(--gold);
 }
 .pb-btn{
-  color:white;border:none;border-radius:10px;
-  padding:10px 16px;
+  color:white;border:none;border-radius:8px;
+  padding:8px 14px;
   font-family:'Nunito',sans-serif;
-  font-size:13px;font-weight:800;
+  font-size:12px;font-weight:800;
   cursor:pointer;flex-shrink:0;
 }
-
-/* ПЕРЕМОЖЕЦЬ */
 #s-win{
   align-items:center;justify-content:center;
   padding:28px 20px;text-align:center;
@@ -750,18 +783,23 @@ select option{background:var(--bg-main)}
   max-width:80vw;text-align:center;
 }
 .toast.on{transform:translateX(-50%) translateY(0)}
+
+/* Адаптивність для мобільних */
 @media (max-width:768px){
   .game-main{
-    grid-template-columns:85px 1fr 85px;
-    grid-template-rows:85px 1fr 85px;
+    grid-template-columns:75px 1fr 75px;
+    grid-template-rows:75px 1fr 75px;
   }
-  .player-card{min-width:140px;padding:6px 8px}
-  .player-avatar{width:40px;height:40px}
-  .cell-icon{font-size:clamp(14px,3.5vw,22px)}
-  .cell-name{font-size:clamp(8px,2vw,10px)}
-  .cell-price{font-size:clamp(9px,2.2vw,11px)}
-  .dice{width:45px;height:45px}
-  .btn-roll{padding:12px 25px;font-size:13px}
+  .player-card{min-width:120px;padding:4px 8px}
+  .player-avatar{width:32px;height:32px}
+  .player-name{font-size:9px}
+  .player-money{font-size:9px}
+  .btn-exit{padding:4px 8px;font-size:9px}
+  .cell-icon{font-size:clamp(12px,3vw,18px)}
+  .cell-name{font-size:clamp(7px,1.8vw,9px)}
+  .cell-price{font-size:clamp(7px,1.8vw,9px)}
+  .dice{width:40px;height:40px}
+  .btn-roll{padding:10px 20px;font-size:12px}
 }
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-thumb{background:var(--accent2);border-radius:2px}
@@ -770,7 +808,7 @@ select option{background:var(--bg-main)}
 </head>
 <body>
 
-<!-- ГОЛОВНИЙ -->
+<!-- ========== HTML СТРУКТУРА ========== -->
 <div id="s-main" class="screen active">
   <div class="main-header">
     <div style="display:flex;align-items:center;gap:9px;flex:1;min-width:0">
@@ -831,7 +869,6 @@ select option{background:var(--bg-main)}
   </div>
 </div>
 
-<!-- СТВОРЕННЯ -->
 <div class="overlay" id="createModal">
   <div class="sheet">
     <div class="sh-handle"></div>
@@ -854,7 +891,6 @@ select option{background:var(--bg-main)}
   </div>
 </div>
 
-<!-- НАЛАШТУВАННЯ -->
 <div class="overlay" id="settingsModal">
   <div class="sheet">
     <div class="sh-handle"></div>
@@ -875,7 +911,6 @@ select option{background:var(--bg-main)}
   </div>
 </div>
 
-<!-- ЛОБІ -->
 <div id="s-lobby" class="screen">
   <div class="lhd">
     <div class="cb"><div class="cl">Код кімнати</div><div class="cv" id="lobbyCode">----</div></div>
@@ -888,7 +923,6 @@ select option{background:var(--bg-main)}
   </div>
 </div>
 
-<!-- ГРА -->
 <div id="s-game" class="screen">
   <div class="game-header" id="gameHeader"></div>
   <div class="game-main" id="gameMain">
@@ -917,7 +951,6 @@ select option{background:var(--bg-main)}
   </div>
 </div>
 
-<!-- ПЕРЕМОЖЕЦЬ -->
 <div id="s-win" class="screen">
   <div class="troph">🏆</div>
   <div class="wtitle">ПЕРЕМОЖЕЦЬ!</div>
@@ -979,7 +1012,7 @@ const SERVERS=[
 ];
 
 // ========== КАРТИ ==========
-// 1. Класична Україна (малі ціни)
+// Класична Україна
 const MAP_CLASSIC = [
   {name:'СТАРТ',short:'СТАРТ',type:'corner',emoji:'🏁',pos:0},
   {name:'Луцьк',short:'Луцьк',price:600,color:'#b45309',emoji:'🏙',pos:1},
@@ -1023,7 +1056,7 @@ const MAP_CLASSIC = [
   {name:'Київ',short:'Київ',price:4000,color:'#6d28d9',emoji:'🏛',pos:39}
 ];
 
-// 2. Фруктова карта (вишня, апельсин, кавун тощо)
+// Фруктова карта
 const MAP_FRUIT = [
   {name:'СТАРТ',short:'СТАРТ',type:'corner',emoji:'🏁',pos:0},
   {name:'Вишня',short:'Вишня',price:500,color:'#dc2626',emoji:'🍒',pos:1},
@@ -1067,7 +1100,7 @@ const MAP_FRUIT = [
   {name:'Золотий Кавун',short:'Золот.',price:3900,color:'#be185d',emoji:'🏆',pos:39}
 ];
 
-// 3. Міжнародна карта (Мегаполіс) – без російських міст
+// Міжнародна карта (Мегаполіс) – без російських міст
 const MAP_INTERNATIONAL = [
   {name:"СТАРТ", short:"СТАРТ", type:"corner", emoji:"🏁", pos:0},
   {name:"Токіо", short:"Токіо", price:460000, color:"#b45309", emoji:"🗼", pos:1},
@@ -1111,7 +1144,7 @@ const MAP_INTERNATIONAL = [
   {name:"Сідней", short:"Сідней", price:4000000, color:"#6d28d9", emoji:"🏄", pos:39}
 ];
 
-// 4. Бізнес-карта (українські назви)
+// Бізнес-карта (українські назви)
 const MAP_BUSINESS = [
   {name:"СТАРТ", short:"СТАРТ", type:"corner", emoji:"🏁", pos:0},
   {name:"Кав'ярня", short:"Кав'ярня", price:460000, color:"#b45309", emoji:"☕", pos:1},
@@ -1171,8 +1204,9 @@ let roomOff=null,chatOff=null,botTmr=null,timerInt=null;
 let gameShown=false,boardBuilt=false;
 let myScore=0,myWins=0,myGold=0,curLgIdx=0;
 let timerSec=75;
+let gameStartTime=null, gameTimerInterval=null;
 
-// ========== ДОПОМІЖНІ ФУНКЦІЇ ==========
+// ========== ДОПОМІЖНІ ==========
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function toast(msg,ms=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),ms)}
 function openCreate(){document.getElementById('createModal').classList.add('on')}
@@ -1426,6 +1460,7 @@ function openLobby(mode){
 async function startGame(){await db.ref('rooms/'+myRoom).update({status:'playing'});hp('heavy')}
 async function leaveRoom(){
   stopTimer();
+  stopGameTimer();
   if(roomOff){db.ref('rooms/'+myRoom).off('value',roomOff);roomOff=null}
   if(chatOff){db.ref('rooms/'+myRoom+'/chat').off('value',chatOff);chatOff=null}
   if(myRoom)await db.ref('rooms/'+myRoom+'/players/'+myId).remove();
@@ -1496,6 +1531,23 @@ function startTimer(isMyTurn){
 }
 function stopTimer(){if(timerInt){clearInterval(timerInt);timerInt=null}}
 
+// Таймер гри (хв:сек)
+function startGameTimer(){
+  if(gameTimerInterval) clearInterval(gameTimerInterval);
+  gameStartTime = Date.now();
+  const timerSpan = document.getElementById('gameTime');
+  if(!timerSpan) return;
+  gameTimerInterval = setInterval(()=>{
+    const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
+    const mins = Math.floor(elapsed / 60);
+    const secs = elapsed % 60;
+    timerSpan.textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
+  }, 1000);
+}
+function stopGameTimer(){
+  if(gameTimerInterval){clearInterval(gameTimerInterval); gameTimerInterval=null; gameStartTime=null;}
+}
+
 function buildBoard(){
   if(boardBuilt)return;boardBuilt=true;
   const top=document.getElementById('boardTop');
@@ -1533,6 +1585,7 @@ function renderGame(r){
   if(!gameShown){
     PROPS=MAPS[r.server||'classic']||MAP_CLASSIC;
     buildBoard();showScreen('s-game');gameShown=true;listenChat();
+    startGameTimer(); // запускаємо глобальний таймер
     const first=Object.values(r.players)[r.game.current];
     addLog(`🎮 Гра почалась! <span class="log-player" style="color:${first?.color}">${first?.name}</span> ходить першим`);
   }
@@ -1545,7 +1598,7 @@ function renderGame(r){
     ?`<img src="${me.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:17px;font-weight:800;color:white">${(me.name||'?')[0].toUpperCase()}</span>`
     :`<span>${(me.name||'?')[0].toUpperCase()}</span>`;
   let hdr=`<div class="game-info">
-    <div class="timer-display">Час: <span>${Math.floor((Date.now()-(r.game.lastRoll||Date.now()))/1000)} сек.</span></div>
+    <div class="timer-display">Час: <span id="gameTime">0:00</span></div>
     <div class="move-display">Хід: <span>${r.game.current+1}/${pl.length}</span> 👁</div>
   </div>
   <div class="players-top">
@@ -1621,7 +1674,12 @@ function renderDice(id,value){
   const dice=document.getElementById(id);
   dice.innerHTML='';
   const patterns={
-    1:[[1,1]],[2:[[0,0],[2,2]],[3:[[0,0],[1,1],[2,2]],[4:[[0,0],[0,2],[2,0],[2,2]],[5:[[0,0],[0,2],[1,1],[2,0],[2,2]],[6:[[0,0],[0,2],[1,0],[1,2],[2,0],[2,2]]
+    1:[[1,1]],
+    2:[[0,0],[2,2]],
+    3:[[0,0],[1,1],[2,2]],
+    4:[[0,0],[0,2],[2,0],[2,2]],
+    5:[[0,0],[0,2],[1,1],[2,0],[2,2]],
+    6:[[0,0],[0,2],[1,0],[1,2],[2,0],[2,2]]
   };
   const pattern=patterns[value]||[[1,1]];
   for(let i=0;i<3;i++){
@@ -1775,6 +1833,7 @@ function checkWinner(r){
 }
 async function renderWinner(r){
   stopTimer();
+  stopGameTimer();
   const pl=Object.values(r.players||{});
   const w=pl.find(p=>p.id===r.winner)||pl[0];if(!w)return;
   const isMe=w.id===myId;
