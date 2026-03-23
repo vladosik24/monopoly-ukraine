@@ -2,571 +2,865 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Монополія Україна</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-/* ... (весь ваш CSS, який був вище, залишається без змін) ... */
-/* Для стислості я не дублюю увесь CSS, але він має бути таким же, як у вашому коді */
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Nunito:wght@600;700;800&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --acc:#3b82f6;--gold:#f59e0b;--red:#ef4444;--green:#22c55e;
+  --surf:rgba(255,255,255,0.07);--brd:rgba(255,255,255,0.11);
+}
+body{font-family:'Nunito',sans-serif;background:#0a0f1e;color:#f1f5f9;min-height:100dvh;overflow-x:hidden}
+
+/* ── SCREENS ── */
+.screen{display:none;flex-direction:column;min-height:100dvh;position:relative;z-index:1}
+.screen.active{display:flex}
+
+/* ── START ── */
+#ss{align-items:center;padding:16px 16px 28px;overflow-y:auto;background:linear-gradient(160deg,#0a0f1e 60%,#0d2040)}
+.hero{text-align:center;padding:22px 0 18px}
+.hflag{font-size:54px;filter:drop-shadow(0 0 20px #3b82f6aa);animation:fl 3s ease-in-out infinite}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.htitle{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900;
+  background:linear-gradient(120deg,#60a5fa,#22d3ee,#fbbf24);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:8px}
+.hsub{font-size:11px;color:#475569;margin-top:3px}
+
+.tabs{display:flex;background:var(--surf);border:1px solid var(--brd);border-radius:13px;
+  padding:3px;width:100%;max-width:360px;margin-bottom:14px}
+.tab{flex:1;padding:9px 4px;border:none;border-radius:10px;background:transparent;
+  color:#475569;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:.2s}
+.tab.on{background:var(--acc);color:white;box-shadow:0 2px 10px #3b82f666}
+.tp{display:none;width:100%;max-width:360px}
+.tp.on{display:block}
+
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.mc{background:var(--surf);border:1.5px solid var(--brd);border-radius:13px;
+  padding:14px 10px;text-align:center;cursor:pointer;transition:.18s}
+.mc:active{transform:scale(.95)}
+.mc.on{border-color:var(--acc);background:rgba(59,130,246,.12)}
+.me{font-size:26px;margin-bottom:4px}
+.mn{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700}
+.md{font-size:10px;color:#475569;margin-top:2px}
+
+label.lbl{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;
+  letter-spacing:.8px;margin-bottom:5px;display:block}
+input,select{width:100%;padding:12px 14px;background:var(--surf);border:1.5px solid var(--brd);
+  border-radius:11px;color:#f1f5f9;font-family:'Nunito',sans-serif;font-size:14px;
+  font-weight:600;outline:none;transition:border-color .2s;margin-bottom:9px}
+input:focus,select:focus{border-color:var(--acc)}
+select option{background:#1e293b}
+
+.btn{width:100%;padding:13px;border:none;border-radius:11px;font-family:'Nunito',sans-serif;
+  font-size:14px;font-weight:800;cursor:pointer;transition:.18s;margin-bottom:7px}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;pointer-events:none}
+.bp{background:linear-gradient(135deg,#3b82f6,#2563eb);color:white;box-shadow:0 4px 16px #3b82f655}
+.bs{background:var(--surf);border:1.5px solid var(--brd);color:#f1f5f9}
+.bg{background:linear-gradient(135deg,#22c55e,#16a34a);color:white;box-shadow:0 4px 16px #22c55e44}
+
+/* Rooms */
+.rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.rt{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:#64748b}
+.rb{background:var(--surf);border:1px solid var(--brd);border-radius:7px;padding:5px 10px;color:var(--acc);font-size:13px;cursor:pointer}
+.ri{display:flex;align-items:center;gap:11px;background:var(--surf);border:1px solid var(--brd);
+  border-radius:13px;padding:11px 13px;margin-bottom:7px;cursor:pointer;transition:.18s}
+.ri:active{transform:scale(.98);border-color:var(--acc)}
+.rico{width:40px;height:40px;background:rgba(59,130,246,.1);border:1.5px solid rgba(59,130,246,.2);
+  border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.rin{flex:1;min-width:0}
+.rnm{font-weight:800;font-size:13px}
+.rmt{font-size:10px;color:#475569;margin-top:1px}
+.rav{display:flex}
+.mav{width:22px;height:22px;border-radius:50%;border:2px solid #0a0f1e;margin-left:-6px;
+  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;overflow:hidden}
+.mav:first-child{margin-left:0}
+.mav img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.jp{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);border-radius:7px;
+  padding:4px 10px;color:var(--acc);font-size:11px;font-weight:700;white-space:nowrap}
+.er{text-align:center;padding:28px 0;color:#334155;font-size:13px}
+.ld{text-align:center;padding:20px;color:#475569;font-size:12px}
+.sp{display:inline-block;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.dv{display:flex;align-items:center;gap:10px;color:#334155;font-size:11px;margin:2px 0 8px}
+.dv::before,.dv::after{content:'';flex:1;height:1px;background:var(--brd)}
+
+/* ── LOBBY ── */
+#sl{padding:0}
+.lhd{padding:14px 16px 12px;background:linear-gradient(180deg,rgba(59,130,246,.07),transparent);border-bottom:1px solid var(--brd)}
+.cb{background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.18);border-radius:13px;padding:11px;text-align:center;margin-bottom:9px}
+.cl{font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:1px}
+.cv{font-family:'Unbounded',sans-serif;font-size:24px;font-weight:900;color:#22d3ee;letter-spacing:4px;text-shadow:0 0 16px #22d3ee66}
+.mchip{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;background:rgba(59,130,246,.1);
+  border:1px solid rgba(59,130,246,.22);border-radius:18px;font-size:11px;font-weight:700;color:var(--acc)}
+.ll{flex:1;overflow-y:auto;padding:10px 14px}
+.lf{padding:11px 14px;border-top:1px solid var(--brd)}
+
+.pc{display:flex;align-items:center;gap:11px;background:var(--surf);border:1px solid var(--brd);
+  border-radius:13px;padding:10px 12px;margin-bottom:7px;transition:.2s}
+.pc.at{border-color:var(--gold);background:rgba(245,158,11,.05)}
+.aw{position:relative;flex-shrink:0}
+.av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;border:2.5px solid;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.avb{position:absolute;bottom:-2px;right:-2px;width:15px;height:15px;border-radius:50%;
+  background:#0a0f1e;display:flex;align-items:center;justify-content:center;font-size:8px}
+.pi{flex:1;min-width:0}
+.pn{font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd{font-size:10px;color:#475569;margin-top:1px}
+.pm{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:var(--green);white-space:nowrap}
+.bdg{display:inline-block;padding:2px 6px;border-radius:6px;font-size:9px;font-weight:700}
+.by{background:rgba(34,211,238,.1);color:#22d3ee;border:1px solid rgba(34,211,238,.22)}
+.bb{background:rgba(168,85,247,.1);color:#c084fc;border:1px solid rgba(168,85,247,.22)}
+.bh{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.22)}
+.br{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.22)}
+.bbl{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.22)}
+
+/* ── GAME ── */
+#sg{padding:0;background:#0a0f1e;height:100dvh;overflow:hidden}
+
+/* Шапка гравців (як у Моноліфе) */
+.gph{
+  display:flex;align-items:stretch;gap:0;
+  background:#111827;border-bottom:1px solid var(--brd);
+  flex-shrink:0;overflow:hidden;
+}
+.gp-me{
+  flex:1;display:flex;align-items:center;gap:8px;
+  padding:8px 10px;
+  background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(59,130,246,.05));
+  border-right:1px solid var(--brd);
+}
+.gp-other{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:8px 10px;
+  min-width:0;
+}
+.gp-av{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;border:2.5px solid;
+  overflow:hidden;flex-shrink:0;position:relative;
+}
+.gp-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.gp-av.active-ring{box-shadow:0 0 0 2px var(--gold),0 0 8px var(--gold)}
+.gp-info{flex:1;min-width:0}
+.gp-name{font-weight:800;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gp-money{font-family:'Unbounded',sans-serif;font-size:11px;color:var(--green);font-weight:700}
+.gp-pos{font-size:9px;color:#475569;margin-top:1px}
+.gp-others{display:flex;gap:6px;align-items:center;padding:8px 10px;border-left:1px solid var(--brd)}
+.gp-sm{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  cursor:pointer;
+}
+.gp-sm-av{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;border:2px solid;
+  overflow:hidden;flex-shrink:0;
+}
+.gp-sm-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.gp-sm-av.active-ring{box-shadow:0 0 0 2px var(--gold),0 0 6px var(--gold)}
+.gp-sm-money{font-size:8px;color:var(--green);font-weight:700;white-space:nowrap}
+
+/* ── BOARD (новий стиль — картинки) ── */
+.bw{padding:3px;flex-shrink:0}
+.board{
+  width:100%;
+  aspect-ratio:1;
+  max-height:44vh;
+  display:grid;
+  grid-template-columns:1.7fr repeat(9,1fr) 1.7fr;
+  grid-template-rows:1.7fr repeat(9,1fr) 1.7fr;
+  background:#1a3a20;
+  border:2px solid #2d6a3f;
+  border-radius:8px;overflow:hidden;
+}
+.cell{
+  border:.5px solid rgba(45,106,63,.5);
+  display:flex;flex-direction:column;
+  background:#0f2d16;overflow:hidden;
+  position:relative;min-width:0;min-height:0;
+}
+.cell-img{
+  width:100%;flex:1;
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(5px,2.2vw,16px);
+  overflow:hidden;min-height:0;
+}
+.cbar{flex-shrink:0;background:#555}
+.cb-b{flex-direction:column}
+.cb-b .cbar{height:22%;width:100%}
+.cb-b .cell-in{flex:1;min-height:0}
+.cb-t{flex-direction:column-reverse}
+.cb-t .cbar{height:22%;width:100%}
+.cb-t .cell-in{flex:1;min-height:0}
+.cb-r{flex-direction:row}
+.cb-r .cbar{width:20%;height:100%}
+.cb-r .cell-in{flex:1;min-width:0}
+.cb-l{flex-direction:row-reverse}
+.cb-l .cbar{width:20%;height:100%}
+.cb-l .cell-in{flex:1;min-width:0}
+
+.cell-in{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:1px;overflow:hidden;
+  position:relative;
+}
+.cell-nm{
+  font-size:clamp(2.5px,.82vw,5.5px);
+  line-height:1.1;word-break:break-all;
+  text-align:center;color:#86efac;font-weight:700;
+}
+.cell-pr{
+  font-size:clamp(2px,.62vw,4.5px);
+  color:#4ade80;line-height:1;margin-top:.5px;white-space:nowrap;font-weight:700;
+}
+.cell-houses{
+  position:absolute;bottom:1px;left:0;right:0;
+  display:flex;justify-content:center;gap:.5px;
+  z-index:3;pointer-events:none;
+}
+.house-dot{
+  width:clamp(3px,.9vw,6px);height:clamp(3px,.9vw,6px);
+  border-radius:50%;flex-shrink:0;
+}
+.cell.nc{flex-direction:column;align-items:center;justify-content:center}
+.cell.nc .cell-in{width:100%;height:100%}
+.cell.corner{background:#0a1e0d;flex-direction:column;align-items:center;justify-content:center}
+.cin{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:100%;height:100%;gap:1px;padding:2px}
+.cem{font-size:clamp(7px,2vw,14px);line-height:1}
+.clb{font-size:clamp(2.5px,.65vw,5px);color:#86efac;font-weight:800;line-height:1.1;text-align:center;word-break:break-word}
+.bcen{
+  grid-column:2/11;grid-row:2/11;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:#071008;z-index:1;gap:2px;
+}
+.bcflag{font-size:clamp(12px,4vw,24px)}
+.bctitle{
+  font-family:'Unbounded',sans-serif;
+  font-size:clamp(4px,1.5vw,9px);font-weight:900;
+  color:#166534;text-align:center;line-height:1.4;
+}
+.tokens{
+  position:absolute;inset:0;
+  display:flex;justify-content:center;align-items:center;
+  flex-wrap:wrap;gap:1px;
+  z-index:10;pointer-events:none;padding:1px;
+}
+.tokens:has(.tok:only-child) .tok{
+  width:clamp(7px,3vw,20px);height:clamp(7px,3vw,20px);
+}
+.tok{
+  width:clamp(5px,2vw,12px);height:clamp(5px,2vw,12px);
+  border-radius:50%;
+  border:1.5px solid white;
+  box-shadow:0 0 0 1px rgba(0,0,0,.9),0 1px 4px rgba(0,0,0,1);
+  flex-shrink:0;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.tok img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.tok-ltr{
+  font-size:clamp(3px,1vw,7px);font-weight:900;color:white;
+  font-family:'Unbounded',sans-serif;line-height:1;
+}
+.gp{flex:1;overflow-y:auto;display:flex;flex-direction:column;min-height:0}
+.evlog{
+  flex:1;overflow-y:auto;
+  padding:6px 12px;
+  font-size:12px;line-height:1.5;
+  background:#080f1e;
+  min-height:80px;max-height:160px;
+}
+.evlog p{margin:1px 0;color:#94a3b8}
+.evlog p strong{color:#f1f5f9}
+.evlog p .ev-name{font-weight:800;color:#60a5fa}
+.evlog p .ev-prop{font-weight:700;color:#fbbf24}
+.evlog p .ev-money{font-weight:800;color:#22c55e}
+.evlog p .ev-neg{font-weight:800;color:#ef4444}
+.gbot{
+  flex-shrink:0;
+  padding:6px 10px 8px;
+  background:#111827;
+  border-top:1px solid var(--brd);
+}
+.roll-btn{
+  width:100%;padding:13px;border:none;border-radius:12px;
+  font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;
+  cursor:pointer;transition:.18s;
+}
+.roll-btn:active{transform:scale(.97)}
+.roll-btn.my{
+  background:linear-gradient(135deg,#f59e0b,#d97706);color:white;
+  box-shadow:0 4px 18px #f59e0b55;
+  animation:pr 1.6s ease-in-out infinite;
+}
+@keyframes pr{0%,100%{box-shadow:0 4px 18px #f59e0b55}50%{box-shadow:0 6px 28px #f59e0baa}}
+.roll-btn.wait{background:var(--surf);border:1px solid var(--brd);color:#334155;pointer-events:none}
+.prop-buy{
+  background:#111827;border-top:1px solid var(--brd);
+  padding:8px 12px;display:flex;align-items:center;gap:10px;
+  flex-shrink:0;
+}
+.prop-buy-color{width:12px;height:36px;border-radius:4px;flex-shrink:0}
+.prop-buy-info{flex:1;min-width:0}
+.prop-buy-name{font-weight:800;font-size:13px}
+.prop-buy-price{font-family:'Unbounded',sans-serif;font-size:16px;font-weight:900;color:var(--gold)}
+.prop-buy-btn{
+  background:linear-gradient(135deg,#22c55e,#16a34a);color:white;
+  border:none;border-radius:10px;padding:10px 16px;
+  font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;
+  cursor:pointer;flex-shrink:0;
+}
+.dice-row{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 12px 4px;background:#111827;border-top:1px solid var(--brd);
+  flex-shrink:0;
+}
+.die{width:30px;height:30px;flex-shrink:0}
+.die svg{width:30px;height:30px}
+.dsum{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900;color:var(--gold)}
+.dpl,.deq{color:#334155;font-size:13px;font-weight:700}
+#sw{align-items:center;justify-content:center;padding:28px 20px;text-align:center}
+.troph{font-size:68px;animation:tr 1s ease-in-out infinite alternate}
+@keyframes tr{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.08) rotate(4deg)}}
+.wtitle{font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;
+  background:linear-gradient(120deg,#fbbf24,#ef4444,#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:12px 0 5px}
+.wname{font-size:18px;font-weight:800}
+.wmoney{font-family:'Unbounded',sans-serif;font-size:28px;color:var(--green);margin-top:3px}
+.toast{
+  position:fixed;bottom:22px;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:#1a2540;border:1px solid rgba(255,255,255,.18);
+  border-radius:13px;padding:10px 18px;
+  font-size:12px;font-weight:700;z-index:9999;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.4);
+  max-width:80vw;text-align:center;
+}
+.toast.on{transform:translateX(-50%) translateY(0)}
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-thumb{background:var(--brd);border-radius:2px}
 </style>
 </head>
-<body data-theme="classic">
+<body>
 
-<!-- ГОЛОВНИЙ ЕКРАН -->
-<div id="s-main" class="screen active">
-  <div class="main-header">
-    <div style="display:flex;align-items:center;gap:9px;flex:1;min-width:0">
-      <div class="prof-av" id="profAv">?</div>
-      <div class="prof-info">
-        <div class="prof-name" id="profName">Гравець</div>
-        <div class="prof-sub" id="profLeague">🥉 Новачок</div>
-        <div class="gold-badge">🪙 <span id="goldAmt">0</span></div>
-      </div>
-    </div>
-    <div style="display:flex;gap:7px;flex-shrink:0">
-      <button class="settings-btn" onclick="openSettings()">⚙️</button>
-      <button class="create-btn" onclick="openCreate()">СТВОРИТИ<br>ГРУ</button>
-    </div>
+<!-- START -->
+<div id="ss" class="screen active">
+  <div class="hero">
+    <div class="hflag">🇺🇦</div>
+    <div class="htitle">МОНОПОЛІЯ</div>
+    <div class="hsub">УКРАЇНА · MULTIPLAYER</div>
   </div>
-  <div class="servers-strip" id="srvStrip"></div>
-  <div class="main-tabs">
-    <button class="mtab on" onclick="mTab('games',this)">ІГРИ</button>
-    <button class="mtab" onclick="mTab('active',this)">ПОЧАТІ</button>
-    <button class="mtab" onclick="mTab('league',this)">ЛІГИ</button>
-    <button class="mtab" onclick="mTab('join',this)">КОД</button>
-  </div>
-  <div class="tc" id="tc-games"><div id="roomsList" style="padding:14px">⏳ Завантаження...</div></div>
-  <div class="tc" id="tc-active" style="display:none"><div id="myRoomsList" style="padding:14px"></div></div>
-  <div class="tc" id="tc-league" style="display:none"><div id="lgList" style="padding:14px">🏆 Ліги з'являться після перших ігор</div></div>
-  <div class="tc" id="tc-join" style="display:none"><div style="padding:14px"><label class="lbl" style="color:var(--sub);font-size:11px">Ваше ім'я</label><input id="pNj" style="width:100%;padding:11px;background:rgba(255,255,255,.07);border-radius:11px;border:none;color:white"><label class="lbl" style="margin-top:8px">Код кімнати</label><input id="rC" style="width:100%;padding:11px;background:rgba(255,255,255,.07);border-radius:11px;border:none"><button class="btn b-gold" style="margin-top:12px" onclick="joinByCode()">🚪 Приєднатися</button></div></div>
-</div>
 
-<!-- МОДАЛКА СТВОРЕННЯ ГРИ -->
-<div class="overlay" id="createModal">
-  <div class="sheet">
-    <div class="sh-handle"></div>
-    <div class="sh-title">🎮 НОВА ГРА</div>
+  <div class="tabs">
+    <button class="tab on" onclick="stab('cr')">🎮 Створити</button>
+    <button class="tab" onclick="stab('br')">🔍 Кімнати</button>
+    <button class="tab" onclick="stab('jo')">🔑 Код</button>
+  </div>
+
+  <div class="tp on" id="tp-cr">
     <div class="mg">
-      <div class="mc" onclick="sm('classic',this)"><div class="me-ic">🎲</div><div class="mn">Класичний</div><div class="md">2–4 гравці</div></div>
-      <div class="mc" onclick="sm('teams',this)"><div class="me-ic">👥</div><div class="mn">Команди</div><div class="md">2×2</div></div>
-      <div class="mc" onclick="sm('vsbot',this)"><div class="me-ic">🤖</div><div class="mn">Проти бота</div><div class="md">1 vs боти</div></div>
-      <div class="mc" onclick="sm('mixed',this)"><div class="me-ic">🎯</div><div class="mn">Змішаний</div><div class="md">Гравці+боти</div></div>
+      <div class="mc" onclick="sm('classic',this)"><div class="me">🎲</div><div class="mn">Класичний</div><div class="md">2–4 гравці</div></div>
+      <div class="mc" onclick="sm('teams',this)"><div class="me">👥</div><div class="mn">Команди</div><div class="md">2×2</div></div>
+      <div class="mc" onclick="sm('vsbot',this)"><div class="me">🤖</div><div class="mn">Проти бота</div><div class="md">1 vs боти</div></div>
+      <div class="mc" onclick="sm('mixed',this)"><div class="me">🎯</div><div class="mn">Змішаний</div><div class="md">Гравці+боти</div></div>
     </div>
     <label class="lbl">Ваше ім'я</label>
-    <input id="pN" placeholder="Введіть ім'я" maxlength="20" value="Гравець">
+    <input id="pN" placeholder="Введіть ім'я" maxlength="20">
     <div id="bcw" style="display:none">
       <label class="lbl">Кількість ботів</label>
       <select id="bC"><option value="1">1 бот</option><option value="2">2 боти</option><option value="3">3 боти</option></select>
     </div>
-    <button class="btn b-gold" onclick="createRoom()">🎮 Створити</button>
-    <div class="dv">або</div>
-    <button class="btn b-surf" onclick="closeCreate()">Скасувати</button>
+    <button class="btn bp" onclick="createRoom()">🎮 Створити кімнату</button>
+  </div>
+
+  <div class="tp" id="tp-br">
+    <div class="rh"><span class="rt">Відкриті кімнати</span><button class="rb" onclick="loadRooms()">↺</button></div>
+    <label class="lbl">Ваше ім'я</label>
+    <input id="pNb" placeholder="Введіть ім'я" maxlength="20">
+    <div id="rl"><div class="ld"><span class="sp">⏳</span> Завантаження...</div></div>
+  </div>
+
+  <div class="tp" id="tp-jo">
+    <label class="lbl">Ваше ім'я</label>
+    <input id="pNj" placeholder="Введіть ім'я" maxlength="20">
+    <label class="lbl">Код кімнати</label>
+    <input id="rC" placeholder="GAME-XXXX" maxlength="9" style="text-transform:uppercase;letter-spacing:2px">
+    <button class="btn bp" onclick="joinByCode()">🚪 Приєднатися</button>
   </div>
 </div>
 
-<!-- МОДАЛКА НАЛАШТУВАНЬ -->
-<div class="overlay" id="settingsModal">
-  <div class="sheet">
-    <div class="sh-handle"></div>
-    <div class="sh-title">⚙️ НАЛАШТУВАННЯ</div>
-    <div class="srow"><div class="sinfo"><div class="sname">🎨 Тема</div><div class="sdesc">Кольорова схема інтерфейсу</div></div></div>
-    <div class="theme-dots">
-      <div class="tdot on" style="background:linear-gradient(135deg,#12082a,#5b4fcf)" onclick="setTheme('classic',this)"></div>
-      <div class="tdot" style="background:linear-gradient(135deg,#0a1f0a,#16a34a)" onclick="setTheme('fruit',this)"></div>
-      <div class="tdot" style="background:linear-gradient(135deg,#0a0f1e,#1d4ed8)" onclick="setTheme('city',this)"></div>
-    </div>
-    <div class="srow">
-      <div class="sinfo"><div class="sname">🔔 Вібрація</div><div class="sdesc">Haptic feedback при ходах</div></div>
-      <div class="toggle on" id="togHaptic" onclick="this.classList.toggle('on')"></div>
-    </div>
-    <div class="srow"><div class="sinfo"><div class="sname" id="myIdTxt">🆔 —</div><div class="sdesc">Ваш ігровий ID</div></div></div>
-    <div style="height:10px"></div>
-    <button class="btn b-surf" onclick="document.getElementById('settingsModal').classList.remove('on')">Закрити</button>
-  </div>
-</div>
-
-<!-- ЛОБІ -->
-<div id="s-lobby" class="screen">
+<!-- LOBBY -->
+<div id="sl" class="screen">
   <div class="lhd">
-    <div class="cb"><div class="cl">Код кімнати</div><div class="cv" id="lobbyCode">----</div></div>
+    <div class="cb">
+      <div class="cl">Код кімнати</div>
+      <div class="cv" id="lobbyCode">----</div>
+    </div>
     <div style="text-align:center;margin-top:4px"><span class="mchip" id="mchip">🎲 Класичний</span></div>
   </div>
   <div class="ll" id="lobbyList"></div>
   <div class="lf">
-    <button class="btn b-green" id="startBtn" onclick="startGame()" disabled>⏳ Очікування...</button>
-    <button class="btn b-surf" onclick="leaveRoom()">← Вийти</button>
+    <button class="btn bg" id="startBtn" onclick="startGame()" disabled>⏳ Очікування...</button>
+    <button class="btn bs" onclick="leaveRoom()">← Вийти</button>
   </div>
 </div>
 
-<!-- ГРА -->
-<div id="s-game" class="screen">
+<!-- GAME -->
+<div id="sg" class="screen">
   <div class="gph" id="gph"></div>
-  <div class="timer-bar"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>
   <div class="bw"><div class="board" id="board"></div></div>
-  <div class="gp-panel">
-    <div class="panel-tabs">
-      <button class="ptab on" onclick="pTab('log',this)">📋 Лог</button>
-      <button class="ptab" onclick="pTab('chat',this)">💬 Чат</button>
-      <button class="ptab" onclick="pTab('props',this)">🏠 Майно</button>
-    </div>
-    <div id="pv-log" class="pview"><div class="evlog" id="evlog"></div><div class="dice-row" id="diceRow"></div><div class="prop-buy" id="propBuy" style="display:none"></div><div class="gbot"><button id="rollBtn" class="rbtn wait" onclick="rollDice()">⏳ Хід іншого</button></div></div>
-    <div id="pv-chat" class="pview" style="display:none"><div class="chat-log" id="chatLog"></div><div class="chat-inp-row"><input id="chatInput" class="chat-inp" placeholder="Написати в чат..."><button class="chat-send" onclick="sendChat()">➤</button></div></div>
-    <div id="pv-props" class="pview" style="display:none;padding:10px;overflow-y:auto"></div>
+  <div class="gp">
+    <div class="evlog" id="evlog"><p>🎮 Гра починається...</p></div>
+    <div class="dice-row" id="diceRow"><span style="font-size:22px">🎲</span><span style="color:#334155;font-size:11px">Очікуємо кидок...</span></div>
+    <div class="prop-buy" id="propBuy" style="display:none"></div>
+    <div class="gbot"><button class="roll-btn wait" id="rollBtn" onclick="rollDice()">⏳ Хід іншого гравця</button></div>
   </div>
 </div>
 
-<!-- ПЕРЕМОЖЕЦЬ -->
-<div id="s-win" class="screen" style="justify-content:center;align-items:center;text-align:center">
-  <div style="font-size:68px">🏆</div>
-  <div class="wtitle" style="font-family:'Unbounded';font-size:20px;color:var(--gold)">ПЕРЕМОЖЕЦЬ!</div>
-  <div id="wN"></div>
-  <div id="wM" style="font-family:'Unbounded';font-size:26px;color:var(--green)"></div>
-  <div id="wG"></div>
-  <button class="btn b-gold" style="margin-top:20px;width:200px" onclick="location.reload()">🔄 Нова гра</button>
+<!-- WINNER -->
+<div id="sw" class="screen">
+  <div class="troph">🏆</div>
+  <div class="wtitle">ПЕРЕМОЖЕЦЬ!</div>
+  <div class="wname" id="wN"></div>
+  <div class="wmoney" id="wM"></div>
+  <div style="margin-top:24px;width:100%;max-width:260px"><button class="btn bp" onclick="location.reload()">🔄 Нова гра</button></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
 <script>
-// === Ініціалізація Firebase ===
-const FBC = {
-  apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
-  authDomain: "monopoly-ukraine.firebaseapp.com",
-  databaseURL: "https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app"
+// ── TG ──
+const tg=window.Telegram?.WebApp;
+if(tg){tg.ready();tg.expand();tg.setHeaderColor('#0a0f1e');tg.setBackgroundColor('#0a0f1e')}
+const TGU=tg?.initDataUnsafe?.user;
+function hp(t='light'){tg?.HapticFeedback?.impactOccurred(t)}
+
+// ── FIREBASE ──
+const FBC={
+  apiKey:"AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
+  authDomain:"monopoly-ukraine.firebaseapp.com",
+  databaseURL:"https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"monopoly-ukraine"
 };
-firebase.initializeApp(FBC);
-const db = firebase.database();
+let db=null;
+(function(){
+  const s1=document.createElement('script');
+  s1.src='https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js';
+  s1.onload=()=>{
+    const s2=document.createElement('script');
+    s2.src='https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js';
+    s2.onload=()=>{firebase.initializeApp(FBC);db=firebase.database();init()};
+    document.body.appendChild(s2);
+  };
+  document.body.appendChild(s1);
+})();
 
-const tg = window.Telegram?.WebApp;
-if (tg) { tg.ready(); tg.expand(); }
+function init(){
+  if(TGU){
+    const n=TGU.first_name+(TGU.last_name?' '+TGU.last_name:'');
+    ['pN','pNb','pNj'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=n});
+  }
+  loadRooms();
+}
 
-// === Глобальні змінні ===
-let myId = 'p' + Date.now() + Math.random().toString(36).substr(2, 6);
-let myName = 'Гравець';
-let myRoom = null;
-let selMode = null;
-let curServer = 'classic';
-let timerInt = null;
-let gameShown = false;
-let roomListener = null;
-let chatListener = null;
-
-// === КАРТА УКРАЇНА (ціни в гривнях, як на фото) ===
-const MAP_UKRAINE = [
-  { name: "СТАРТ", short: "СТАРТ", type: "corner", emoji: "🏁", pos: 0 },
-  { name: "Луцьк", short: "Луцьк", price: 460000, color: "#b45309", emoji: "🏙", pos: 1 },
-  { name: "ШАНС", short: "ШАНС", type: "chance", emoji: "❓", pos: 2 },
-  { name: "Рівне", short: "Рівне", price: 460000, color: "#b45309", emoji: "🌆", pos: 3 },
-  { name: "ПОДАТОК", short: "ПОДАТОК", type: "tax", amount: 200000, emoji: "💸", pos: 4 },
-  { name: "ВОКЗАЛ КИЇВ", short: "ВОКЗАЛ", price: 1300000, type: "station", emoji: "🚂", pos: 5 },
-  { name: "Житомир", short: "Житомир", price: 780000, color: "#1d4ed8", emoji: "🏘", pos: 6 },
-  { name: "ШАНС", short: "ШАНС", type: "chance", emoji: "❓", pos: 7 },
-  { name: "Чернігів", short: "Чернігів", price: 780000, color: "#1d4ed8", emoji: "⛪", pos: 8 },
-  { name: "Суми", short: "Суми", price: 900000, color: "#1d4ed8", emoji: "🌃", pos: 9 },
-  { name: "В'ЯЗНИЦЯ", short: "В'ЯЗНИЦЯ", type: "jail", emoji: "⛓", pos: 10 },
-  { name: "Полтава", short: "Полтава", price: 1100000, color: "#be185d", emoji: "🏛", pos: 11 },
-  { name: "ЕЛЕКТРОСТАНЦІЯ", short: "ЕЛЕКТРО", price: 1400000, type: "utility", emoji: "⚡", pos: 12 },
-  { name: "Черкаси", short: "Черкаси", price: 1100000, color: "#be185d", emoji: "🌉", pos: 13 },
-  { name: "Кропивницький", short: "Кропив", price: 1300000, color: "#be185d", emoji: "🏗", pos: 14 },
-  { name: "ВОКЗАЛ ЛЬВІВ", short: "ВОКЗАЛ", price: 1300000, type: "station", emoji: "🚂", pos: 15 },
-  { name: "Вінниця", short: "Вінниця", price: 1500000, color: "#c2410c", emoji: "🌇", pos: 16 },
-  { name: "ШАНС", short: "ШАНС", type: "chance", emoji: "❓", pos: 17 },
-  { name: "Хмельницький", short: "Хмельн.", price: 1500000, color: "#c2410c", emoji: "🏙", pos: 18 },
-  { name: "Тернопіль", short: "Тернопіль", price: 1700000, color: "#c2410c", emoji: "🕌", pos: 19 },
-  { name: "ВІДПУСТКА", short: "ВІДПУСТКА", type: "corner", emoji: "🏖", pos: 20 },
-  { name: "Івано-Франківськ", short: "І-Фр", price: 1900000, color: "#b91c1c", emoji: "⛰", pos: 21 },
-  { name: "ШАНС", short: "ШАНС", type: "chance", emoji: "❓", pos: 22 },
-  { name: "Чернівці", short: "Чернівці", price: 1900000, color: "#b91c1c", emoji: "🏰", pos: 23 },
-  { name: "Ужгород", short: "Ужгород", price: 2100000, color: "#b91c1c", emoji: "🗺", pos: 24 },
-  { name: "ВОКЗАЛ ОДЕСА", short: "ВОКЗАЛ", price: 1300000, type: "station", emoji: "🚂", pos: 25 },
-  { name: "Львів", short: "Львів", price: 2300000, color: "#a16207", emoji: "🦁", pos: 26 },
-  { name: "Миколаїв", short: "Миколаїв", price: 2300000, color: "#a16207", emoji: "⚓", pos: 27 },
-  { name: "ВОДОКАНАЛ", short: "ВОДОКАН", price: 1400000, type: "utility", emoji: "💧", pos: 28 },
-  { name: "Херсон", short: "Херсон", price: 2500000, color: "#a16207", emoji: "🌊", pos: 29 },
-  { name: "ПОЛІЦІЯ", short: "ПОЛІЦІЯ", type: "jail", emoji: "👮", pos: 30 },
-  { name: "Запоріжжя", short: "Запоріжжя", price: 2700000, color: "#15803d", emoji: "⚔️", pos: 31 },
-  { name: "Дніпро", short: "Дніпро", price: 2700000, color: "#15803d", emoji: "🌊", pos: 32 },
-  { name: "ШАНС", short: "ШАНС", type: "chance", emoji: "❓", pos: 33 },
-  { name: "Кривий Ріг", short: "Кривий", price: 2900000, color: "#15803d", emoji: "🏭", pos: 34 },
-  { name: "ВОКЗАЛ ХАРКІВ", short: "ВОКЗАЛ", price: 1300000, type: "station", emoji: "🚂", pos: 35 },
-  { name: "ШАНС", short: "ШАНС", type: "chance", emoji: "❓", pos: 36 },
-  { name: "Харків", short: "Харків", price: 3200000, color: "#6d28d9", emoji: "🎓", pos: 37 },
-  { name: "ПОДАТОК", short: "ПОДАТОК", type: "tax", amount: 1000000, emoji: "💸", pos: 38 },
-  { name: "КИЇВ", short: "КИЇВ", price: 4000000, color: "#6d28d9", emoji: "🏛", pos: 39 }
+// ── КАРТА УКРАЇНИ (ціни як на фото: 460т, 1.3м, 2.0м тощо) ──
+const PROPS=[
+  {name:"СТАРТ", short:"СТАРТ", type:"corner", emoji:"🏁", pos:0},
+  {name:"Луцьк", short:"Луцьк", price:460000, color:"#b45309", emoji:"🏙", pos:1},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:2},
+  {name:"Рівне", short:"Рівне", price:460000, color:"#b45309", emoji:"🌆", pos:3},
+  {name:"ПОДАТОК", short:"ПОДАТОК", type:"tax", amount:200000, emoji:"💸", pos:4},
+  {name:"ВОКЗАЛ КИЇВ", short:"ВОКЗАЛ", price:1300000, type:"station", emoji:"🚂", pos:5},
+  {name:"Житомир", short:"Житомир", price:780000, color:"#1d4ed8", emoji:"🏘", pos:6},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:7},
+  {name:"Чернігів", short:"Чернігів", price:780000, color:"#1d4ed8", emoji:"⛪", pos:8},
+  {name:"Суми", short:"Суми", price:900000, color:"#1d4ed8", emoji:"🌃", pos:9},
+  {name:"В'ЯЗНИЦЯ", short:"В'ЯЗНИЦЯ", type:"jail", emoji:"⛓", pos:10},
+  {name:"Полтава", short:"Полтава", price:1100000, color:"#be185d", emoji:"🏛", pos:11},
+  {name:"ЕЛЕКТРОСТАНЦІЯ", short:"ЕЛЕКТРО", price:1400000, type:"utility", emoji:"⚡", pos:12},
+  {name:"Черкаси", short:"Черкаси", price:1100000, color:"#be185d", emoji:"🌉", pos:13},
+  {name:"Кропивницький", short:"Кропив", price:1300000, color:"#be185d", emoji:"🏗", pos:14},
+  {name:"ВОКЗАЛ ЛЬВІВ", short:"ВОКЗАЛ", price:1300000, type:"station", emoji:"🚂", pos:15},
+  {name:"Вінниця", short:"Вінниця", price:1500000, color:"#c2410c", emoji:"🌇", pos:16},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:17},
+  {name:"Хмельницький", short:"Хмельн.", price:1500000, color:"#c2410c", emoji:"🏙", pos:18},
+  {name:"Тернопіль", short:"Тернопіль", price:1700000, color:"#c2410c", emoji:"🕌", pos:19},
+  {name:"ВІДПУСТКА", short:"ВІДПУСТКА", type:"corner", emoji:"🏖", pos:20},
+  {name:"Івано-Франківськ", short:"І-Фр", price:1900000, color:"#b91c1c", emoji:"⛰", pos:21},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:22},
+  {name:"Чернівці", short:"Чернівці", price:1900000, color:"#b91c1c", emoji:"🏰", pos:23},
+  {name:"Ужгород", short:"Ужгород", price:2100000, color:"#b91c1c", emoji:"🗺", pos:24},
+  {name:"ВОКЗАЛ ОДЕСА", short:"ВОКЗАЛ", price:1300000, type:"station", emoji:"🚂", pos:25},
+  {name:"Львів", short:"Львів", price:2300000, color:"#a16207", emoji:"🦁", pos:26},
+  {name:"Миколаїв", short:"Миколаїв", price:2300000, color:"#a16207", emoji:"⚓", pos:27},
+  {name:"ВОДОКАНАЛ", short:"ВОДОКАН", price:1400000, type:"utility", emoji:"💧", pos:28},
+  {name:"Херсон", short:"Херсон", price:2500000, color:"#a16207", emoji:"🌊", pos:29},
+  {name:"ПОЛІЦІЯ", short:"ПОЛІЦІЯ", type:"jail", emoji:"👮", pos:30},
+  {name:"Запоріжжя", short:"Запоріжжя", price:2700000, color:"#15803d", emoji:"⚔️", pos:31},
+  {name:"Дніпро", short:"Дніпро", price:2700000, color:"#15803d", emoji:"🌊", pos:32},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:33},
+  {name:"Кривий Ріг", short:"Кривий", price:2900000, color:"#15803d", emoji:"🏭", pos:34},
+  {name:"ВОКЗАЛ ХАРКІВ", short:"ВОКЗАЛ", price:1300000, type:"station", emoji:"🚂", pos:35},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:36},
+  {name:"Харків", short:"Харків", price:3200000, color:"#6d28d9", emoji:"🎓", pos:37},
+  {name:"ПОДАТОК", short:"ПОДАТОК", type:"tax", amount:1000000, emoji:"💸", pos:38},
+  {name:"КИЇВ", short:"КИЇВ", price:4000000, color:"#6d28d9", emoji:"🏛", pos:39}
 ];
 
-const COLORS = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b'];
-const CNAMES = ['🔵 Синій', '🔴 Червоний', '🟢 Зелений', '🟡 Жовтий'];
+const COLORS=['#3b82f6','#ef4444','#22c55e','#f59e0b'];
+const CNAMES=['🔵 Синій','🔴 Червоний','🟢 Зелений','🟡 Жовтий'];
+const MICONS={classic:'🎲',teams:'👥',vsbot:'🤖',mixed:'🎯'};
+const MNAMES={classic:'Класичний',teams:'Команди 2×2',vsbot:'Проти бота',mixed:'Змішаний'};
 
-// === Допоміжні функції ===
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+// ── STATE ──
+let myId='p'+Date.now()+Math.random().toString(36).substr(2,4);
+let myRoom=null,myName='Гравець',selMode=null;
+let roomOff=null,botTmr=null,gameShown=false,boardBuilt=false;
+let lastGameState=null;
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function toast(msg,ms=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),ms)}
+
+function stab(n){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('on'));
+  const idx={cr:0,br:1,jo:2}[n];
+  document.querySelectorAll('.tab')[idx].classList.add('on');
+  document.getElementById('tp-'+n).classList.add('on');
+  if(n==='br')loadRooms();
+  const cur={cr:'pN',br:'pNb',jo:'pNj'}[n];
+  const filled=['pN','pNb','pNj'].map(id=>document.getElementById(id).value).find(v=>v.trim());
+  if(filled&&cur){const el=document.getElementById(cur);if(el&&!el.value)el.value=filled}
 }
 
-function toast(msg, ms = 2000) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
+function sm(m,el){
+  selMode=m;
+  document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on'));
   el.classList.add('on');
-  setTimeout(() => el.classList.remove('on'), ms);
+  document.getElementById('bcw').style.display=(m==='vsbot'||m==='mixed')?'block':'none';
+  hp('light');
 }
 
-async function addLog(msg) {
-  const log = document.getElementById('evlog');
-  if (log) {
-    const p = document.createElement('p');
-    p.innerHTML = msg;
-    log.appendChild(p);
-    while (log.children.length > 50) log.removeChild(log.firstChild);
-    log.scrollTop = log.scrollHeight;
+function avHtml(p,sz=40){
+  const c=p.color||'#3b82f6',i=(p.name||'?')[0].toUpperCase();
+  const style=`width:${sz}px;height:${sz}px;background:${c}22;border-color:${c};color:${c}`;
+  if(p.photoUrl)return`<div class="av" style="${style}"><img src="${p.photoUrl}" onerror="this.style.display='none'" alt="${i}"><span style="position:absolute">${i}</span></div>`;
+  return`<div class="av" style="${style}">${i}</div>`;
+}
+function miniAv(p){
+  const c=p.color||'#3b82f6',i=(p.name||'?')[0].toUpperCase();
+  if(p.photoUrl)return`<div class="mav" style="border-color:${c};background:${c}22;"><img src="${p.photoUrl}" onerror="this.textContent='${i}'" alt="${i}"></div>`;
+  return`<div class="mav" style="background:${c}22;border-color:${c};color:${c}">${i}</div>`;
+}
+function myData(idx=0){
+  return{id:myId,name:myName,pos:0,money:15000000,props:[],houses:{},
+    online:true,color:COLORS[idx],colorName:CNAMES[idx],isBot:false,
+    photoUrl:TGU?.photo_url||null, jail:false, jailTurns:0, vipCard:false, vipUses:0};
+}
+
+// ── ROOMS ──
+async function loadRooms(){
+  if(!db){setTimeout(loadRooms,800);return}
+  const el=document.getElementById('rl');
+  el.innerHTML='<div class="ld"><span class="sp">⏳</span> Завантаження...</div>';
+  const snap=await db.ref('rooms').orderByChild('status').equalTo('waiting').once('value');
+  const data=snap.val();
+  const list=data?Object.entries(data).map(([key,r])=>({...r,code:r.code||key})).filter(r=>{
+    const pl=Object.values(r.players||{});
+    return pl.length<4&&pl.some(p=>!p.isBot);
+  }):[];
+  if(!list.length){el.innerHTML='<div class="er">😕 Немає відкритих кімнат<br><small style="color:#334155">Створіть нову!</small></div>';return}
+  el.innerHTML=list.slice(0,8).map(r=>{
+    const pl=Object.values(r.players||{});
+    const code=r.code||Object.keys(snap.val()||{}).find(k=>snap.val()[k]===r)||'???';
+    return`<div class="ri" onclick="quickJoin('${r.code||code}')">
+      <div class="rico">${MICONS[r.mode]||'🎲'}</div>
+      <div class="rin"><div class="rnm">${r.code||code}</div><div class="rmt">${MNAMES[r.mode]||'Класичний'} · ${pl.length}/4</div></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+        <div class="rav">${pl.map(p=>miniAv(p)).join('')}</div>
+        <div class="jp">Зайти →</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function quickJoin(code){myName=document.getElementById('pNb').value.trim()||TGU?.first_name||'Гравець';await joinToRoom(code);}
+async function createRoom(){
+  if(!selMode){toast('⚠️ Оберіть режим!');return}
+  myName=document.getElementById('pN').value.trim()||TGU?.first_name||'Гравець';
+  myRoom='GAME-'+Math.random().toString(36).substr(2,4).toUpperCase();
+  const players={};players[myId]=myData(0);
+  if(selMode==='teams')players[myId].team='red';
+  if(selMode==='vsbot'||selMode==='mixed'){
+    const cnt=parseInt(document.getElementById('bC').value);
+    for(let i=0;i<cnt;i++)players['bot_'+i]={id:'bot_'+i,name:'Бот '+(i+1),pos:0,money:15000000,props:[],houses:{},online:true,color:COLORS[i+1],colorName:CNAMES[i+1],isBot:true,photoUrl:null};
   }
+  const room={code:myRoom,mode:selMode,status:'waiting',players,hostId:myId,game:{current:0,dice1:0,dice2:0,lastRoll:0},createdAt:Date.now()};
+  if(selMode==='teams')room.teams={red:[myId],blue:[]};
+  await db.ref('rooms/'+myRoom).set(room);
+  openLobby(selMode);hp('medium');
 }
-
-function getCell(pos) { return MAP_UKRAINE[pos]; }
-
-function myData(idx) {
-  return {
-    id: myId, name: myName, pos: 0, money: 15000000, props: [], houses: {},
-    jail: false, jailTurns: 0, vipCard: false, vipUses: 0, mortgaged: [],
-    color: COLORS[idx % COLORS.length], colorName: CNAMES[idx % COLORS.length], isBot: false
-  };
+async function joinByCode(){
+  myName=document.getElementById('pNj').value.trim()||TGU?.first_name||'Гравець';
+  const code=document.getElementById('rC').value.trim().toUpperCase();
+  if(!code){toast('⚠️ Введіть код');return}
+  await joinToRoom(code);
 }
-
-// === Функція для малювання кубиків (SVG) ===
-function dieSVG(value) {
-  const dots = {
-    1: [[50,50]], 2: [[25,25],[75,75]], 3: [[25,25],[50,50],[75,75]],
-    4: [[25,25],[75,25],[25,75],[75,75]],
-    5: [[25,25],[75,25],[50,50],[25,75],[75,75]],
-    6: [[25,20],[75,20],[25,50],[75,50],[25,80],[75,80]]
-  }[value] || [[50,50]];
-  return `<svg viewBox="0 0 100 100"><rect width="100" height="100" rx="18" fill="white" stroke="#e2e8f0" stroke-width="3"/>${dots.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="9" fill="#1e293b"/>`).join('')}</svg>`;
-}
-
-// === Шанс (лотерея, податки, VIP, пропуск) ===
-function chanceEffect(player) {
-  const r = Math.floor(Math.random() * 12);
-  let delta = 0, jail = false, vip = false, taxSkip = false, text = '';
-  if (r === 0) { delta = 500000; text = "Виграли в лотерею +500 000₴"; }
-  else if (r === 1) { delta = -300000; text = "Штраф за порушення -300 000₴"; }
-  else if (r === 2) { delta = 200000; text = "Повернення податку +200 000₴"; }
-  else if (r === 3) { delta = -150000; text = "Оплата комунальних -150 000₴"; }
-  else if (r === 4) { delta = 1000000; text = "Нагорода за інвестиції +1 000 000₴"; }
-  else if (r === 5) { jail = true; text = "Вирушаєте у в'язницю! Пропустіть 3 ходи"; }
-  else if (r === 6) { vip = true; text = "VIP-картка! Наступні 2 податки/оренди зі знижкою 50%"; }
-  else if (r === 7) { delta = -500000; text = "Ремонт бізнесу -500 000₴"; }
-  else if (r === 8) { delta = 750000; text = "Дохід від акцій +750 000₴"; }
-  else if (r === 9) { taxSkip = true; text = "Пропуск податку! Наступний податок 0₴"; }
-  else if (r === 10) { delta = 150000; text = "Знайшли гаманець +150 000₴"; }
-  else { delta = -200000; text = "Благодійний внесок -200 000₴"; }
-  return { delta, jail, vip, taxSkip, text };
-}
-
-// === Отримати власника клітинки ===
-async function getOwner(pos) {
-  const snap = await db.ref(`rooms/${myRoom}/players`).once('value');
-  const players = snap.val();
-  if (!players) return null;
-  for (let id in players) {
-    if (players[id].props && players[id].props.includes(pos)) return players[id];
+async function joinToRoom(code){
+  if(!db){toast('❌ Немає підключення');return}
+  const snap=await db.ref('rooms/'+code).once('value');
+  if(!snap.val()){toast('❌ Кімнату не знайдено');return}
+  const room=snap.val();
+  const pl=Object.values(room.players||{});
+  if(pl.length>=4){toast('❌ Кімната повна');return}
+  if(room.status!=='waiting'){toast('❌ Гра вже почалась');return}
+  myRoom=code;selMode=room.mode;
+  const np=myData(pl.length);
+  if(room.mode==='teams'){
+    const rc=Object.values(room.players).filter(p=>p.team==='red').length;
+    np.team=rc<2?'red':'blue';
   }
+  await db.ref('rooms/'+myRoom+'/players/'+myId).set(np);
+  openLobby(room.mode);hp('medium');
+}
+function openLobby(mode){
+  document.getElementById('lobbyCode').textContent=myRoom;
+  document.getElementById('mchip').textContent=(MICONS[mode]||'🎲')+' '+(MNAMES[mode]||mode);
+  showScreen('sl');listenRoom();
+}
+async function startGame(){await db.ref('rooms/'+myRoom).update({status:'playing'});hp('heavy')}
+async function leaveRoom(){
+  if(roomOff){db.ref('rooms/'+myRoom).off('value',roomOff);roomOff=null}
+  if(myRoom)await db.ref('rooms/'+myRoom+'/players/'+myId).remove();
+  myRoom=null;selMode=null;gameShown=false;boardBuilt=false;lastGameState=null;
+  document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on'));
+  showScreen('ss');loadRooms();
+}
+function listenRoom(){
+  if(roomOff)db.ref('rooms/'+myRoom).off('value',roomOff);
+  roomOff=db.ref('rooms/'+myRoom).on('value',snap=>{
+    const r=snap.val();if(!r)return;
+    if(r.status==='waiting')renderLobby(r);
+    else if(r.status==='playing')renderGame(r);
+    else if(r.status==='finished')renderWinner(r);
+  });
+}
+function renderLobby(room){
+  const pl=Object.values(room.players||{});
+  const hostId=room.hostId||(pl.find(p=>!p.isBot)?.id)||null;
+  const minH=room.mode==='teams'?4:(room.mode==='vsbot'||room.mode==='mixed')?1:2;
+  const hCnt=pl.filter(p=>!p.isBot).length;
+  document.getElementById('lobbyList').innerHTML=pl.map(p=>{
+    let b='';
+    if(p.id===myId)b+='<span class="bdg by">Ви</span> ';
+    if(p.id===hostId)b+='<span class="bdg bh">👑</span> ';
+    if(p.isBot)b+='<span class="bdg bb">🤖</span>';
+    if(p.team==='red')b+=' <span class="bdg br">Червона</span>';
+    if(p.team==='blue')b+=' <span class="bdg bbl">Синя</span>';
+    return`<div class="pc"><div class="aw">${avHtml(p,40)}<div class="avb">${p.isBot?'🤖':'👤'}</div></div><div class="pi"><div class="pn">${p.name}</div><div class="pd">${p.colorName} ${b}</div></div><div class="pm">${p.money.toLocaleString()}₴</div></div>`;
+  }).join('');
+  const btn=document.getElementById('startBtn');
+  const isHost=hostId===myId;
+  const canStart=hCnt>=minH;
+  btn.disabled=!canStart||!isHost;
+  btn.textContent=!isHost?'⏳ Чекаємо хоста...':!canStart?`⏳ Ще ${minH-hCnt} гравців`:`▶️ Почати (${pl.length} гравців)`;
+}
+function buildBoard(){
+  if(boardBuilt)return;boardBuilt=true;
+  const board=document.getElementById('board');board.innerHTML='';
+  const cen=document.createElement('div');cen.className='bcen';cen.style.gridColumn='2/11';cen.style.gridRow='2/11';
+  cen.innerHTML='<div class="bcflag">🇺🇦</div><div class="bctitle">МОНОПОЛІЯ<br>УКРАЇНА</div>';
+  board.appendChild(cen);
+  const posMap=[];
+  for(let i=0;i<=10;i++)posMap.push({row:10,col:i,side:'b'});
+  for(let i=9;i>=1;i--)posMap.push({row:i,col:10,side:'r'});
+  for(let i=10;i>=0;i--)posMap.push({row:0,col:i,side:'t'});
+  for(let i=1;i<=9;i++)posMap.push({row:i,col:0,side:'l'});
+  posMap.forEach(({row,col,side},idx)=>{
+    if(idx>=40)return;
+    const p=PROPS[idx];
+    const cell=document.createElement('div');cell.className='cell';cell.id='cell-'+idx;
+    cell.style.gridRow=row+1;cell.style.gridColumn=col+1;
+    if(p.type==='corner'){
+      cell.classList.add('corner');
+      cell.innerHTML=`<div class="cin"><div class="cem">${p.emoji}</div><div class="clb">${p.short}</div></div>`;
+    } else if(p.color){
+      cell.classList.add('cb-'+side);
+      cell.innerHTML=`<div class="cbar" style="background:${p.color}"></div>
+        <div class="cell-in">
+          <div class="cell-img">${p.emoji}</div>
+          <div class="cell-nm">${p.short}</div>
+          <div class="cell-pr">${p.price.toLocaleString()}₴</div>
+          <div class="cell-houses" id="h-${idx}"></div>
+        </div>`;
+    } else {
+      cell.classList.add('nc');
+      cell.innerHTML=`<div class="cell-in"><div class="cell-img">${p.emoji}</div><div class="cell-nm">${p.short}</div></div>`;
+    }
+    const tok=document.createElement('div');tok.className='tokens';tok.id='tok-'+idx;cell.appendChild(tok);
+    board.appendChild(cell);
+  });
+}
+function addLog(html){
+  const log=document.getElementById('evlog');if(!log)return;
+  const p=document.createElement('p');p.innerHTML=html;
+  log.appendChild(p);while(log.children.length>40)log.removeChild(log.firstChild);
+  log.scrollTop=log.scrollHeight;
+}
+function dieSVG(n){
+  const d={1:[[50,50]],2:[[25,25],[75,75]],3:[[25,25],[50,50],[75,75]],
+    4:[[25,25],[75,25],[25,75],[75,75]],5:[[25,25],[75,25],[50,50],[25,75],[75,75]],
+    6:[[25,20],[75,20],[25,50],[75,50],[25,80],[75,80]]}[n]||[[50,50]];
+  return`<svg viewBox="0 0 100 100"><rect width="100" height="100" rx="18" fill="white" stroke="#e2e8f0" stroke-width="3"/>${d.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="9" fill="#1e293b"/>`).join('')}</svg>`;
+}
+async function rollDice(){
+  if(!db||!myRoom)return;
+  const snap=await db.ref('rooms/'+myRoom).once('value');
+  const room=snap.val();if(!room)return;
+  const pl=Object.values(room.players);
+  const cur=pl[room.game.current];
+  if(cur?.id!==myId){toast('⚠️ Не ваш хід!');return}
+  hp('medium');
+  const d1=Math.ceil(Math.random()*6),d2=Math.ceil(Math.random()*6);
+  const newPos=(cur.pos+d1+d2)%40;
+  let money=cur.money;
+  const p=PROPS[newPos];
+  addLog(`<strong>${cur.name}</strong> кидає <span class="ev-money">${d1}+${d2}=${d1+d2}</span> → <span class="ev-prop">${p.name}</span>`);
+  if(newPos<cur.pos){money+=2000000;addLog(`🏁 <span class="ev-name">${cur.name}</span> проходить СТАРТ <span class="ev-money">+2 000 000₴</span>`);toast('🏁 +2 000 000₴');hp('heavy');}
+  if(p.type==='jail'){money=Math.max(0,money-500000);addLog(`⛓ <span class="ev-name">${cur.name}</span> потрапив у в'язницю! <span class="ev-neg">-500 000₴</span>`);toast('⛓ В'язниця!');}
+  if(p.type==='tax'){
+    let tax=p.amount;
+    if(cur.vipCard&&cur.vipUses>0){tax=Math.floor(tax/2);cur.vipUses--;addLog(`💳 VIP карта зменшила податок до ${tax.toLocaleString()}₴`);}
+    money=Math.max(0,money-tax);
+    addLog(`💸 <span class="ev-name">${cur.name}</span> платить податок <span class="ev-neg">-${tax.toLocaleString()}₴</span>`);
+    toast(`Податок -${tax.toLocaleString()}₴`);
+  }
+  if(p.type==='chance'){
+    const r=Math.floor(Math.random()*10);
+    let delta=0,text='',jail=false,vip=false;
+    if(r===0){delta=500000;text='Виграли в лотерею +500 000₴';}
+    else if(r===1){delta=-300000;text='Штраф за порушення -300 000₴';}
+    else if(r===2){delta=200000;text='Повернення податку +200 000₴';}
+    else if(r===3){delta=-150000;text='Оплата комунальних -150 000₴';}
+    else if(r===4){delta=1000000;text='Нагорода за інвестиції +1 000 000₴';}
+    else if(r===5){jail=true;text='Вирушаєте у в'язницю! Пропустіть 3 ходи';}
+    else if(r===6){vip=true;text='VIP-картка! Наступні 2 податки/оренди зі знижкою 50%';}
+    else if(r===7){delta=-500000;text='Ремонт бізнесу -500 000₴';}
+    else if(r===8){delta=750000;text='Дохід від акцій +750 000₴';}
+    else{delta=150000;text='Знайшли гаманець +150 000₴';}
+    money=Math.max(0,money+delta);
+    addLog(`❓ ШАНС: ${text} <span class="${delta>0?'ev-money':'ev-neg'}">${delta>0?'+':''}${delta.toLocaleString()}₴</span>`);
+    if(jail){await db.ref('rooms/'+myRoom+'/players/'+myId).update({jail:true,jailTurns:3});}
+    if(vip){await db.ref('rooms/'+myRoom+'/players/'+myId).update({vipCard:true,vipUses:2});}
+  }
+  const owner=await getOwner(newPos);
+  if(owner&&owner.id!==myId&&!p.type){
+    let rent=Math.floor(p.price*0.1);
+    if(owner.houses&&owner.houses[newPos])rent+=rent*0.5*owner.houses[newPos];
+    if(cur.vipCard&&cur.vipUses>0){rent=Math.floor(rent/2);cur.vipUses--;addLog(`💳 VIP знижка на оренду!`);}
+    money=Math.max(0,money-rent);
+    addLog(`💰 <span class="ev-name">${cur.name}</span> платить оренду <span class="ev-neg">-${rent.toLocaleString()}₴</span> → <span class="ev-name">${owner.name}</span>`);
+    await db.ref('rooms/'+myRoom+'/players/'+owner.id).update({money:owner.money+rent});
+  }
+  await db.ref('rooms/'+myRoom+'/players/'+myId).update({pos:newPos,money});
+  await db.ref('rooms/'+myRoom+'/game').update({dice1:d1,dice2:d2,current:(room.game.current+1)%pl.length,lastRoll:Date.now()});
+}
+async function getOwner(pos){
+  const snap=await db.ref(`rooms/${myRoom}/players`).once('value');
+  const pl=snap.val();if(!pl)return null;
+  for(let id in pl)if(pl[id].props&&pl[id].props.includes(pos))return pl[id];
   return null;
 }
-
-// === Обробка ходу гравця (без купівлі, тільки рух і події) ===
-async function processTurn(player, d1, d2) {
-  let newPos = (player.pos + d1 + d2) % 40;
-  let money = player.money;
-  let passStart = newPos < player.pos;
-  if (passStart) {
-    money += 2000000;
-    addLog(`🏁 <span class="en">${player.name}</span> пройшов СТАРТ → <span class="em">+2 000 000₴</span>`);
-    toast(`+2 000 000₴`);
-  }
-  const cell = getCell(newPos);
-  addLog(`🎲 <span class="en">${player.name}</span> кинув ${d1}+${d2}=${d1+d2} → <span class="ep">${cell.name}</span>`);
-  
-  let jailFlag = player.jail, jailTurns = player.jailTurns, vipCard = player.vipCard, vipUses = player.vipUses;
-  
-  if (cell.type === 'jail') {
-    addLog(`⛓ <span class="en">${player.name}</span> потрапив у в'язницю!`); toast(`⛓ В'язниця!`);
-    money = Math.max(0, money - 500000);
-    return { pos: newPos, money, jail: true, jailTurns: 3, vipCard, vipUses };
-  }
-  if (cell.type === 'tax') {
-    let tax = cell.amount;
-    if (vipCard && vipUses > 0) { tax = Math.floor(tax / 2); vipUses--; addLog(`💳 VIP карта зменшила податок до ${tax.toLocaleString()}₴`); }
-    money = Math.max(0, money - tax);
-    addLog(`💸 <span class="en">${player.name}</span> податок <span class="ex">-${tax.toLocaleString()}₴</span>`); toast(`Податок -${tax.toLocaleString()}₴`);
-  }
-  if (cell.type === 'chance') {
-    const eff = chanceEffect(player);
-    money = Math.max(0, money + eff.delta);
-    if (eff.delta !== 0) addLog(`❓ ШАНС: ${eff.text} <span class="${eff.delta>0?'em':'ex'}">${eff.delta>0?'+':''}${eff.delta.toLocaleString()}₴</span>`);
-    else addLog(`❓ ШАНС: ${eff.text}`);
-    if (eff.jail) return { pos: newPos, money, jail: true, jailTurns: 3, vipCard, vipUses };
-    if (eff.vip) { vipCard = true; vipUses = 2; addLog(`💳 <span class="ep">VIP-картка активована! 2 податки/оренди зі знижкою 50%</span>`); }
-    if (eff.taxSkip) { /* можна додати логіку пропуску податку, для простоти поки ігноруємо */ }
-  }
-  // Оренда
-  const owner = await getOwner(newPos);
-  if (owner && owner.id !== player.id) {
-    let rent = Math.floor(cell.price * 0.1);
-    if (owner.houses && owner.houses[newPos]) rent += rent * 0.5 * owner.houses[newPos];
-    if (vipCard && vipUses > 0) { rent = Math.floor(rent / 2); vipUses--; addLog(`💳 VIP знижка на оренду!`); }
-    money = Math.max(0, money - rent);
-    addLog(`💰 <span class="en">${player.name}</span> → <span class="en">${owner.name}</span> оренда <span class="ex">-${rent.toLocaleString()}₴</span>`);
-    await db.ref(`rooms/${myRoom}/players/${owner.id}`).update({ money: owner.money + rent });
-  }
-  return { pos: newPos, money, jail: jailFlag, jailTurns, vipCard, vipUses };
+async function buyProp(pos,price){
+  const snap=await db.ref('rooms/'+myRoom).once('value');
+  const me=snap.val()?.players?.[myId];if(!me||me.money<price){toast('❌ Недостатньо грошей!');return;}
+  const p=PROPS[pos];
+  await db.ref('rooms/'+myRoom+'/players/'+myId).update({props:[...(me.props||[]),pos],money:me.money-price});
+  addLog(`🏠 <span class="ev-name">${me.name}</span> купує <span class="ev-prop">${p.name}</span> за <span class="ev-neg">-${price.toLocaleString()}₴</span>`);
+  toast(`🏠 ${p.name} куплено!`);
 }
-
-// === Кидок кубиків ===
-async function rollDice() {
-  if (!myRoom) return;
-  const snap = await db.ref(`rooms/${myRoom}`).once('value');
-  const room = snap.val();
-  if (!room) return;
-  const players = Object.values(room.players);
-  const current = players[room.game.current];
-  if (!current || current.id !== myId) { toast("Не ваш хід!"); return; }
-  const d1 = Math.ceil(Math.random() * 6), d2 = Math.ceil(Math.random() * 6);
-  const result = await processTurn(current, d1, d2);
-  await db.ref(`rooms/${myRoom}/players/${myId}`).update({
-    pos: result.pos, money: result.money, jail: result.jail, jailTurns: result.jailTurns,
-    vipCard: result.vipCard, vipUses: result.vipUses
-  });
-  const next = (room.game.current + 1) % players.length;
-  await db.ref(`rooms/${myRoom}/game`).update({ dice1: d1, dice2: d2, current: next, lastRoll: Date.now() });
-  addLog(`🎲 <span class="en">${current.name}</span> завершив хід`);
-  const buyDiv = document.getElementById('propBuy');
-  if (buyDiv) buyDiv.style.display = 'none';
+async function buildHouse(pos,cost){
+  const snap=await db.ref('rooms/'+myRoom).once('value');
+  const me=snap.val()?.players?.[myId];if(!me||me.money<cost){toast('❌ Недостатньо грошей!');return;}
+  const houses={...(me.houses||{})};houses[pos]=(houses[pos]||0)+1;
+  if(houses[pos]>4){toast('❌ Максимум 4 будинки!');return;}
+  await db.ref('rooms/'+myRoom+'/players/'+myId).update({houses,money:me.money-cost});
+  addLog(`🏠 <span class="ev-name">${me.name}</span> будує будинок на <span class="ev-prop">${PROPS[pos].name}</span> (${houses[pos]}/4)`);
+  toast(`🏠 Будинок збудовано! (${houses[pos]}/4)`);hp('medium');
 }
-
-// === Купівля нерухомості ===
-async function buyProp(pos, price) {
-  const snap = await db.ref(`rooms/${myRoom}`).once('value');
-  const me = snap.val()?.players?.[myId];
-  if (!me || me.money < price) { toast("Не вистачає грошей"); return; }
-  await db.ref(`rooms/${myRoom}/players/${myId}`).update({
-    props: [...(me.props || []), pos],
-    money: me.money - price
-  });
-  addLog(`🏠 <span class="en">${me.name}</span> купив <span class="ep">${getCell(pos).name}</span> <span class="ex">-${price.toLocaleString()}₴</span>`);
-  toast(`Куплено!`);
-  document.getElementById('propBuy').style.display = 'none';
+function renderGame(room){
+  if(!gameShown){buildBoard();showScreen('sg');gameShown=true;addLog('🎮 Гра почалась!');}
+  const pl=Object.values(room.players||{});
+  const me=pl.find(p=>p.id===myId)||pl[0];
+  const cur=pl[room.game.current];
+  const isMy=cur?.id===myId;
+  document.getElementById('gph').innerHTML=`<div class="gp-me"><div class="gp-av ${isMy?'active-ring':''}" style="border-color:${me.color};background:${me.color}22;color:${me.color}">${me.photoUrl?`<img src="${me.photoUrl}">`:me.name[0]}</div><div class="gp-info"><div class="gp-name">${me.name} <span style="font-size:9px;color:#64748b">(Ви)</span></div><div class="gp-money">${me.money.toLocaleString()}₴</div><div class="gp-pos">${PROPS[me.pos]?.name||'?'} · ${(me.props||[]).length} 🏠</div></div></div><div class="gp-others">${pl.filter(p=>p.id!==myId).map(p=>`<div class="gp-sm"><div class="gp-sm-av ${cur?.id===p.id?'active-ring':''}" style="border-color:${p.color};background:${p.color}22;color:${p.color}">${p.photoUrl?`<img src="${p.photoUrl}">`:p.name[0]}</div><div class="gp-sm-money">${(p.money/1e6).toFixed(1)}M</div></div>`).join('')}</div>`;
+  document.getElementById('rollBtn').disabled=!isMy;
+  document.getElementById('rollBtn').className=isMy?'roll-btn my':'roll-btn wait';
+  document.getElementById('rollBtn').textContent=isMy?'🎲 Кинути кубики!':'⏳ Хід: '+cur?.name;
+  if(room.game.dice1)document.getElementById('diceRow').innerHTML=`<div class="die">${dieSVG(room.game.dice1)}</div><span class="dpl">+</span><div class="die">${dieSVG(room.game.dice2)}</div><span class="deq">=</span><span class="dsum">${room.game.dice1+room.game.dice2}</span>`;
+  else document.getElementById('diceRow').innerHTML=`<span>🎲</span><span style="color:#334155">Очікуємо кидок</span>`;
+  document.querySelectorAll('.tokens').forEach(el=>el.innerHTML='');
+  pl.forEach(p=>{const cont=document.getElementById('tok-'+p.pos);if(cont){const t=document.createElement('div');t.className='tok';t.style.background=p.color;t.style.boxShadow=`0 0 0 1.5px rgba(0,0,0,.9),0 0 0 2.5px white,0 0 0 3.5px ${p.color}`;t.innerHTML=`<span class="tok-ltr">${p.isBot?'🤖':p.name[0]}</span>`;cont.appendChild(t);}});
+  document.querySelectorAll('.cell-houses').forEach(el=>el.innerHTML='');
+  pl.forEach(p=>{Object.entries(p.houses||{}).forEach(([pos,cnt])=>{const el=document.getElementById('h-'+pos);if(el){for(let i=0;i<cnt;i++){const d=document.createElement('div');d.className='house-dot';d.style.background=p.color;el.appendChild(d);}}})});
+  const pb=document.getElementById('propBuy');
+  if(isMy&&cur&&PROPS[cur.pos]?.price&&!cur.props.includes(cur.pos)&&!(await getOwner(cur.pos))){
+    pb.style.display='flex';pb.innerHTML=`<div class="prop-buy-color" style="background:${PROPS[cur.pos].color||'#aaa'}"></div><div class="prop-buy-info"><div class="prop-buy-name">${PROPS[cur.pos].emoji} ${PROPS[cur.pos].name}</div><div class="prop-buy-price">${PROPS[cur.pos].price.toLocaleString()}₴</div></div><button class="prop-buy-btn" onclick="buyProp(${cur.pos},${PROPS[cur.pos].price})">Купити</button>`;
+  } else if(isMy&&cur&&PROPS[cur.pos]?.price&&cur.props.includes(cur.pos)&&cur.houses?.[cur.pos]<4){
+    const cost=Math.floor(PROPS[cur.pos].price*0.5);
+    pb.style.display='flex';pb.innerHTML=`<div class="prop-buy-color" style="background:${PROPS[cur.pos].color||'#aaa'}"></div><div class="prop-buy-info"><div class="prop-buy-name">${PROPS[cur.pos].emoji} ${PROPS[cur.pos].name}</div><div class="prop-buy-price" style="font-size:13px">🏠×${cur.houses?.[cur.pos]||0} | Буд: ${cost.toLocaleString()}₴</div></div><button class="prop-buy-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706)" onclick="buildHouse(${cur.pos},${cost})">+🏠</button>`;
+  } else pb.style.display='none';
+  if(cur?.isBot&&room.status==='playing'){clearTimeout(botTmr);botTmr=setTimeout(()=>doBotMove(room),1800);}
+  checkWinner(room);
 }
-
-// === Побудова дошки ===
-function buildBoard() {
-  const boardDiv = document.getElementById('board');
-  boardDiv.innerHTML = '';
-  const cen = document.createElement('div');
-  cen.className = 'bcen';
-  cen.style.gridColumn = '2/11';
-  cen.style.gridRow = '2/11';
-  cen.innerHTML = '<div style="font-size:clamp(12px,4vw,22px)">🇺🇦</div><div style="font-size:clamp(4px,1.4vw,8px);font-weight:900">МОНОПОЛІЯ УКРАЇНА</div>';
-  boardDiv.appendChild(cen);
-  const positions = [];
-  for (let i = 0; i <= 10; i++) positions.push({ row: 10, col: i, side: 'b' });
-  for (let i = 9; i >= 1; i--) positions.push({ row: i, col: 10, side: 'r' });
-  for (let i = 10; i >= 0; i--) positions.push({ row: 0, col: i, side: 't' });
-  for (let i = 1; i <= 9; i++) positions.push({ row: i, col: 0, side: 'l' });
-  positions.forEach(({ row, col, side }, idx) => {
-    if (idx >= 40) return;
-    const cell = MAP_UKRAINE[idx];
-    const div = document.createElement('div');
-    div.className = 'cell';
-    div.id = 'cell-' + idx;
-    div.style.gridRow = row + 1;
-    div.style.gridColumn = col + 1;
-    if (cell.type === 'corner') {
-      div.classList.add('corner');
-      div.innerHTML = `<div style="text-align:center"><div style="font-size:clamp(7px,2vw,14px)">${cell.emoji}</div><div style="font-size:clamp(2.5px,.65vw,5px);font-weight:800">${cell.short}</div></div>`;
-    } else if (cell.color) {
-      div.innerHTML = `<div style="height:22%;background:${cell.color}"></div><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:78%"><div>${cell.emoji}</div><div style="font-size:clamp(2.5px,.82vw,5.5px);font-weight:700">${cell.short}</div><div style="font-size:clamp(2px,.62vw,4.5px)">${cell.price ? cell.price.toLocaleString() + '₴' : ''}</div></div>`;
-    } else {
-      div.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%"><div>${cell.emoji}</div><div>${cell.short}</div></div>`;
+async function doBotMove(room){
+  const pl=Object.values(room.players);
+  const bot=pl[room.game.current];if(!bot?.isBot)return;
+  const d1=Math.ceil(Math.random()*6),d2=Math.ceil(Math.random()*6);
+  const newPos=(bot.pos+d1+d2)%40;
+  let money=bot.money;
+  if(newPos<bot.pos)money+=2000000;
+  const p=PROPS[newPos];
+  if(p.type==='tax')money=Math.max(0,money-(p.amount||1000000));
+  if(p.type==='chance'){const bonus=[-200000,-300000,500000,1000000][Math.floor(Math.random()*4)];money=Math.max(0,money+bonus);}
+  const owner=await getOwner(newPos);
+  if(owner&&owner.id!==bot.id&&!p.type){const rent=Math.floor(p.price*0.1);money=Math.max(0,money-rent);await db.ref('rooms/'+myRoom+'/players/'+owner.id).update({money:owner.money+rent});}
+  await db.ref('rooms/'+myRoom+'/players/'+bot.id).update({pos:newPos,money});
+  await db.ref('rooms/'+myRoom+'/game').update({dice1:d1,dice2:d2,current:(room.game.current+1)%pl.length});
+  addLog(`🤖 <span class="ev-name">${bot.name}</span> кидає <span class="ev-money">${d1}+${d2}</span> → <span class="ev-prop">${p.name}</span>`);
+  setTimeout(async()=>{
+    const s2=await db.ref('rooms/'+myRoom).once('value');
+    const r2=s2.val();if(!r2)return;
+    const pl2=Object.values(r2.players||{});
+    const b2=pl2.find(x=>x.id===bot.id);if(!b2)return;
+    if(p.price&&b2.money>=p.price&&!pl2.find(x=>(x.props||[]).includes(newPos))){
+      await db.ref('rooms/'+myRoom+'/players/'+bot.id).update({props:[...(b2.props||[]),newPos],money:b2.money-p.price});
+      addLog(`🤖 <span class="ev-name">${bot.name}</span> купує <span class="ev-prop">${p.name}</span>`);
     }
-    const tokDiv = document.createElement('div');
-    tokDiv.className = 'tokens';
-    tokDiv.id = 'tok-' + idx;
-    div.appendChild(tokDiv);
-    boardDiv.appendChild(div);
-  });
+  },700);
 }
-
-// === Відображення гри ===
-function renderGame(room) {
-  if (!gameShown) {
-    buildBoard();
-    gameShown = true;
-    addLog('🎮 Гра розпочата!');
-  }
-  const players = Object.values(room.players);
-  const me = players.find(p => p.id === myId);
-  const current = players[room.game.current];
-  const isMy = current?.id === myId;
-  
-  const header = `<div class="gp-me"><div class="gp-av ${isMy ? 'ring' : ''}" style="border-color:${me.color}"><span>${me.name[0]}</span></div><div><div class="gp-nm">${me.name}</div><div class="gp-mn">${me.money.toLocaleString()}₴</div><div>${me.vipCard ? '💳 VIP активна' : ''}</div></div></div><div class="gp-others">${players.filter(p => p.id !== myId).map(p => `<div class="gp-sm"><div class="gp-sm-av" style="border-color:${p.color}"><span>${p.name[0]}</span></div><div class="gp-sm-mn">${(p.money / 1e6).toFixed(1)}M</div></div>`).join('')}</div>`;
-  document.getElementById('gph').innerHTML = header;
-  const rollBtn = document.getElementById('rollBtn');
-  rollBtn.disabled = !isMy;
-  rollBtn.className = isMy ? 'rbtn my' : 'rbtn wait';
-  rollBtn.textContent = isMy ? '🎲 Кинути кубики!' : '⏳ Хід: ' + current?.name;
-  if (room.game.dice1) {
-    document.getElementById('diceRow').innerHTML = `<div class="die">${dieSVG(room.game.dice1)}</div><span>+</span><div class="die">${dieSVG(room.game.dice2)}</div><span class="dsum">${room.game.dice1 + room.game.dice2}</span>`;
-  } else {
-    document.getElementById('diceRow').innerHTML = `<span>🎲</span><span style="color:#334155">Очікуємо кидок</span>`;
-  }
-  // Жетони
-  players.forEach(p => {
-    const tokContainer = document.getElementById('tok-' + p.pos);
-    if (tokContainer) {
-      tokContainer.innerHTML = '';
-      const tok = document.createElement('div');
-      tok.className = 'tok';
-      tok.style.background = p.color;
-      tok.innerHTML = `<span style="font-size:clamp(3px,.9vw,6px);font-weight:900;color:white">${p.isBot ? '🤖' : p.name[0]}</span>`;
-      tokContainer.appendChild(tok);
-    }
-  });
-  // Відображення пропозиції купівлі
-  const propBuy = document.getElementById('propBuy');
-  const cell = getCell(me.pos);
-  if (cell.price && !me.props.includes(me.pos) && !(await getOwner(me.pos))) {
-    propBuy.style.display = 'flex';
-    propBuy.innerHTML = `<div style="background:${cell.color || '#aaa'};width:10px;height:30px;border-radius:3px"></div><div style="flex:1"><div style="font-weight:800">${cell.emoji} ${cell.name}</div><div style="font-weight:900;color:var(--gold)">${cell.price.toLocaleString()}₴</div></div><button class="pb-btn" style="background:#22c55e;border:none;padding:8px 13px;border-radius:9px;color:white;font-weight:800" onclick="buyProp(${me.pos},${cell.price})">Купити</button>`;
-  } else {
-    propBuy.style.display = 'none';
+function checkWinner(room){
+  const pl=Object.values(room.players||{});
+  if(pl.filter(p=>p.money>0).length<=1&&pl.length>=2){
+    const w=pl.reduce((a,b)=>a.money>b.money?a:b);
+    db.ref('rooms/'+myRoom).update({status:'finished',winner:w.id});
   }
 }
-
-// === Слухач кімнати ===
-function listenRoom() {
-  if (roomListener) db.ref(`rooms/${myRoom}`).off('value', roomListener);
-  roomListener = db.ref(`rooms/${myRoom}`).on('value', (snap) => {
-    const room = snap.val();
-    if (!room) return;
-    if (room.status === 'playing') renderGame(room);
-    else if (room.status === 'finished') {
-      clearInterval(timerInt);
-      const winner = room.winner ? room.players[room.winner]?.name : 'Невідомо';
-      document.getElementById('wN').innerHTML = `🏆 ${winner}`;
-      document.getElementById('wM').innerHTML = '';
-      showScreen('s-win');
-    }
-  });
+function renderWinner(room){
+  const pl=Object.values(room.players||{});
+  const w=pl.find(p=>p.id===room.winner)||pl[0];
+  document.getElementById('wN').innerHTML=`<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px">${avHtml(w,52)}<span>${w.name}${w.id===myId?' (Ви!)':''}</span></div>`;
+  document.getElementById('wM').textContent=w.money.toLocaleString()+'₴';
+  showScreen('sw');if(w.id===myId){hp('heavy');tg?.HapticFeedback?.notificationOccurred('success')}
 }
-
-// === Створення кімнати ===
-async function createRoom() {
-  if (!selMode) { toast("Оберіть режим!"); return; }
-  myName = document.getElementById('pN').value.trim() || "Гравець";
-  myRoom = 'GAME-' + Math.random().toString(36).substr(2, 4).toUpperCase();
-  const players = {};
-  players[myId] = myData(0);
-  const room = {
-    code: myRoom, mode: selMode, status: 'waiting', hostId: myId, server: curServer,
-    players, game: { current: 0 }, createdAt: Date.now()
-  };
-  await db.ref(`rooms/${myRoom}`).set(room);
-  closeCreate();
-  showScreen('s-lobby');
-  document.getElementById('lobbyCode').innerText = myRoom;
-  listenRoom();
-}
-
-// === Приєднання за кодом ===
-async function joinByCode() {
-  const code = document.getElementById('rC').value.trim().toUpperCase();
-  if (!code) return;
-  myName = document.getElementById('pNj').value.trim() || "Гравець";
-  const snap = await db.ref(`rooms/${code}`).once('value');
-  if (!snap.val()) { toast("Кімнату не знайдено"); return; }
-  myRoom = code;
-  const players = snap.val().players;
-  const idx = Object.keys(players || {}).filter(k => !players[k]?.isBot).length;
-  await db.ref(`rooms/${myRoom}/players/${myId}`).set(myData(idx));
-  showScreen('s-lobby');
-  document.getElementById('lobbyCode').innerText = myRoom;
-  listenRoom();
-}
-
-// === Вийти з кімнати ===
-async function leaveRoom() {
-  if (myRoom) {
-    await db.ref(`rooms/${myRoom}/players/${myId}`).remove();
-    const snap = await db.ref(`rooms/${myRoom}/players`).once('value');
-    if (!snap.val() || Object.keys(snap.val()).filter(k => !k.startsWith('bot')).length === 0) {
-      await db.ref(`rooms/${myRoom}`).remove();
-    }
-  }
-  if (roomListener) db.ref(`rooms/${myRoom}`).off('value', roomListener);
-  myRoom = null; gameShown = false;
-  showScreen('s-main');
-}
-
-// === Запуск гри (хост) ===
-function startGame() {
-  if (myRoom) db.ref(`rooms/${myRoom}`).update({ status: 'playing' });
-}
-
-// === Відображення лобі ===
-function renderLobby(room) {
-  const players = Object.values(room.players);
-  const hostId = room.hostId;
-  const listDiv = document.getElementById('lobbyList');
-  listDiv.innerHTML = players.map(p => `<div class="pc"><div class="av" style="border-color:${p.color}"><span>${p.name[0]}</span></div><div class="pi"><div class="pn">${p.name} ${p.id === myId ? '(Ви)' : ''} ${p.id === hostId ? '👑' : ''}</div><div class="pm">${p.money.toLocaleString()}₴</div></div></div>`).join('');
-  const startBtn = document.getElementById('startBtn');
-  const canStart = players.filter(p => !p.isBot).length >= 2;
-  startBtn.disabled = !(room.hostId === myId && canStart);
-  startBtn.textContent = room.hostId === myId ? (canStart ? '▶️ Почати' : '⏳ Ще гравців') : '⏳ Чекаємо хоста';
-}
-
-// === Завантаження кімнат ===
-async function loadRooms() {
-  const snap = await db.ref('rooms').orderByChild('status').equalTo('waiting').once('value');
-  const rooms = snap.val();
-  const list = rooms ? Object.values(rooms).filter(r => r.server === curServer) : [];
-  const container = document.getElementById('roomsList');
-  if (!list.length) { container.innerHTML = '<div style="text-align:center">Немає відкритих ігор</div>'; return; }
-  container.innerHTML = list.map(r => `<div class="room-row" onclick="joinByCodeDirect('${r.code}')"><div class="slots">${[1,2,3,4].map((_,i)=>`<div class="slot ${r.players?.[Object.keys(r.players)[i]]?'filled':''}"><span>${r.players?.[Object.keys(r.players)[i]]?.name?.[0]||'○'}</span></div>`).join('')}</div><div>›</div></div>`).join('');
-}
-async function joinByCodeDirect(code) { myName = document.getElementById('pNj')?.value || 'Гравець'; myRoom = code; await db.ref(`rooms/${myRoom}/players/${myId}`).set(myData(0)); showScreen('s-lobby'); document.getElementById('lobbyCode').innerText = code; listenRoom(); }
-async function loadMyRooms() { /* спрощено */ }
-
-// === Вкладки ===
-function mTab(tab, el) {
-  document.querySelectorAll('.mtab').forEach(b => b.classList.remove('on'));
-  el.classList.add('on');
-  ['games','active','league','join'].forEach(t => document.getElementById(`tc-${t}`).style.display = t === tab ? 'block' : 'none');
-  if (tab === 'games') loadRooms();
-}
-
-function openCreate() { document.getElementById('createModal').classList.add('on'); }
-function closeCreate() { document.getElementById('createModal').classList.remove('on'); }
-function openSettings() { document.getElementById('settingsModal').classList.add('on'); }
-function sm(mode, el) { selMode = mode; document.querySelectorAll('.mc').forEach(c => c.classList.remove('on')); el.classList.add('on'); document.getElementById('bcw').style.display = (mode === 'vsbot' || mode === 'mixed') ? 'block' : 'none'; }
-function setTheme(name, el) { document.body.setAttribute('data-theme', name); if (el) { document.querySelectorAll('.tdot').forEach(d => d.classList.remove('on')); el.classList.add('on'); } localStorage.setItem('mono_theme', name); }
-function pTab(name, el) { document.querySelectorAll('.ptab').forEach(t => t.classList.remove('on')); el.classList.add('on'); document.getElementById('pv-log').style.display = name === 'log' ? 'flex' : 'none'; document.getElementById('pv-chat').style.display = name === 'chat' ? 'flex' : 'none'; document.getElementById('pv-props').style.display = name === 'props' ? 'flex' : 'none'; if (name === 'props') loadPropsPanel(); }
-async function loadPropsPanel() { const snap = await db.ref(`rooms/${myRoom}/players/${myId}`).once('value'); const me = snap.val(); if (!me || !me.props) { document.getElementById('pv-props').innerHTML = '<div>Немає нерухомості</div>'; return; } document.getElementById('pv-props').innerHTML = me.props.map(pos => { const p = getCell(pos); return `<div style="background:rgba(255,255,255,.05);border-radius:12px;padding:8px;margin-bottom:6px"><div>${p.emoji} ${p.name}</div><div>🏠 ${me.houses?.[pos]||0}/4</div><button onclick="mortgageProp(${pos})" class="btn b-surf" style="padding:4px;font-size:10px">🏦 Закласти</button><button onclick="sellProp(${pos})" class="btn b-surf" style="padding:4px;font-size:10px">💸 Продати</button></div>`; }).join(''); }
-async function mortgageProp(pos) { const snap = await db.ref(`rooms/${myRoom}/players/${myId}`).once('value'); const me = snap.val(); const val = getCell(pos).price / 2; await db.ref(`rooms/${myRoom}/players/${myId}`).update({ money: me.money + val, mortgaged: [...(me.mortgaged||[]), pos], props: me.props.filter(p => p !== pos) }); addLog(`🏦 <span class="en">${me.name}</span> заклав ${getCell(pos).name} +${val.toLocaleString()}₴`); toast(`+${val.toLocaleString()}₴`); loadPropsPanel(); }
-async function sellProp(pos) { const snap = await db.ref(`rooms/${myRoom}/players/${myId}`).once('value'); const me = snap.val(); const val = Math.floor(getCell(pos).price / 2); await db.ref(`rooms/${myRoom}/players/${myId}`).update({ money: me.money + val, props: me.props.filter(p => p !== pos) }); addLog(`💸 <span class="en">${me.name}</span> продав ${getCell(pos).name} +${val.toLocaleString()}₴`); toast(`+${val.toLocaleString()}₴`); loadPropsPanel(); }
-async function sendChat() { const inp = document.getElementById('chatInput'); if (!inp.value.trim()) return; const txt = inp.value; inp.value = ''; const snap = await db.ref(`rooms/${myRoom}/players/${myId}`).once('value'); const me = snap.val(); await db.ref(`rooms/${myRoom}/chat`).push({ uid: myId, name: me.name, text: txt, color: me.color, ts: Date.now() }); }
-db.ref(`rooms/${myRoom}/chat`).on('value', snap => { if (!snap.val()) return; const chatDiv = document.getElementById('chatLog'); chatDiv.innerHTML = Object.values(snap.val()).sort((a,b)=>a.ts-b.ts).map(m => `<div class="cmsg"><div class="cav" style="background:${m.color}22;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center">${m.name[0]}</div><div class="cbub"><div style="font-size:9px;font-weight:700">${m.name}</div><div>${m.text}</div></div></div>`).join(''); });
-
-function init() {
-  document.getElementById('profName').innerText = myName;
-  document.getElementById('profAv').innerText = myName[0];
-  showScreen('s-main');
-  loadRooms();
-  // слухач для лобі (якщо кімната в стані waiting)
-  if (myRoom) listenRoom();
-}
-init();
 </script>
 </body>
 </html>
