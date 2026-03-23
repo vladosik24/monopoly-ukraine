@@ -47,7 +47,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text)
   font-size:20px;font-weight:800;
   background:#154038;color:var(--gold);
 }
-.prof-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}.prof-info{flex:1;min-width:0}
+.prof-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.prof-info{flex:1;min-width:0}
 .prof-name{
   font-family:'Unbounded',sans-serif;
   font-size:13px;font-weight:900;
@@ -96,7 +97,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text)
   color:var(--accent);
   font-size:11px;font-weight:700;
   cursor:pointer;white-space:nowrap;flex-shrink:0;
-  transition:.2s;}
+  transition:.2s;
+}
 .srv-btn.on{
   border-color:var(--gold);
   color:var(--gold);
@@ -145,7 +147,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text)
   padding:10px 14px;
   border-bottom:1px solid rgba(45,212,191,.1);
   cursor:pointer;transition:background .15s;gap:8px;
-}.room-row:active{background:rgba(45,212,191,.05)}
+}
+.room-row:active{background:rgba(45,212,191,.05)}
 .slots{display:flex;gap:5px;flex:1;align-items:center}
 .slot{
   width:42px;height:42px;border-radius:50%;
@@ -194,7 +197,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text)
   font-size:12px;font-weight:900;
   color:var(--sub);text-align:center;flex-shrink:0;
 }
-.rnum.g{color:#ffd700}.rnum.s{color:#c0c0c0}.rnum.b{color:#cd7f32}.rav{
+.rnum.g{color:#ffd700}.rnum.s{color:#c0c0c0}.rnum.b{color:#cd7f32}
+.rav{
   width:36px;height:36px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
   font-size:14px;font-weight:800;
@@ -243,7 +247,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text)
 }
 .mc:active{transform:scale(.95)}
 .mc.on{
-  border-color:var(--gold);  background:rgba(251,191,36,.08);
+  border-color:var(--gold);
+  background:rgba(251,191,36,.08);
 }
 .me-ic{font-size:24px;margin-bottom:3px}
 .mn{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700}
@@ -292,6 +297,7 @@ select option{background:var(--bg-main)}
   content:'';flex:1;height:1px;
   background:rgba(255,255,255,.1);
 }
+
 /* Налаштування */
 .srow{
   display:flex;align-items:center;gap:12px;
@@ -341,7 +347,8 @@ select option{background:var(--bg-main)}
 }
 .mchip{
   display:inline-flex;align-items:center;gap:4px;
-  padding:4px 10px;  background:rgba(45,212,191,.12);
+  padding:4px 10px;
+  background:rgba(45,212,191,.12);
   border:1px solid rgba(45,212,191,.28);
   border-radius:16px;
   font-size:11px;font-weight:700;
@@ -390,9 +397,10 @@ select option{background:var(--bg-main)}
 .by{background:rgba(45,212,191,.1);color:var(--accent);border:1px solid rgba(45,212,191,.3)}
 .bh{background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.3)}
 .bb{background:rgba(168,85,247,.1);color:#c084fc;border:1px solid rgba(168,85,247,.3)}
-.bred{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.3)}.bbl{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
+.bred{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.3)}
+.bbl{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
 
-/* ══ ГРА - НОВИЙ ДИЗАЙН ══ */
+/* ══ ГРА - ВИПРАВЛЕНИЙ ДИЗАЙН ══ */
 #s-game{
   background:var(--bg-dark);
   height:100dvh;
@@ -439,7 +447,8 @@ select option{background:var(--bg-main)}
   border-radius:12px;
   padding:8px 12px;
   display:flex;
-  align-items:center;  gap:10px;
+  align-items:center;
+  gap:10px;
   min-width:180px;
   border:2px solid transparent;
   transition:.2s;
@@ -489,19 +498,20 @@ select option{background:var(--bg-main)}
   cursor:pointer;text-transform:uppercase;flex-shrink:0;
 }
 .btn-exit:active{transform:scale(.95)}
-/* Ігрова область з дошкою */
+
+/* Ігрова область з дошкою - ВИПРАВЛЕНО */
 .game-main{
   flex:1;
   display:grid;
-  grid-template-columns:100px 1fr 100px;
-  grid-template-rows:100px 1fr 100px;
-  gap:3px;
-  padding:3px;
+  grid-template-columns:110px 1fr 110px;
+  grid-template-rows:110px 1fr 110px;
+  gap:4px;
+  padding:4px;
   overflow:hidden;
 }
 .board-side{
   display:flex;
-  gap:3px;
+  gap:4px;
 }
 .board-side.horizontal{
   flex-direction:row;
@@ -514,11 +524,11 @@ select option{background:var(--bg-main)}
 
 .cell{
   background:var(--bg-panel);
-  border:2px solid rgba(45,212,191,.2);
-  border-radius:6px;
+  border:2px solid rgba(45,212,191,.3);
+  border-radius:8px;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
-  padding:4px;position:relative;
+  padding:6px;position:relative;
   flex:1;min-width:0;min-height:0;
   cursor:pointer;transition:.15s;
 }
@@ -526,53 +536,74 @@ select option{background:var(--bg-main)}
 .cell.corner{
   background:var(--bg-main);
   border-color:var(--accent);
+  border-width:3px;
 }
+
+/* Кольорова смужка */
 .cell-color-bar{
   position:absolute;top:0;left:0;right:0;
-  height:4px;border-radius:4px 4px 0 0;
+  height:5px;border-radius:6px 6px 0 0;
 }
-.cell-icon{font-size:clamp(12px,3vw,20px);margin-bottom:2px}
+
+/* Іконка */
+.cell-icon{
+  font-size:clamp(16px,4vw,28px);
+  margin-bottom:3px;
+  line-height:1;
+}
+
+/* Назва */
 .cell-name{
-  font-size:clamp(6px,1.5vw,9px);
+  font-size:clamp(9px,2.2vw,12px);
   text-align:center;color:var(--text);
-  font-weight:700;line-height:1.1;
+  font-weight:700;line-height:1.2;
+  word-break:break-word;
 }
-.cell-price{  font-size:clamp(8px,2vw,10px);
+
+/* Ціна */
+.cell-price{
+  font-size:clamp(10px,2.5vw,13px);
   color:var(--gold);font-weight:800;
-  margin-top:1px;
+  margin-top:2px;
 }
+
+/* Власник */
 .cell-owner{
-  position:absolute;bottom:2px;left:2px;right:2px;
-  height:3px;border-radius:2px;
+  position:absolute;bottom:3px;left:3px;right:3px;
+  height:4px;border-radius:3px;
   background:var(--accent);
 }
+
+/* Фішки */
 .tokens{
-  position:absolute;top:2px;left:2px;right:2px;
-  display:flex;justify-content:center;gap:1px;
+  position:absolute;top:3px;left:3px;right:3px;
+  display:flex;justify-content:center;gap:2px;
   z-index:10;pointer-events:none;
 }
 .tok{
-  width:clamp(6px,2vw,12px);
-  height:clamp(6px,2vw,12px);
+  width:clamp(8px,2.5vw,14px);
+  height:clamp(8px,2.5vw,14px);
   border-radius:50%;
-  border:1px solid white;
-  box-shadow:0 0 0 1px rgba(0,0,0,.9);
+  border:2px solid white;
+  box-shadow:0 0 0 1px rgba(0,0,0,.9),0 2px 4px rgba(0,0,0,.5);
   flex-shrink:0;overflow:hidden;
   display:flex;align-items:center;justify-content:center;
 }
 .tok img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .tok-ltr{
-  font-size:clamp(3px,1vw,6px);
+  font-size:clamp(4px,1.2vw,7px);
   font-weight:900;color:white;
   line-height:1;
 }
+
+/* Будиночки */
 .houses{
-  position:absolute;bottom:6px;left:0;right:0;
-  display:flex;justify-content:center;gap:1px;
+  position:absolute;bottom:8px;left:0;right:0;
+  display:flex;justify-content:center;gap:2px;
 }
 .house-dot{
-  width:clamp(3px,1vw,5px);
-  height:clamp(3px,1vw,5px);
+  width:clamp(4px,1.2vw,6px);
+  height:clamp(4px,1.2vw,6px);
   border-radius:50%;
   flex-shrink:0;
 }
@@ -586,7 +617,8 @@ select option{background:var(--bg-main)}
   overflow:hidden;
   border:2px solid var(--accent2);
 }
-.game-log{  flex:1;overflow-y:auto;
+.game-log{
+  flex:1;overflow-y:auto;
   padding:10px;
   font-size:11px;line-height:1.6;
   background:rgba(0,0,0,.2);
@@ -635,7 +667,8 @@ select option{background:var(--bg-main)}
 }
 .chat-input::placeholder{color:var(--sub)}
 .chat-send{
-  width:36px;height:36px;border-radius:8px;  background:var(--accent);border:none;
+  width:36px;height:36px;border-radius:8px;
+  background:var(--accent);border:none;
   color:var(--bg-dark);
   font-size:16px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
@@ -644,66 +677,69 @@ select option{background:var(--bg-main)}
 /* Панель керування */
 .control-panel{
   background:var(--bg-panel);
-  padding:10px;
-  display:flex;gap:10px;
+  padding:12px;
+  display:flex;gap:12px;
   align-items:center;justify-content:center;
   border-top:2px solid var(--accent2);
   flex-shrink:0;
 }
 .dice-display{
-  display:flex;gap:10px;align-items:center;
+  display:flex;gap:12px;align-items:center;
 }
 .dice{
-  width:40px;height:40px;
-  background:white;border-radius:8px;
+  width:50px;height:50px;
+  background:white;border-radius:10px;
   display:grid;grid-template-columns:repeat(3,1fr);
   grid-template-rows:repeat(3,1fr);
-  padding:4px;gap:2px;
+  padding:6px;gap:3px;
+  box-shadow:0 4px 8px rgba(0,0,0,.3);
 }
 .dice-dot{
   background:#1e293b;border-radius:50%;
   align-self:center;justify-self:center;
-  width:6px;height:6px;
+  width:8px;height:8px;
 }
 .btn-roll{
   background:linear-gradient(135deg,var(--gold),#f59e0b);
-  color:#0a1f1a;border:none;border-radius:10px;
-  padding:12px 30px;
+  color:#0a1f1a;border:none;border-radius:12px;
+  padding:14px 35px;
   font-family:'Unbounded',sans-serif;
-  font-size:13px;font-weight:900;
+  font-size:14px;font-weight:900;
   cursor:pointer;text-transform:uppercase;
+  box-shadow:0 4px 15px rgba(251,191,36,.4);
 }
 .btn-roll:active{transform:scale(.95)}
 .btn-roll:disabled{opacity:.4;pointer-events:none}
 .btn-roll.my{animation:rollPulse 1.6s ease-in-out infinite}
 @keyframes rollPulse{
-  0%,100%{box-shadow:0 4px 14px rgba(251,191,36,.5)}
-  50%{box-shadow:0 6px 24px rgba(251,191,36,.8)}
+  0%,100%{box-shadow:0 4px 15px rgba(251,191,36,.5)}
+  50%{box-shadow:0 6px 25px rgba(251,191,36,.8)}
 }
 
 /* Купівля нерухомості */
 .prop-buy{
   background:var(--bg-panel);
-  border-top:1px solid rgba(45,212,191,.2);  padding:6px 10px;
-  display:none;align-items:center;gap:9px;
+  border-top:1px solid rgba(45,212,191,.2);
+  padding:8px 12px;
+  display:none;align-items:center;gap:10px;
   flex-shrink:0;
 }
 .pb-clr{
-  width:10px;height:30px;border-radius:3px;
+  width:12px;height:35px;border-radius:4px;
   flex-shrink:0;
 }
 .pb-inf{flex:1;min-width:0}
-.pb-nm{font-weight:800;font-size:12px}
+.pb-nm{font-weight:800;font-size:13px}
 .pb-pr{
   font-family:'Unbounded',sans-serif;
-  font-size:13px;font-weight:900;
+  font-size:14px;font-weight:900;
   color:var(--gold);
 }
 .pb-btn{
-  color:white;border:none;border-radius:9px;
-  padding:8px 13px;
+  color:white;border:none;border-radius:10px;
+  padding:10px 16px;
   font-family:'Nunito',sans-serif;
-  font-size:12px;font-weight:800;
+  font-size:13px;font-weight:800;
   cursor:pointer;flex-shrink:0;
 }
 
@@ -733,7 +769,8 @@ select option{background:var(--bg-main)}
 .wmoney{
   font-family:'Unbounded',sans-serif;
   font-size:26px;color:var(--green);
-  margin-top:3px;}
+  margin-top:3px;
+}
 .wgold{font-size:15px;color:var(--gold);margin-top:4px}
 
 .toast{
@@ -752,18 +789,24 @@ select option{background:var(--bg-main)}
 }
 .toast.on{transform:translateX(-50%) translateY(0)}
 
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-thumb{background:var(--accent2);border-radius:2px}
-::-webkit-scrollbar-track{background:rgba(0,0,0,.2)}
-
+/* Адаптивність */
 @media (max-width:768px){
   .game-main{
-    grid-template-columns:70px 1fr 70px;
-    grid-template-rows:70px 1fr 70px;
+    grid-template-columns:85px 1fr 85px;
+    grid-template-rows:85px 1fr 85px;
   }
   .player-card{min-width:140px;padding:6px 8px}
   .player-avatar{width:40px;height:40px}
+  .cell-icon{font-size:clamp(14px,3.5vw,22px)}
+  .cell-name{font-size:clamp(8px,2vw,10px)}
+  .cell-price{font-size:clamp(9px,2.2vw,11px)}
+  .dice{width:45px;height:45px}
+  .btn-roll{padding:12px 25px;font-size:13px}
 }
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--accent2);border-radius:2px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,.2)}
 </style>
 </head>
 <body>
@@ -782,7 +825,8 @@ select option{background:var(--bg-main)}
     <div style="display:flex;gap:7px;flex-shrink:0">
       <button class="settings-btn" onclick="openSettings()">⚙️</button>
       <button class="create-btn" onclick="openCreate()">СТВОРИТИ<br>ГРУ</button>
-    </div>  </div>
+    </div>
+  </div>
   <div class="servers-strip" id="srvStrip"></div>
   <div class="main-tabs">
     <button class="mtab on" onclick="mTab('games',this)">ІГРИ</button>
@@ -831,7 +875,8 @@ select option{background:var(--bg-main)}
 <!-- СТВОРЕННЯ -->
 <div class="overlay" id="createModal">
   <div class="sheet">
-    <div class="sh-handle"></div>    <div class="sh-title">🎮 НОВА ГРА</div>
+    <div class="sh-handle"></div>
+    <div class="sh-title">🎮 НОВА ГРА</div>
     <div class="mg">
       <div class="mc" onclick="sm('classic',this)"><div class="me-ic">🎲</div><div class="mn">Класичний</div><div class="md">2–4 гравці</div></div>
       <div class="mc" onclick="sm('teams',this)"><div class="me-ic">👥</div><div class="mn">Команди</div><div class="md">2×2</div></div>
@@ -880,10 +925,11 @@ select option{background:var(--bg-main)}
   <div class="ll" id="lobbyList"></div>
   <div class="lf">
     <button class="btn b-green" id="startBtn" onclick="startGame()" disabled>⏳ Очікування...</button>
-    <button class="btn b-surf" onclick="leaveRoom()">← Вийти</button>  </div>
+    <button class="btn b-surf" onclick="leaveRoom()">← Вийти</button>
+  </div>
 </div>
 
-<!-- ГРА - НОВИЙ ДИЗАЙН -->
+<!-- ГРА - ВИПРАВЛЕНИЙ ДИЗАЙН -->
 <div id="s-game" class="screen">
   <div class="game-header" id="gameHeader"></div>
   <div class="game-main" id="gameMain">
@@ -908,7 +954,7 @@ select option{background:var(--bg-main)}
       <div class="dice" id="dice1"></div>
       <div class="dice" id="dice2"></div>
     </div>
-    <button class="btn-roll wait" id="rollBtn" onclick="rollDice()">⏳ Хід іншого гравця</button>
+    <button class="btn-roll wait" id="rollBtn" onclick="rollDice()">🎲 Кинути кубики!</button>
   </div>
 </div>
 
@@ -930,6 +976,7 @@ select option{background:var(--bg-main)}
 const tg=window.Telegram?.WebApp;
 if(tg){tg.ready();tg.expand();tg.setHeaderColor('#0a1f1a');tg.setBackgroundColor('#0a1f1a')}
 const TGU=tg?.initDataUnsafe?.user;
+
 const myId=(()=>{
   if(TGU?.id) return 'tg_'+TGU.id;
   let id=localStorage.getItem('mono_uid');
@@ -969,7 +1016,7 @@ const MAP_CLASSIC=[
   {name:'Луцьк',short:'Луцьк',price:600,color:'#b45309',emoji:'🏙',pos:1},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:2},
   {name:'Рівне',short:'Рівне',price:600,color:'#b45309',emoji:'🌆',pos:3},
-  {name:'Податок',short:'Пода-ток',type:'tax',amount:2000,emoji:'💸',pos:4},
+  {name:'Податок',short:'Податок',type:'tax',amount:2000,emoji:'💸',pos:4},
   {name:'Вокзал Київ',short:'Вокзал',price:2000,type:'station',emoji:'🚂',pos:5},
   {name:'Житомир',short:'Житомир',price:1000,color:'#1d4ed8',emoji:'🏘',pos:6},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:7},
@@ -977,8 +1024,9 @@ const MAP_CLASSIC=[
   {name:'Суми',short:'Суми',price:1200,color:'#1d4ed8',emoji:'🌃',pos:9},
   {name:"В'ЯЗНИЦЯ",short:"В'ЯЗН",type:'corner',emoji:'⛓',pos:10},
   {name:'Полтава',short:'Полтава',price:1400,color:'#be185d',emoji:'🏛',pos:11},
-  {name:'Електростанція',short:'Елек-тро',price:1500,type:'utility',emoji:'⚡',pos:12},
-  {name:'Черкаси',short:'Черкаси',price:1400,color:'#be185d',emoji:'🌉',pos:13},  {name:'Кропивницький',short:'Кропив',price:1600,color:'#be185d',emoji:'🏗',pos:14},
+  {name:'Електростанція',short:'Електро',price:1500,type:'utility',emoji:'⚡',pos:12},
+  {name:'Черкаси',short:'Черкаси',price:1400,color:'#be185d',emoji:'🌉',pos:13},
+  {name:'Кропивницький',short:'Кропив',price:1600,color:'#be185d',emoji:'🏗',pos:14},
   {name:'Вокзал Львів',short:'Вокзал',price:2000,type:'station',emoji:'🚂',pos:15},
   {name:'Вінниця',short:'Вінниця',price:1800,color:'#c2410c',emoji:'🌇',pos:16},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:17},
@@ -1002,7 +1050,7 @@ const MAP_CLASSIC=[
   {name:'Вокзал Харків',short:'Вокзал',price:2000,type:'station',emoji:'🚂',pos:35},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:36},
   {name:'Харків',short:'Харків',price:3500,color:'#6d28d9',emoji:'🎓',pos:37},
-  {name:'Податок',short:'Пода-ток',type:'tax',amount:1000,emoji:'💸',pos:38},
+  {name:'Податок',short:'Податок',type:'tax',amount:1000,emoji:'💸',pos:38},
   {name:'Київ',short:'Київ',price:4000,color:'#6d28d9',emoji:'🏛',pos:39}
 ];
 
@@ -1027,7 +1075,8 @@ async function onReady(){
     ['pN','pNj'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=n});
     const av=document.getElementById('profAv');
     if(TGU.photo_url)av.innerHTML=`<img src="${TGU.photo_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
-    else av.textContent=n[0].toUpperCase();    document.getElementById('profName').textContent=n;
+    else av.textContent=n[0].toUpperCase();
+    document.getElementById('profName').textContent=n;
     document.getElementById('myIdTxt').textContent='🆔 '+myId;
   }
   await loadProfile();
@@ -1076,7 +1125,8 @@ function openSettings(){document.getElementById('settingsModal').classList.add('
   document.getElementById(id).addEventListener('click',function(e){if(e.target===this)this.classList.remove('on')});
 });
 
-function setTheme(name,el){  document.body.setAttribute('data-theme',name);
+function setTheme(name,el){
+  document.body.setAttribute('data-theme',name);
   if(el){document.querySelectorAll('.tdot').forEach(d=>d.classList.remove('on'));el.classList.add('on')}
   localStorage.setItem('mono_theme',name);
 }
@@ -1125,7 +1175,8 @@ async function showLeague(idx){
   </div>`;
 
   const snap=await db.ref('players').orderByChild('league').equalTo(l.id).limitToLast(100).once('value');
-  const d=snap.val();  if(!d){document.getElementById('lgList').innerHTML='<div style="text-align:center;padding:20px;color:var(--sub);font-size:12px">😕 Немає гравців</div>';return}
+  const d=snap.val();
+  if(!d){document.getElementById('lgList').innerHTML='<div style="text-align:center;padding:20px;color:var(--sub);font-size:12px">😕 Немає гравців</div>';return}
 
   const uniq={};
   Object.values(d).forEach(p=>{
@@ -1174,7 +1225,8 @@ async function loadRooms(){
   const list=d?Object.entries(d).map(([k,r])=>({...r,code:r.code||k})).filter(r=>{
     const pl=Object.values(r.players||{});
     return pl.length>0&&pl.length<4&&pl.some(p=>!p.isBot)&&(r.server||'classic')===curServer;
-  }):[];  if(!list.length){
+  }):[];
+  if(!list.length){
     el.innerHTML='<div style="text-align:center;padding:50px 20px"><div style="font-size:36px;margin-bottom:10px">🎲</div><div style="color:var(--sub);font-size:13px">Немає кімнат на сервері</div></div>';
     return;
   }
@@ -1223,7 +1275,8 @@ async function adminRejoin(code){
   if(r.players&&r.players[myId]){
     myRoom=code;selMode=r.mode;
     if(r.status==='waiting')openLobby(r.mode);
-    else{gameShown=false;boardBuilt=false;listenRoom();showScreen('s-game');buildBoard();gameShown=true}    return;
+    else{gameShown=false;boardBuilt=false;listenRoom();showScreen('s-game');buildBoard();gameShown=true}
+    return;
   }
   await joinToRoom(code);
 }
@@ -1272,7 +1325,8 @@ async function joinByCode(){
   myName=document.getElementById('pNj').value.trim()||TGU?.first_name||'Гравець';
   const code=document.getElementById('rC').value.trim().toUpperCase();
   if(!code){toast('⚠️ Введіть код');return}
-  await joinToRoom(code);}
+  await joinToRoom(code);
+}
 async function joinToRoom(code){
   if(!db){toast('❌ Немає підключення');return}
   const snap=await db.ref('rooms/'+code).once('value');
@@ -1321,13 +1375,14 @@ function renderLobby(r){
   const minH=r.mode==='teams'?4:(r.mode==='vsbot'||r.mode==='mixed')?1:2;
   const hCnt=pl.filter(p=>!p.isBot).length;
   document.getElementById('lobbyList').innerHTML=pl.map(p=>{
-    let b='';    if(p.id===myId)b+='<span class="bdg by">Ви</span> ';
+    let b='';
+    if(p.id===myId)b+='<span class="bdg by">Ви</span> ';
     if(p.id===hostId)b+='<span class="bdg bh">👑</span> ';
     if(p.isBot)b+='<span class="bdg bb">🤖</span>';
     if(p.team==='red')b+=' <span class="bdg bred">Червона</span>';
     if(p.team==='blue')b+=' <span class="bdg bbl">Синя</span>';
     return`<div class="pc">
-      <div class="aw">${avHtml(p,38)}<div class="avb">${p.isBot?'🤖':'👤'}</div></div>
+      <div class="aw">${avHtml(p,38)}<div class="avb">${p.isBot?'🤖':''}</div></div>
       <div class="pi"><div class="pn">${p.name}</div><div class="pd">${p.colorName} ${b}</div></div>
       <div class="pm">${p.money.toLocaleString()}₴</div>
     </div>`;
@@ -1370,9 +1425,14 @@ function buildBoard(){
   const right=document.getElementById('boardRight');
   
   top.innerHTML='';bottom.innerHTML='';left.innerHTML='';right.innerHTML='';
-    for(let i=0;i<10;i++)top.appendChild(createCell(PROPS[i]));
+  
+  // Верх: 0-9
+  for(let i=0;i<10;i++)top.appendChild(createCell(PROPS[i]));
+  // Право: 10-19
   for(let i=10;i<20;i++)right.appendChild(createCell(PROPS[i]));
+  // Низ: 20-29 (у зворотньому порядку)
   for(let i=29;i>=20;i--)bottom.appendChild(createCell(PROPS[i]));
+  // Ліво: 30-39 (у зворотньому порядку)
   for(let i=39;i>=30;i--)left.appendChild(createCell(PROPS[i]));
 }
 
@@ -1419,7 +1479,8 @@ function renderGame(r){
   const cur=pl[r.game?.current||0];
   const isMy=cur?.id===myId;
   
-  const others=pl.filter(p=>p.id!==myId);  const meImg=me.photoUrl
+  const others=pl.filter(p=>p.id!==myId);
+  const meImg=me.photoUrl
     ?`<img src="${me.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:17px;font-weight:800;color:white">${(me.name||'?')[0].toUpperCase()}</span>`
     :`<span>${(me.name||'?')[0].toUpperCase()}</span>`;
     
@@ -1468,6 +1529,7 @@ function renderGame(r){
     else{const s=document.createElement('div');s.className='tok-ltr';s.textContent=p.isBot?'🤖':(p.name||'?')[0].toUpperCase();t.appendChild(s)}
     cont.appendChild(t);
   });
+
   document.querySelectorAll('.houses').forEach(el=>el.innerHTML='');
   document.querySelectorAll('.cell-owner').forEach(el=>el.remove());
   pl.forEach(p=>{
@@ -1517,7 +1579,8 @@ function renderDice(id,value){
   for(let i=0;i<3;i++){
     for(let j=0;j<3;j++){
       const dot=document.createElement('div');
-      if(pattern.some(([r,c])=>r===i&&c===j)){        dot.className='dice-dot';
+      if(pattern.some(([r,c])=>r===i&&c===j)){
+        dot.className='dice-dot';
       }
       dice.appendChild(dot);
     }
@@ -1566,7 +1629,8 @@ function listenChat(){
 }
 async function sendChat(){
   const inp=document.getElementById('chatInput');
-  const text=inp.value.trim();if(!text||!myRoom)return;  inp.value='';
+  const text=inp.value.trim();if(!text||!myRoom)return;
+  inp.value='';
   const me=await db.ref('rooms/'+myRoom+'/players/'+myId).once('value');
   const p=me.val();
   await db.ref('rooms/'+myRoom+'/chat').push({uid:myId,name:myName,text,color:p?.color||COLORS[0],photo:TGU?.photo_url||null,ts:Date.now()});
@@ -1615,7 +1679,8 @@ async function buyProp(pos,price){
   await db.ref('rooms/'+myRoom+'/players/'+myId).update({props:[...(me.props||[]),pos],money:me.money-price});
   addLog(`🏠 <span class="log-player">${me.name}</span> <span class="log-action">купує</span> <span class="log-money">${p.name}</span> <span class="log-negative">-${price}₴</span>`);
   toast(`🏠 ${p.name} куплено!`);hp('medium');
-  await saveProfile(5,0,0);}
+  await saveProfile(5,0,0);
+}
 
 async function buildHouse(pos,cost){
   const snap=await db.ref('rooms/'+myRoom).once('value');
@@ -1664,7 +1729,8 @@ function checkWinner(r){
 }
 
 async function renderWinner(r){
-  stopTimer();  const pl=Object.values(r.players||{});
+  stopTimer();
+  const pl=Object.values(r.players||{});
   const w=pl.find(p=>p.id===r.winner)||pl[0];if(!w)return;
   const isMe=w.id===myId;
   if(isMe)await saveProfile(30,1,10);
@@ -1679,3 +1745,4 @@ async function renderWinner(r){
 
 </body>
 </html>
+
