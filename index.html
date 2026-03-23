@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Монополія Україна – 4 карти</title>
+<title>Монополія Україна – 4 сервери</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-/* ===== ВЕСЬ CSS ТАКИЙ Ж, ЯК У ВАШОМУ КОДІ, АЛЕ ЗІ ЗБІЛЬШЕНОЮ ДОШКОЮ ===== */
+/* ========== ВЕСЬ CSS (той самий, що у фінальній версії) ========== */
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Nunito:wght@600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body[data-theme="classic"]{--c1:#12082a;--c2:#1a0f35;--acc:#5b4fcf;--acc2:#7c6de0;--bb:#0d2010;--bb2:#1e5c2a;--bc:#091408}
@@ -392,7 +392,7 @@ select option{background:var(--c2)}
 <div class="toast" id="toast"></div>
 
 <script>
-// ========== ІНТЕГРАЦІЯ З TELEGRAM ==========
+// ========== TELEGRAM ==========
 const tg=window.Telegram?.WebApp;
 if(tg){tg.ready();tg.expand();tg.setHeaderColor('#12082a');tg.setBackgroundColor('#12082a')}
 const TGU=tg?.initDataUnsafe?.user;
@@ -425,14 +425,14 @@ const CNAMES=['🔵 Синій','🔴 Червоний','🟢 Зелений','�
 const MICONS={classic:'🎲',teams:'👥',vsbot:'🤖',mixed:'🎯'};
 const MNAMES={classic:'Класичний',teams:'Команди 2×2',vsbot:'Проти бота',mixed:'Змішаний'};
 const SERVERS=[
-  {id:'classic',name:'Класичний',emoji:'🎲',theme:'classic'},
-  {id:'fruit',name:'Фруктовий',emoji:'🍉',theme:'fruit'},
-  {id:'city',name:'Мегаполіс',emoji:'🏙',theme:'city'},
-  {id:'business',name:'Бізнес',emoji:'🏢',theme:'city'}
+  {id:'classic', name:'Класичний', emoji:'🎲', theme:'classic'},
+  {id:'fruit', name:'Фруктовий', emoji:'🍉', theme:'fruit'},
+  {id:'city', name:'Мегаполіс', emoji:'🏙', theme:'city'},
+  {id:'business', name:'Бізнес', emoji:'🏢', theme:'city'}
 ];
 
 // ========== КАРТИ ==========
-// 1. Класична Україна
+// Класична Україна
 const MAP_CLASSIC = [
   {name:'СТАРТ',short:'СТАРТ',type:'corner',emoji:'🏁',pos:0},
   {name:'Луцьк',short:'Луцьк',price:600,color:'#b45309',emoji:'🏙',pos:1},
@@ -476,7 +476,7 @@ const MAP_CLASSIC = [
   {name:'Київ',short:'Київ',price:4000,color:'#6d28d9',emoji:'🏛',pos:39}
 ];
 
-// 2. Фруктова карта
+// Фруктова
 const MAP_FRUIT = [
   {name:'СТАРТ',short:'СТАРТ',type:'corner',emoji:'🏁',pos:0},
   {name:'Вишня',short:'Вишня',price:500,color:'#dc2626',emoji:'🍒',pos:1},
@@ -520,7 +520,7 @@ const MAP_FRUIT = [
   {name:'Золотий Кавун',short:'Золот.',price:3900,color:'#be185d',emoji:'🏆',pos:39}
 ];
 
-// 3. Міжнародна карта (Мегаполіс)
+// Міжнародна (Мегаполіс)
 const MAP_INTERNATIONAL = [
   {name:"СТАРТ", short:"СТАРТ", type:"corner", emoji:"🏁", pos:0},
   {name:"Токіо", short:"Токіо", price:460000, color:"#b45309", emoji:"🗼", pos:1},
@@ -564,7 +564,7 @@ const MAP_INTERNATIONAL = [
   {name:"Сідней", short:"Сідней", price:4000000, color:"#6d28d9", emoji:"🏄", pos:39}
 ];
 
-// 4. Бізнес-карта (українські назви)
+// Бізнес-карта (українські назви)
 const MAP_BUSINESS = [
   {name:"СТАРТ", short:"СТАРТ", type:"corner", emoji:"🏁", pos:0},
   {name:"Кав'ярня", short:"Кав'ярня", price:460000, color:"#b45309", emoji:"☕", pos:1},
@@ -615,14 +615,13 @@ const MAPS = {
   business: MAP_BUSINESS
 };
 
-let PROPS = MAP_CLASSIC;
-let curServer = 'classic';
-
 // ========== ГЛОБАЛЬНІ ЗМІННІ ==========
-let myRoom=null,myName='Гравець',selMode=null;
-let roomOff=null,chatOff=null,botTmr=null,timerInt=null;
-let gameShown=false,boardBuilt=false,curPTab='log';
-let myScore=0,myWins=0,myGold=0,curLgIdx=0;
+let myId='p'+Date.now()+Math.random().toString(36).substr(2,4);
+let myName='Гравець', selMode=null, myRoom=null, curServer='classic';
+let roomOff=null, chatOff=null, botTmr=null, timerInt=null;
+let gameShown=false, boardBuilt=false, curPTab='log';
+let myScore=0, myWins=0, myGold=0, curLgIdx=0;
+let PROPS = MAP_CLASSIC;
 
 // ========== ДОПОМІЖНІ ==========
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
@@ -645,12 +644,24 @@ function pTab(n,el){
   document.getElementById('pv-chat').style.display=n==='chat'?'flex':'none';
   if(n==='chat')document.getElementById('chatTabBtn').textContent='💬 Чат';
 }
+function sm(m,el){
+  selMode=m;document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on'));el.classList.add('on');
+  document.getElementById('bcw').style.display=(m==='vsbot'||m==='mixed')?'block':'none';hp('light');
+}
+function mTab(n,el){
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');
+  ['games','active','league','clans','join'].forEach(x=>{
+    const tc=document.getElementById('tc-'+x);if(tc)tc.style.display=x===n?'block':'none';
+  });
+  if(n==='league')renderLeagueStrip();
+  if(n==='games')loadRooms();
+  if(n==='active')loadMyRooms();
+}
 
 // ========== СЕРВЕРИ ==========
 function renderServers(){
-  document.getElementById('srvStrip').innerHTML=SERVERS.map(s=>
-    `<div class="srv-btn ${s.id===curServer?'on':''}" onclick="setSrv('${s.id}')">${s.emoji} ${s.name}</div>`
-  ).join('');
+  const strip=document.getElementById('srvStrip');
+  strip.innerHTML=SERVERS.map(s=>`<div class="srv-btn ${s.id===curServer?'on':''}" onclick="setSrv('${s.id}')">${s.emoji} ${s.name}</div>`).join('');
 }
 function setSrv(id){
   curServer=id;
@@ -1151,7 +1162,13 @@ async function rollDice(){
     if(own){const h=(own.houses||{})[newPos]||0;const rent=Math.floor(p.price*.1*(1+h*.5));money=Math.max(0,money-rent);await db.ref('rooms/'+myRoom+'/players/'+own.id).update({money:own.money+rent});addLog(`💸 <span class="en">${cur.name}</span>→<span class="en">${own.name}</span> <span class="ex">-${rent}₴</span>`);toast(`💸 Оренда -${rent}₴`)}
   }
   if(p?.type==='tax'){money=Math.max(0,money-(p.amount||1000));addLog(`💸 <span class="en">${cur.name}</span> податок <span class="ex">-${p.amount}₴</span>`);toast(`💸 -${p.amount}₴`);hp('heavy')}
-  if(p?.type==='chance'){const bs=[-1000,-2000,1000,2000,500,-500,1500,-1500,3000];const bon=bs[Math.floor(Math.random()*bs.length)];money=Math.max(0,money+bon);addLog(`❓ <span class="en">${cur.name}</span> Шанс: <span class="${bon>0?'em':'ex'}">${bon>0?'+':''}${bon}₴</span>`);toast(`❓ ${bon>0?'+':''}${bon}₴`)}
+  if(p?.type==='chance'){
+    const bs=[-1000,-2000,1000,2000,500,-500,1500,-1500,3000];
+    const bon=bs[Math.floor(Math.random()*bs.length)]*1000; // масштабуємо до великих сум
+    money=Math.max(0,money+bon);
+    addLog(`❓ <span class="en">${cur.name}</span> Шанс: <span class="${bon>0?'em':'ex'}">${bon>0?'+':''}${bon}₴</span>`);
+    toast(`❓ ${bon>0?'+':''}${bon}₴`);
+  }
   await db.ref('rooms/'+myRoom+'/players/'+myId).update({pos:newPos,money});
   let next=isDbl&&newDbls<3?r.game.current:(r.game.current+1)%pl.length;
   if(newDbls>=3){next=(r.game.current+1)%pl.length;addLog(`🚫 <span class="en">${cur.name}</span> — 3 дублі, хід передано!`)}
@@ -1190,7 +1207,7 @@ async function doBotMove(r){
   if(newPos<bot.pos)money+=2000000;
   if(p?.price){const own=pl.find(x=>(x.props||[]).includes(newPos)&&x.id!==bot.id);if(own){const h=(own.houses||{})[newPos]||0;const rent=Math.floor(p.price*.1*(1+h*.5));money=Math.max(0,money-rent);await db.ref('rooms/'+myRoom+'/players/'+own.id).update({money:own.money+rent})}}
   if(p?.type==='tax')money=Math.max(0,money-(p.amount||1000));
-  if(p?.type==='chance'){const b=[-1000,-2000,1000,2000,500,-500,1500][Math.floor(Math.random()*7)];money=Math.max(0,money+b)}
+  if(p?.type==='chance'){const b=[-1000,-2000,1000,2000,500,-500,1500][Math.floor(Math.random()*7)]*1000;money=Math.max(0,money+b)}
   const newDbls=(r.game.doubles||0)+(isDbl?1:0);
   let next=isDbl&&newDbls<3?r.game.current:(r.game.current+1)%pl.length;
   if(newDbls>=3)next=(r.game.current+1)%pl.length;
@@ -1222,15 +1239,6 @@ async function renderWinner(r){
   document.getElementById('wG').innerHTML=isMe?'🪙 +10 золота · ⭐ +30 очок':'';
   showScreen('s-win');
   if(isMe){hp('heavy');tg?.HapticFeedback?.notificationOccurred('success')}
-}
-function mTab(n,el){
-  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');
-  ['games','active','league','clans','join'].forEach(x=>{
-    const tc=document.getElementById('tc-'+x);if(tc)tc.style.display=x===n?'block':'none';
-  });
-  if(n==='league')renderLeagueStrip();
-  if(n==='games')loadRooms();
-  if(n==='active')loadMyRooms();
 }
 async function onReady(){
   const saved=localStorage.getItem('mono_theme')||'classic';
