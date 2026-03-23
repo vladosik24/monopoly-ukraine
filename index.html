@@ -519,26 +519,49 @@ select option{background:var(--bg-main)}
 }
 .board-side.horizontal.top{grid-row:1}
 .board-side.horizontal.bottom{grid-row:3}
-.board-side.vertical.left{grid-column:1;grid-row:2}
-.board-side.vertical.right{grid-column:3;grid-row:2}
+.board-side.vertical.left{
+  grid-column:1;
+  grid-row:2;
+  flex-direction:column;
+}
+.board-side.vertical.right{
+  grid-column:3;
+  grid-row:2;
+  flex-direction:column;
+}
 
 .cell{
   background:var(--bg-panel);
   border:2px solid rgba(45,212,191,.3);
   border-radius:8px;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:6px;position:relative;
-  flex:1;min-width:0;min-height:0;
-  cursor:pointer;transition:.15s;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:6px;
+  position:relative;
+  flex:1;
+  min-width:0;
+  min-height:0;
+  cursor:pointer;
+  transition:.15s;
 }
-.cell:active{transform:scale(.95)}
+
+/* Для вертикальних сторін - текст вертикально */
+.board-side.vertical .cell{
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  min-height: 110px;
+}
+
+.cell:active{transform:rotate(180deg) scale(.95)}
 .cell.corner{
   background:var(--bg-main);
   border-color:var(--accent);
   border-width:3px;
 }
-
+  
 /* Кольорова смужка */
 .cell-color-bar{
   position:absolute;top:0;left:0;right:0;
