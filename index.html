@@ -547,20 +547,75 @@ select option{background:var(--bg-main)}
   transition:.15s;
 }
 
-/* Для вертикальних сторін - текст вертикально */
-.board-side.vertical .cell{
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  transform: rotate(180deg);
-  min-height: 110px;
+/* Вертикальні сторони - клітинки лежать на боці */
+.board-side.vertical .cell {
+  transform: rotate(-90deg);
+  transform-origin: center center;
+  position: absolute;
+  width: 110px;
+  height: 110px;
 }
 
-.cell:active{transform:rotate(180deg) scale(.95)}
-.cell.corner{
-  background:var(--bg-main);
-  border-color:var(--accent);
-  border-width:3px;
+/* Позиціонування для лівої сторони */
+.board-side.vertical.left {
+  position: relative;
 }
+
+.board-side.vertical.left .cell:nth-child(1) { left: 0; top: 0; }
+.board-side.vertical.left .cell:nth-child(2) { left: 0; top: 114px; }
+.board-side.vertical.left .cell:nth-child(3) { left: 0; top: 228px; }
+.board-side.vertical.left .cell:nth-child(4) { left: 0; top: 342px; }
+.board-side.vertical.left .cell:nth-child(5) { left: 0; top: 456px; }
+.board-side.vertical.left .cell:nth-child(6) { left: 0; top: 570px; }
+.board-side.vertical.left .cell:nth-child(7) { left: 0; top: 684px; }
+.board-side.vertical.left .cell:nth-child(8) { left: 0; top: 798px; }
+.board-side.vertical.left .cell:nth-child(9) { left: 0; top: 912px; }
+.board-side.vertical.left .cell:nth-child(10) { left: 0; top: 1026px; }
+
+/* Позиціонування для правої сторони */
+.board-side.vertical.right {
+  position: relative;
+}
+
+.board-side.vertical.right .cell:nth-child(1) { right: 0; top: 0; }
+.board-side.vertical.right .cell:nth-child(2) { right: 0; top: 114px; }
+.board-side.vertical.right .cell:nth-child(3) { right: 0; top: 228px; }
+.board-side.vertical.right .cell:nth-child(4) { right: 0; top: 342px; }
+.board-side.vertical.right .cell:nth-child(5) { right: 0; top: 456px; }
+.board-side.vertical.right .cell:nth-child(6) { right: 0; top: 570px; }
+.board-side.vertical.right .cell:nth-child(7) { right: 0; top: 684px; }
+.board-side.vertical.right .cell:nth-child(8) { right: 0; top: 798px; }
+.board-side.vertical.right .cell:nth-child(9) { right: 0; top: 912px; }
+.board-side.vertical.right .cell:nth-child(10) { right: 0; top: 1026px; }
+
+/* Для мобільних */
+@media (max-width:768px){
+  .board-side.vertical .cell {
+    width: 85px;
+    height: 85px;
+  }
+  .board-side.vertical.left .cell:nth-child(1) { top: 0; }
+  .board-side.vertical.left .cell:nth-child(2) { top: 89px; }
+  .board-side.vertical.left .cell:nth-child(3) { top: 178px; }
+  .board-side.vertical.left .cell:nth-child(4) { top: 267px; }
+  .board-side.vertical.left .cell:nth-child(5) { top: 356px; }
+  .board-side.vertical.left .cell:nth-child(6) { top: 445px; }
+  .board-side.vertical.left .cell:nth-child(7) { top: 534px; }
+  .board-side.vertical.left .cell:nth-child(8) { top: 623px; }
+  .board-side.vertical.left .cell:nth-child(9) { top: 712px; }
+  .board-side.vertical.left .cell:nth-child(10) { top: 801px; }
+  
+  .board-side.vertical.right .cell:nth-child(1) { top: 0; }
+  .board-side.vertical.right .cell:nth-child(2) { top: 89px; }
+  .board-side.vertical.right .cell:nth-child(3) { top: 178px; }
+  .board-side.vertical.right .cell:nth-child(4) { top: 267px; }
+  .board-side.vertical.right .cell:nth-child(5) { top: 356px; }
+  .board-side.vertical.right .cell:nth-child(6) { top: 445px; }
+  .board-side.vertical.right .cell:nth-child(7) { top: 534px; }
+  .board-side.vertical.right .cell:nth-child(8) { top: 623px; }
+  .board-side.vertical.right .cell:nth-child(9) { top: 712px; }
+  .board-side.vertical.right .cell:nth-child(10) { top: 801px; }
+} 
   
 /* Кольорова смужка */
 .cell-color-bar{
