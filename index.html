@@ -327,6 +327,338 @@ select option{background:var(--bg-main)}
 .tdot.on{border-color:white;box-shadow:0 0 8px rgba(255,255,255,.5)}
 
 /* ══ ЛОБІ ══ */
+Ось повний виправлений код гри з усіма виправленнями:
+
+```html
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Монополія Україна</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Nunito:wght@600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+:root{
+  --bg-dark:#0a1f1a;
+  --bg-main:#0d2924;
+  --bg-panel:#154038;
+  --accent:#2dd4bf;
+  --accent2:#14b8a6;
+  --gold:#fbbf24;
+  --red:#ef4444;
+  --green:#22c55e;
+  --blue:#3b82f6;
+  --text:#f1f5f9;
+  --sub:#94a3b8;
+}
+
+body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100dvh;overflow:hidden}
+.screen{display:none;flex-direction:column;min-height:100dvh;position:relative;z-index:1}
+.screen.active{display:flex}
+
+/* ══ ГОЛОВНИЙ ЕКРАН ══ */
+#s-main{background:var(--bg-dark);overflow-y:auto}
+.main-header{
+  background:linear-gradient(180deg,var(--bg-panel),var(--bg-main));
+  padding:12px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  border-bottom:2px solid var(--accent2);
+}
+.prof-av{
+  width:50px;height:50px;border-radius:50%;
+  border:3px solid var(--gold);
+  box-shadow:0 0 12px rgba(251,191,36,.4);
+  overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:800;
+  background:#154038;color:var(--gold);
+}
+.prof-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.prof-info{flex:1;min-width:0}
+.prof-name{
+  font-family:'Unbounded',sans-serif;
+  font-size:13px;font-weight:900;
+  color:var(--gold);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.prof-sub{font-size:10px;color:var(--sub);margin-top:2px}
+.gold-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(251,191,36,.12);
+  border:1px solid rgba(251,191,36,.3);
+  border-radius:10px;padding:3px 8px;
+  font-size:11px;font-weight:700;color:var(--gold);
+  margin-top:3px;
+}
+.create-btn{
+  background:linear-gradient(135deg,var(--gold),#f59e0b);
+  color:#0a1f1a;border:none;border-radius:11px;
+  padding:9px 13px;
+  font-family:'Unbounded',sans-serif;
+  font-size:10px;font-weight:900;
+  cursor:pointer;
+  box-shadow:0 4px 14px rgba(251,191,36,.3);
+  white-space:nowrap;flex-shrink:0;
+}
+.create-btn:active{transform:scale(.96)}
+.settings-btn{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:9px;padding:8px 10px;
+  color:var(--sub);font-size:16px;cursor:pointer;flex-shrink:0;
+}
+
+.servers-strip{
+  display:flex;gap:6px;padding:8px 14px;
+  overflow-x:auto;flex-shrink:0;
+  border-bottom:1px solid rgba(45,212,191,.2);
+}
+.servers-strip::-webkit-scrollbar{display:none}
+.srv-btn{
+  display:flex;align-items:center;gap:5px;
+  padding:6px 12px;
+  border:1.5px solid rgba(45,212,191,.2);
+  border-radius:20px;
+  background:rgba(45,212,191,.05);
+  color:var(--accent);
+  font-size:11px;font-weight:700;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:.2s;
+}
+.srv-btn.on{
+  border-color:var(--gold);
+  color:var(--gold);
+  background:rgba(251,191,36,.1);
+}
+
+.main-tabs{
+  display:flex;
+  border-bottom:1px solid rgba(45,212,191,.2);
+  background:rgba(0,0,0,.2);
+  padding:0 6px;
+  overflow-x:auto;flex-shrink:0;
+}
+.main-tabs::-webkit-scrollbar{display:none}
+.mtab{
+  padding:10px 14px;border:none;background:transparent;
+  color:var(--sub);
+  font-family:'Nunito',sans-serif;
+  font-size:12px;font-weight:700;
+  cursor:pointer;
+  border-bottom:2.5px solid transparent;
+  white-space:nowrap;transition:.2s;flex-shrink:0;
+}
+.mtab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.tc{flex:1;overflow-y:auto;padding-bottom:16px}
+
+.rooms-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 6px;
+}
+.rooms-lbl{
+  font-family:'Unbounded',sans-serif;
+  font-size:10px;font-weight:700;
+  color:var(--sub);
+  text-transform:uppercase;letter-spacing:.5px;
+}
+.ref-btn{
+  background:rgba(45,212,191,.1);
+  border:1px solid var(--accent2);
+  border-radius:7px;padding:5px 10px;
+  color:var(--accent);font-size:13px;cursor:pointer;
+}
+
+.room-row{
+  display:flex;align-items:center;
+  padding:10px 14px;
+  border-bottom:1px solid rgba(45,212,191,.1);
+  cursor:pointer;transition:background .15s;gap:8px;
+}
+.room-row:active{background:rgba(45,212,191,.05)}
+.slots{display:flex;gap:5px;flex:1;align-items:center}
+.slot{
+  width:42px;height:42px;border-radius:50%;
+  border:2px solid rgba(45,212,191,.2);
+  background:rgba(45,212,191,.05);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;overflow:hidden;position:relative;
+}
+.slot.filled{border-color:rgba(45,212,191,.5)}
+.slot img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.slot-ltr{font-size:15px;font-weight:800;color:rgba(255,255,255,.5)}
+.slot.empty .slot-ltr{font-size:20px;color:rgba(255,255,255,.1)}
+.row-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.arr{font-size:22px;font-weight:900;color:var(--gold)}
+
+/* Ліги */
+.lgstrip{display:flex;gap:6px;padding:8px 14px;overflow-x:auto}
+.lgstrip::-webkit-scrollbar{display:none}
+.lgico{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0;cursor:pointer;
+  border:2.5px solid transparent;transition:.2s;
+  background:rgba(45,212,191,.05);
+}
+.lg-hdr{
+  background:linear-gradient(135deg,rgba(45,212,191,.2),rgba(45,212,191,.06));
+  border:1px solid var(--accent2);
+  border-radius:14px;padding:14px;
+  margin:6px 14px 10px;
+}
+.lg-title{
+  font-family:'Unbounded',sans-serif;
+  font-size:14px;font-weight:900;color:var(--gold);
+}
+.lg-desc{font-size:11px;color:var(--sub);line-height:1.5;margin-top:5px}
+.rank-row{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 14px;
+  border-bottom:1px solid rgba(45,212,191,.05);
+}
+.rank-row.me{background:rgba(251,191,36,.07)}
+.rnum{
+  width:22px;
+  font-family:'Unbounded',sans-serif;
+  font-size:12px;font-weight:900;
+  color:var(--sub);text-align:center;flex-shrink:0;
+}
+.rnum.g{color:#ffd700}.rnum.s{color:#c0c0c0}.rnum.b{color:#cd7f32}
+.rav{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;
+  border:2px solid;overflow:hidden;flex-shrink:0;
+}
+.rav img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.ri{flex:1;min-width:0}
+.rname{font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rsub{font-size:10px;color:var(--sub);margin-top:1px}
+.rscore{
+  font-family:'Unbounded',sans-serif;
+  font-size:15px;font-weight:900;
+}
+
+/* Модалки */
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.75);
+  display:none;align-items:flex-end;justify-content:center;
+  z-index:100;backdrop-filter:blur(4px);
+}
+.overlay.on{display:flex}
+.sheet{
+  background:var(--bg-main);
+  border-radius:20px 20px 0 0;
+  width:100%;max-width:480px;
+  padding:18px 16px 32px;
+  max-height:92vh;overflow-y:auto;
+}
+.sh-handle{
+  width:40px;height:4px;
+  background:rgba(255,255,255,.2);
+  border-radius:2px;margin:0 auto 14px;
+}
+.sh-title{
+  font-family:'Unbounded',sans-serif;
+  font-size:15px;font-weight:900;
+  color:var(--gold);text-align:center;margin-bottom:14px;
+}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.mc{
+  background:rgba(45,212,191,.05);
+  border:1.5px solid rgba(45,212,191,.2);
+  border-radius:12px;padding:13px 10px;
+  text-align:center;cursor:pointer;transition:.18s;
+}
+.mc:active{transform:scale(.95)}
+.mc.on{
+  border-color:var(--gold);
+  background:rgba(251,191,36,.08);
+}
+.me-ic{font-size:24px;margin-bottom:3px}
+.mn{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700}
+.md{font-size:10px;color:var(--sub);margin-top:2px}
+label.lbl{
+  font-size:10px;font-weight:700;
+  color:var(--sub);
+  text-transform:uppercase;letter-spacing:.8px;
+  margin-bottom:5px;display:block;
+}
+input,select{
+  width:100%;
+  padding:11px 14px;
+  background:rgba(45,212,191,.07);
+  border:1.5px solid rgba(45,212,191,.2);
+  border-radius:11px;
+  color:var(--text);
+  font-family:'Nunito',sans-serif;
+  font-size:14px;font-weight:600;
+  outline:none;transition:border-color .2s;
+  margin-bottom:9px;
+}
+input:focus,select:focus{border-color:var(--gold)}
+select option{background:var(--bg-main)}
+.btn{
+  width:100%;padding:12px;border:none;border-radius:11px;
+  font-family:'Nunito',sans-serif;
+  font-size:14px;font-weight:800;
+  cursor:pointer;transition:.18s;margin-bottom:7px;
+}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;pointer-events:none}
+.b-gold{background:linear-gradient(135deg,var(--gold),#f59e0b);color:#0a1f1a}
+.b-green{background:linear-gradient(135deg,#22c55e,#16a34a);color:white}
+.b-surf{
+  background:rgba(45,212,191,.07);
+  border:1.5px solid rgba(45,212,191,.2);
+  color:var(--text);
+}
+.b-red{background:linear-gradient(135deg,#ef4444,#dc2626);color:white}
+.dv{
+  display:flex;align-items:center;gap:10px;
+  color:#475569;font-size:11px;margin:2px 0 8px;
+}
+.dv::before,.dv::after{
+  content:'';flex:1;height:1px;
+  background:rgba(255,255,255,.1);
+}
+
+/* Налаштування */
+.srow{
+  display:flex;align-items:center;gap:12px;
+  padding:13px;
+  border-bottom:1px solid rgba(45,212,191,.1);
+}
+.sinfo{flex:1;min-width:0}
+.sname{font-weight:700;font-size:14px}
+.sdesc{font-size:11px;color:var(--sub);margin-top:3px;line-height:1.4}
+.toggle{
+  width:44px;height:24px;border-radius:12px;
+  background:rgba(255,255,255,.15);
+  position:relative;cursor:pointer;transition:.3s;flex-shrink:0;
+}
+.toggle.on{background:var(--green)}
+.toggle::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:18px;height:18px;border-radius:50%;
+  background:white;transition:.3s;
+}
+.toggle.on::after{left:23px}
+.theme-dots{display:flex;gap:10px;padding:13px}
+.tdot{
+  width:32px;height:32px;border-radius:50%;
+  cursor:pointer;border:3px solid transparent;transition:.2s;
+}
+.tdot.on{border-color:white;box-shadow:0 0 8px rgba(255,255,255,.5)}
+
+/* ══ ЛОБІ ══ */
 #s-lobby{background:var(--bg-dark);padding:0}
 .lhd{
   padding:12px 16px;
@@ -400,7 +732,7 @@ select option{background:var(--bg-main)}
 .bred{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.3)}
 .bbl{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
 
-/* ══ ГРА - ВИПРАВЛЕНИЙ ДИЗАЙН ══ */
+/* ══ ГРА ══ */
 #s-game{
   background:var(--bg-dark);
   height:100dvh;
@@ -412,7 +744,7 @@ select option{background:var(--bg-main)}
 /* Шапка гри */
 .game-header{
   background:linear-gradient(180deg,var(--bg-panel),var(--bg-main));
-  padding:8px 12px;
+  padding:6px 10px;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -422,34 +754,34 @@ select option{background:var(--bg-main)}
 .game-info{
   display:flex;
   align-items:center;
-  gap:15px;
+  gap:10px;
 }
 .timer-display{
   font-family:'Unbounded',sans-serif;
-  font-size:14px;
+  font-size:12px;
   color:var(--gold);
 }
 .timer-display span{color:var(--accent)}
 .move-display{
   font-family:'Unbounded',sans-serif;
-  font-size:14px;
+  font-size:12px;
   color:var(--sub);
 }
 .move-display span{color:var(--text);font-weight:700}
 .players-top{
   display:flex;
-  gap:15px;
+  gap:10px;
   flex:1;
   justify-content:center;
 }
 .player-card{
   background:rgba(0,0,0,.3);
-  border-radius:12px;
-  padding:8px 12px;
+  border-radius:10px;
+  padding:6px 10px;
   display:flex;
   align-items:center;
-  gap:10px;
-  min-width:180px;
+  gap:8px;
+  min-width:150px;
   border:2px solid transparent;
   transition:.2s;
 }
@@ -458,60 +790,60 @@ select option{background:var(--bg-main)}
   background:rgba(45,212,191,.1);
 }
 .player-avatar{
-  width:50px;height:50px;border-radius:50%;
-  border:3px solid var(--accent);
+  width:40px;height:40px;border-radius:50%;
+  border:2px solid var(--accent);
   overflow:hidden;
   display:flex;align-items:center;justify-content:center;
-  font-size:24px;flex-shrink:0;position:relative;
+  font-size:20px;flex-shrink:0;position:relative;
 }
 .player-avatar img{width:100%;height:100%;object-fit:cover}
 .player-avatar .crown{
-  position:absolute;bottom:-5px;right:-5px;
-  font-size:16px;background:var(--gold);
-  border-radius:50%;width:20px;height:20px;
+  position:absolute;bottom:-4px;right:-4px;
+  font-size:14px;background:var(--gold);
+  border-radius:50%;width:18px;height:18px;
   display:flex;align-items:center;justify-content:center;
 }
 .player-info{flex:1;min-width:0}
 .player-name{
   font-family:'Unbounded',sans-serif;
-  font-size:12px;font-weight:900;
+  font-size:11px;font-weight:900;
   color:var(--text);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.player-rank{font-size:10px;color:var(--accent);margin-top:2px}
+.player-rank{font-size:9px;color:var(--accent);margin-top:2px}
 .player-money{
   font-family:'Unbounded',sans-serif;
-  font-size:11px;color:var(--gold);
-  margin-top:3px;
+  font-size:10px;color:var(--gold);
+  margin-top:2px;
 }
 .player-property{
-  font-size:10px;color:var(--sub);
-  display:flex;align-items:center;gap:3px;
+  font-size:9px;color:var(--sub);
+  display:flex;align-items:center;gap:2px;
   margin-top:1px;
 }
 .btn-exit{
   background:linear-gradient(135deg,var(--green),#16a34a);
   color:white;border:none;border-radius:8px;
-  padding:10px 20px;
+  padding:8px 16px;
   font-family:'Unbounded',sans-serif;
-  font-size:12px;font-weight:700;
+  font-size:11px;font-weight:700;
   cursor:pointer;text-transform:uppercase;flex-shrink:0;
 }
 .btn-exit:active{transform:scale(.95)}
 
-/* Ігрова область з дошкою - ВИПРАВЛЕНО */
+/* Ігрова область */
 .game-main{
   flex:1;
   display:grid;
-  grid-template-columns:110px 1fr 110px;
-  grid-template-rows:110px 1fr 110px;
-  gap:4px;
-  padding:4px;
+  grid-template-columns:90px 1fr 90px;
+  grid-template-rows:90px 1fr 90px;
+  gap:3px;
+  padding:3px;
   overflow:hidden;
 }
 .board-side{
   display:flex;
-  gap:4px;
+  gap:3px;
 }
 .board-side.horizontal{
   flex-direction:row;
@@ -520,139 +852,89 @@ select option{background:var(--bg-main)}
 .board-side.horizontal.top{grid-row:1}
 .board-side.horizontal.bottom{grid-row:3}
 .board-side.vertical.left{
-  grid-column:1;
-  grid-row:2;
-  flex-direction:column;
+  grid-column:1;grid-row:2;
+  display:flex;flex-direction:column;
+  position:relative;
 }
 .board-side.vertical.right{
-  grid-column:3;
-  grid-row:2;
-  flex-direction:column;
+  grid-column:3;grid-row:2;
+  display:flex;flex-direction:column;
+  position:relative;
 }
 
 .cell{
   background:var(--bg-panel);
   border:2px solid rgba(45,212,191,.3);
-  border-radius:8px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:6px;
-  position:relative;
-  flex:1;
-  min-width:0;
-  min-height:0;
-  cursor:pointer;
-  transition:.15s;
+  border-radius:6px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:4px;position:relative;
+  flex:1;min-width:0;min-height:0;
+  cursor:pointer;transition:.15s;
+}
+.cell:active{transform:scale(.95)}
+.cell.corner{
+  background:var(--bg-main);
+  border-color:var(--accent);
+  border-width:2px;
 }
 
-/* Вертикальні сторони - клітинки лежать на боці */
-.board-side.vertical .cell {
+/* Вертикальні сторони - повернуті клітинки */
+.board-side.vertical .cell{
   transform: rotate(-90deg);
   transform-origin: center center;
   position: absolute;
-  width: 110px;
-  height: 110px;
-}
-
-/* Позиціонування для лівої сторони */
-.board-side.vertical.left {
-  position: relative;
+  width: 90px;
+  height: 90px;
 }
 
 .board-side.vertical.left .cell:nth-child(1) { left: 0; top: 0; }
-.board-side.vertical.left .cell:nth-child(2) { left: 0; top: 114px; }
-.board-side.vertical.left .cell:nth-child(3) { left: 0; top: 228px; }
-.board-side.vertical.left .cell:nth-child(4) { left: 0; top: 342px; }
-.board-side.vertical.left .cell:nth-child(5) { left: 0; top: 456px; }
-.board-side.vertical.left .cell:nth-child(6) { left: 0; top: 570px; }
-.board-side.vertical.left .cell:nth-child(7) { left: 0; top: 684px; }
-.board-side.vertical.left .cell:nth-child(8) { left: 0; top: 798px; }
-.board-side.vertical.left .cell:nth-child(9) { left: 0; top: 912px; }
-.board-side.vertical.left .cell:nth-child(10) { left: 0; top: 1026px; }
-
-/* Позиціонування для правої сторони */
-.board-side.vertical.right {
-  position: relative;
-}
+.board-side.vertical.left .cell:nth-child(2) { left: 0; top: 93px; }
+.board-side.vertical.left .cell:nth-child(3) { left: 0; top: 186px; }
+.board-side.vertical.left .cell:nth-child(4) { left: 0; top: 279px; }
+.board-side.vertical.left .cell:nth-child(5) { left: 0; top: 372px; }
+.board-side.vertical.left .cell:nth-child(6) { left: 0; top: 465px; }
+.board-side.vertical.left .cell:nth-child(7) { left: 0; top: 558px; }
+.board-side.vertical.left .cell:nth-child(8) { left: 0; top: 651px; }
+.board-side.vertical.left .cell:nth-child(9) { left: 0; top: 744px; }
+.board-side.vertical.left .cell:nth-child(10) { left: 0; top: 837px; }
 
 .board-side.vertical.right .cell:nth-child(1) { right: 0; top: 0; }
-.board-side.vertical.right .cell:nth-child(2) { right: 0; top: 114px; }
-.board-side.vertical.right .cell:nth-child(3) { right: 0; top: 228px; }
-.board-side.vertical.right .cell:nth-child(4) { right: 0; top: 342px; }
-.board-side.vertical.right .cell:nth-child(5) { right: 0; top: 456px; }
-.board-side.vertical.right .cell:nth-child(6) { right: 0; top: 570px; }
-.board-side.vertical.right .cell:nth-child(7) { right: 0; top: 684px; }
-.board-side.vertical.right .cell:nth-child(8) { right: 0; top: 798px; }
-.board-side.vertical.right .cell:nth-child(9) { right: 0; top: 912px; }
-.board-side.vertical.right .cell:nth-child(10) { right: 0; top: 1026px; }
+.board-side.vertical.right .cell:nth-child(2) { right: 0; top: 93px; }
+.board-side.vertical.right .cell:nth-child(3) { right: 0; top: 186px; }
+.board-side.vertical.right .cell:nth-child(4) { right: 0; top: 279px; }
+.board-side.vertical.right .cell:nth-child(5) { right: 0; top: 372px; }
+.board-side.vertical.right .cell:nth-child(6) { right: 0; top: 465px; }
+.board-side.vertical.right .cell:nth-child(7) { right: 0; top: 558px; }
+.board-side.vertical.right .cell:nth-child(8) { right: 0; top: 651px; }
+.board-side.vertical.right .cell:nth-child(9) { right: 0; top: 744px; }
+.board-side.vertical.right .cell:nth-child(10) { right: 0; top: 837px; }
 
-/* Для мобільних */
-@media (max-width:768px){
-  .board-side.vertical .cell {
-    width: 85px;
-    height: 85px;
-  }
-  .board-side.vertical.left .cell:nth-child(1) { top: 0; }
-  .board-side.vertical.left .cell:nth-child(2) { top: 89px; }
-  .board-side.vertical.left .cell:nth-child(3) { top: 178px; }
-  .board-side.vertical.left .cell:nth-child(4) { top: 267px; }
-  .board-side.vertical.left .cell:nth-child(5) { top: 356px; }
-  .board-side.vertical.left .cell:nth-child(6) { top: 445px; }
-  .board-side.vertical.left .cell:nth-child(7) { top: 534px; }
-  .board-side.vertical.left .cell:nth-child(8) { top: 623px; }
-  .board-side.vertical.left .cell:nth-child(9) { top: 712px; }
-  .board-side.vertical.left .cell:nth-child(10) { top: 801px; }
-  
-  .board-side.vertical.right .cell:nth-child(1) { top: 0; }
-  .board-side.vertical.right .cell:nth-child(2) { top: 89px; }
-  .board-side.vertical.right .cell:nth-child(3) { top: 178px; }
-  .board-side.vertical.right .cell:nth-child(4) { top: 267px; }
-  .board-side.vertical.right .cell:nth-child(5) { top: 356px; }
-  .board-side.vertical.right .cell:nth-child(6) { top: 445px; }
-  .board-side.vertical.right .cell:nth-child(7) { top: 534px; }
-  .board-side.vertical.right .cell:nth-child(8) { top: 623px; }
-  .board-side.vertical.right .cell:nth-child(9) { top: 712px; }
-  .board-side.vertical.right .cell:nth-child(10) { top: 801px; }
-} 
-  
-/* Кольорова смужка */
 .cell-color-bar{
   position:absolute;top:0;left:0;right:0;
-  height:5px;border-radius:6px 6px 0 0;
+  height:4px;border-radius:4px 4px 0 0;
 }
-
-/* Іконка */
 .cell-icon{
-  font-size:clamp(16px,4vw,28px);
-  margin-bottom:3px;
+  font-size:clamp(14px,3.5vw,24px);
+  margin-bottom:2px;
   line-height:1;
 }
-
-/* Назва */
 .cell-name{
-  font-size:clamp(9px,2.2vw,12px);
+  font-size:clamp(8px,2vw,11px);
   text-align:center;color:var(--text);
   font-weight:700;line-height:1.2;
   word-break:break-word;
 }
-
-/* Ціна */
 .cell-price{
-  font-size:clamp(10px,2.5vw,13px);
+  font-size:clamp(9px,2.2vw,12px);
   color:var(--gold);font-weight:800;
   margin-top:2px;
 }
-
-/* Власник */
 .cell-owner{
   position:absolute;bottom:3px;left:3px;right:3px;
   height:4px;border-radius:3px;
   background:var(--accent);
 }
-
-/* Фішки */
 .tokens{
   position:absolute;top:3px;left:3px;right:3px;
   display:flex;justify-content:center;gap:2px;
@@ -673,8 +955,6 @@ select option{background:var(--bg-main)}
   font-weight:900;color:white;
   line-height:1;
 }
-
-/* Будиночки */
 .houses{
   position:absolute;bottom:8px;left:0;right:0;
   display:flex;justify-content:center;gap:2px;
@@ -755,34 +1035,34 @@ select option{background:var(--bg-main)}
 /* Панель керування */
 .control-panel{
   background:var(--bg-panel);
-  padding:12px;
-  display:flex;gap:12px;
+  padding:10px;
+  display:flex;gap:10px;
   align-items:center;justify-content:center;
   border-top:2px solid var(--accent2);
   flex-shrink:0;
 }
 .dice-display{
-  display:flex;gap:12px;align-items:center;
+  display:flex;gap:10px;align-items:center;
 }
 .dice{
-  width:50px;height:50px;
+  width:45px;height:45px;
   background:white;border-radius:10px;
   display:grid;grid-template-columns:repeat(3,1fr);
   grid-template-rows:repeat(3,1fr);
-  padding:6px;gap:3px;
+  padding:5px;gap:2px;
   box-shadow:0 4px 8px rgba(0,0,0,.3);
 }
 .dice-dot{
   background:#1e293b;border-radius:50%;
   align-self:center;justify-self:center;
-  width:8px;height:8px;
+  width:7px;height:7px;
 }
 .btn-roll{
   background:linear-gradient(135deg,var(--gold),#f59e0b);
-  color:#0a1f1a;border:none;border-radius:12px;
-  padding:14px 35px;
+  color:#0a1f1a;border:none;border-radius:10px;
+  padding:12px 25px;
   font-family:'Unbounded',sans-serif;
-  font-size:14px;font-weight:900;
+  font-size:13px;font-weight:900;
   cursor:pointer;text-transform:uppercase;
   box-shadow:0 4px 15px rgba(251,191,36,.4);
 }
@@ -798,26 +1078,26 @@ select option{background:var(--bg-main)}
 .prop-buy{
   background:var(--bg-panel);
   border-top:1px solid rgba(45,212,191,.2);
-  padding:8px 12px;
-  display:none;align-items:center;gap:10px;
+  padding:6px 10px;
+  display:none;align-items:center;gap:9px;
   flex-shrink:0;
 }
 .pb-clr{
-  width:12px;height:35px;border-radius:4px;
+  width:10px;height:30px;border-radius:3px;
   flex-shrink:0;
 }
 .pb-inf{flex:1;min-width:0}
-.pb-nm{font-weight:800;font-size:13px}
+.pb-nm{font-weight:800;font-size:12px}
 .pb-pr{
   font-family:'Unbounded',sans-serif;
-  font-size:14px;font-weight:900;
+  font-size:13px;font-weight:900;
   color:var(--gold);
 }
 .pb-btn{
-  color:white;border:none;border-radius:10px;
-  padding:10px 16px;
+  color:white;border:none;border-radius:9px;
+  padding:8px 13px;
   font-family:'Nunito',sans-serif;
-  font-size:13px;font-weight:800;
+  font-size:12px;font-weight:800;
   cursor:pointer;flex-shrink:0;
 }
 
@@ -870,16 +1150,63 @@ select option{background:var(--bg-main)}
 /* Адаптивність */
 @media (max-width:768px){
   .game-main{
-    grid-template-columns:85px 1fr 85px;
-    grid-template-rows:85px 1fr 85px;
+    grid-template-columns:75px 1fr 75px;
+    grid-template-rows:75px 1fr 75px;
+    gap:2px;
+    padding:2px;
   }
-  .player-card{min-width:140px;padding:6px 8px}
-  .player-avatar{width:40px;height:40px}
-  .cell-icon{font-size:clamp(14px,3.5vw,22px)}
-  .cell-name{font-size:clamp(8px,2vw,10px)}
-  .cell-price{font-size:clamp(9px,2.2vw,11px)}
-  .dice{width:45px;height:45px}
-  .btn-roll{padding:12px 25px;font-size:13px}
+  
+  .cell{
+    border-radius:5px;
+    padding:3px;
+  }
+  
+  .cell-icon{
+    font-size:clamp(12px,3vw,18px);
+    margin-bottom:1px;
+  }
+  
+  .cell-name{
+    font-size:clamp(7px,1.8vw,9px);
+  }
+  
+  .cell-price{
+    font-size:clamp(8px,2vw,10px);
+  }
+  
+  .board-side.vertical .cell{
+    width: 75px;
+    height: 75px;
+  }
+  
+  .board-side.vertical.left .cell:nth-child(1) { top: 0; }
+  .board-side.vertical.left .cell:nth-child(2) { top: 77px; }
+  .board-side.vertical.left .cell:nth-child(3) { top: 154px; }
+  .board-side.vertical.left .cell:nth-child(4) { top: 231px; }
+  .board-side.vertical.left .cell:nth-child(5) { top: 308px; }
+  .board-side.vertical.left .cell:nth-child(6) { top: 385px; }
+  .board-side.vertical.left .cell:nth-child(7) { top: 462px; }
+  .board-side.vertical.left .cell:nth-child(8) { top: 539px; }
+  .board-side.vertical.left .cell:nth-child(9) { top: 616px; }
+  .board-side.vertical.left .cell:nth-child(10) { top: 693px; }
+  
+  .board-side.vertical.right .cell:nth-child(1) { top: 0; }
+  .board-side.vertical.right .cell:nth-child(2) { top: 77px; }
+  .board-side.vertical.right .cell:nth-child(3) { top: 154px; }
+  .board-side.vertical.right .cell:nth-child(4) { top: 231px; }
+  .board-side.vertical.right .cell:nth-child(5) { top: 308px; }
+  .board-side.vertical.right .cell:nth-child(6) { top: 385px; }
+  .board-side.vertical.right .cell:nth-child(7) { top: 462px; }
+  .board-side.vertical.right .cell:nth-child(8) { top: 539px; }
+  .board-side.vertical.right .cell:nth-child(9) { top: 616px; }
+  .board-side.vertical.right .cell:nth-child(10) { top: 693px; }
+  
+  .player-card{min-width:120px;padding:5px 8px}
+  .player-avatar{width:35px;height:35px}
+  .player-name{font-size:10px}
+  .player-money{font-size:10px}
+  .dice{width:40px;height:40px}
+  .btn-roll{padding:10px 20px;font-size:12px}
 }
 
 ::-webkit-scrollbar{width:4px;height:4px}
@@ -1007,7 +1334,7 @@ select option{background:var(--bg-main)}
   </div>
 </div>
 
-<!-- ГРА - ВИПРАВЛЕНИЙ ДИЗАЙН -->
+<!-- ГРА -->
 <div id="s-game" class="screen">
   <div class="game-header" id="gameHeader"></div>
   <div class="game-main" id="gameMain">
@@ -1140,6 +1467,9 @@ let roomOff=null,chatOff=null,botTmr=null,timerInt=null;
 let gameShown=false,boardBuilt=false,curPTab='log';
 let myScore=0,myWins=0,myGold=0,curLgIdx=0;
 let timerSec=75;
+let gameStartTime=null;
+let timerInterval=null;
+let moveCount=0;
 
 async function onReady(){
   const saved=localStorage.getItem('mono_theme')||'classic';
@@ -1433,6 +1763,9 @@ async function leaveRoom(){
   if(myRoom){const s=await db.ref('rooms/'+myRoom+'/players').once('value');const p=s.val();
     if(!p||!Object.keys(p).filter(k=>!k.startsWith('bot')).length)await db.ref('rooms/'+myRoom).remove()}
   myRoom=null;selMode=null;gameShown=false;boardBuilt=false;
+  gameStartTime=null;
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null}
+  if(window.timeUpdateInterval){clearInterval(window.timeUpdateInterval);window.timeUpdateInterval=null}
   document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on'));
   showScreen('s-main');loadRooms();
 }
@@ -1471,28 +1804,30 @@ function renderLobby(r){
   btn.textContent=!isHost?'⏳ Чекаємо хоста...':!canStart?`⏳ Ще ${minH-hCnt} гравців`:`▶️ Почати (${pl.length})`;
 }
 
-function startTimer(isMyTurn){
-  stopTimer();timerSec=75;
-  const fill=document.createElement('div');
-  fill.style.cssText='height:3px;background:var(--gold);transition:width 1s linear;width:100%';
-  const header=document.getElementById('gameHeader');
-  const existing=header.querySelector('.timer-bar');
-  if(existing)existing.remove();
-  const bar=document.createElement('div');
-  bar.className='timer-bar';
-  bar.style.cssText='height:3px;background:rgba(255,255,255,.08);flex-shrink:0';
-  bar.appendChild(fill);
-  header.appendChild(bar);
-  
-  if(!isMyTurn)return;
-  timerInt=setInterval(()=>{
-    timerSec--;
-    fill.style.width=Math.max(0,timerSec/75*100)+'%';
-    if(timerSec<=15)fill.style.background='var(--red)';
-    if(timerSec<=0){stopTimer();toast('⏰ Час вийшов!');rollDice()}
+function startTimer(){
+  if(timerInterval)return;
+  gameStartTime=Date.now();
+  timerInterval=setInterval(()=>{
+    if(gameStartTime){
+      const elapsed=Math.floor((Date.now()-gameStartTime)/1000);
+      const mins=Math.floor(elapsed/60);
+      const secs=elapsed%60;
+      const timeEl=document.getElementById('gameTime');
+      if(timeEl)timeEl.textContent=`${mins}:${secs.toString().padStart(2,'0')}`;
+    }
   },1000);
 }
-function stopTimer(){if(timerInt){clearInterval(timerInt);timerInt=null}}
+
+function stopTimer(){
+  if(timerInterval){
+    clearInterval(timerInterval);
+    timerInterval=null;
+  }
+  if(window.timeUpdateInterval){
+    clearInterval(window.timeUpdateInterval);
+    window.timeUpdateInterval=null;
+  }
+}
 
 function buildBoard(){
   if(boardBuilt)return;boardBuilt=true;
@@ -1504,19 +1839,15 @@ function buildBoard(){
   
   top.innerHTML='';bottom.innerHTML='';left.innerHTML='';right.innerHTML='';
   
-  // Верх: 0-9
-  for(let i=0;i<10;i++)top.appendChild(createCell(PROPS[i]));
-  // Право: 10-19
-  for(let i=10;i<20;i++)right.appendChild(createCell(PROPS[i]));
-  // Низ: 20-29 (у зворотньому порядку)
-  for(let i=29;i>=20;i--)bottom.appendChild(createCell(PROPS[i]));
-  // Ліво: 30-39 (у зворотньому порядку)
-  for(let i=39;i>=30;i--)left.appendChild(createCell(PROPS[i]));
+  for(let i=0;i<10;i++)top.appendChild(createCell(PROPS[i],'horizontal'));
+  for(let i=10;i<20;i++)right.appendChild(createCell(PROPS[i],'vertical'));
+  for(let i=29;i>=20;i--)bottom.appendChild(createCell(PROPS[i],'horizontal'));
+  for(let i=39;i>=30;i--)left.appendChild(createCell(PROPS[i],'vertical'));
 }
 
-function createCell(p){
+function createCell(p,orientation='horizontal'){
   const div=document.createElement('div');
-  div.className='cell'+(p.type==='corner'?' corner':'');
+  div.className='cell'+(p.type==='corner'?' corner':'')+' cell-'+orientation;
   div.id='cell-'+p.pos;
   
   let html='';
@@ -1550,6 +1881,7 @@ function renderGame(r){
     buildBoard();showScreen('s-game');gameShown=true;listenChat();
     const first=Object.values(r.players)[r.game.current];
     addLog(`🎮 Гра почалась! <span class="log-player">${first?.name}</span> ходить першим`);
+    startTimer();
   }
   
   const pl=Object.values(r.players||{});
@@ -1561,10 +1893,12 @@ function renderGame(r){
   const meImg=me.photoUrl
     ?`<img src="${me.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:17px;font-weight:800;color:white">${(me.name||'?')[0].toUpperCase()}</span>`
     :`<span>${(me.name||'?')[0].toUpperCase()}</span>`;
-    
+  
+  moveCount=r.game.lastRoll?Math.floor((Date.now()-gameStartTime)/10000)+1:0;
+  
   let hdr=`<div class="game-info">
-    <div class="timer-display">Час: <span>18 хв.</span></div>
-    <div class="move-display">Хід: <span>${r.game.lastRoll?Math.floor((Date.now()-r.game.lastRoll)/1000):0}</span> 👁</div>
+    <div class="timer-display">Час: <span id="gameTime">0:00</span></div>
+    <div class="move-display">Хід: <span>${moveCount}</span> 👁</div>
   </div>
   <div class="players-top">
     <div class="player-card ${isMy?'active':''}">
@@ -1630,6 +1964,11 @@ function renderGame(r){
     renderDice('dice1',r.game.dice1);
     renderDice('dice2',r.game.dice2);
   }
+
+  const btn=document.getElementById('rollBtn');
+  btn.disabled=!isMy;
+  btn.className='btn-roll '+(isMy?'my':'wait');
+  btn.textContent=isMy?'🎲 Кинути кубики!':'⏳ Хід: '+cur?.name;
 
   const btn=document.getElementById('rollBtn');
   btn.disabled=!isMy;
@@ -1820,7 +2159,5 @@ async function renderWinner(r){
   if(isMe){hp('heavy');tg?.HapticFeedback?.notificationOccurred('success')}
 }
 </script>
-
 </body>
 </html>
-
