@@ -633,16 +633,18 @@ async function loadRooms(){
   el.innerHTML='<div class="ld"><span class="sp">⏳</span> Завантаження...</div>';
   const snap=await db.ref('rooms').orderByChild('status').equalTo('waiting').once('value');
   const data=snap.val();
-  const list=data?Object.values(data).filter(r=>{
+  // Додаємо ключ Firebase як code якщо його нема в даних
+  const list=data?Object.entries(data).map(([key,r])=>({...r,code:r.code||key})).filter(r=>{
     const pl=Object.values(r.players||{});
     return pl.length<4&&pl.some(p=>!p.isBot);
   }):[];
   if(!list.length){el.innerHTML='<div class="er">😕 Немає відкритих кімнат<br><small style="color:#334155">Створіть нову!</small></div>';return}
   el.innerHTML=list.slice(0,8).map(r=>{
     const pl=Object.values(r.players||{});
-    return`<div class="ri" onclick="quickJoin('${r.code}')">
+    const code=r.code||Object.keys(snap.val()||{}).find(k=>snap.val()[k]===r)||'???';
+    return`<div class="ri" onclick="quickJoin('${r.code||code}')">
       <div class="rico">${MICONS[r.mode]||'🎲'}</div>
-      <div class="rin"><div class="rnm">${r.code}</div><div class="rmt">${MNAMES[r.mode]||'Класичний'} · ${pl.length}/4</div></div>
+      <div class="rin"><div class="rnm">${r.code||code}</div><div class="rmt">${MNAMES[r.mode]||'Класичний'} · ${pl.length}/4</div></div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
         <div class="rav">${pl.map(p=>miniAv(p)).join('')}</div>
         <div class="jp">Зайти →</div>
@@ -672,6 +674,7 @@ async function createRoom(){
     }
   }
   const room={code:myRoom,mode:selMode,status:'waiting',players,
+    hostId:myId,
     game:{current:0,dice1:0,dice2:0,lastRoll:0},createdAt:Date.now()};
   if(selMode==='teams')room.teams={red:[myId],blue:[]};
   await db.ref('rooms/'+myRoom).set(room);
@@ -733,8 +736,9 @@ function listenRoom(){
 // ── LOBBY ──
 function renderLobby(room){
   const pl=Object.values(room.players||{});
-  const host=pl.find(p=>!p.isBot);
-  const hostId=host?.id||null;
+  // Хост — той хто створив кімнату (збережено в room.hostId)
+  // Fallback — перший живий гравець
+  const hostId=room.hostId||(pl.find(p=>!p.isBot)?.id)||null;
   const minH=room.mode==='teams'?4:(room.mode==='vsbot'||room.mode==='mixed')?1:2;
   const hCnt=pl.filter(p=>!p.isBot).length;
   document.getElementById('lobbyList').innerHTML=pl.map(p=>{
