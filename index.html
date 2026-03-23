@@ -167,21 +167,46 @@ select option{background:var(--c2)}
 #s-game.active{display:flex}
 
 /* Шапка гравців */
-.gph{display:flex;background:#111827;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0}
-.gp-me{flex:1;display:flex;align-items:center;gap:7px;padding:7px 10px;background:linear-gradient(135deg,rgba(91,79,207,.18),rgba(91,79,207,.04));border-right:1px solid rgba(255,255,255,.08)}
-.gp-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;border:2.5px solid;overflow:hidden;flex-shrink:0}
+.gph{
+  display:flex;align-items:center;
+  background:linear-gradient(135deg,#0d1117,#111827);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  flex-shrink:0;padding:6px 10px;gap:10px;
+}
+/* Великий аватар свого гравця */
+.gp-me{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.gp-av{
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:800;border:3px solid;
+  overflow:hidden;flex-shrink:0;position:relative;
+}
 .gp-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.gp-av.ring{box-shadow:0 0 0 2px var(--gold),0 0 7px var(--gold)}
+.gp-av.ring{
+  border-color:var(--gold) !important;
+  box-shadow:0 0 0 2px var(--gold),0 0 10px var(--gold)88;
+  animation:ring-pulse 1.5s ease-in-out infinite;
+}
+@keyframes ring-pulse{0%,100%{box-shadow:0 0 0 2px var(--gold),0 0 10px var(--gold)88}50%{box-shadow:0 0 0 3px var(--gold),0 0 18px var(--gold)cc}}
 .gp-inf{flex:1;min-width:0}
-.gp-nm{font-weight:800;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gp-mn{font-family:'Unbounded',sans-serif;font-size:10px;color:var(--green);font-weight:700}
-.gp-ps{font-size:8px;color:var(--sub);margin-top:1px}
-.gp-others{display:flex;gap:5px;align-items:center;padding:7px 10px}
-.gp-sm{display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer}
-.gp-sm-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;border:2px solid;overflow:hidden;flex-shrink:0}
+.gp-nm{font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--txt)}
+.gp-mn{font-family:'Unbounded',sans-serif;font-size:12px;color:var(--green);font-weight:700;margin-top:1px}
+.gp-ps{font-size:10px;color:var(--sub);margin-top:1px}
+/* Маленькі аватари інших гравців */
+.gp-others{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.gp-sm{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.gp-sm-av{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;border:2.5px solid;
+  overflow:hidden;flex-shrink:0;
+}
 .gp-sm-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.gp-sm-av.ring{box-shadow:0 0 0 2px var(--gold)}
-.gp-sm-mn{font-size:8px;color:var(--green);font-weight:700;white-space:nowrap}
+.gp-sm-av.ring{
+  border-color:var(--gold) !important;
+  box-shadow:0 0 0 2px var(--gold),0 0 8px var(--gold)88;
+}
+.gp-sm-mn{font-size:9px;color:var(--green);font-weight:700;white-space:nowrap}
 
 /* Таймер */
 .timer-bar{height:3px;background:rgba(255,255,255,.08);flex-shrink:0;position:relative}
@@ -1011,28 +1036,30 @@ function renderGame(r){
   const cur=pl[r.game?.current||0];
   const isMy=cur?.id===myId;
 
-  // Шапка
+  // Шапка — великий аватар зліва (як у попередній версії)
+  const others=pl.filter(p=>p.id!==myId);
+  const meAv=me.photoUrl
+    ?`<img src="${me.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:17px;font-weight:800;color:white">${(me.name||'?')[0].toUpperCase()}</span>`
+    :`<span>${(me.name||'?')[0].toUpperCase()}</span>`;
+
   let hdr=`<div class="gp-me">
-    <div class="gp-av ${isMy?'ring':''}" style="border-color:${me.color};background:${me.color}22;color:${me.color}">
-      ${me.photoUrl?`<img src="${me.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`:''}
-      <span>${(me.name||'?')[0].toUpperCase()}</span>
-    </div>
+    <div class="gp-av ${isMy?'ring':''}" style="border-color:${me.color};background:${me.color}22;color:${me.color}">${meAv}</div>
     <div class="gp-inf">
       <div class="gp-nm">${me.name} <span style="font-size:9px;color:#64748b">(Ви)</span></div>
       <div class="gp-mn">${me.money.toLocaleString()}₴</div>
-      <div class="gp-ps">${PROPS[me.pos]?.name||'?'} · ${(me.props||[]).length}🏠</div>
+      <div class="gp-ps">${PROPS[me.pos]?.name||'?'} · ${(me.props||[]).length} 🏠</div>
     </div>
   </div>`;
-  const others=pl.filter(p=>p.id!==myId);
+
   if(others.length){
     hdr+=`<div class="gp-others">`;
     others.forEach(p=>{
       const isAct=cur?.id===p.id;
+      const pAv=p.photoUrl
+        ?`<img src="${p.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:12px;font-weight:800;color:white">${p.isBot?'🤖':(p.name||'?')[0].toUpperCase()}</span>`
+        :`<span>${p.isBot?'🤖':(p.name||'?')[0].toUpperCase()}</span>`;
       hdr+=`<div class="gp-sm">
-        <div class="gp-sm-av ${isAct?'ring':''}" style="border-color:${p.color};background:${p.color}22;color:${p.color}">
-          ${p.photoUrl?`<img src="${p.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`:''}
-          <span>${p.isBot?'🤖':(p.name||'?')[0].toUpperCase()}</span>
-        </div>
+        <div class="gp-sm-av ${isAct?'ring':''}" style="border-color:${p.color};background:${p.color}22;color:${p.color};position:relative">${pAv}</div>
         <div class="gp-sm-mn">${(p.money/1000).toFixed(1)}k</div>
       </div>`;
     });
@@ -1082,6 +1109,16 @@ function renderGame(r){
   checkWinner(r);
 }
 
+function hasMonopoly(pl, myId, pos){
+  // Знаходимо власника і перевіряємо чи він має всі міста одного кольору
+  const p=PROPS[pos];
+  if(!p?.color) return false;
+  const sameColor=PROPS.filter(x=>x.color===p.color&&x.price);
+  const me=pl.find(x=>x.id===myId);
+  if(!me) return false;
+  return sameColor.every(x=>(me.props||[]).includes(x.pos));
+}
+
 function renderPropBuy(r,pl,cur,isMy){
   const pb=document.getElementById('propBuy');
   if(!isMy||!cur){pb.style.display='none';return}
@@ -1095,9 +1132,29 @@ function renderPropBuy(r,pl,cur,isMy){
         <button class="pb-btn" onclick="buyProp(${pos},${p.price})">Купити</button>`;
     } else if(own.id===myId){
       const h=(cur.houses||{})[pos]||0,hc=Math.floor(p.price*.5);
-      if(h<4){pb.style.display='flex';pb.innerHTML=`${p.color?`<div class="pb-color" style="background:${p.color}"></div>`:''}
-        <div class="pb-info"><div class="pb-name">${p.emoji} ${p.name}</div><div class="pb-price" style="font-size:11px">🏠×${h} · +🏠 ${hc.toLocaleString()}₴</div></div>
-        <button class="pb-btn house" onclick="buildHouse(${pos},${hc})">+🏠</button>`;return}
+      // Будинок ТІЛЬКИ якщо є монополія (всі міста одного кольору)
+      const mono=hasMonopoly(pl,myId,pos);
+      if(h<4&&mono){
+        pb.style.display='flex';
+        pb.innerHTML=`${p.color?`<div class="pb-color" style="background:${p.color}"></div>`:''}
+          <div class="pb-info"><div class="pb-name">${p.emoji} ${p.name}</div><div class="pb-price" style="font-size:11px">🏠×${h} · +🏠 ${hc.toLocaleString()}₴</div></div>
+          <button class="pb-btn house" onclick="buildHouse(${pos},${hc})">+🏠</button>`;
+        return;
+      } else if(h>=4){
+        pb.style.display='flex';
+        pb.innerHTML=`${p.color?`<div class="pb-color" style="background:${p.color}"></div>`:''}
+          <div class="pb-info"><div class="pb-name">${p.emoji} ${p.name}</div><div class="pb-price" style="font-size:11px;color:var(--green)">🏠🏠🏠🏠 Максимум!</div></div>`;
+        return;
+      } else if(!mono&&p.color){
+        // Нагадуємо що потрібна монополія
+        const sameColor=PROPS.filter(x=>x.color===p.color&&x.price);
+        const me=pl.find(x=>x.id===myId);
+        const have=(me?.props||[]).filter(pp=>PROPS[pp]?.color===p.color).length;
+        pb.style.display='flex';
+        pb.innerHTML=`${p.color?`<div class="pb-color" style="background:${p.color}"></div>`:''}
+          <div class="pb-info"><div class="pb-name">${p.emoji} ${p.name} <span style="color:var(--gold)">ваша</span></div><div class="pb-price" style="font-size:10px;color:var(--sub)">Монополія: ${have}/${sameColor.length} міст</div></div>`;
+        return;
+      }
       pb.style.display='none';
     } else {pb.style.display='none'}
   } else {pb.style.display='none'}
@@ -1225,14 +1282,18 @@ async function buyProp(pos,price){
 
 async function buildHouse(pos,cost){
   const snap=await db.ref('rooms/'+myRoom).once('value');
-  const me=Object.values(snap.val()?.players||{}).find(p=>p.id===myId);
-  if(!me||me.money<cost){toast('❌ Недостатньо!');hp('heavy');return}
+  const r=snap.val();if(!r)return;
+  const pl=Object.values(r.players||{});
+  const me=pl.find(p=>p.id===myId);
+  if(!me||me.money<cost){toast('❌ Недостатньо грошей!');hp('heavy');return}
+  // Перевірка монополії
+  if(!hasMonopoly(pl,myId,pos)){toast('❌ Потрібна монополія (всі міста кольору)!');hp('heavy');return}
   const houses={...(me.houses||{})};
   houses[pos]=(houses[pos]||0)+1;
-  if(houses[pos]>4){toast('❌ Максимум 4!');return}
+  if(houses[pos]>4){toast('❌ Максимум 4 будинки!');return}
   await db.ref('rooms/'+myRoom+'/players/'+myId).update({houses,money:me.money-cost});
   addLog(`🏠 <span class="en">${me.name}</span> будує на <span class="ep">${PROPS[pos].name}</span> (${houses[pos]}/4)`);
-  toast(`🏠 Будинок! (${houses[pos]}/4)`);hp('medium');
+  toast(`🏠 Будинок збудовано! (${houses[pos]}/4)`);hp('medium');
 }
 
 async function surrender(){
