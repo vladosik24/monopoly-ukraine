@@ -116,7 +116,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text)
 .mtab.on{color:var(--gold);border-bottom-color:var(--gold)}
 .tc{flex:1;overflow-y:auto;padding-bottom:16px}
 
-/* Стилі для кімнат, ліг, модалок, лобі – ідентичні попереднім */
+/* Кімнати */
 .rooms-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 6px}
 .rooms-lbl{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px}
 .ref-btn{background:rgba(45,212,191,.1);border:1px solid var(--accent2);border-radius:7px;padding:5px 10px;color:var(--accent);font-size:13px;cursor:pointer}
@@ -214,104 +214,488 @@ select option{background:var(--bg-main)}
 .bbl{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
 
 /* ========== ГРА ========== */
-#s-game{background:var(--bg-dark);height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-.game-header{background:linear-gradient(180deg,var(--bg-panel),var(--bg-main));padding:8px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--accent2);flex-shrink:0;flex-wrap:wrap;gap:8px}
-.game-info{display:flex;align-items:center;gap:15px}
-.timer-display{font-family:'Unbounded',sans-serif;font-size:14px;color:var(--gold)}
-.move-display{font-family:'Unbounded',sans-serif;font-size:14px;color:var(--sub)}
+#s-game{
+  background:var(--bg-dark);
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.game-header{
+  background:linear-gradient(180deg,var(--bg-panel),var(--bg-main));
+  padding:8px 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:2px solid var(--accent2);
+  flex-shrink:0;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.game-info{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+.timer-display{
+  font-family:'Unbounded',sans-serif;
+  font-size:14px;
+  color:var(--gold);
+}
+.move-display{
+  font-family:'Unbounded',sans-serif;
+  font-size:14px;
+  color:var(--sub);
+}
 .move-display span{color:var(--text);font-weight:700}
-.players-top{display:flex;gap:15px;flex:1;justify-content:center;flex-wrap:wrap}
-.player-card{background:rgba(0,0,0,.3);border-radius:12px;padding:6px 10px;display:flex;align-items:center;gap:8px;min-width:150px;border:2px solid transparent;transition:.2s}
-.player-card.active{border-color:var(--accent);background:rgba(45,212,191,.1)}
-.player-avatar{width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;position:relative}
+.players-top{
+  display:flex;
+  gap:15px;
+  flex:1;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.player-card{
+  background:rgba(0,0,0,.3);
+  border-radius:12px;
+  padding:6px 10px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:150px;
+  border:2px solid transparent;
+  transition:.2s;
+}
+.player-card.active{
+  border-color:var(--accent);
+  background:rgba(45,212,191,.1);
+}
+.player-avatar{
+  width:40px;height:40px;border-radius:50%;
+  border:2px solid var(--accent);
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;position:relative;
+}
 .player-avatar img{width:100%;height:100%;object-fit:cover}
-.player-avatar .crown{position:absolute;bottom:-5px;right:-5px;font-size:14px;background:var(--gold);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center}
+.player-avatar .crown{
+  position:absolute;bottom:-5px;right:-5px;
+  font-size:14px;background:var(--gold);
+  border-radius:50%;width:18px;height:18px;
+  display:flex;align-items:center;justify-content:center;
+}
 .player-info{flex:1;min-width:0}
-.player-name{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:900;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-name{
+  font-family:'Unbounded',sans-serif;
+  font-size:11px;font-weight:900;
+  color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
 .player-rank{font-size:9px;color:var(--accent);margin-top:1px}
-.player-money{font-family:'Unbounded',sans-serif;font-size:10px;color:var(--gold);margin-top:2px}
-.player-property{font-size:8px;color:var(--sub);display:flex;align-items:center;gap:3px;margin-top:1px}
-.btn-exit{background:linear-gradient(135deg,var(--green),#16a34a);color:white;border:none;border-radius:8px;padding:6px 12px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;flex-shrink:0}
+.player-money{
+  font-family:'Unbounded',sans-serif;
+  font-size:10px;color:var(--gold);
+  margin-top:2px;
+}
+.player-property{
+  font-size:8px;color:var(--sub);
+  display:flex;align-items:center;gap:3px;
+  margin-top:1px;
+}
+.btn-exit{
+  background:linear-gradient(135deg,var(--green),#16a34a);
+  color:white;border:none;border-radius:8px;
+  padding:6px 12px;
+  font-family:'Unbounded',sans-serif;
+  font-size:11px;font-weight:700;
+  cursor:pointer;text-transform:uppercase;flex-shrink:0;
+}
 .btn-exit:active{transform:scale(.95)}
-.timer-bar{height:3px;background:rgba(255,255,255,.08);flex-shrink:0}
-.timer-fill{height:100%;background:var(--gold);transition:width 1s linear;width:100%}
-.game-main{flex:1;display:grid;grid-template-columns:minmax(85px, 18vw) 1fr minmax(85px, 18vw);grid-template-rows:minmax(85px, 18vw) 1fr minmax(85px, 18vw);gap:4px;padding:4px;overflow:hidden}
-.board-side{display:flex;gap:4px}
-.board-side.horizontal{flex-direction:row;grid-column:2}
+.timer-bar{
+  height:3px;
+  background:rgba(255,255,255,.08);
+  flex-shrink:0;
+}
+.timer-fill{
+  height:100%;
+  background:var(--gold);
+  transition:width 1s linear;
+  width:100%;
+}
+.game-main{
+  flex:1;
+  display:grid;
+  grid-template-columns:minmax(60px, 13vw) 1fr minmax(60px, 13vw);
+  grid-template-rows:minmax(60px, 13vw) 1fr minmax(60px, 13vw);
+  gap:4px;
+  padding:4px;
+  overflow:auto;
+}
+.board-side{
+  display:flex;
+  gap:4px;
+}
+.board-side.horizontal{
+  flex-direction:row;
+  grid-column:2;
+}
 .board-side.horizontal.top{grid-row:1}
 .board-side.horizontal.bottom{grid-row:3}
-.board-side.vertical{flex-direction:column}
+.board-side.vertical{
+  flex-direction:column;
+}
 .board-side.vertical.left{grid-column:1;grid-row:2}
 .board-side.vertical.right{grid-column:3;grid-row:2}
-.cell{background:var(--bg-panel);border:2px solid rgba(45,212,191,.3);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;position:relative;flex:1;min-width:0;min-height:0;cursor:pointer;transition:.15s}
+
+.cell{
+  background:var(--bg-panel);
+  border:2px solid rgba(45,212,191,.3);
+  border-radius:8px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:4px;
+  position:relative;
+  flex:1;
+  min-width:0;
+  min-height:0;
+  cursor:pointer;
+  transition:.15s;
+}
 .cell:active{transform:scale(.95)}
-.cell.corner{background:var(--bg-main);border-color:var(--accent);border-width:3px}
-/* Кольорова смужка зверху (після повороту на вертикальних сторонах стане внутрішньою) */
-.cell-color-bar{position:absolute;top:0;left:0;right:0;height:5px;border-radius:6px 6px 0 0;z-index:2}
-/* Вертикальні клітинки повертаємо, але смужка залишається зверху (стає ліворуч після повороту) */
-.board-side.vertical .cell{transform:rotate(-90deg);transform-origin:center center;position:relative;width:100%;height:100%}
-.board-side.vertical .cell > *:not(.cell-color-bar){transform:rotate(90deg)}
-.cell-icon{font-size:clamp(14px,3.5vw,24px);margin-bottom:2px;line-height:1}
-.cell-name{font-size:clamp(8px,2vw,10px);text-align:center;color:var(--text);font-weight:700;line-height:1.2;word-break:break-word}
-.cell-price{font-size:clamp(8px,2.2vw,11px);color:var(--gold);font-weight:800;margin-top:2px}
-.cell-owner{position:absolute;bottom:3px;left:3px;right:3px;height:4px;border-radius:3px;z-index:2}
-.tokens{position:absolute;top:3px;left:3px;right:3px;display:flex;justify-content:center;gap:2px;z-index:10;pointer-events:none}
-.tok{width:clamp(8px,2.2vw,12px);height:clamp(8px,2.2vw,12px);border-radius:50%;border:2px solid white;box-shadow:0 0 0 1px rgba(0,0,0,.9),0 2px 4px rgba(0,0,0,.5);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cell.corner{
+  background:var(--bg-main);
+  border-color:var(--accent);
+  border-width:3px;
+}
+.cell-color-bar{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:5px;
+  border-radius:6px 6px 0 0;
+  z-index:2;
+}
+.board-side.vertical .cell{
+  transform:rotate(-90deg);
+  transform-origin:center center;
+  position:relative;
+  width:100%;
+  height:100%;
+}
+.board-side.vertical .cell > *:not(.cell-color-bar){
+  transform:rotate(90deg);
+}
+.cell-icon{
+  font-size:clamp(12px,2.8vw,20px);
+  margin-bottom:2px;
+  line-height:1;
+}
+.cell-name{
+  font-size:clamp(7px,1.8vw,9px);
+  text-align:center;
+  color:var(--text);
+  font-weight:700;
+  line-height:1.2;
+  word-break:break-word;
+}
+.cell-price{
+  font-size:clamp(7px,1.8vw,9px);
+  color:var(--gold);
+  font-weight:800;
+  margin-top:2px;
+}
+.cell-owner{
+  position:absolute;
+  bottom:3px;
+  left:3px;
+  right:3px;
+  height:4px;
+  border-radius:3px;
+  z-index:2;
+}
+.tokens{
+  position:absolute;
+  top:3px;
+  left:3px;
+  right:3px;
+  display:flex;
+  justify-content:center;
+  gap:2px;
+  z-index:10;
+  pointer-events:none;
+}
+.tok{
+  width:clamp(7px,2vw,11px);
+  height:clamp(7px,2vw,11px);
+  border-radius:50%;
+  border:2px solid white;
+  box-shadow:0 0 0 1px rgba(0,0,0,.9),0 2px 4px rgba(0,0,0,.5);
+  flex-shrink:0;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 .tok img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.tok-ltr{font-size:clamp(4px,1vw,6px);font-weight:900;color:white;line-height:1}
-.houses{position:absolute;bottom:6px;left:0;right:0;display:flex;justify-content:center;gap:2px;z-index:3}
-.house-dot{width:clamp(4px,1vw,5px);height:clamp(4px,1vw,5px);border-radius:50%}
-.game-center{grid-column:2;grid-row:2;background:var(--bg-main);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;border:2px solid var(--accent2)}
-.game-log{flex:1;overflow-y:auto;padding:8px;font-size:11px;line-height:1.5;background:rgba(0,0,0,.2)}
-.game-log p{margin:3px 0;padding:4px 6px;background:rgba(45,212,191,.05);border-radius:6px;border-left:3px solid var(--accent)}
+.tok-ltr{
+  font-size:clamp(4px,1vw,6px);
+  font-weight:900;
+  color:white;
+  line-height:1;
+}
+.houses{
+  position:absolute;
+  bottom:6px;
+  left:0;
+  right:0;
+  display:flex;
+  justify-content:center;
+  gap:2px;
+  z-index:3;
+}
+.house-dot{
+  width:clamp(4px,1vw,5px);
+  height:clamp(4px,1vw,5px);
+  border-radius:50%;
+}
+.game-center{
+  grid-column:2;
+  grid-row:2;
+  background:var(--bg-main);
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  border:2px solid var(--accent2);
+}
+.game-log{
+  flex:1;
+  overflow-y:auto;
+  padding:8px;
+  font-size:11px;
+  line-height:1.5;
+  background:rgba(0,0,0,.2);
+}
+.game-log p{
+  margin:3px 0;
+  padding:4px 6px;
+  background:rgba(45,212,191,.05);
+  border-radius:6px;
+  border-left:3px solid var(--accent);
+}
 .log-player{font-weight:700}
 .log-action{color:var(--text)}
 .log-money{color:var(--gold);font-weight:700}
 .log-negative{color:var(--red);font-weight:700}
 .log-positive{color:var(--green);font-weight:700}
-.chat-area{border-top:2px solid var(--accent2);display:flex;flex-direction:column;flex-shrink:0}
-.chat-messages{max-height:90px;overflow-y:auto;padding:6px;background:rgba(0,0,0,.2)}
-.chat-message{margin:2px 0;padding:4px 6px;background:rgba(45,212,191,.1);border-radius:6px;font-size:10px}
-.chat-input-row{display:flex;gap:6px;padding:6px;background:var(--bg-panel)}
-.chat-input{flex:1;background:rgba(0,0,0,.3);border:1px solid var(--accent2);border-radius:8px;padding:6px 8px;color:var(--text);font-family:'Nunito',sans-serif;font-size:11px;outline:none}
+.chat-area{
+  border-top:2px solid var(--accent2);
+  display:flex;
+  flex-direction:column;
+  flex-shrink:0;
+}
+.chat-messages{
+  max-height:90px;
+  overflow-y:auto;
+  padding:6px;
+  background:rgba(0,0,0,.2);
+}
+.chat-message{
+  margin:2px 0;
+  padding:4px 6px;
+  background:rgba(45,212,191,.1);
+  border-radius:6px;
+  font-size:10px;
+}
+.chat-input-row{
+  display:flex;
+  gap:6px;
+  padding:6px;
+  background:var(--bg-panel);
+}
+.chat-input{
+  flex:1;
+  background:rgba(0,0,0,.3);
+  border:1px solid var(--accent2);
+  border-radius:8px;
+  padding:6px 8px;
+  color:var(--text);
+  font-family:'Nunito',sans-serif;
+  font-size:11px;
+  outline:none;
+}
 .chat-input::placeholder{color:var(--sub)}
-.chat-send{width:32px;height:32px;border-radius:6px;background:var(--accent);border:none;color:var(--bg-dark);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.control-panel{background:var(--bg-panel);padding:10px;display:flex;gap:12px;align-items:center;justify-content:center;border-top:2px solid var(--accent2);flex-shrink:0}
-.dice-display{display:flex;gap:12px;align-items:center}
-.dice{width:45px;height:45px;background:white;border-radius:10px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:5px;gap:2px;box-shadow:0 4px 8px rgba(0,0,0,.3)}
-.dice-dot{background:#1e293b;border-radius:50%;align-self:center;justify-self:center;width:7px;height:7px}
-.btn-roll{background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark);border:none;border-radius:12px;padding:12px 28px;font-family:'Unbounded',sans-serif;font-size:13px;font-weight:900;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 15px rgba(251,191,36,.4)}
+.chat-send{
+  width:32px;
+  height:32px;
+  border-radius:6px;
+  background:var(--accent);
+  border:none;
+  color:var(--bg-dark);
+  font-size:14px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.control-panel{
+  background:var(--bg-panel);
+  padding:10px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:center;
+  border-top:2px solid var(--accent2);
+  flex-shrink:0;
+}
+.dice-display{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.dice{
+  width:45px;
+  height:45px;
+  background:white;
+  border-radius:10px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(3,1fr);
+  padding:5px;
+  gap:2px;
+  box-shadow:0 4px 8px rgba(0,0,0,.3);
+}
+.dice-dot{
+  background:#1e293b;
+  border-radius:50%;
+  align-self:center;
+  justify-self:center;
+  width:7px;
+  height:7px;
+}
+.btn-roll{
+  background:linear-gradient(135deg,var(--gold),#f59e0b);
+  color:var(--bg-dark);
+  border:none;
+  border-radius:12px;
+  padding:12px 28px;
+  font-family:'Unbounded',sans-serif;
+  font-size:13px;
+  font-weight:900;
+  cursor:pointer;
+  text-transform:uppercase;
+  box-shadow:0 4px 15px rgba(251,191,36,.4);
+}
 .btn-roll:active{transform:scale(.95)}
 .btn-roll:disabled{opacity:.4;pointer-events:none}
 .btn-roll.my{animation:rollPulse 1.6s ease-in-out infinite}
-@keyframes rollPulse{0%,100%{box-shadow:0 4px 15px rgba(251,191,36,.5)}50%{box-shadow:0 6px 25px rgba(251,191,36,.8)}}
-.prop-buy{background:var(--bg-panel);border-top:1px solid rgba(45,212,191,.2);padding:6px 10px;display:none;align-items:center;gap:8px;flex-shrink:0}
-.pb-clr{width:10px;height:30px;border-radius:3px;flex-shrink:0}
+@keyframes rollPulse{
+  0%,100%{box-shadow:0 4px 15px rgba(251,191,36,.5)}
+  50%{box-shadow:0 6px 25px rgba(251,191,36,.8)}
+}
+.prop-buy{
+  background:var(--bg-panel);
+  border-top:1px solid rgba(45,212,191,.2);
+  padding:6px 10px;
+  display:none;
+  align-items:center;
+  gap:8px;
+  flex-shrink:0;
+}
+.pb-clr{
+  width:10px;
+  height:30px;
+  border-radius:3px;
+  flex-shrink:0;
+}
 .pb-inf{flex:1;min-width:0}
 .pb-nm{font-weight:800;font-size:12px}
-.pb-pr{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:900;color:var(--gold)}
-.pb-btn{color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;flex-shrink:0}
-
-/* Переможець */
-#s-win{align-items:center;justify-content:center;padding:28px 20px;text-align:center;background:var(--bg-dark)}
-.troph{font-size:68px;animation:trophAnim 1s ease-in-out infinite alternate}
-@keyframes trophAnim{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.08) rotate(4deg)}}
-.wtitle{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900;background:linear-gradient(120deg,var(--gold),#ef4444,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:10px 0 5px}
+.pb-pr{
+  font-family:'Unbounded',sans-serif;
+  font-size:13px;
+  font-weight:900;
+  color:var(--gold);
+}
+.pb-btn{
+  color:white;
+  border:none;
+  border-radius:8px;
+  padding:8px 14px;
+  font-family:'Nunito',sans-serif;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+  flex-shrink:0;
+}
+#s-win{
+  align-items:center;
+  justify-content:center;
+  padding:28px 20px;
+  text-align:center;
+  background:var(--bg-dark);
+}
+.troph{
+  font-size:68px;
+  animation:trophAnim 1s ease-in-out infinite alternate;
+}
+@keyframes trophAnim{
+  from{transform:scale(1) rotate(-4deg)}
+  to{transform:scale(1.08) rotate(4deg)}
+}
+.wtitle{
+  font-family:'Unbounded',sans-serif;
+  font-size:20px;
+  font-weight:900;
+  background:linear-gradient(120deg,var(--gold),#ef4444,#818cf8);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin:10px 0 5px;
+}
 .wname{font-size:17px;font-weight:800}
-.wmoney{font-family:'Unbounded',sans-serif;font-size:26px;color:var(--green);margin-top:3px}
+.wmoney{
+  font-family:'Unbounded',sans-serif;
+  font-size:26px;
+  color:var(--green);
+  margin-top:3px;
+}
 .wgold{font-size:15px;color:var(--gold);margin-top:4px}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e1040;border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:9px 16px;font-size:12px;font-weight:700;z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.4);max-width:80vw;text-align:center}
+.toast{
+  position:fixed;
+  bottom:22px;
+  left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:#1e1040;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:12px;
+  padding:9px 16px;
+  font-size:12px;
+  font-weight:700;
+  z-index:9999;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  white-space:nowrap;
+  box-shadow:0 8px 28px rgba(0,0,0,.4);
+  max-width:80vw;
+  text-align:center;
+}
 .toast.on{transform:translateX(-50%) translateY(0)}
+
+/* Адаптивність */
 @media (max-width:768px){
-  .game-main{grid-template-columns:minmax(70px, 20vw) 1fr minmax(70px, 20vw);grid-template-rows:minmax(70px, 20vw) 1fr minmax(70px, 20vw)}
+  .game-main{
+    grid-template-columns:minmax(55px, 15vw) 1fr minmax(55px, 15vw);
+    grid-template-rows:minmax(55px, 15vw) 1fr minmax(55px, 15vw);
+  }
   .player-card{min-width:120px;padding:4px 8px}
   .player-avatar{width:32px;height:32px}
   .player-name{font-size:9px}
   .player-money{font-size:9px}
   .btn-exit{padding:4px 8px;font-size:9px}
-  .cell-icon{font-size:clamp(12px,3vw,18px)}
-  .cell-name{font-size:clamp(7px,1.8vw,9px)}
-  .cell-price{font-size:clamp(7px,1.8vw,9px)}
+  .cell-icon{font-size:clamp(11px,2.5vw,16px)}
+  .cell-name{font-size:clamp(6px,1.5vw,8px)}
+  .cell-price{font-size:clamp(6px,1.5vw,8px)}
   .dice{width:40px;height:40px}
   .btn-roll{padding:10px 20px;font-size:12px}
 }
@@ -359,19 +743,14 @@ select option{background:var(--bg-main)}
   <div class="tc" id="tc-join" style="display:none"><div style="padding:12px 14px"><label class="lbl">Ваше ім'я</label><input id="pNj" placeholder="Введіть ім'я" maxlength="20"><label class="lbl">Код кімнати</label><input id="rC" placeholder="GAME-XXXX" maxlength="9" style="text-transform:uppercase;letter-spacing:2px"><button class="btn b-gold" onclick="joinByCode()">🚪 Приєднатися</button></div></div>
 </div>
 
-<!-- СТВОРЕННЯ -->
 <div class="overlay" id="createModal"><div class="sheet"><div class="sh-handle"></div><div class="sh-title">🎮 НОВА ГРА</div><div class="mg"><div class="mc" onclick="sm('classic',this)"><div class="me-ic">🎲</div><div class="mn">Класичний</div><div class="md">2–4 гравці</div></div><div class="mc" onclick="sm('teams',this)"><div class="me-ic">👥</div><div class="mn">Команди</div><div class="md">2×2</div></div><div class="mc" onclick="sm('vsbot',this)"><div class="me-ic">🤖</div><div class="mn">Проти бота</div><div class="md">1 vs боти</div></div><div class="mc" onclick="sm('mixed',this)"><div class="me-ic">🎯</div><div class="mn">Змішаний</div><div class="md">Гравці+боти</div></div></div><label class="lbl">Ваше ім'я</label><input id="pN" placeholder="Введіть ім'я" maxlength="20"><div id="bcw" style="display:none"><label class="lbl">Кількість ботів</label><select id="bC"><option value="1">1 бот</option><option value="2">2 боти</option><option value="3">3 боти</option></select></div><button class="btn b-gold" onclick="createRoom()">🎮 Створити</button><div class="dv">або</div><button class="btn b-surf" onclick="closeCreate()">Скасувати</button></div></div>
 
-<!-- НАЛАШТУВАННЯ -->
 <div class="overlay" id="settingsModal"><div class="sheet"><div class="sh-handle"></div><div class="sh-title">⚙️ НАЛАШТУВАННЯ</div><div class="srow"><div class="sinfo"><div class="sname">🎨 Тема</div><div class="sdesc">Кольорова схема інтерфейсу</div></div></div><div class="theme-dots"><div class="tdot on" style="background:linear-gradient(135deg,#0a1f1a,#2dd4bf)" onclick="setTheme('classic',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a1f0a,#16a34a)" onclick="setTheme('fruit',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a0f1e,#1d4ed8)" onclick="setTheme('city',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a0a0a,#06b6d4)" onclick="setTheme('dark',this)"></div></div><div class="srow"><div class="sinfo"><div class="sname">🔔 Вібрація</div><div class="sdesc">Haptic feedback при ходах</div></div><div class="toggle on" id="togHaptic" onclick="this.classList.toggle('on')"></div></div><div class="srow"><div class="sinfo"><div class="sname" id="myIdTxt">🆔 —</div><div class="sdesc">Ваш ігровий ID</div></div></div><div style="height:10px"></div><button class="btn b-surf" onclick="document.getElementById('settingsModal').classList.remove('on')">Закрити</button></div></div>
 
-<!-- ЛОБІ -->
 <div id="s-lobby" class="screen"><div class="lhd"><div class="cb"><div class="cl">Код кімнати</div><div class="cv" id="lobbyCode">----</div></div><div style="text-align:center;margin-top:4px"><span class="mchip" id="mchip">🎲 Класичний</span></div></div><div class="ll" id="lobbyList"></div><div class="lf"><button class="btn b-green" id="startBtn" onclick="startGame()" disabled>⏳ Очікування...</button><button class="btn b-surf" onclick="leaveRoom()">← Вийти</button></div></div>
 
-<!-- ГРА -->
 <div id="s-game" class="screen"><div class="game-header" id="gameHeader"></div><div class="game-main" id="gameMain"><div class="board-side vertical left" id="boardLeft"></div><div class="board-side horizontal top" id="boardTop"></div><div class="game-center"><div class="game-log" id="gameLog"></div><div class="chat-area"><div class="chat-messages" id="chatMessages"></div><div class="chat-input-row"><input class="chat-input" id="chatInput" placeholder="Написати в чат..." maxlength="200" onkeydown="if(event.key==='Enter')sendChat()"><button class="chat-send" onclick="sendChat()">➤</button></div></div></div><div class="board-side vertical right" id="boardRight"></div><div class="board-side horizontal bottom" id="boardBottom"></div></div><div class="prop-buy" id="propBuy"></div><div class="control-panel"><div class="dice-display"><div class="dice" id="dice1"></div><div class="dice" id="dice2"></div></div><button class="btn-roll wait" id="rollBtn" onclick="rollDice()">🎲 Кинути кубики!</button></div></div>
 
-<!-- ПЕРЕМОЖЕЦЬ -->
 <div id="s-win" class="screen"><div class="troph">🏆</div><div class="wtitle">ПЕРЕМОЖЕЦЬ!</div><div class="wname" id="wN"></div><div class="wmoney" id="wM"></div><div class="wgold" id="wG"></div><div style="margin-top:22px;width:100%;max-width:260px"><button class="btn b-gold" onclick="location.reload()">🔄 Нова гра</button></div></div>
 
 <div class="toast" id="toast"></div>
@@ -423,7 +802,7 @@ const SERVERS=[
   {id:'business', name:'Бізнес', emoji:'🏢', theme:'city'}
 ];
 
-// ========== КАРТИ (повні) ==========
+// ========== КАРТИ (ПОВНІ) ==========
 const MAP_CLASSIC = [
   {name:'СТАРТ',short:'СТАРТ',type:'corner',emoji:'🏁',pos:0},
   {name:'Луцьк',short:'Луцьк',price:600,color:'#b45309',emoji:'🏙',pos:1},
@@ -592,7 +971,12 @@ const MAP_BUSINESS = [
   {name:"ПОДАТОК", short:"ПОДАТОК", type:"tax", amount:1000000, emoji:"💸", pos:38},
   {name:"Бізнес-імперія", short:"Імперія", price:4000000, color:"#6d28d9", emoji:"👑", pos:39}
 ];
-const MAPS = {classic: MAP_CLASSIC, fruit: MAP_FRUIT, city: MAP_INTERNATIONAL, business: MAP_BUSINESS};
+const MAPS = {
+  classic: MAP_CLASSIC,
+  fruit: MAP_FRUIT,
+  city: MAP_INTERNATIONAL,
+  business: MAP_BUSINESS
+};
 let PROPS = MAP_CLASSIC;
 let curServer = 'classic';
 
@@ -603,6 +987,7 @@ let gameShown=false,boardBuilt=false;
 let myScore=0,myWins=0,myGold=0,curLgIdx=0;
 let timerSec=75;
 let gameStartTime=null, gameTimerInterval=null;
+let myClan=null, clanChatListener=null;
 
 // ========== ДОПОМІЖНІ ==========
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
@@ -702,7 +1087,7 @@ async function showLeague(idx){
   }).join('');
 }
 
-// ========== КІМНАТИ (спрощено, але повністю функціонально) ==========
+// ========== КІМНАТИ ==========
 function mkSlots(r,sz=42){
   const pl=Object.values(r.players||{}).filter(p=>!p.isBot);
   let s='';
@@ -1156,7 +1541,6 @@ async function renderWinner(r){
 }
 
 // ========== КЛАНИ ==========
-let myClan = null;
 async function loadClans(){
   const container = document.getElementById('clansContent');
   if(!db) return;
@@ -1177,7 +1561,6 @@ async function loadClans(){
       <button class="btn b-surf" style="margin-top:8px;" onclick="leaveClan()">Покинути клан</button>
       ${myClanData.ownerId===myId ? `<button class="btn b-red" style="margin-top:8px;" onclick="deleteClan('${myClan}')">🗑 Видалити клан</button>` : ''}
     </div>`;
-    // Чат клану (простий)
     html += `<div style="margin-top:10px;"><h4>💬 Чат клану</h4><div id="clanChatMessages" style="height:150px;overflow-y:auto;background:rgba(0,0,0,.2);border-radius:8px;padding:6px;"></div><div class="chat-input-row"><input id="clanChatInput" class="chat-input" placeholder="Написати в чат клану..."><button class="chat-send" onclick="sendClanChat()">➤</button></div></div>`;
     listenClanChat(myClan);
   } else {
@@ -1262,7 +1645,6 @@ async function deleteClan(clanId){
   toast('Клан видалено');
   loadClans();
 }
-let clanChatListener = null;
 function listenClanChat(clanId){
   if(clanChatListener) db.ref(`clanChat/${clanId}`).off('value', clanChatListener);
   clanChatListener = db.ref(`clanChat/${clanId}`).limitToLast(50).on('value', snap=>{
