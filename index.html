@@ -8,7 +8,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Nunito:wght@600;700;800&display=swap');
 
-/* 🔴 КРИТИЧНИЙ ФІКС: HTML/BODY HEIGHT */
+/* 🔴 КРИТИЧНИЙ ФІКС #6: HTML/BODY HEIGHT */
 html,body{height:100%;margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
 /* Запобігання зуму */
@@ -133,7 +133,7 @@ select option{background:var(--bg-main)}
 .bred{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.3)}
 .bbl{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
 
-/* 🔴 КРИТИЧНИЙ ФІКС: #s-game з min-height:0 */
+/* 🔴 КРИТИЧНИЙ ФІКС #1-2: #s-game з min-height:0 */
 #s-game{
   background:var(--bg-dark);
   height:100vh;
@@ -141,142 +141,47 @@ select option{background:var(--bg-main)}
   display:flex;
   flex-direction:column;
   overflow:hidden;
-  min-height:0;
+  min-height:0; /* 🔴 ФІКС #2 */
 }
-
-/* 🔴 КОМПАКТНА ШАПКА ГРИ */
-.game-header{  background:linear-gradient(180deg,var(--bg-panel),var(--bg-main));
-  padding:4px 6px; /* ЗМЕНШЕНО */
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:2px solid var(--accent2);
-  flex-shrink:0;
-  flex-wrap:wrap;
-  gap:4px; /* ЗМЕНШЕНО */
-  min-height:40px; /* ДОДАНО */
-}
-.game-info{
-  display:flex;
-  align-items:center;
-  gap:8px; /* ЗМЕНШЕНО */
-}
-.timer-display{
-  font-family:'Unbounded',sans-serif;
-  font-size:11px; /* ЗМЕНШЕНО */
-  color:var(--gold);
-}
-.move-display{
-  font-family:'Unbounded',sans-serif;
-  font-size:11px; /* ЗМЕНШЕНО */
-  color:var(--sub);
-}
+.game-header{background:linear-gradient(180deg,var(--bg-panel),var(--bg-main));padding:6px 10px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--accent2);flex-shrink:0;flex-wrap:wrap;gap:6px}
+.game-info{display:flex;align-items:center;gap:12px}
+.timer-display{font-family:'Unbounded',sans-serif;font-size:12px;color:var(--gold)}.move-display{font-family:'Unbounded',sans-serif;font-size:12px;color:var(--sub)}
 .move-display span{color:var(--text);font-weight:700}
-.players-top{
-  display:flex;
-  gap:10px; /* ЗМЕНШЕНО */
-  flex:1;
-  justify-content:center;
-  flex-wrap:wrap;
-}
-.player-card{
-  background:rgba(0,0,0,.3);
-  border-radius:8px; /* ЗМЕНШЕНО */
-  padding:4px 8px; /* ЗМЕНШЕНО */
-  display:flex;
-  align-items:center;
-  gap:6px; /* ЗМЕНШЕНО */
-  min-width:120px; /* ЗМЕНШЕНО */
-  border:2px solid transparent;
-  transition:.2s;
-}
+.players-top{display:flex;gap:15px;flex:1;justify-content:center;flex-wrap:wrap}
+.player-card{background:rgba(0,0,0,.3);border-radius:12px;padding:6px 10px;display:flex;align-items:center;gap:8px;min-width:150px;border:2px solid transparent;transition:.2s}
 .player-card.active{border-color:var(--accent);background:rgba(45,212,191,.1)}
-.player-avatar{
-  width:32px; /* ЗМЕНШЕНО */
-  height:32px; /* ЗМЕНШЕНО */
-  border-radius:50%;  border:2px solid var(--accent);
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:14px; /* ЗМЕНШЕНО */
-  flex-shrink:0;
-  position:relative;
-}
+.player-avatar{width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;position:relative}
 .player-avatar img{width:100%;height:100%;object-fit:cover}
-.player-avatar .crown{
-  position:absolute;
-  bottom:-4px;
-  right:-4px;
-  font-size:12px;
-  background:var(--gold);
-  border-radius:50%;
-  width:16px;
-  height:16px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
+.player-avatar .crown{position:absolute;bottom:-5px;right:-5px;font-size:14px;background:var(--gold);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center}
 .player-info{flex:1;min-width:0}
-.player-name{
-  font-family:'Unbounded',sans-serif;
-  font-size:9px; /* ЗМЕНШЕНО */
-  font-weight:900;
-  color:var(--text);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.player-rank{font-size:8px;color:var(--accent);margin-top:1px}
-.player-money{
-  font-family:'Unbounded',sans-serif;
-  font-size:9px; /* ЗМЕНШЕНО */
-  color:var(--gold);
-  margin-top:1px;
-}
-.player-property{
-  font-size:7px; /* ЗМЕНШЕНО */
-  color:var(--sub);
-  display:flex;
-  align-items:center;
-  gap:2px;
-  margin-top:1px;
-}
-.btn-exit{
-  background:linear-gradient(135deg,var(--green),#16a34a);  color:white;
-  border:none;
-  border-radius:6px;
-  padding:4px 8px; /* ЗМЕНШЕНО */
-  font-family:'Unbounded',sans-serif;
-  font-size:9px; /* ЗМЕНШЕНО */
-  font-weight:700;
-  cursor:pointer;
-  text-transform:uppercase;
-  flex-shrink:0;
-}
+.player-name{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:900;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-rank{font-size:9px;color:var(--accent);margin-top:1px}
+.player-money{font-family:'Unbounded',sans-serif;font-size:10px;color:var(--gold);margin-top:2px}
+.player-property{font-size:8px;color:var(--sub);display:flex;align-items:center;gap:3px;margin-top:1px}
+.btn-exit{background:linear-gradient(135deg,var(--green),#16a34a);color:white;border:none;border-radius:8px;padding:6px 12px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;flex-shrink:0}
 .btn-exit:active{transform:scale(.95)}
-.timer-bar{height:2px;background:rgba(255,255,255,.08);flex-shrink:0}
+.timer-bar{height:3px;background:rgba(255,255,255,.08);flex-shrink:0}
 .timer-fill{height:100%;background:var(--gold);transition:width 1s linear;width:100%}
 
-/* 🔴 GRID З БІЛЬШИМИ БІЧНИМИ СТОРОНАМИ */
+/* 🔴 КРИТИЧНИЙ ФІКС #3-5: game-main з min-height:0 та width/height:100% */
 .game-main{
   flex:1;
   display:grid;
-  grid-template-columns:minmax(70px,18vw) 1fr minmax(70px,18vw); /* ЗБІЛЬШЕНО */
-  grid-template-rows:minmax(50px,10vw) 1fr minmax(50px,10vw); /* ЗМЕНШЕНО ВЕРХ/НИЗ */
-  gap:3px; /* ЗМЕНШЕНО */
-  padding:3px; /* ЗМЕНШЕНО */
+  grid-template-columns:minmax(60px,13vw) 1fr minmax(60px,13vw);
+  grid-template-rows:minmax(60px,13vw) 1fr minmax(60px,13vw);
+  gap:4px;
+  padding:4px;
   overflow:auto;
-  min-height:0;
-  height:100%;
+  min-height:0; /* 🔴 ФІКС #2 */
+  height:100%; /* 🔴 ФІКС #5 */
   width:100%;
 }
 .board-side{
   display:flex;
-  gap:3px; /* ЗМЕНШЕНО */
-  width:100%;
-  height:100%;
-  min-height:0;
+  gap:4px;
+  width:100%; /* 🔴 ФІКС #3 */
+  height:100%; /* 🔴 ФІКС #3 */
+  min-height:0; /* 🔴 ФІКС #2 */
 }
 .board-side.horizontal{flex-direction:row;grid-column:2}
 .board-side.horizontal.top{grid-row:1}
@@ -285,35 +190,37 @@ select option{background:var(--bg-main)}
 .board-side.vertical.left{grid-column:1;grid-row:2}
 .board-side.vertical.right{grid-column:3;grid-row:2}
 
-/* 🔴 КЛІТИНКИ */
+/* 🔴 КРИТИЧНИЙ ФІКС #4: cell з overflow:hidden */
 .cell{
   background:var(--bg-panel);
-  border:1.5px solid rgba(45,212,191,.3); /* ЗМЕНШЕНО */
-  border-radius:6px; /* ЗМЕНШЕНО */
-  display:flex;
+  border:2px solid rgba(45,212,191,.3);
+  border-radius:8px;  display:flex;
   flex-direction:column;
-  align-items:center;  justify-content:center;
-  padding:2px; /* ЗМЕНШЕНО */
+  align-items:center;
+  justify-content:center;
+  padding:4px;
   position:relative;
   flex:1;
   min-width:0;
   min-height:0;
   cursor:pointer;
   transition:.15s;
-  overflow:hidden;
+  overflow:hidden; /* 🔴 ФІКС #4 */
 }
 .cell:active{transform:scale(.95)}
-.cell.corner{background:var(--bg-main);border-color:var(--accent);border-width:2px}
-.cell-color-bar{position:absolute;top:0;left:0;right:0;height:4px;border-radius:4px 4px 0 0;z-index:2}
+.cell.corner{background:var(--bg-main);border-color:var(--accent);border-width:3px}
+.cell-color-bar{position:absolute;top:0;left:0;right:0;height:5px;border-radius:6px 6px 0 0;z-index:2}
 .board-side.vertical .cell{transform:rotate(-90deg);transform-origin:center center;position:relative;width:100%;height:100%}
 .board-side.vertical .cell > *:not(.cell-color-bar){transform:rotate(90deg)}
-.cell-icon{font-size:clamp(10px,2.5vw,18px);margin-bottom:1px;line-height:1}
+.cell-icon{font-size:clamp(12px,2.8vw,20px);margin-bottom:2px;line-height:1}
+
+/* 🔴 ФІКС #4: текст з ellipsis */
 .cell-name{
-  font-size:clamp(6px,1.5vw,8px);
+  font-size:clamp(7px,1.8vw,9px);
   text-align:center;
   color:var(--text);
   font-weight:700;
-  line-height:1.1;
+  line-height:1.2;
   word-break:break-word;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -321,85 +228,52 @@ select option{background:var(--bg-main)}
   max-width:100%;
 }
 .cell-price{
-  font-size:clamp(6px,1.5vw,8px);
+  font-size:clamp(7px,1.8vw,9px);
   color:var(--gold);
   font-weight:800;
-  margin-top:1px;
+  margin-top:2px;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
   max-width:100%;
 }
-.cell-owner{position:absolute;bottom:2px;left:2px;right:2px;height:3px;border-radius:2px;z-index:2}
+.cell-owner{position:absolute;bottom:3px;left:3px;right:3px;height:4px;border-radius:3px;z-index:2}
 .board-side.vertical .cell .cell-owner{transform:rotate(90deg);transform-origin:center center}
-.tokens{position:absolute;top:2px;left:2px;right:2px;display:flex;justify-content:center;gap:1px;z-index:10;pointer-events:none}
-.tok{width:clamp(6px,1.8vw,10px);height:clamp(6px,1.8vw,10px);border-radius:50%;border:1.5px solid white;box-shadow:0 0 0 1px rgba(0,0,0,.9),0 1px 2px rgba(0,0,0,.5);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.tokens{position:absolute;top:3px;left:3px;right:3px;display:flex;justify-content:center;gap:2px;z-index:10;pointer-events:none}
+.tok{width:clamp(7px,2vw,11px);height:clamp(7px,2vw,11px);border-radius:50%;border:2px solid white;box-shadow:0 0 0 1px rgba(0,0,0,.9),0 2px 4px rgba(0,0,0,.5);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .tok img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.tok-ltr{font-size:clamp(3px,0.8vw,5px);font-weight:900;color:white;line-height:1}
-.houses{position:absolute;bottom:4px;left:0;right:0;display:flex;justify-content:center;gap:1px;z-index:3}
-.house-dot{width:clamp(3px,0.8vw,4px);height:clamp(3px,0.8vw,4px);border-radius:50%}
-
-/* 🔴 ЦЕНТРАЛЬНА ЧАСТИНА */
-.game-center{
-  grid-column:2;  grid-row:2;
-  background:var(--bg-main);
-  border-radius:8px;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  border:1.5px solid var(--accent2);
-}
-.game-log{flex:1;overflow-y:auto;padding:4px;font-size:10px;line-height:1.4;background:rgba(0,0,0,.2)}
-.game-log p{margin:2px 0;padding:3px 4px;background:rgba(45,212,191,.05);border-radius:4px;border-left:2px solid var(--accent)}
+.tok-ltr{font-size:clamp(4px,1vw,6px);font-weight:900;color:white;line-height:1}
+.houses{position:absolute;bottom:6px;left:0;right:0;display:flex;justify-content:center;gap:2px;z-index:3}.house-dot{width:clamp(4px,1vw,5px);height:clamp(4px,1vw,5px);border-radius:50%}
+.game-center{grid-column:2;grid-row:2;background:var(--bg-main);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;border:2px solid var(--accent2)}
+.game-log{flex:1;overflow-y:auto;padding:8px;font-size:11px;line-height:1.5;background:rgba(0,0,0,.2)}
+.game-log p{margin:3px 0;padding:4px 6px;background:rgba(45,212,191,.05);border-radius:6px;border-left:3px solid var(--accent)}
 .log-player{font-weight:700}
 .log-action{color:var(--text)}
 .log-money{color:var(--gold);font-weight:700}
 .log-negative{color:var(--red);font-weight:700}
 .log-positive{color:var(--green);font-weight:700}
-.chat-area{border-top:1.5px solid var(--accent2);display:flex;flex-direction:column;flex-shrink:0}
-.chat-messages{max-height:70px;overflow-y:auto;padding:4px;background:rgba(0,0,0,.2)}
-.chat-message{margin:1px 0;padding:3px 4px;background:rgba(45,212,191,.1);border-radius:4px;font-size:9px}
-.chat-input-row{display:flex;gap:4px;padding:4px;background:var(--bg-panel)}
-.chat-input{flex:1;background:rgba(0,0,0,.3);border:1px solid var(--accent2);border-radius:6px;padding:4px 6px;color:var(--text);font-family:'Nunito',sans-serif;font-size:10px;outline:none}
+.chat-area{border-top:2px solid var(--accent2);display:flex;flex-direction:column;flex-shrink:0}
+.chat-messages{max-height:90px;overflow-y:auto;padding:6px;background:rgba(0,0,0,.2)}
+.chat-message{margin:2px 0;padding:4px 6px;background:rgba(45,212,191,.1);border-radius:6px;font-size:10px}
+.chat-input-row{display:flex;gap:6px;padding:6px;background:var(--bg-panel)}
+.chat-input{flex:1;background:rgba(0,0,0,.3);border:1px solid var(--accent2);border-radius:8px;padding:6px 8px;color:var(--text);font-family:'Nunito',sans-serif;font-size:11px;outline:none}
 .chat-input::placeholder{color:var(--sub)}
-.chat-send{width:28px;height:28px;border-radius:5px;background:var(--accent);border:none;color:var(--bg-dark);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-
-/* 🔴 ПАНЕЛЬ КЕРУВАННЯ */
-.control-panel{
-  background:var(--bg-panel);
-  padding:6px; /* ЗМЕНШЕНО */
-  display:flex;
-  gap:8px; /* ЗМЕНШЕНО */
-  align-items:center;
-  justify-content:center;
-  border-top:2px solid var(--accent2);
-  flex-shrink:0;
-}
-.dice-display{display:flex;gap:8px;align-items:center}
-.dice{width:36px;height:36px;background:white;border-radius:8px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:4px;gap:2px;box-shadow:0 3px 6px rgba(0,0,0,.3)}
-.dice-dot{background:#1e293b;border-radius:50%;align-self:center;justify-self:center;width:6px;height:6px}
-.btn-roll{
-  background:linear-gradient(135deg,var(--gold),#f59e0b);
-  color:var(--bg-dark);
-  border:none;
-  border-radius:10px;
-  padding:8px 16px; /* ЗМЕНШЕНО */
-  font-family:'Unbounded',sans-serif;
-  font-size:11px; /* ЗМЕНШЕНО */
-  font-weight:900;
-  cursor:pointer;
-  text-transform:uppercase;
-  box-shadow:0 3px 12px rgba(251,191,36,.4);
-}.btn-roll:active{transform:scale(.95)}
+.chat-send{width:32px;height:32px;border-radius:6px;background:var(--accent);border:none;color:var(--bg-dark);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.control-panel{background:var(--bg-panel);padding:8px;display:flex;gap:10px;align-items:center;justify-content:center;border-top:2px solid var(--accent2);flex-shrink:0}
+.dice-display{display:flex;gap:10px;align-items:center}
+.dice{width:40px;height:40px;background:white;border-radius:10px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:5px;gap:2px;box-shadow:0 4px 8px rgba(0,0,0,.3)}
+.dice-dot{background:#1e293b;border-radius:50%;align-self:center;justify-self:center;width:7px;height:7px}
+.btn-roll{background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark);border:none;border-radius:12px;padding:10px 20px;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:900;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 15px rgba(251,191,36,.4)}
+.btn-roll:active{transform:scale(.95)}
 .btn-roll:disabled{opacity:.4;pointer-events:none}
 .btn-roll.my{animation:rollPulse 1.6s ease-in-out infinite}
-@keyframes rollPulse{0%,100%{box-shadow:0 3px 12px rgba(251,191,36,.5)}50%{box-shadow:0 5px 20px rgba(251,191,36,.8)}}
-.prop-buy{background:var(--bg-panel);border-top:1px solid rgba(45,212,191,.2);padding:4px 8px;display:none;align-items:center;gap:6px;flex-shrink:0}
-.pb-clr{width:8px;height:26px;border-radius:2px;flex-shrink:0}
+@keyframes rollPulse{0%,100%{box-shadow:0 4px 15px rgba(251,191,36,.5)}50%{box-shadow:0 6px 25px rgba(251,191,36,.8)}}
+.prop-buy{background:var(--bg-panel);border-top:1px solid rgba(45,212,191,.2);padding:6px 10px;display:none;align-items:center;gap:8px;flex-shrink:0}
+.pb-clr{width:10px;height:30px;border-radius:3px;flex-shrink:0}
 .pb-inf{flex:1;min-width:0}
-.pb-nm{font-weight:800;font-size:11px}
-.pb-pr{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:900;color:var(--gold)}
-.pb-btn{color:white;border:none;border-radius:6px;padding:6px 10px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0}
+.pb-nm{font-weight:800;font-size:12px}
+.pb-pr{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:900;color:var(--gold)}
+.pb-btn{color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;flex-shrink:0}
 #s-win{align-items:center;justify-content:center;padding:28px 20px;text-align:center;background:var(--bg-dark)}
 .troph{font-size:68px;animation:trophAnim 1s ease-in-out infinite alternate}
 @keyframes trophAnim{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.08) rotate(4deg)}}
@@ -413,20 +287,19 @@ select option{background:var(--bg-main)}
 .jp:active{transform:scale(.95)}
 
 @media (max-width:768px){
-  .game-main{grid-template-columns:minmax(65px,20vw) 1fr minmax(65px,20vw);grid-template-rows:minmax(45px,9vw) 1fr minmax(45px,9vw)}
-  .player-card{min-width:100px;padding:3px 6px}
-  .player-avatar{width:28px;height:28px}
-  .player-name{font-size:8px}
-  .player-money{font-size:8px}
-  .btn-exit{padding:3px 6px;font-size:8px}
-  .cell-icon{font-size:clamp(9px,2.2vw,14px)}
-  .cell-name{font-size:clamp(5px,1.3vw,7px)}
-  .cell-price{font-size:clamp(5px,1.3vw,7px)}
-  .dice{width:32px;height:32px}
-  .btn-roll{padding:7px 14px;font-size:10px}
-  .game-header{padding:3px 5px;gap:3px;min-height:36px}
-  .timer-display,.move-display{font-size:10px}
-  .control-panel{padding:5px;gap:6px}
+  .game-main{grid-template-columns:minmax(55px,15vw) 1fr minmax(55px,15vw);grid-template-rows:minmax(55px,15vw) 1fr minmax(55px,15vw)}
+  .player-card{min-width:120px;padding:4px 8px}
+  .player-avatar{width:32px;height:32px}
+  .player-name{font-size:9px}
+  .player-money{font-size:9px}
+  .btn-exit{padding:4px 8px;font-size:9px}  .cell-icon{font-size:clamp(11px,2.5vw,16px)}
+  .cell-name{font-size:clamp(6px,1.5vw,8px)}
+  .cell-price{font-size:clamp(6px,1.5vw,8px)}
+  .dice{width:38px;height:38px}
+  .btn-roll{padding:9px 18px;font-size:11px}
+  .game-header{padding:5px 8px;gap:5px}
+  .timer-display,.move-display{font-size:11px}
+  .control-panel{padding:6px;gap:8px}
 }
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-thumb{background:var(--accent2);border-radius:2px}
@@ -439,7 +312,8 @@ select option{background:var(--bg-main)}
 <div id="s-main" class="screen active">
   <div class="main-header">
     <div style="display:flex;align-items:center;gap:9px;flex:1;min-width:0">
-      <div class="prof-av" id="profAv">?</div>      <div class="prof-info">
+      <div class="prof-av" id="profAv">?</div>
+      <div class="prof-info">
         <div class="prof-name" id="profName">Гравець</div>
         <div class="prof-sub" id="profLeague">🥉 Новачок</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:3px">
@@ -467,8 +341,7 @@ select option{background:var(--bg-main)}
   </div>
   <div class="tc" id="tc-active" style="display:none">
     <div class="rooms-hdr"><span class="rooms-lbl">Мої кімнати</span><div style="display:flex;gap:5px"><button class="ref-btn" style="color:var(--red)" onclick="adminDeleteAll()">🗑 Всі</button><button class="ref-btn" onclick="loadMyRooms()">↺</button></div></div>
-    <div id="myRoomsList"></div>
-  </div>
+    <div id="myRoomsList"></div>  </div>
   <div class="tc" id="tc-league" style="display:none"><div class="lgstrip" id="lgstrip"></div><div id="lgHdr"></div><div id="lgList"></div></div>
   <div class="tc" id="tc-clans" style="display:none"><div id="clansContent"><div style="text-align:center;padding:40px;color:var(--sub)">⏳</div></div></div>
   <div class="tc" id="tc-join" style="display:none"><div style="padding:12px 14px"><label class="lbl">Ваше ім'я</label><input id="pNj" placeholder="Введіть ім'я" maxlength="20"><label class="lbl">Код кімнати</label><input id="rC" placeholder="GAME-XXXX" maxlength="9" style="text-transform:uppercase;letter-spacing:2px"><button class="btn b-gold" onclick="joinByCode()">🚪 Приєднатися</button></div></div>
@@ -488,6 +361,7 @@ select option{background:var(--bg-main)}
 
 <!-- ПЕРЕМОЖЕЦЬ -->
 <div id="s-win" class="screen"><div class="troph">🏆</div><div class="wtitle">ПЕРЕМОЖЕЦЬ!</div><div class="wname" id="wN"></div><div class="wmoney" id="wM"></div><div class="wgold" id="wG"></div><div style="margin-top:22px;width:100%;max-width:260px"><button class="btn b-gold" onclick="location.reload()">🔄 Нова гра</button></div></div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -516,8 +390,7 @@ let db=null;
 
 // ========== ЛІГИ ==========
 const LEAGUES=[
-  {id:'rookie',name:'Новачок',emoji:'🥉',min:0,color:'#cd7f32'},
-  {id:'investor',name:'Інвестор',emoji:'💰',min:50,color:'#94a3b8'},
+  {id:'rookie',name:'Новачок',emoji:'🥉',min:0,color:'#cd7f32'},  {id:'investor',name:'Інвестор',emoji:'💰',min:50,color:'#94a3b8'},
   {id:'magnate',name:'Магнат',emoji:'🎩',min:150,color:'#60a5fa'},
   {id:'expert',name:'Експерт',emoji:'⭐',min:300,color:'#a78bfa'},
   {id:'elite',name:'Еліта',emoji:'💎',min:500,color:'#22d3ee'},
@@ -537,7 +410,8 @@ const SERVERS=[
   {id:'business', name:'Бізнес', emoji:'🏢', theme:'city'}
 ];
 
-// ========== КАРТИ ==========const MAP_CLASSIC = [
+// ========== КАРТИ ==========
+const MAP_CLASSIC = [
   {name:'СТАРТ',short:'СТАРТ',type:'corner',emoji:'🏁',pos:0},
   {name:'Луцьк',short:'Луцьк',price:600,color:'#b45309',emoji:'🏙',pos:1},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:2},
@@ -565,8 +439,7 @@ const SERVERS=[
   {name:'Ужгород',short:'Ужгород',price:2400,color:'#b91c1c',emoji:'🗺',pos:24},
   {name:'Вокзал Одеса',short:'Вокзал',price:2000,type:'station',emoji:'🚂',pos:25},
   {name:'Львів',short:'Львів',price:2600,color:'#a16207',emoji:'🦁',pos:26},
-  {name:'Миколаїв',short:'Миколаїв',price:2600,color:'#a16207',emoji:'⚓',pos:27},
-  {name:'Водоканал',short:'Водо-кан',price:1500,type:'utility',emoji:'💧',pos:28},
+  {name:'Миколаїв',short:'Миколаїв',price:2600,color:'#a16207',emoji:'⚓',pos:27},  {name:'Водоканал',short:'Водо-кан',price:1500,type:'utility',emoji:'💧',pos:28},
   {name:'Херсон',short:'Херсон',price:2800,color:'#a16207',emoji:'🌊',pos:29},
   {name:'ПОЛІЦІЯ',short:'ПОЛІЦІЯ',type:'corner',emoji:'👮',pos:30},
   {name:'Запоріжжя',short:'Запор',price:3000,color:'#15803d',emoji:'⚔️',pos:31},
@@ -586,7 +459,8 @@ const MAP_FRUIT = [
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:2},
   {name:'Полуниця',short:'Полун.',price:500,color:'#dc2626',emoji:'🍓',pos:3},
   {name:'Податок',short:'Податок',type:'tax',amount:1500,emoji:'💸',pos:4},
-  {name:'Ринок 1',short:'Ринок',price:1800,type:'station',emoji:'🏪',pos:5},  {name:'Лимон',short:'Лимон',price:900,color:'#ca8a04',emoji:'🍋',pos:6},
+  {name:'Ринок 1',short:'Ринок',price:1800,type:'station',emoji:'🏪',pos:5},
+  {name:'Лимон',short:'Лимон',price:900,color:'#ca8a04',emoji:'🍋',pos:6},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:7},
   {name:'Банан',short:'Банан',price:900,color:'#ca8a04',emoji:'🍌',pos:8},
   {name:'Груша',short:'Груша',price:1100,color:'#ca8a04',emoji:'🍐',pos:9},
@@ -614,8 +488,7 @@ const MAP_FRUIT = [
   {name:'Чорниця',short:'Чорн.',price:2900,color:'#1d4ed8',emoji:'🫐',pos:31},
   {name:'Аличя',short:'Алича',price:2900,color:'#1d4ed8',emoji:'🍑',pos:32},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:33},
-  {name:'Кавун',short:'Кавун',price:3100,color:'#1d4ed8',emoji:'🍉',pos:34},
-  {name:'Ринок 4',short:'Ринок',price:1800,type:'station',emoji:'🏪',pos:35},
+  {name:'Кавун',short:'Кавун',price:3100,color:'#1d4ed8',emoji:'🍉',pos:34},  {name:'Ринок 4',short:'Ринок',price:1800,type:'station',emoji:'🏪',pos:35},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:36},
   {name:'VIP Полуниця',short:'VIP',price:3400,color:'#be185d',emoji:'🍓',pos:37},
   {name:'Суперподаток',short:'Податок',type:'tax',amount:2000,emoji:'💸',pos:38},
@@ -635,7 +508,8 @@ const MAP_INTERNATIONAL = [
   {name:"Париж", short:"Париж", price:900000, color:"#1d4ed8", emoji:"🗼", pos:9},
   {name:"В'ЯЗНИЦЯ", short:"В'ЯЗНИЦЯ", type:"jail", emoji:"⛓", pos:10},
   {name:"Рим", short:"Рим", price:1100000, color:"#be185d", emoji:"🏛️", pos:11},
-  {name:"ЕЛЕКТРОСТАНЦІЯ", short:"ЕЛЕКТРО", price:1400000, type:"utility", emoji:"⚡", pos:12},  {name:"Берлін", short:"Берлін", price:1100000, color:"#be185d", emoji:"🏛️", pos:13},
+  {name:"ЕЛЕКТРОСТАНЦІЯ", short:"ЕЛЕКТРО", price:1400000, type:"utility", emoji:"⚡", pos:12},
+  {name:"Берлін", short:"Берлін", price:1100000, color:"#be185d", emoji:"🏛️", pos:13},
   {name:"Барселона", short:"Барселона", price:1300000, color:"#be185d", emoji:"🏖️", pos:14},
   {name:"EUROSTAR", short:"EUROSTAR", price:1300000, type:"station", emoji:"🚄", pos:15},
   {name:"Амстердам", short:"Амстердам", price:1500000, color:"#c2410c", emoji:"🌷", pos:16},
@@ -663,7 +537,6 @@ const MAP_INTERNATIONAL = [
   {name:"ПОДАТОК", short:"ПОДАТОК", type:"tax", amount:1000000, emoji:"💸", pos:38},
   {name:"Сідней", short:"Сідней", price:4000000, color:"#6d28d9", emoji:"🏄", pos:39}
 ];
-
 const MAP_BUSINESS = [
   {name:"СТАРТ", short:"СТАРТ", type:"corner", emoji:"🏁", pos:0},
   {name:"Кав'ярня", short:"Кав'ярня", price:460000, color:"#b45309", emoji:"☕", pos:1},
@@ -684,7 +557,8 @@ const MAP_BUSINESS = [
   {name:"Бізнес-центр", short:"Бізнес-ц", price:1500000, color:"#c2410c", emoji:"🏢", pos:16},
   {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:17},
   {name:"Торговий центр", short:"ТРЦ", price:1500000, color:"#c2410c", emoji:"🛍️", pos:18},
-  {name:"Кінотеатр", short:"Кіно", price:1700000, color:"#c2410c", emoji:"🎬", pos:19},  {name:"ВІДПУСТКА", short:"ВІДПУСТКА", type:"corner", emoji:"🏖", pos:20},
+  {name:"Кінотеатр", short:"Кіно", price:1700000, color:"#c2410c", emoji:"🎬", pos:19},
+  {name:"ВІДПУСТКА", short:"ВІДПУСТКА", type:"corner", emoji:"🏖", pos:20},
   {name:"Ресторан", short:"Ресторан", price:1900000, color:"#b91c1c", emoji:"🍽️", pos:21},
   {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:22},
   {name:"Готель", short:"Готель", price:1900000, color:"#b91c1c", emoji:"🏨", pos:23},
@@ -712,8 +586,7 @@ let curServer = 'classic';
 
 // ========== ГЛОБАЛЬНІ ЗМІННІ ==========
 let myRoom=null,myName='Гравець',selMode=null;
-let roomOff=null,chatOff=null,botTmr=null,timerInt=null;
-let gameShown=false,boardBuilt=false;
+let roomOff=null,chatOff=null,botTmr=null,timerInt=null;let gameShown=false,boardBuilt=false;
 let myScore=0,myWins=0,myGold=0,curLgIdx=0;
 let timerSec=75;
 let gameStartTime=null, gameTimerInterval=null;
@@ -733,7 +606,8 @@ function setTheme(name,el){
   if(el){document.querySelectorAll('.tdot').forEach(d=>d.classList.remove('on'));el.classList.add('on')}
   localStorage.setItem('mono_theme',name);
   const themeToServer = {classic:'classic', fruit:'fruit', city:'city', dark:'city'};
-  if(themeToServer[name]) setSrv(themeToServer[name]);}
+  if(themeToServer[name]) setSrv(themeToServer[name]);
+}
 function mTab(n,el){
   document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');
   ['games','active','league','clans','join'].forEach(x=>{
@@ -761,8 +635,7 @@ function setSrv(id){
 
 // ========== ПРОФІЛЬ І ЛІГИ ==========
 async function loadProfile(){
-  const snap=await db.ref('players/'+myId).once('value');
-  const d=snap.val()||{score:0,wins:0,gold:0,name:myName,clanId:null,color:COLORS[0]};
+  const snap=await db.ref('players/'+myId).once('value');  const d=snap.val()||{score:0,wins:0,gold:0,name:myName,clanId:null,color:COLORS[0]};
   myScore=d.score||0;myWins=d.wins||0;myGold=d.gold||0;
   myClan = d.clanId || null;
   if(d.color) myColor = d.color;
@@ -782,7 +655,8 @@ async function saveProfile(sc=0,wi=0,go=0){
   await db.ref('players/'+myId).set({name:myName,score:myScore,wins:myWins,gold:myGold,league:lg.id,photoUrl:TGU?.photo_url||null,updatedAt:Date.now(), clanId:myClan, color:myColor});
   document.getElementById('profLeague').textContent=lg.emoji+' '+lg.name;
   document.getElementById('goldAmt').textContent=myGold;
-}async function cleanOldRooms(){
+}
+async function cleanOldRooms(){
   try{
     const snap=await db.ref('rooms').once('value');
     const d=snap.val();if(!d)return;
@@ -810,8 +684,7 @@ async function showLeague(idx){
   const uniq={};
   Object.values(d).forEach(p=>{
     const key=p.name||'?';
-    if(!uniq[key]||(p.score||0)>(uniq[key].score||0))uniq[key]=p;
-  });
+    if(!uniq[key]||(p.score||0)>(uniq[key].score||0))uniq[key]=p;  });
   const pl=Object.values(uniq).sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,25);
   document.getElementById('lgList').innerHTML=pl.map((p,i)=>{
     const nc=i===0?'g':i===1?'s':i===2?'b':'';
@@ -831,7 +704,8 @@ function mkSlots(r,sz=42){
       const c=p.color||'#3b82f6',ini=(p.name||'?')[0].toUpperCase();
       const img=p.photoUrl?`<img src="${p.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:${sz*.36}px;font-weight:800;color:white">${ini}</span>`:`<span class="slot-ltr">${ini}</span>`;
       s+=`<div class="slot filled" style="width:${sz}px;height:${sz}px;border-color:${c};background:${c}22;">${img}</div>`;
-    }else s+=`<div class="slot empty" style="width:${sz}px;height:${sz}px"><span class="slot-ltr">○</span></div>`;  }
+    }else s+=`<div class="slot empty" style="width:${sz}px;height:${sz}px"><span class="slot-ltr">○</span></div>`;
+  }
   return s;
 }
 async function loadRooms(){
@@ -859,8 +733,7 @@ async function loadMyRooms(){
   el.innerHTML=list.sort((a,b)=>({waiting:0,playing:1,finished:2}[a.status]||0)-({waiting:0,playing:1,finished:2}[b.status]||0)).map(r=>{
     const st=r.status||'waiting';
     let btns='';
-    const bs=c=>`background:${c}22;border:1px solid ${c}55;color:${c};border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif`;
-    if(st==='waiting'){btns=`<button onclick="event.stopPropagation();adminRejoin('${r.code}')" style="${bs('#3b82f6')}">▶ Зайти</button><button onclick="event.stopPropagation();adminForceStart('${r.code}')" style="${bs('#22c55e')}">⚡ Старт</button><button onclick="event.stopPropagation();adminDelete('${r.code}')" style="${bs('#ef4444')}">🗑</button>`}
+    const bs=c=>`background:${c}22;border:1px solid ${c}55;color:${c};border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif`;    if(st==='waiting'){btns=`<button onclick="event.stopPropagation();adminRejoin('${r.code}')" style="${bs('#3b82f6')}">▶ Зайти</button><button onclick="event.stopPropagation();adminForceStart('${r.code}')" style="${bs('#22c55e')}">⚡ Старт</button><button onclick="event.stopPropagation();adminDelete('${r.code}')" style="${bs('#ef4444')}">🗑</button>`}
     else if(st==='playing'){btns=`<button onclick="event.stopPropagation();adminRejoin('${r.code}')" style="${bs('#f59e0b')}">▶ Зайти</button><button onclick="event.stopPropagation();adminFinish('${r.code}')" style="${bs('#6d28d9')}">⏹ Фініш</button><button onclick="event.stopPropagation();adminDelete('${r.code}')" style="${bs('#ef4444')}">🗑</button>`}
     else{btns=`<button onclick="event.stopPropagation();adminDelete('${r.code}')" style="${bs('#ef4444')}">🗑 Видалити</button>`}
     return`<div style="padding:10px 14px;border-bottom:1px solid rgba(45,212,191,.06)"><div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><div style="display:flex;gap:4px">${mkSlots(r,32)}</div><div style="flex:1;min-width:0"><div style="font-weight:800;font-size:13px">${r.code}</div><div style="font-size:10px;color:var(--sub)">${MNAMES[r.mode]||'?'}</div></div><div style="font-size:10px;font-weight:700;color:${sc[st]}">${sn[st]}</div></div><div style="display:flex;gap:5px;flex-wrap:wrap">${btns}</div></div>`;
@@ -880,7 +753,8 @@ async function adminRejoin(code){
   await joinToRoom(code);
 }
 async function adminForceStart(c){await db.ref('rooms/'+c).update({status:'playing'});toast('⚡ Гра розпочата!');loadMyRooms()}
-async function adminFinish(c){await db.ref('rooms/'+c).update({status:'finished'});toast('⏹ Завершено');loadMyRooms()}async function adminDelete(c){await db.ref('rooms/'+c).remove();toast('🗑 Видалено');loadMyRooms();loadRooms()}
+async function adminFinish(c){await db.ref('rooms/'+c).update({status:'finished'});toast('⏹ Завершено');loadMyRooms()}
+async function adminDelete(c){await db.ref('rooms/'+c).remove();toast('🗑 Видалено');loadMyRooms();loadRooms()}
 async function adminDeleteAll(){
   const snap=await db.ref('rooms').once('value');const d=snap.val();if(!d)return;
   const batch={};
@@ -908,8 +782,7 @@ async function createRoom(){
     const cnt=parseInt(document.getElementById('bC').value);
     for(let i=0;i<cnt;i++)players['bot_'+i]={id:'bot_'+i,name:'Бот '+(i+1),pos:0,money:15000000,props:[],houses:{},online:true,color:COLORS[i+1],colorName:CNAMES[i+1],isBot:true,photoUrl:null};
   }
-  const room={code:myRoom,mode:selMode,status:'waiting',hostId:myId,server:curServer,players,game:{current:0,dice1:0,dice2:0,lastRoll:0,doubles:0},createdAt:Date.now()};
-  if(selMode==='teams')room.teams={red:[myId],blue:[]};
+  const room={code:myRoom,mode:selMode,status:'waiting',hostId:myId,server:curServer,players,game:{current:0,dice1:0,dice2:0,lastRoll:0,doubles:0},createdAt:Date.now()};  if(selMode==='teams')room.teams={red:[myId],blue:[]};
   await db.ref('rooms/'+myRoom).set(room);
   closeCreate();openLobby(selMode);hp('medium');
 }
@@ -929,7 +802,8 @@ async function joinToRoom(code){
   if(!snap.val()){toast('❌ Кімнату не знайдено');return}
   const r=snap.val();
   const pl=Object.values(r.players||{});
-  if(pl.length>=4){toast('❌ Кімната повна');return}  if(r.status!=='waiting'){toast('❌ Гра вже йде');return}
+  if(pl.length>=4){toast('❌ Кімната повна');return}
+  if(r.status!=='waiting'){toast('❌ Гра вже йде');return}
   myRoom=code;selMode=r.mode;
   PROPS=MAPS[r.server||'classic'];
   const np=myData(pl.length);
@@ -957,8 +831,7 @@ async function leaveRoom(){
   myRoom=null;selMode=null;gameShown=false;boardBuilt=false;
   document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on'));
   showScreen('s-main');loadRooms();
-}
-function listenRoom(){
+}function listenRoom(){
   if(roomOff)db.ref('rooms/'+myRoom).off('value',roomOff);
   roomOff=db.ref('rooms/'+myRoom).on('value',snap=>{
     const r=snap.val();if(!r)return;
@@ -978,7 +851,8 @@ function renderLobby(r){
     if(p.id===hostId)b+='<span class="bdg bh">👑</span> ';
     if(p.isBot)b+='<span class="bdg bb">🤖</span>';
     if(p.team==='red')b+=' <span class="bdg bred">Червона</span>';
-    if(p.team==='blue')b+=' <span class="bdg bbl">Синя</span>';    return`<div class="pc"><div class="aw">${avHtml(p,38)}<div class="avb">${p.isBot?'🤖':'👤'}</div></div><div class="pi"><div class="pn">${p.name}</div><div class="pd">${p.colorName} ${b}</div></div><div class="pm">${p.money.toLocaleString()}₴</div></div>`;
+    if(p.team==='blue')b+=' <span class="bdg bbl">Синя</span>';
+    return`<div class="pc"><div class="aw">${avHtml(p,38)}<div class="avb">${p.isBot?'🤖':'👤'}</div></div><div class="pi"><div class="pn">${p.name}</div><div class="pd">${p.colorName} ${b}</div></div><div class="pm">${p.money.toLocaleString()}₴</div></div>`;
   }).join('');
   const btn=document.getElementById('startBtn');
   const isHost=hostId===myId,canStart=hCnt>=minH;
@@ -990,7 +864,7 @@ function startTimer(isMyTurn){
   const header=document.getElementById('gameHeader');
   let bar=header.querySelector('.timer-bar');
   if(!bar){
-    bar=document.createElement('div');bar.className='timer-bar';bar.style.cssText='height:2px;background:rgba(255,255,255,.08);flex-shrink:0';
+    bar=document.createElement('div');bar.className='timer-bar';bar.style.cssText='height:3px;background:rgba(255,255,255,.08);flex-shrink:0';
     header.appendChild(bar);
   }
   let fill=bar.querySelector('.timer-fill');
@@ -1006,8 +880,7 @@ function startTimer(isMyTurn){
     if(timerSec<=15)fill.style.background='var(--red)';
     if(timerSec<=0){stopTimer();toast('⏰ Час вийшов!');rollDice()}
   },1000);
-}
-function stopTimer(){if(timerInt){clearInterval(timerInt);timerInt=null}}
+}function stopTimer(){if(timerInt){clearInterval(timerInt);timerInt=null}}
 function startGameTimer(){
   if(gameTimerInterval) clearInterval(gameTimerInterval);
   gameStartTime = Date.now();
@@ -1027,7 +900,8 @@ function buildBoard(){
   top.innerHTML='';bottom.innerHTML='';left.innerHTML='';right.innerHTML='';
   for(let i=0;i<10;i++)top.appendChild(createCell(PROPS[i]));
   for(let i=10;i<20;i++)right.appendChild(createCell(PROPS[i]));
-  for(let i=29;i>=20;i--)bottom.appendChild(createCell(PROPS[i]));  for(let i=39;i>=30;i--)left.appendChild(createCell(PROPS[i]));
+  for(let i=29;i>=20;i--)bottom.appendChild(createCell(PROPS[i]));
+  for(let i=39;i>=30;i--)left.appendChild(createCell(PROPS[i]));
 }
 function createCell(p){
   const div=document.createElement('div');
@@ -1055,19 +929,18 @@ function renderGame(r){
     buildBoard();showScreen('s-game');gameShown=true;listenChat();
     startGameTimer();
     const first=Object.values(r.players)[r.game.current];
-    addLog(`🎮 Гра почалась! <span class="log-player" style="color:${first?.color}">${first?.name}</span> ходить першим`);
-  }
+    addLog(`🎮 Гра почалась! <span class="log-player" style="color:${first?.color}">${first?.name}</span> ходить першим`);  }
   const pl=Object.values(r.players||{});
   const me=pl.find(p=>p.id===myId)||pl[0];
   const cur=pl[r.game?.current||0];
   const isMy=cur?.id===myId;
   const others=pl.filter(p=>p.id!==myId);
-  const meImg=me.photoUrl?`<img src="${me.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:14px;font-weight:800;color:white">${(me.name||'?')[0].toUpperCase()}</span>`:`<span>${(me.name||'?')[0].toUpperCase()}</span>`;
+  const meImg=me.photoUrl?`<img src="${me.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:17px;font-weight:800;color:white">${(me.name||'?')[0].toUpperCase()}</span>`:`<span>${(me.name||'?')[0].toUpperCase()}</span>`;
   let hdr=`<div class="game-info"><div class="timer-display">Час: <span id="gameTime">0:00</span></div><div class="move-display">Хід: <span>${r.game.current+1}/${pl.length}</span> 👁</div></div><div class="players-top"><div class="player-card ${isMy?'active':''}"><div class="player-avatar" style="border-color:${me.color};background:${me.color}22;color:${me.color};position:relative">${meImg}${isMy?'<div class="crown">👑</div>':''}</div><div class="player-info"><div class="player-name">${me.name} ${isMy?'(Ви)':''}</div><div class="player-rank">${me.colorName}</div><div class="player-money">$ ${me.money.toLocaleString()}</div><div class="player-property">🏠 ${(me.props||[]).length}</div></div></div>`;
   if(others.length){
     others.forEach(p=>{
       const isAct=cur?.id===p.id;
-      const pImg=p.photoUrl?`<img src="${p.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:10px;font-weight:800;color:white">${p.isBot?'🤖':(p.name||'?')[0].toUpperCase()}</span>`:`<span>${p.isBot?'🤖':(p.name||'?')[0].toUpperCase()}</span>`;
+      const pImg=p.photoUrl?`<img src="${p.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:12px;font-weight:800;color:white">${p.isBot?'🤖':(p.name||'?')[0].toUpperCase()}</span>`:`<span>${p.isBot?'🤖':(p.name||'?')[0].toUpperCase()}</span>`;
       hdr+=`<div class="player-card ${isAct?'active':''}"><div class="player-avatar" style="border-color:${p.color};background:${p.color}22;color:${p.color};position:relative">${pImg}</div><div class="player-info"><div class="player-name">${p.name}</div><div class="player-rank">${p.colorName}</div><div class="player-money">$ ${(p.money/1000).toFixed(1)}k</div><div class="player-property">🏠 ${(p.props||[]).length}</div></div></div>`;
     });
   }
@@ -1076,7 +949,8 @@ function renderGame(r){
 
   document.querySelectorAll('.tokens').forEach(el=>el.innerHTML='');
   pl.forEach(p=>{
-    const cont=document.getElementById('tok-'+p.pos);if(!cont)return;    const t=document.createElement('div');t.className='tok';t.style.background=p.color;
+    const cont=document.getElementById('tok-'+p.pos);if(!cont)return;
+    const t=document.createElement('div');t.className='tok';t.style.background=p.color;
     t.style.boxShadow=`0 0 0 1.5px rgba(0,0,0,.9),0 0 0 2.5px white,0 0 0 3.5px ${p.color}`;
     if(p.photoUrl){const img=document.createElement('img');img.src=p.photoUrl;img.onerror=()=>{img.remove();const s=document.createElement('div');s.className='tok-ltr';s.textContent=(p.name||'?')[0].toUpperCase();t.appendChild(s)};t.appendChild(img)}
     else{const s=document.createElement('div');s.className='tok-ltr';s.textContent=p.isBot?'🤖':(p.name||'?')[0].toUpperCase();t.appendChild(s)}
@@ -1104,8 +978,7 @@ function renderGame(r){
   const btn=document.getElementById('rollBtn');
   btn.disabled=!isMy;
   btn.className='btn-roll '+(isMy?'my':'wait');
-  btn.textContent=isMy?'🎲 Кинути кубики!':'⏳ Хід: '+cur?.name;
-  startTimer(isMy);
+  btn.textContent=isMy?'🎲 Кинути кубики!':'⏳ Хід: '+cur?.name;  startTimer(isMy);
   renderPropBuy(r,pl,cur,isMy);
   if(cur?.isBot&&r.status==='playing'){clearTimeout(botTmr);botTmr=setTimeout(()=>doBotMove(r),1800)}
   checkWinner(r);
@@ -1125,7 +998,8 @@ function renderDice(id,value){
 }
 function renderPropBuy(r,pl,cur,isMy){
   const pb=document.getElementById('propBuy');
-  if(!isMy||!cur){pb.style.display='none';return}  const pos=cur.pos,p=PROPS[pos];
+  if(!isMy||!cur){pb.style.display='none';return}
+  const pos=cur.pos,p=PROPS[pos];
   if(p?.price){
     const own=pl.find(x=>(x.props||[]).includes(pos));
     if(!own){
@@ -1136,7 +1010,7 @@ function renderPropBuy(r,pl,cur,isMy){
       const mono=hasMonopoly(pl,myId,pos);
       if(h<4&&mono){
         pb.style.display='flex';
-        pb.innerHTML=`${p.color?`<div class="pb-clr" style="background:${p.color}"></div>`:''}<div class="pb-inf"><div class="pb-nm">${p.emoji} ${p.name}</div><div class="pb-pr" style="font-size:10px">🏠×${h} · +🏠 ${hc.toLocaleString()}₴</div></div><button class="pb-btn" style="background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark)" onclick="buildHouse(${pos},${hc})">+🏠</button>`;
+        pb.innerHTML=`${p.color?`<div class="pb-clr" style="background:${p.color}"></div>`:''}<div class="pb-inf"><div class="pb-nm">${p.emoji} ${p.name}</div><div class="pb-pr" style="font-size:11px">🏠×${h} · +🏠 ${hc.toLocaleString()}₴</div></div><button class="pb-btn" style="background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark)" onclick="buildHouse(${pos},${hc})">+🏠</button>`;
         return;
       }
       pb.style.display='none';
@@ -1153,8 +1027,7 @@ function listenChat(){
       return`<div class="chat-message" style="${isMe?'text-align:right;background:rgba(251,191,36,.15)':''}"><strong style="color:${m.color}">${m.name}:</strong> ${m.text}</div>`;
     }).join('');
     log.scrollTop=log.scrollHeight;
-  });
-}
+  });}
 async function sendChat(){
   const inp=document.getElementById('chatInput');
   const text=inp.value.trim();if(!text||!myRoom)return;
@@ -1174,7 +1047,8 @@ async function rollDice(){
   if(!db||!myRoom)return;stopTimer();
   const snap=await db.ref('rooms/'+myRoom).once('value');
   const r=snap.val();if(!r)return;
-  const pl=Object.values(r.players);  const cur=pl[r.game.current];
+  const pl=Object.values(r.players);
+  const cur=pl[r.game.current];
   if(cur?.id!==myId){toast('⚠️ Не ваш хід!');return}
   hp('medium');
   const d1=Math.ceil(Math.random()*6),d2=Math.ceil(Math.random()*6);
@@ -1202,8 +1076,7 @@ async function rollDice(){
   await db.ref('rooms/'+myRoom+'/game').update({dice1:d1,dice2:d2,current:next,lastRoll:Date.now(),doubles:isDbl?newDbls:0});
 }
 async function buyProp(pos,price){
-  const snap=await db.ref('rooms/'+myRoom).once('value');
-  const me=Object.values(snap.val()?.players||{}).find(p=>p.id===myId);
+  const snap=await db.ref('rooms/'+myRoom).once('value');  const me=Object.values(snap.val()?.players||{}).find(p=>p.id===myId);
   if(!me||me.money<price){toast('❌ Недостатньо!');hp('heavy');return}
   const p=PROPS[pos];
   await db.ref('rooms/'+myRoom+'/players/'+myId).update({props:[...(me.props||[]),pos],money:me.money-price});
@@ -1223,7 +1096,8 @@ async function buildHouse(pos,cost){
   if(houses[pos]>4){toast('❌ Максимум 4!');return}
   await db.ref('rooms/'+myRoom+'/players/'+myId).update({houses,money:me.money-cost});
   addLog(`🏠 <span class="log-player" style="color:${me.color}">${me.name}</span> <span class="log-action">будує на</span> <span class="log-money">${PROPS[pos].name}</span> (${houses[pos]}/4)`);
-  toast(`🏠 (${houses[pos]}/4)`);hp('medium');}
+  toast(`🏠 (${houses[pos]}/4)`);hp('medium');
+}
 async function doBotMove(r){
   const pl=Object.values(r.players);
   const bot=pl[r.game.current];if(!bot?.isBot)return;
@@ -1251,8 +1125,7 @@ function checkWinner(r){
   if(pl.filter(p=>p.money>0).length<=1&&pl.length>=2){
     const w=pl.reduce((a,b)=>a.money>b.money?a:b);
     db.ref('rooms/'+myRoom).update({status:'finished',winner:w.id});
-  }
-}
+  }}
 async function renderWinner(r){
   stopTimer();stopGameTimer();
   const pl=Object.values(r.players||{});
@@ -1272,7 +1145,8 @@ async function loadClans(){
   const container = document.getElementById('clansContent');
   if(!db) return;
   container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">⏳ Завантаження...</div>';
-  const userSnap = await db.ref(`players/${myId}`).once('value');  const user = userSnap.val() || {};
+  const userSnap = await db.ref(`players/${myId}`).once('value');
+  const user = userSnap.val() || {};
   myClan = user.clanId || null;
   if(myClan){
     const clanSnap = await db.ref(`clans/${myClan}/name`).once('value');
@@ -1300,8 +1174,7 @@ async function loadClans(){
     if(clansList.length===0) html += `<div style="text-align:center;color:var(--sub)">Немає кланів. Створіть перший!</div>`;
     else clansList.forEach(clan=>{
       html += `<div class="room-row" style="justify-content:space-between;" onclick="joinClan('${clan.id}')">
-        <div><strong>${clan.name}</strong> (${clan.tag})</div>
-        <div style="font-size:12px;">👥 ${clan.members?.length||0} | 👑 ${clan.ownerName}</div>
+        <div><strong>${clan.name}</strong> (${clan.tag})</div>        <div style="font-size:12px;">👥 ${clan.members?.length||0} | 👑 ${clan.ownerName}</div>
         <button class="jp">Приєднатися →</button>
       </div>`;
     });
@@ -1321,7 +1194,8 @@ async function createClan(name, tag){
     const clanId = 'clan_'+Date.now()+'_'+Math.random().toString(36).substr(2,4);
     const newClan = {
       name: name.slice(0,20),
-      tag: tag.slice(0,5),      ownerId: myId,
+      tag: tag.slice(0,5),
+      ownerId: myId,
       ownerName: myName,
       members: [myId],
       createdAt: Date.now()
@@ -1349,8 +1223,7 @@ async function joinClan(clanId){
     await db.ref(`clans/${clanId}/members`).set(members);
     await db.ref(`players/${myId}/clanId`).set(clanId);
     await db.ref(`players/${myId}/color`).set(myColor);
-    toast(`Ви приєдналися до ${clan.name}`);
-    loadClans();
+    toast(`Ви приєдналися до ${clan.name}`);    loadClans();
   }catch(e){
     console.error(e);
     toast('❌ Помилка приєднання');
@@ -1370,7 +1243,8 @@ async function leaveClan(){
       const newOwner = members[0];
       await db.ref(`clans/${myClan}/ownerId`).set(newOwner);
       const newOwnerSnap = await db.ref(`players/${newOwner}/name`).once('value');
-      await db.ref(`clans/${myClan}/ownerName`).set(newOwnerSnap.val()||'Гравець');      toast(`Ви передали керівництво ${newOwnerSnap.val()}`);
+      await db.ref(`clans/${myClan}/ownerName`).set(newOwnerSnap.val()||'Гравець');
+      toast(`Ви передали керівництво ${newOwnerSnap.val()}`);
     }
     toast('Ви покинули клан');
     loadClans();
@@ -1398,8 +1272,7 @@ async function deleteClan(clanId){
   }
 }
 function listenClanChat(clanId){
-  if(clanChatListener) db.ref(`clanChat/${clanId}`).off('value', clanChatListener);
-  clanChatListener = db.ref(`clanChat/${clanId}`).limitToLast(50).on('value', snap=>{
+  if(clanChatListener) db.ref(`clanChat/${clanId}`).off('value', clanChatListener);  clanChatListener = db.ref(`clanChat/${clanId}`).limitToLast(50).on('value', snap=>{
     const msgs = snap.val();
     const container = document.getElementById('clanChatMessages');
     if(!container) return;
@@ -1419,7 +1292,8 @@ async function sendClanChat(){
   inp.value='';
   const me = {uid:myId, name:myName, color:myColor, text, ts:Date.now()};
   await db.ref(`clanChat/${myClan}`).push(me);
-}function handleChatFocus(isFocused){
+}
+function handleChatFocus(isFocused){
   if(isFocused){
     const viewport = document.querySelector('meta[name="viewport"]');
     viewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
@@ -1447,8 +1321,7 @@ async function onReady(){
     myName=n;
     ['pN','pNj'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=n});
     const av=document.getElementById('profAv');
-    if(TGU.photo_url)av.innerHTML=`<img src="${TGU.photo_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
-    else av.textContent=n[0].toUpperCase();
+    if(TGU.photo_url)av.innerHTML=`<img src="${TGU.photo_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;    else av.textContent=n[0].toUpperCase();
     document.getElementById('profName').textContent=n;
     document.getElementById('myIdTxt').textContent='🆔 '+myId;
   }
