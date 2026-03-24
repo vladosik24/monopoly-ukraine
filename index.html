@@ -3,1306 +3,336 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
-<title>Монополія Україна – Преміум дизайн</title>
+<title>Монополія Україна – 4 карти + Клани</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-/* ========== БАЗОВІ СТИЛІ ========== */
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Nunito:wght@600;700;800&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
+html,body{height:100%;margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+input,textarea,select{font-size:16px !important}
+@media(max-width:768px){body{touch-action:manipulation}}
 
-html, body {
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-}
+body[data-theme="classic"]{--bg-dark:#0a1f1a;--bg-main:#0d2924;--bg-panel:#154038;--accent:#2dd4bf;--accent2:#14b8a6;--gold:#fbbf24;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;--text:#f1f5f9;--sub:#94a3b8}
+body[data-theme="fruit"]{--bg-dark:#1a2a1a;--bg-main:#1e3a1e;--bg-panel:#2a4a2a;--accent:#f97316;--accent2:#ea580c;--gold:#facc15;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;--text:#f1f5f9;--sub:#cbd5e1}
+body[data-theme="city"]{--bg-dark:#0a0f1e;--bg-main:#0d1a3a;--bg-panel:#1a2a5a;--accent:#3b82f6;--accent2:#2563eb;--gold:#fbbf24;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;--text:#f1f5f9;--sub:#94a3b8}
+body[data-theme="dark"]{--bg-dark:#0a0a0a;--bg-main:#111827;--bg-panel:#1f2937;--accent:#06b6d4;--accent2:#0891b2;--gold:#fbbf24;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;--text:#f9fafb;--sub:#9ca3af}
 
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg-dark);
-  color: var(--text);
-  min-height: 100vh;
-  min-height: 100dvh;
-  overflow: hidden;
-}
+body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100dvh;min-height:100vh;overflow:hidden}
+.screen{display:none;flex-direction:column;min-height:100dvh;min-height:100vh;position:relative;z-index:1}
+.screen.active{display:flex}
+#s-main{background:var(--bg-dark);overflow-y:auto}
+.main-header{background:linear-gradient(180deg,var(--bg-panel),var(--bg-main));padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:2px solid var(--accent2)}
+.prof-av{width:50px;height:50px;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 12px rgba(251,191,36,.4);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;background:var(--bg-panel);color:var(--gold)}
+.prof-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.prof-info{flex:1;min-width:0}
+.prof-name{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:900;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prof-sub{font-size:10px;color:var(--sub);margin-top:2px}
+.gold-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:10px;padding:3px 8px;font-size:11px;font-weight:700;color:var(--gold);margin-top:3px}
+.clan-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.3);border-radius:10px;padding:3px 8px;font-size:11px;font-weight:700;color:var(--accent);margin-top:3px;margin-left:6px}
+.create-btn{background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark);border:none;border-radius:11px;padding:9px 13px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(251,191,36,.3);white-space:nowrap;flex-shrink:0}
+.create-btn:active{transform:scale(.96)}
+.settings-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:8px 10px;color:var(--sub);font-size:16px;cursor:pointer;flex-shrink:0}
+.servers-strip{display:flex;gap:6px;padding:8px 14px;overflow-x:auto;flex-shrink:0;border-bottom:1px solid rgba(45,212,191,.2)}
+.servers-strip::-webkit-scrollbar{display:none}
+.srv-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border:1.5px solid rgba(45,212,191,.2);border-radius:20px;background:rgba(45,212,191,.05);color:var(--accent);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:.2s}
+.srv-btn.on{border-color:var(--gold);color:var(--gold);background:rgba(251,191,36,.1)}
+.main-tabs{display:flex;border-bottom:1px solid rgba(45,212,191,.2);background:rgba(0,0,0,.2);padding:0 6px;overflow-x:auto;flex-shrink:0}
+.main-tabs::-webkit-scrollbar{display:none}
+.mtab{padding:10px 14px;border:none;background:transparent;color:var(--sub);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:.2s;flex-shrink:0}
+.mtab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.tc{flex:1;overflow-y:auto;padding-bottom:16px}
+.rooms-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 6px}
+.rooms-lbl{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px}
+.ref-btn{background:rgba(45,212,191,.1);border:1px solid var(--accent2);border-radius:7px;padding:5px 10px;color:var(--accent);font-size:13px;cursor:pointer}
+.room-row{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(45,212,191,.1);cursor:pointer;transition:background .15s;gap:8px}
+.room-row:active{background:rgba(45,212,191,.05)}
+.slots{display:flex;gap:5px;flex:1;align-items:center}
+.slot{width:42px;height:42px;border-radius:50%;border:2px solid rgba(45,212,191,.2);background:rgba(45,212,191,.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative}.slot.filled{border-color:rgba(45,212,191,.5)}
+.slot img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.slot-ltr{font-size:15px;font-weight:800;color:rgba(255,255,255,.5)}
+.slot.empty .slot-ltr{font-size:20px;color:rgba(255,255,255,.1)}
+.row-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.arr{font-size:22px;font-weight:900;color:var(--gold)}
+.lgstrip{display:flex;gap:6px;padding:8px 14px;overflow-x:auto}
+.lgstrip::-webkit-scrollbar{display:none}
+.lgico{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;cursor:pointer;border:2.5px solid transparent;transition:.2s;background:rgba(45,212,191,.05)}
+.lg-hdr{background:linear-gradient(135deg,rgba(45,212,191,.2),rgba(45,212,191,.06));border:1px solid var(--accent2);border-radius:14px;padding:14px;margin:6px 14px 10px}
+.lg-title{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:900;color:var(--gold)}
+.lg-desc{font-size:11px;color:var(--sub);line-height:1.5;margin-top:5px}
+.rank-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid rgba(45,212,191,.05)}
+.rank-row.me{background:rgba(251,191,36,.07)}
+.rnum{width:22px;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:900;color:var(--sub);text-align:center;flex-shrink:0}
+.rnum.g{color:#ffd700}.rnum.s{color:#c0c0c0}.rnum.b{color:#cd7f32}
+.rav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;border:2px solid;overflow:hidden;flex-shrink:0}
+.rav img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.ri{flex:1;min-width:0}
+.rname{font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rsub{font-size:10px;color:var(--sub);margin-top:1px}
+.rscore{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:900}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:flex-end;justify-content:center;z-index:100;backdrop-filter:blur(4px)}
+.overlay.on{display:flex}
+.sheet{background:var(--bg-main);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:18px 16px 32px;max-height:92vh;overflow-y:auto}
+.sh-handle{width:40px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:0 auto 14px}
+.sh-title{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:900;color:var(--gold);text-align:center;margin-bottom:14px}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.mc{background:rgba(45,212,191,.05);border:1.5px solid rgba(45,212,191,.2);border-radius:12px;padding:13px 10px;text-align:center;cursor:pointer;transition:.18s}
+.mc:active{transform:scale(.95)}
+.mc.on{border-color:var(--gold);background:rgba(251,191,36,.08)}
+.me-ic{font-size:24px;margin-bottom:3px}
+.mn{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700}
+.md{font-size:10px;color:var(--sub);margin-top:2px}
+label.lbl{font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;display:block}
+input,select{width:100%;padding:11px 14px;background:rgba(45,212,191,.07);border:1.5px solid rgba(45,212,191,.2);border-radius:11px;color:var(--text);font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;outline:none;transition:border-color .2s;margin-bottom:9px}
+input:focus,select:focus{border-color:var(--gold)}
+select option{background:var(--bg-main)}
+.btn{width:100%;padding:12px;border:none;border-radius:11px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:.18s;margin-bottom:7px}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;pointer-events:none}
+.b-gold{background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark)}
+.b-green{background:linear-gradient(135deg,#22c55e,#16a34a);color:white}
+.b-surf{background:rgba(45,212,191,.07);border:1.5px solid rgba(45,212,191,.2);color:var(--text)}
+.b-red{background:linear-gradient(135deg,#ef4444,#dc2626);color:white}
+.dv{display:flex;align-items:center;gap:10px;color:#475569;font-size:11px;margin:2px 0 8px}
+.dv::before,.dv::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1)}
+.srow{display:flex;align-items:center;gap:12px;padding:13px;border-bottom:1px solid rgba(45,212,191,.1)}
+.sinfo{flex:1;min-width:0}
+.sname{font-weight:700;font-size:14px}.sdesc{font-size:11px;color:var(--sub);margin-top:3px;line-height:1.4}
+.toggle{width:44px;height:24px;border-radius:12px;background:rgba(255,255,255,.15);position:relative;cursor:pointer;transition:.3s;flex-shrink:0}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:.3s}
+.toggle.on::after{left:23px}
+.theme-dots{display:flex;gap:10px;padding:13px}
+.tdot{width:32px;height:32px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.2s}
+.tdot.on{border-color:white;box-shadow:0 0 8px rgba(255,255,255,.5)}
+#s-lobby{background:var(--bg-dark);padding:0}
+.lhd{padding:12px 16px;background:linear-gradient(180deg,rgba(45,212,191,.12),transparent);border-bottom:1px solid rgba(45,212,191,.2)}
+.cb{background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.18);border-radius:12px;padding:10px;text-align:center;margin-bottom:8px}
+.cl{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:1px}
+.cv{font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;color:var(--gold);letter-spacing:4px}
+.mchip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.28);border-radius:16px;font-size:11px;font-weight:700;color:var(--accent)}
+.ll{flex:1;overflow-y:auto;padding:8px 14px}
+.lf{padding:10px 14px;border-top:1px solid rgba(45,212,191,.2)}
+.pc{display:flex;align-items:center;gap:10px;background:rgba(45,212,191,.05);border:1px solid rgba(45,212,191,.1);border-radius:12px;padding:9px 11px;margin-bottom:6px}
+.pc.at{border-color:var(--gold);background:rgba(251,191,36,.05)}
+.aw{position:relative;flex-shrink:0}
+.av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;border:2.5px solid;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.avb{position:absolute;bottom:-2px;right:-2px;width:14px;height:14px;border-radius:50%;background:var(--bg-dark);display:flex;align-items:center;justify-content:center;font-size:8px}
+.pi{flex:1;min-width:0}
+.pn{font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd{font-size:10px;color:var(--sub);margin-top:1px}
+.pm{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:var(--green);white-space:nowrap}
+.bdg{display:inline-block;padding:2px 6px;border-radius:5px;font-size:9px;font-weight:700}
+.by{background:rgba(45,212,191,.1);color:var(--accent);border:1px solid rgba(45,212,191,.3)}
+.bh{background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.3)}
+.bb{background:rgba(168,85,247,.1);color:#c084fc;border:1px solid rgba(168,85,247,.3)}
+.bred{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.3)}
+.bbl{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
 
-/* Теми (залишені, але з компактними параметрами) */
-body[data-theme="classic"] {
-  --bg-dark: #0a1a1f;
-  --bg-main: #0d2b2b;
-  --bg-panel: #173e3e;
-  --accent: #2dd4bf;
-  --accent2: #14b8a6;
-  --gold: #fbbf24;
-  --red: #f87171;
-  --green: #4ade80;
-  --blue: #60a5fa;
-  --text: #f1f5f9;
-  --sub: #94a3b8;
-  --cell-bg: rgba(25, 55, 55, 0.7);
-  --cell-border: rgba(45, 212, 191, 0.4);
-  --shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-body[data-theme="fruit"] {
-  --bg-dark: #1e2a1e;
-  --bg-main: #2a3a2a;
-  --bg-panel: #3a4a3a;
-  --accent: #f97316;
-  --accent2: #ea580c;
-  --gold: #facc15;
-  --red: #f87171;
-  --green: #4ade80;
-  --blue: #60a5fa;
-  --text: #f1f5f9;
-  --sub: #cbd5e1;
-  --cell-bg: rgba(35, 55, 35, 0.8);
-  --cell-border: rgba(249, 115, 22, 0.4);
-  --shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-body[data-theme="city"] {
-  --bg-dark: #0a0f1e;
-  --bg-main: #0d1a3a;
-  --bg-panel: #1a2a5a;
-  --accent: #3b82f6;
-  --accent2: #2563eb;
-  --gold: #fbbf24;
-  --red: #f87171;
-  --green: #4ade80;
-  --blue: #60a5fa;
-  --text: #f1f5f9;
-  --sub: #94a3b8;
-  --cell-bg: rgba(25, 45, 85, 0.7);
-  --cell-border: rgba(59,130,246,0.5);
-  --shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-body[data-theme="dark"] {
-  --bg-dark: #0a0a0a;
-  --bg-main: #111827;
-  --bg-panel: #1f2937;
-  --accent: #06b6d4;
-  --accent2: #0891b2;
-  --gold: #fbbf24;
-  --red: #f87171;
-  --green: #4ade80;
-  --blue: #60a5fa;
-  --text: #f9fafb;
-  --sub: #9ca3af;
-  --cell-bg: rgba(31,41,55,0.8);
-  --cell-border: rgba(6,182,212,0.5);
-  --shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
+#s-game{background:var(--bg-dark);height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.game-header{background:linear-gradient(180deg,var(--bg-panel),var(--bg-main));padding:4px 8px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--accent2);flex-shrink:0;flex-wrap:wrap;gap:4px;min-height:36px}
+.game-info{display:flex;align-items:center;gap:10px}
+.timer-display{font-family:'Unbounded',sans-serif;font-size:11px;color:var(--gold)}
+.move-display{font-family:'Unbounded',sans-serif;font-size:11px;color:var(--sub)}
+.move-display span{color:var(--text);font-weight:700}
+.players-top{display:flex;gap:8px;flex:1;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding:2px 0}
+.players-top::-webkit-scrollbar{display:none}
+.player-card{background:rgba(0,0,0,.3);border-radius:8px;padding:4px 6px;display:flex;align-items:center;gap:5px;min-width:110px;border:2px solid transparent;transition:.2s;flex-shrink:0}
+.player-card.active{border-color:var(--accent);background:rgba(45,212,191,.1)}
+.player-avatar{width:28px;height:28px;border-radius:50%;border:2px solid var(--accent);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;position:relative}
+.player-avatar img{width:100%;height:100%;object-fit:cover}
+.player-avatar .crown{position:absolute;bottom:-3px;right:-3px;font-size:10px;background:var(--gold);border-radius:50%;width:12px;height:12px;display:flex;align-items:center;justify-content:center}
+.player-info{flex:1;min-width:0}
+.player-name{font-family:'Unbounded',sans-serif;font-size:9px;font-weight:900;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-rank{font-size:7px;color:var(--accent);margin-top:1px}
+.player-money{font-family:'Unbounded',sans-serif;font-size:8px;color:var(--gold);margin-top:1px}.player-property{font-size:6px;color:var(--sub);display:flex;align-items:center;gap:2px;margin-top:1px}
+.btn-exit{background:linear-gradient(135deg,var(--green),#16a34a);color:white;border:none;border-radius:7px;padding:5px 10px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;cursor:pointer;text-transform:uppercase;flex-shrink:0}
+.btn-exit:active{transform:scale(.95)}
+.timer-bar{height:2px;background:rgba(255,255,255,.08);flex-shrink:0}
+.timer-fill{height:100%;background:var(--gold);transition:width 1s linear;width:100%}
 
-/* ========== ЗАГАЛЬНІ КОМПОНЕНТИ (без змін) ========== */
-.screen {
-  display: none;
-  flex-direction: column;
-  min-height: 100dvh;
-  min-height: 100vh;
-  position: relative;
-  z-index: 1;
+.game-main{
+  flex:1;
+  display:grid;
+  grid-template-columns:minmax(52px,12vw) minmax(140px,35vw) minmax(52px,12vw);
+  grid-template-rows:minmax(45px,9vw) 1fr minmax(45px,9vw);
+  gap:3px;
+  padding:3px;
+  overflow:hidden;
+  min-height:0;
+  height:100%;
+  width:100%;
 }
-.screen.active { display: flex; }
+.board-side{display:flex;gap:2px;width:100%;height:100%;min-height:0}
+.board-side.horizontal{flex-direction:row;grid-column:2}
+.board-side.horizontal.top{grid-row:1}
+.board-side.horizontal.bottom{grid-row:3}
+.board-side.vertical{flex-direction:column}
+.board-side.vertical.left{grid-column:1;grid-row:2}
+.board-side.vertical.right{grid-column:3;grid-row:2}
 
-#s-main {
-  background: var(--bg-dark);
-  overflow-y: auto;
-}
-.main-header {
-  background: linear-gradient(135deg, var(--bg-panel), var(--bg-main));
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  border-bottom: 2px solid var(--accent2);
-  backdrop-filter: blur(4px);
-}
-.prof-av {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 3px solid var(--gold);
-  box-shadow: 0 0 12px rgba(251,191,36,.4);
-  overflow: hidden;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  font-weight: 800;
-  background: var(--bg-panel);
-  color: var(--gold);
-}
-.prof-av img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.prof-info { flex: 1; min-width: 0; }
-.prof-name {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 14px;
-  font-weight: 900;
-  color: var(--gold);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.prof-sub { font-size: 10px; color: var(--sub); margin-top: 2px; }
-.gold-badge, .clan-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(251,191,36,.12);
-  border: 1px solid rgba(251,191,36,.3);
-  border-radius: 20px;
-  padding: 3px 10px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--gold);
-}
-.clan-badge { background: rgba(45,212,191,.12); border-color: rgba(45,212,191,.3); color: var(--accent); margin-left: 6px; }
-.create-btn {
-  background: linear-gradient(135deg, var(--gold), #f59e0b);
-  color: var(--bg-dark);
-  border: none;
-  border-radius: 40px;
-  padding: 8px 14px;
-  font-family: 'Unbounded', sans-serif;
-  font-size: 10px;
-  font-weight: 900;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(251,191,36,.3);
-  transition: transform 0.1s;
-}
-.create-btn:active { transform: scale(0.96); }
-.settings-btn {
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 40px;
-  padding: 8px 12px;
-  cursor: pointer;
-}
-.servers-strip {
-  display: flex;
-  gap: 8px;
-  padding: 10px 14px;
-  overflow-x: auto;
-  background: rgba(0,0,0,0.2);
-}
-.srv-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border: 1px solid rgba(45,212,191,.3);
-  border-radius: 40px;
-  background: rgba(45,212,191,.05);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: 0.2s;
-}
-.srv-btn.on {
-  border-color: var(--gold);
-  color: var(--gold);
-  background: rgba(251,191,36,.1);
-}
-.main-tabs {
-  display: flex;
-  border-bottom: 1px solid rgba(45,212,191,.2);
-  background: rgba(0,0,0,.2);
-  padding: 0 8px;
-  overflow-x: auto;
-}
-.mtab {
-  padding: 12px 18px;
-  border: none;
-  background: transparent;
-  color: var(--sub);
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: 0.2s;
-}
-.mtab.on {
-  color: var(--gold);
-  border-bottom-color: var(--gold);
-}
-.tc { flex: 1; overflow-y: auto; padding-bottom: 16px; }
-.rooms-hdr {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px 6px;
-}
-.rooms-lbl {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--sub);
-  text-transform: uppercase;
-  letter-spacing: .5px;
-}
-.ref-btn {
-  background: rgba(45,212,191,.1);
-  border: 1px solid var(--accent2);
-  border-radius: 7px;
-  padding: 5px 10px;
-  color: var(--accent);
-  font-size: 13px;
-  cursor: pointer;
-}
-.room-row {
-  display: flex;
-  align-items: center;
-  padding: 10px 14px;
-  border-bottom: 1px solid rgba(45,212,191,.1);
-  cursor: pointer;
-  transition: background .15s;
-  gap: 8px;
-}
-.room-row:active { background: rgba(45,212,191,.05); }
-.slots {
-  display: flex;
-  gap: 5px;
-  flex: 1;
-  align-items: center;
-}
-.slot {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 2px solid rgba(45,212,191,.2);
-  background: rgba(45,212,191,.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  overflow: hidden;
-  position: relative;
-}
-.slot.filled { border-color: rgba(45,212,191,.5); }
-.slot img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-.slot-ltr { font-size: 15px; font-weight: 800; color: rgba(255,255,255,.5); }
-.slot.empty .slot-ltr { font-size: 20px; color: rgba(255,255,255,.1); }
-.row-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-.arr { font-size: 22px; font-weight: 900; color: var(--gold); }
-.lgstrip {
-  display: flex;
-  gap: 6px;
-  padding: 8px 14px;
-  overflow-x: auto;
-}
-.lgstrip::-webkit-scrollbar { display: none; }
-.lgico {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 17px;
-  flex-shrink: 0;
-  cursor: pointer;
-  border: 2.5px solid transparent;
-  transition: .2s;
-  background: rgba(45,212,191,.05);
-}
-.lg-hdr {
-  background: linear-gradient(135deg,rgba(45,212,191,.2),rgba(45,212,191,.06));
-  border: 1px solid var(--accent2);
-  border-radius: 14px;
-  padding: 14px;
-  margin: 6px 14px 10px;
-}
-.lg-title {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 14px;
-  font-weight: 900;
-  color: var(--gold);
-}
-.lg-desc { font-size: 11px; color: var(--sub); line-height: 1.5; margin-top: 5px; }
-.rank-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 14px;
-  border-bottom: 1px solid rgba(45,212,191,.05);
-}
-.rank-row.me { background: rgba(251,191,36,.07); }
-.rnum {
-  width: 22px;
-  font-family: 'Unbounded', sans-serif;
-  font-size: 12px;
-  font-weight: 900;
-  color: var(--sub);
-  text-align: center;
-  flex-shrink: 0;
-}
-.rnum.g { color: #ffd700; }
-.rnum.s { color: #c0c0c0; }
-.rnum.b { color: #cd7f32; }
-.rav {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 800;
-  border: 2px solid;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-.rav img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-.ri { flex: 1; min-width: 0; }
-.rname {
-  font-weight: 800;
-  font-size: 13px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.rsub { font-size: 10px; color: var(--sub); margin-top: 1px; }
-.rscore {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 15px;
-  font-weight: 900;
-}
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.75);
-  display: none;
-  align-items: flex-end;
-  justify-content: center;
-  z-index: 100;
-  backdrop-filter: blur(6px);
-}
-.overlay.on { display: flex; }
-.sheet {
-  background: var(--bg-main);
-  border-radius: 24px 24px 0 0;
-  width: 100%;
-  max-width: 480px;
-  padding: 20px 20px 32px;
-  max-height: 92vh;
-  overflow-y: auto;
-}
-.sh-handle {
-  width: 40px;
-  height: 4px;
-  background: rgba(255,255,255,.3);
-  border-radius: 2px;
-  margin: 0 auto 16px;
-}
-.sh-title {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 18px;
-  font-weight: 900;
-  color: var(--gold);
-  text-align: center;
-  margin-bottom: 16px;
-}
-.mg {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-.mc {
-  background: rgba(45,212,191,.05);
-  border: 1px solid rgba(45,212,191,.2);
-  border-radius: 16px;
-  padding: 14px 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: 0.15s;
-}
-.mc:active { transform: scale(0.97); }
-.mc.on {
-  border-color: var(--gold);
-  background: rgba(251,191,36,.08);
-}
-.me-ic { font-size: 28px; margin-bottom: 4px; }
-.mn {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-}
-.md { font-size: 10px; color: var(--sub); margin-top: 2px; }
-label.lbl {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--sub);
-  text-transform: uppercase;
-  letter-spacing: .8px;
-  margin-bottom: 5px;
-  display: block;
-}
-input, select {
-  width: 100%;
-  padding: 11px 14px;
-  background: rgba(45,212,191,.07);
-  border: 1.5px solid rgba(45,212,191,.2);
-  border-radius: 11px;
-  color: var(--text);
-  font-family: 'Nunito', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  outline: none;
-  transition: border-color .2s;
-  margin-bottom: 9px;
-}
-input:focus, select:focus { border-color: var(--gold); }
-select option { background: var(--bg-main); }
-.btn {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 40px;
-  font-weight: 800;
-  font-size: 14px;
-  cursor: pointer;
-  transition: 0.1s;
-  margin-bottom: 8px;
-}
-.btn:active { transform: scale(0.97); }
-.btn:disabled { opacity: .4; pointer-events: none; }
-.b-gold { background: linear-gradient(135deg, var(--gold), #f59e0b); color: var(--bg-dark); }
-.b-green { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
-.b-surf { background: rgba(45,212,191,.1); border: 1px solid rgba(45,212,191,.3); color: var(--text); }
-.b-red { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
-.dv {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #475569;
-  font-size: 11px;
-  margin: 2px 0 8px;
-}
-.dv::before, .dv::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: rgba(255,255,255,.1);
-}
-.srow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 13px;
-  border-bottom: 1px solid rgba(45,212,191,.1);
-}
-.sinfo { flex: 1; min-width: 0; }
-.sname { font-weight: 700; font-size: 14px; }
-.sdesc { font-size: 11px; color: var(--sub); margin-top: 3px; line-height: 1.4; }
-.toggle {
-  width: 44px;
-  height: 24px;
-  border-radius: 12px;
-  background: rgba(255,255,255,.15);
-  position: relative;
-  cursor: pointer;
-  transition: .3s;
-  flex-shrink: 0;
-}
-.toggle.on { background: var(--green); }
-.toggle::after {
-  content: '';
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: white;
-  transition: .3s;
-}
-.toggle.on::after { left: 23px; }
-.theme-dots {
-  display: flex;
-  gap: 10px;
-  padding: 13px;
-}
-.tdot {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 3px solid transparent;
-  transition: .2s;
-}
-.tdot.on {
-  border-color: white;
-  box-shadow: 0 0 8px rgba(255,255,255,.5);
-}
-#s-lobby {
-  background: var(--bg-dark);
-  padding: 0;
-}
-.lhd {
-  padding: 12px 16px;
-  background: linear-gradient(180deg,rgba(45,212,191,.12),transparent);
-  border-bottom: 1px solid rgba(45,212,191,.2);
-}
-.cb {
-  background: rgba(251,191,36,.05);
-  border: 1px solid rgba(251,191,36,.18);
-  border-radius: 12px;
-  padding: 10px;
-  text-align: center;
-  margin-bottom: 8px;
-}
-.cl {
-  font-size: 10px;
-  color: var(--sub);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.cv {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--gold);
-  letter-spacing: 4px;
-}
-.mchip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  background: rgba(45,212,191,.12);
-  border: 1px solid rgba(45,212,191,.28);
-  border-radius: 16px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--accent);
-}
-.ll {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px 14px;
-}
-.lf {
-  padding: 10px 14px;
-  border-top: 1px solid rgba(45,212,191,.2);
-}
-.pc {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(45,212,191,.05);
-  border: 1px solid rgba(45,212,191,.1);
-  border-radius: 12px;
-  padding: 9px 11px;
-  margin-bottom: 6px;
-}
-.pc.at {
-  border-color: var(--gold);
-  background: rgba(251,191,36,.05);
-}
-.aw {
-  position: relative;
-  flex-shrink: 0;
-}
-.av {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 15px;
-  font-weight: 800;
-  border: 2.5px solid;
-  overflow: hidden;
-}
-.av img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-.avb {
-  position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--bg-dark);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 8px;
-}
-.pi {
-  flex: 1;
-  min-width: 0;
-}
-.pn {
-  font-weight: 800;
-  font-size: 13px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.pd {
-  font-size: 10px;
-  color: var(--sub);
-  margin-top: 1px;
-}
-.pm {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--green);
-  white-space: nowrap;
-}
-.bdg {
-  display: inline-block;
-  padding: 2px 6px;
-  border-radius: 5px;
-  font-size: 9px;
-  font-weight: 700;
-}
-.by {
-  background: rgba(45,212,191,.1);
-  color: var(--accent);
-  border: 1px solid rgba(45,212,191,.3);
-}
-.bh {
-  background: rgba(251,191,36,.1);
-  color: var(--gold);
-  border: 1px solid rgba(251,191,36,.3);
-}
-.bb {
-  background: rgba(168,85,247,.1);
-  color: #c084fc;
-  border: 1px solid rgba(168,85,247,.3);
-}
-.bred {
-  background: rgba(239,68,68,.1);
-  color: #f87171;
-  border: 1px solid rgba(239,68,68,.3);
-}
-.bbl {
-  background: rgba(59,130,246,.1);
-  color: #60a5fa;
-  border: 1px solid rgba(59,130,246,.3);
+.cell{background:var(--bg-panel);border:1px solid rgba(45,212,191,.3);border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1px;position:relative;flex:1;min-width:0;min-height:0;cursor:pointer;transition:.15s;overflow:hidden}
+.cell:active{transform:scale(.95)}
+.cell.corner{background:var(--bg-main);border-color:var(--accent);border-width:1.5px}
+.cell-color-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;z-index:2}
+
+.board-side.vertical .cell{
+  writing-mode:horizontal-tb;
+  text-orientation:mixed;
+  transform:none !important;
+}
+.board-side.vertical .cell > *{
+  transform:none !important;
 }
 
-/* ========== ГРА – КОМПАКТНА ВЕРСІЯ ========== */
-#s-game {
-  background: var(--bg-dark);
-  height: 100vh;
-  height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  min-height: 0;
+.cell-icon{font-size:clamp(8px,1.8vw,12px);margin-bottom:0px;line-height:1}
+.cell-name{font-size:clamp(4px,1vw,6px);text-align:center;color:var(--text);font-weight:700;line-height:1;word-break:break-word;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.cell-price{font-size:clamp(4px,1vw,6px);color:var(--gold);font-weight:800;margin-top:0px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.cell-owner{position:absolute;bottom:1px;left:1px;right:1px;height:2px;border-radius:1px;z-index:2}
+.tokens{position:absolute;top:1px;left:1px;right:1px;display:flex;justify-content:center;gap:1px;z-index:10;pointer-events:none}
+.tok{width:clamp(5px,1.3vw,7px);height:clamp(5px,1.3vw,7px);border-radius:50%;border:1px solid white;box-shadow:0 0 0 1px rgba(0,0,0,.9);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.tok img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.tok-ltr{font-size:clamp(2px,0.6vw,4px);font-weight:900;color:white;line-height:1}
+.houses{position:absolute;bottom:3px;left:0;right:0;display:flex;justify-content:center;gap:1px;z-index:3}
+.house-dot{width:clamp(2px,0.5vw,3px);height:clamp(2px,0.5vw,3px);border-radius:50%}
+.game-center{
+  grid-column:2;
+  grid-row:2;
+  background:var(--bg-main);
+  border-radius:8px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  border:1.5px solid var(--accent2);
+  min-width:0;
+  max-width:100%;
 }
-.game-header {
-  background: linear-gradient(180deg, var(--bg-panel), var(--bg-main));
-  padding: 4px 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid var(--accent2);
-  flex-shrink: 0;
-  flex-wrap: wrap;
-  gap: 4px;
-  min-height: 36px;
+.game-log{
+  flex:1;
+  overflow-y:auto;
+  padding:3px;
+  font-size:8px;
+  line-height:1.25;
+  background:rgba(0,0,0,.2);
 }
-.game-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.game-log p{margin:1px 0;padding:2px 3px;background:rgba(45,212,191,.05);border-radius:3px;border-left:1.5px solid var(--accent)}
+.log-player{font-weight:700}
+.log-action{color:var(--text)}
+.log-money{color:var(--gold);font-weight:700}
+.log-negative{color:var(--red);font-weight:700}
+.log-positive{color:var(--green);font-weight:700}
+.chat-area{border-top:1px solid var(--accent2);display:flex;flex-direction:column;flex-shrink:0}
+.chat-messages{
+  max-height:45px;
+  overflow-y:auto;
+  padding:3px;
+  background:rgba(0,0,0,.2);
 }
-.timer-display {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 11px;
-  color: var(--gold);
+.chat-message{margin:1px 0;padding:2px 3px;background:rgba(45,212,191,.1);border-radius:3px;font-size:7px}
+.chat-input-row{
+  display:flex;
+  gap:3px;
+  padding:3px;
+  background:var(--bg-panel);
 }
-.move-display {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 11px;
-  color: var(--sub);
+.chat-input{
+  flex:1;
+  min-width:0;
+  background:rgba(0,0,0,.3);
+  border:1px solid var(--accent2);
+  border-radius:6px;
+  padding:4px 6px;
+  color:var(--text);
+  font-family:'Nunito',sans-serif;  font-size:9px;
+  outline:none;
 }
-.move-display span {
-  color: var(--text);
-  font-weight: 700;
+.chat-input::placeholder{color:var(--sub)}
+.chat-send{
+  width:24px;
+  height:24px;
+  border-radius:5px;
+  background:var(--accent);
+  border:none;
+  color:var(--bg-dark);
+  font-size:11px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
 }
-.players-top {
-  display: flex;
-  gap: 8px;
-  flex: 1;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  padding: 2px 0;
-}
-.players-top::-webkit-scrollbar { display: none; }
-.player-card {
-  background: rgba(0,0,0,.3);
-  border-radius: 8px;
-  padding: 4px 6px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  min-width: 110px;
-  border: 2px solid transparent;
-  transition: .2s;
-  flex-shrink: 0;
-}
-.player-card.active {
-  border-color: var(--accent);
-  background: rgba(45,212,191,.1);
-}
-.player-avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 2px solid var(--accent);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  flex-shrink: 0;
-  position: relative;
-}
-.player-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.player-avatar .crown {
-  position: absolute;
-  bottom: -3px;
-  right: -3px;
-  font-size: 10px;
-  background: var(--gold);
-  border-radius: 50%;
-  width: 12px;
-  height: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.player-info {
-  flex: 1;
-  min-width: 0;
-}
-.player-name {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 9px;
-  font-weight: 900;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.player-rank {
-  font-size: 7px;
-  color: var(--accent);
-  margin-top: 1px;
-}
-.player-money {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 8px;
-  color: var(--gold);
-  margin-top: 1px;
-}
-.player-property {
-  font-size: 6px;
-  color: var(--sub);
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  margin-top: 1px;
-}
-.btn-exit {
-  background: linear-gradient(135deg, var(--green), #16a34a);
-  color: white;
-  border: none;
-  border-radius: 7px;
-  padding: 5px 10px;
-  font-family: 'Unbounded', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  cursor: pointer;
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
-.btn-exit:active { transform: scale(.95); }
-.timer-bar {
-  height: 2px;
-  background: rgba(255,255,255,.08);
-  flex-shrink: 0;
-}
-.timer-fill {
-  height: 100%;
-  background: var(--gold);
-  transition: width 1s linear;
-  width: 100%;
-}
+.control-panel{background:var(--bg-panel);padding:5px;display:flex;gap:6px;align-items:center;justify-content:center;border-top:2px solid var(--accent2);flex-shrink:0}
+.dice-display{display:flex;gap:6px;align-items:center}
+.dice{width:32px;height:32px;background:white;border-radius:6px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:3px;gap:2px;box-shadow:0 2px 5px rgba(0,0,0,.3)}
+.dice-dot{background:#1e293b;border-radius:50%;align-self:center;justify-self:center;width:5px;height:5px}
+.btn-roll{background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark);border:none;border-radius:8px;padding:7px 14px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:900;cursor:pointer;text-transform:uppercase;box-shadow:0 2px 10px rgba(251,191,36,.4)}
+.btn-roll:active{transform:scale(.95)}
+.btn-roll:disabled{opacity:.4;pointer-events:none}
+.btn-roll.my{animation:rollPulse 1.6s ease-in-out infinite}
+@keyframes rollPulse{0%,100%{box-shadow:0 2px 10px rgba(251,191,36,.5)}50%{box-shadow:0 4px 15px rgba(251,191,36,.8)}}
+.prop-buy{background:var(--bg-panel);border-top:1px solid rgba(45,212,191,.2);padding:3px 6px;display:none;align-items:center;gap:5px;flex-shrink:0}
+.pb-clr{width:6px;height:22px;border-radius:2px;flex-shrink:0}
+.pb-inf{flex:1;min-width:0}
+.pb-nm{font-weight:800;font-size:10px}
+.pb-pr{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:900;color:var(--gold)}
+.pb-btn{color:white;border:none;border-radius:5px;padding:5px 8px;font-family:'Nunito',sans-serif;font-size:9px;font-weight:800;cursor:pointer;flex-shrink:0}
+#s-win{align-items:center;justify-content:center;padding:28px 20px;text-align:center;background:var(--bg-dark)}
+.troph{font-size:68px;animation:trophAnim 1s ease-in-out infinite alternate}
+@keyframes trophAnim{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.08) rotate(4deg)}}
+.wtitle{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900;background:linear-gradient(120deg,var(--gold),#ef4444,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:10px 0 5px}
+.wname{font-size:17px;font-weight:800}
+.wmoney{font-family:'Unbounded',sans-serif;font-size:26px;color:var(--green);margin-top:3px}
+.wgold{font-size:15px;color:var(--gold);margin-top:4px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e1040;border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:9px 16px;font-size:12px;font-weight:700;z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.4);max-width:80vw;text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.jp{background:var(--green);border:none;border-radius:6px;padding:4px 10px;color:white;font-size:10px;font-weight:700;cursor:pointer}
+.jp:active{transform:scale(.95)}
 
-/* 🔴 СІТКА КАРТИ – ВЕРТИКАЛЬНІ КЛІТИНКИ БЕЗ ПОВОРОТУ (ГОРИЗОНТАЛЬНИЙ ТЕКСТ) */
-.game-main {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 3fr 1fr;
-  grid-template-rows: 1fr 3fr 1fr;
-  gap: 4px;
-  padding: 4px;
-  min-height: 0;
-  height: 100%;
-  width: 100%;
-  overflow: auto;
-  background: radial-gradient(circle at 20% 30%, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 100%);
+@media (max-width:768px){
+  .game-main{
+    grid-template-columns:minmax(44px,10vw) minmax(120px,30vw) minmax(44px,10vw);
+    grid-template-rows:minmax(38px,8vw) 1fr minmax(38px,8vw);
+  }  .game-center{
+    min-width:0;
+  }
+  .game-log{
+    padding:2px;
+    font-size:7px;
+  }
+  .chat-messages{
+    max-height:28px;
+    padding:2px;
+  }
+  .chat-input{
+    font-size:8px;
+    padding:2px 4px;
+  }
+  .chat-send{
+    width:22px;
+    height:22px;
+    font-size:10px;
+  }
+  .player-card{min-width:100px;padding:3px 5px}
+  .player-avatar{width:26px;height:26px}
+  .player-name{font-size:8px}
+  .player-money{font-size:7px}
+  .btn-exit{padding:4px 8px;font-size:9px}
+  .cell-icon{font-size:clamp(7px,1.6vw,10px)}
+  .cell-name{font-size:clamp(3px,0.9vw,5px)}
+  .cell-price{font-size:clamp(3px,0.9vw,5px)}
+  .dice{width:28px;height:28px}
+  .btn-roll{padding:6px 12px;font-size:9px}
+  .game-header{padding:3px 6px;gap:3px;min-height:34px}
+  .timer-display,.move-display{font-size:10px}
+  .control-panel{padding:4px;gap:5px}
 }
-.board-side {
-  display: flex;
-  gap: 4px;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-}
-.board-side.horizontal {
-  flex-direction: row;
-  grid-column: 2;
-}
-.board-side.horizontal.top { grid-row: 1; }
-.board-side.horizontal.bottom { grid-row: 3; }
-.board-side.vertical {
-  flex-direction: column;
-}
-.board-side.vertical.left { grid-column: 1; grid-row: 2; }
-.board-side.vertical.right { grid-column: 3; grid-row: 2; }
-
-/* 🔴 КЛІТИНКИ – ЄДИНИЙ СТИЛЬ ДЛЯ ВСІХ (текст горизонтально) */
-.cell {
-  background: var(--cell-bg);
-  backdrop-filter: blur(2px);
-  border: 1px solid var(--cell-border);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 2px;
-  position: relative;
-  flex: 1;
-  min-width: 0;
-  min-height: 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow);
-}
-.cell:hover {
-  transform: translateY(-2px);
-  border-color: var(--accent);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-}
-.cell.corner {
-  background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2));
-  border-color: var(--accent);
-  border-width: 2px;
-}
-.cell-color-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 5px;
-  border-radius: 8px 8px 0 0;
-  z-index: 2;
-  background: var(--color-start, #fff);
-}
-/* Скасовуємо будь-які повороти у вертикальних панелях */
-.board-side.vertical .cell {
-  transform: none;
-}
-.board-side.vertical .cell > * {
-  transform: none;
-}
-.cell-icon {
-  font-size: clamp(12px, 2.5vw, 16px);
-  margin-bottom: 2px;
-  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3));
-}
-.cell-name {
-  font-size: clamp(7px, 1.6vw, 9px);
-  text-align: center;
-  font-weight: 700;
-  line-height: 1.2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
-  background: rgba(0,0,0,0.5);
-  padding: 1px 3px;
-  border-radius: 20px;
-  margin-top: 1px;
-}
-.cell-price {
-  font-size: clamp(6px, 1.4vw, 8px);
-  font-weight: 800;
-  color: var(--gold);
-  margin-top: 1px;
-  background: rgba(0,0,0,0.4);
-  padding: 1px 3px;
-  border-radius: 20px;
-}
-.cell-owner {
-  position: absolute;
-  bottom: 3px;
-  left: 3px;
-  right: 3px;
-  height: 4px;
-  border-radius: 2px;
-  z-index: 2;
-  background: var(--owner-color, #fff);
-  box-shadow: 0 0 2px rgba(0,0,0,0.5);
-}
-.tokens {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  right: 3px;
-  display: flex;
-  justify-content: center;
-  gap: 2px;
-  z-index: 10;
-  pointer-events: none;
-}
-.tok {
-  width: clamp(8px, 2vw, 11px);
-  height: clamp(8px, 2vw, 11px);
-  border-radius: 50%;
-  border: 1.5px solid white;
-  box-shadow: 0 0 0 1px rgba(0,0,0,.5), 0 1px 2px rgba(0,0,0,.3);
-  flex-shrink: 0;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.tok img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.tok-ltr {
-  font-size: clamp(4px, 1vw, 6px);
-  font-weight: 900;
-  color: white;
-  text-shadow: 0 0 1px black;
-}
-.houses {
-  position: absolute;
-  bottom: 5px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: 2px;
-  z-index: 3;
-}
-.house-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--gold);
-  border-radius: 2px;
-  box-shadow: 0 1px 1px rgba(0,0,0,0.3);
-}
-
-/* Центральна область – зменшений лог */
-.game-center {
-  grid-column: 2;
-  grid-row: 2;
-  background: var(--bg-main);
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid var(--accent2);
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.3);
-}
-.game-log {
-  flex: 1;
-  overflow-y: auto;
-  padding: 6px;
-  font-size: 9px;
-  line-height: 1.3;
-  background: rgba(0,0,0,.3);
-}
-.game-log p {
-  margin: 2px 0;
-  padding: 3px 5px;
-  background: rgba(45,212,191,.08);
-  border-radius: 12px;
-  border-left: 2px solid var(--accent);
-  font-size: 8px;
-}
-.log-player { font-weight: 800; }
-.log-action { color: var(--sub); }
-.log-money { color: var(--gold); font-weight: 800; }
-.log-negative { color: var(--red); font-weight: 800; }
-.log-positive { color: var(--green); font-weight: 800; }
-
-/* 🔴 ЧАТ – ЗМЕНШЕНО ВДВІЧІ */
-.chat-area {
-  border-top: 1px solid var(--accent2);
-  background: rgba(0,0,0,.2);
-  flex-shrink: 0;
-}
-.chat-messages {
-  max-height: 35px;
-  overflow-y: auto;
-  padding: 2px 4px;
-  font-size: 7px;
-  background: rgba(0,0,0,.2);
-}
-.chat-message {
-  margin: 1px 0;
-  padding: 2px 4px;
-  background: rgba(45,212,191,.1);
-  border-radius: 12px;
-  font-size: 7px;
-}
-.chat-input-row {
-  display: flex;
-  gap: 4px;
-  padding: 4px;
-  background: var(--bg-panel);
-}
-.chat-input {
-  flex: 1;
-  background: rgba(0,0,0,.4);
-  border: 1px solid var(--accent2);
-  border-radius: 20px;
-  padding: 4px 8px;
-  color: var(--text);
-  font-size: 9px;
-  outline: none;
-}
-.chat-input::placeholder {
-  color: var(--sub);
-  font-size: 8px;
-}
-.chat-send {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: none;
-  color: var(--bg-dark);
-  font-size: 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.1s;
-}
-.chat-send:active { transform: scale(0.9); }
-
-.control-panel {
-  background: var(--bg-panel);
-  padding: 6px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  border-top: 2px solid var(--accent2);
-  flex-shrink: 0;
-}
-.dice-display {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.dice {
-  width: 36px;
-  height: 36px;
-  background: white;
-  border-radius: 8px;
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  grid-template-rows: repeat(3,1fr);
-  padding: 4px;
-  gap: 2px;
-  box-shadow: 0 3px 6px rgba(0,0,0,.3);
-}
-.dice-dot {
-  background: #1e293b;
-  border-radius: 50%;
-  align-self: center;
-  justify-self: center;
-  width: 6px;
-  height: 6px;
-}
-.btn-roll {
-  background: linear-gradient(135deg, var(--gold), #f59e0b);
-  color: var(--bg-dark);
-  border: none;
-  border-radius: 40px;
-  padding: 7px 14px;
-  font-family: 'Unbounded', sans-serif;
-  font-size: 11px;
-  font-weight: 900;
-  cursor: pointer;
-  text-transform: uppercase;
-  box-shadow: 0 3px 10px rgba(251,191,36,.4);
-}
-.btn-roll:active { transform: scale(0.95); }
-.btn-roll:disabled { opacity: 0.5; pointer-events: none; }
-.btn-roll.my {
-  animation: pulse 1.2s infinite;
-}
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(251,191,36,.6); }
-  70% { box-shadow: 0 0 0 8px rgba(251,191,36,0); }
-  100% { box-shadow: 0 0 0 0 rgba(251,191,36,0); }
-}
-.prop-buy {
-  background: var(--bg-panel);
-  border-top: 1px solid rgba(45,212,191,.2);
-  padding: 4px 8px;
-  display: none;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-.pb-clr {
-  width: 8px;
-  height: 26px;
-  border-radius: 3px;
-  flex-shrink: 0;
-}
-.pb-inf { flex: 1; min-width: 0; }
-.pb-nm { font-weight: 800; font-size: 10px; }
-.pb-pr { font-family: 'Unbounded', sans-serif; font-size: 10px; font-weight: 900; color: var(--gold); }
-.pb-btn {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: white;
-  border: none;
-  border-radius: 30px;
-  padding: 5px 10px;
-  font-weight: 800;
-  font-size: 9px;
-  cursor: pointer;
-}
-#s-win {
-  align-items: center;
-  justify-content: center;
-  padding: 28px;
-  text-align: center;
-  background: radial-gradient(circle, var(--bg-main), var(--bg-dark));
-}
-.troph {
-  font-size: 80px;
-  animation: bounce 1s infinite alternate;
-}
-@keyframes bounce {
-  from { transform: translateY(0); }
-  to { transform: translateY(-20px); }
-}
-.wtitle {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 26px;
-  background: linear-gradient(120deg, var(--gold), #ef4444, #818cf8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin: 10px 0;
-}
-.wname { font-size: 20px; font-weight: 800; }
-.wmoney {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 28px;
-  color: var(--green);
-  margin: 5px 0;
-}
-.wgold { font-size: 16px; color: var(--gold); }
-.toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%) translateY(80px);
-  background: var(--bg-main);
-  border: 1px solid var(--accent2);
-  border-radius: 40px;
-  padding: 8px 16px;
-  font-size: 12px;
-  font-weight: 700;
-  z-index: 9999;
-  transition: 0.2s;
-  white-space: nowrap;
-  max-width: 80vw;
-  text-align: center;
-  backdrop-filter: blur(8px);
-}
-.toast.on {
-  transform: translateX(-50%) translateY(0);
-}
-@media (max-width: 768px) {
-  .game-main { gap: 3px; padding: 3px; }
-  .player-card { min-width: 90px; padding: 2px 4px; }
-  .player-avatar { width: 24px; height: 24px; }
-  .player-name { font-size: 8px; }
-  .player-money { font-size: 7px; }
-  .btn-exit { padding: 3px 6px; font-size: 8px; }
-  .cell-icon { font-size: clamp(10px, 2.2vw, 14px); }
-  .cell-name { font-size: clamp(6px, 1.4vw, 8px); }
-  .cell-price { font-size: clamp(5px, 1.2vw, 7px); }
-  .dice { width: 30px; height: 30px; }
-  .btn-roll { padding: 5px 12px; font-size: 10px; }
-  .game-header { padding: 2px 4px; gap: 2px; min-height: 30px; }
-  .timer-display, .move-display { font-size: 9px; }
-  .chat-messages { max-height: 30px; }
-}
-::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--accent2);
-  border-radius: 2px;
-}
-::-webkit-scrollbar-track {
-  background: rgba(0,0,0,.2);
-}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--accent2);border-radius:2px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,.2)}
 </style>
 </head>
 <body data-theme="classic">
 
-<!-- ========== ВЕСЬ HTML (той самий, що й у попередній робочій версії) ========== -->
 <div id="s-main" class="screen active">
   <div class="main-header">
     <div style="display:flex;align-items:center;gap:9px;flex:1;min-width:0">
@@ -1311,8 +341,7 @@ select option { background: var(--bg-main); }
         <div class="prof-name" id="profName">Гравець</div>
         <div class="prof-sub" id="profLeague">🥉 Новачок</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:3px">
-          <div class="gold-badge">🪙 <span id="goldAmt">0</span></div>
-          <div class="clan-badge">🏰 <span id="clanBadge">—</span></div>
+          <div class="gold-badge">🪙 <span id="goldAmt">0</span></div>          <div class="clan-badge">🏰 <span id="clanBadge">—</span></div>
         </div>
       </div>
     </div>
@@ -1361,8 +390,7 @@ if(tg){tg.ready();tg.expand();tg.setHeaderColor('#0a1f1a');tg.setBackgroundColor
 const TGU=tg?.initDataUnsafe?.user;
 
 const myId=(()=>{
-  if(TGU?.id) return 'tg_'+TGU.id;
-  let id=localStorage.getItem('mono_uid');
+  if(TGU?.id) return 'tg_'+TGU.id;  let id=localStorage.getItem('mono_uid');
   if(!id){id='p'+Date.now()+Math.random().toString(36).substr(2,4);localStorage.setItem('mono_uid',id)}
   return id;
 })();
@@ -1411,8 +439,7 @@ const MAP_CLASSIC = [
   {name:'Вокзал Київ',short:'Вокзал',price:2000,type:'station',emoji:'🚂',pos:5},
   {name:'Житомир',short:'Житомир',price:1000,color:'#1d4ed8',emoji:'🏘',pos:6},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:7},
-  {name:'Чернігів',short:'Чернігів',price:1000,color:'#1d4ed8',emoji:'⛪',pos:8},
-  {name:'Суми',short:'Суми',price:1200,color:'#1d4ed8',emoji:'🌃',pos:9},
+  {name:'Чернігів',short:'Чернігів',price:1000,color:'#1d4ed8',emoji:'⛪',pos:8},  {name:'Суми',short:'Суми',price:1200,color:'#1d4ed8',emoji:'🌃',pos:9},
   {name:"В'ЯЗНИЦЯ",short:"В'ЯЗН",type:'corner',emoji:'⛓',pos:10},
   {name:'Полтава',short:'Полтава',price:1400,color:'#be185d',emoji:'🏛',pos:11},
   {name:'Електростанція',short:'Електро',price:1500,type:'utility',emoji:'⚡',pos:12},
@@ -1461,8 +488,7 @@ const MAP_FRUIT = [
   {name:'Склад',short:'Склад',price:1400,type:'utility',emoji:'🏭',pos:12},
   {name:'Персик',short:'Персик',price:1300,color:'#ea580c',emoji:'🍑',pos:13},
   {name:'Манго',short:'Манго',price:1500,color:'#ea580c',emoji:'🥭',pos:14},
-  {name:'Ринок 2',short:'Ринок',price:1800,type:'station',emoji:'🏪',pos:15},
-  {name:'Ківі',short:'Ківі',price:1700,color:'#16a34a',emoji:'🥝',pos:16},
+  {name:'Ринок 2',short:'Ринок',price:1800,type:'station',emoji:'🏪',pos:15},  {name:'Ківі',short:'Ківі',price:1700,color:'#16a34a',emoji:'🥝',pos:16},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:17},
   {name:'Яблуко',short:'Яблуко',price:1700,color:'#16a34a',emoji:'🍎',pos:18},
   {name:'Авокадо',short:'Авок.',price:1900,color:'#16a34a',emoji:'🥑',pos:19},
@@ -1511,8 +537,7 @@ const MAP_INTERNATIONAL = [
   {name:"Гонконг", short:"Гонконг", price:1700000, color:"#c2410c", emoji:"🏙️", pos:19},
   {name:"ВІДПУСТКА", short:"ВІДПУСТКА", type:"corner", emoji:"🏖", pos:20},
   {name:"Сідней", short:"Сідней", price:1900000, color:"#b91c1c", emoji:"🏄", pos:21},
-  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:22},
-  {name:"Ріо-де-Жанейро", short:"Ріо", price:1900000, color:"#b91c1c", emoji:"🗿", pos:23},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:22},  {name:"Ріо-де-Жанейро", short:"Ріо", price:1900000, color:"#b91c1c", emoji:"🗿", pos:23},
   {name:"Кейптаун", short:"Кейптаун", price:2100000, color:"#b91c1c", emoji:"🏔️", pos:24},
   {name:"КРУЇЗНИЙ ТЕРМІНАЛ", short:"КРУЇЗ", price:1300000, type:"station", emoji:"🚢", pos:25},
   {name:"Мумбаї", short:"Мумбаї", price:2300000, color:"#a16207", emoji:"🕌", pos:26},
@@ -1561,8 +586,7 @@ const MAP_BUSINESS = [
   {name:"Технопарк", short:"Технопарк", price:2300000, color:"#a16207", emoji:"🔬", pos:26},
   {name:"Логістичний центр", short:"Логістика", price:2300000, color:"#a16207", emoji:"📦", pos:27},
   {name:"ВОДОКАНАЛ", short:"ВОДОКАН", price:1400000, type:"utility", emoji:"💧", pos:28},
-  {name:"Аеропорт", short:"Аеропорт", price:2500000, color:"#a16207", emoji:"✈️", pos:29},
-  {name:"ПОЛІЦІЯ", short:"ПОЛІЦІЯ", type:"jail", emoji:"👮", pos:30},
+  {name:"Аеропорт", short:"Аеропорт", price:2500000, color:"#a16207", emoji:"✈️", pos:29},  {name:"ПОЛІЦІЯ", short:"ПОЛІЦІЯ", type:"jail", emoji:"👮", pos:30},
   {name:"Інноваційний центр", short:"Інновації", price:2700000, color:"#15803d", emoji:"💡", pos:31},
   {name:"Стартап-хаб", short:"Стартап", price:2700000, color:"#15803d", emoji:"🚀", pos:32},
   {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:33},
@@ -1588,7 +612,7 @@ let gameStartTime=null, gameTimerInterval=null;
 let myClan=null, clanChatListener=null;
 let myColor = COLORS[0];
 
-// ========== ДОПОМІЖНІ ФУНКЦІЇ (всі ті ж, що й у попередній версії) ==========
+// ========== ДОПОМІЖНІ ФУНКЦІЇ ==========
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function toast(msg,ms=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),ms)}
 function openCreate(){document.getElementById('createModal').classList.add('on')}
@@ -1611,8 +635,7 @@ function mTab(n,el){
   if(n==='league')renderLeagueStrip();
   if(n==='games')loadRooms();
   if(n==='active')loadMyRooms();
-  if(n==='clans')loadClans();
-}
+  if(n==='clans')loadClans();}
 function sm(m,el){
   selMode=m;document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on'));el.classList.add('on');
   document.getElementById('bcw').style.display=(m==='vsbot'||m==='mixed')?'block':'none';hp('light');
@@ -1661,8 +684,7 @@ async function cleanOldRooms(){
       if(now-(r.createdAt||0)>7200000||r.status==='finished'||!r.players||!Object.keys(r.players).length)
         batch['rooms/'+k]=null;
     });
-    if(Object.keys(batch).length)await db.ref().update(batch);
-  }catch(e){}
+    if(Object.keys(batch).length)await db.ref().update(batch);  }catch(e){}
 }
 function renderLeagueStrip(){
   document.getElementById('lgstrip').innerHTML=LEAGUES.map((l,i)=>`<div class="lgico ${i===curLgIdx?'on':''}" style="border-color:${i===curLgIdx?l.color:'transparent'}" onclick="showLeague(${i})">${l.emoji}</div>`).join('');
@@ -1711,8 +733,7 @@ async function loadRooms(){
   const snap=await db.ref('rooms').orderByChild('status').equalTo('waiting').once('value');
   const d=snap.val();
   const list=d?Object.entries(d).map(([k,r])=>({...r,code:r.code||k})).filter(r=>{
-    const pl=Object.values(r.players||{});
-    return pl.length>0&&pl.length<4&&pl.some(p=>!p.isBot)&&(r.server||'classic')===curServer;
+    const pl=Object.values(r.players||{});    return pl.length>0&&pl.length<4&&pl.some(p=>!p.isBot)&&(r.server||'classic')===curServer;
   }):[];
   if(!list.length){el.innerHTML='<div style="text-align:center;padding:50px 20px"><div style="font-size:36px;margin-bottom:10px">🎲</div><div style="color:var(--sub);font-size:13px">Немає кімнат на сервері</div></div>';return}
   el.innerHTML=list.slice(0,15).map(r=>`<div class="room-row" onclick="quickJoin('${r.code}')"><div class="slots">${mkSlots(r)}</div><div class="row-right"><span style="font-size:20px">${MICONS[r.mode]||'🎲'}</span><span class="arr">›</span></div></div>`).join('');
@@ -1761,8 +782,7 @@ async function adminDeleteAll(){
   toast('🗑 Всі видалено');loadMyRooms();loadRooms();
 }
 function avHtml(p,sz=38){
-  const c=p.color||'#3b82f6',ini=(p.name||'?')[0].toUpperCase();
-  const st=`width:${sz}px;height:${sz}px;background:${c}22;border-color:${c};color:${c}`;
+  const c=p.color||'#3b82f6',ini=(p.name||'?')[0].toUpperCase();  const st=`width:${sz}px;height:${sz}px;background:${c}22;border-color:${c};color:${c}`;
   if(p.photoUrl)return`<div class="av" style="${st}"><img src="${p.photoUrl}" onerror="this.style.display='none'" alt="${ini}"><span style="position:absolute;font-size:${sz*.42}px;font-weight:800">${ini}</span></div>`;
   return`<div class="av" style="${st}">${ini}</div>`;
 }
@@ -1811,8 +831,7 @@ async function joinToRoom(code){
   openLobby(r.mode);hp('medium');
 }
 function openLobby(mode){
-  document.getElementById('lobbyCode').textContent=myRoom;
-  document.getElementById('mchip').textContent=(MICONS[mode]||'🎲')+' '+(MNAMES[mode]||mode);
+  document.getElementById('lobbyCode').textContent=myRoom;  document.getElementById('mchip').textContent=(MICONS[mode]||'🎲')+' '+(MNAMES[mode]||mode);
   showScreen('s-lobby');listenRoom();
 }
 async function startGame(){await db.ref('rooms/'+myRoom).update({status:'playing'});hp('heavy')}
@@ -1861,8 +880,7 @@ function renderLobby(r){
 }
 function startTimer(isMyTurn){
   stopTimer();timerSec=75;
-  const header=document.getElementById('gameHeader');
-  let bar=header.querySelector('.timer-bar');
+  const header=document.getElementById('gameHeader');  let bar=header.querySelector('.timer-bar');
   if(!bar){
     bar=document.createElement('div');bar.className='timer-bar';bar.style.cssText='height:2px;background:rgba(255,255,255,.08);flex-shrink:0';
     header.appendChild(bar);
@@ -1911,8 +929,7 @@ function createCell(p){
   let html='';
   if(p.color) html+=`<div class="cell-color-bar" style="background:${p.color}"></div>`;
   html+=`<div class="cell-icon">${p.emoji}</div>`;
-  html+=`<div class="cell-name">${p.short}</div>`;
-  if(p.price) html+=`<div class="cell-price">${p.price.toLocaleString()}₴</div>`;
+  html+=`<div class="cell-name">${p.short}</div>`;  if(p.price) html+=`<div class="cell-price">${p.price.toLocaleString()}₴</div>`;
   html+=`<div class="tokens" id="tok-${p.pos}"></div>`;
   if(p.color) html+=`<div class="houses" id="h-${p.pos}"></div>`;
   div.innerHTML=html;
@@ -1961,8 +978,7 @@ function renderGame(r){
   document.querySelectorAll('.houses').forEach(el=>el.innerHTML='');
   document.querySelectorAll('.cell-owner').forEach(el=>el.remove());
   pl.forEach(p=>{
-    Object.entries(p.houses||{}).forEach(([pos,cnt])=>{
-      const el=document.getElementById('h-'+pos);if(!el)return;
+    Object.entries(p.houses||{}).forEach(([pos,cnt])=>{      const el=document.getElementById('h-'+pos);if(!el)return;
       el.innerHTML='';
       for(let i=0;i<cnt;i++){const d=document.createElement('div');d.className='house-dot';d.style.background=p.color;el.appendChild(d)}
     });
@@ -2011,8 +1027,7 @@ function renderPropBuy(r,pl,cur,isMy){
     }else if(own.id===myId){
       const h=(cur.houses||{})[pos]||0,hc=Math.floor(p.price*.5);
       const mono=hasMonopoly(pl,myId,pos);
-      if(h<4&&mono){
-        pb.style.display='flex';
+      if(h<4&&mono){        pb.style.display='flex';
         pb.innerHTML=`${p.color?`<div class="pb-clr" style="background:${p.color}"></div>`:''}<div class="pb-inf"><div class="pb-nm">${p.emoji} ${p.name}</div><div class="pb-pr" style="font-size:10px">🏠×${h} · +🏠 ${hc.toLocaleString()}₴</div></div><button class="pb-btn" style="background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark)" onclick="buildHouse(${pos},${hc})">+🏠</button>`;
         return;
       }
@@ -2061,8 +1076,7 @@ async function rollDice(){
   let money=cur.money;const p=PROPS[newPos];
   const newDbls=(r.game.doubles||0)+(isDbl?1:0);
   addLog(`<span class="log-player" style="color:${cur.color}">${cur.name}</span> <span class="log-action">🎲</span> <span class="log-money">${d1}+${d2}=${d1+d2}</span>${isDbl?' <span class="log-positive">ДУБЛЬ!</span>':''} → <span class="log-action">${p.name}</span>`);
-  if(newPos<cur.pos){money+=2000000;addLog(`🏁 <span class="log-player" style="color:${cur.color}">${cur.name}</span> — СТАРТ <span class="log-positive">+2 000 000₴</span>`);toast('🏁 +2 000 000₴!');hp('heavy')}
-  if(p?.price){
+  if(newPos<cur.pos){money+=2000000;addLog(`🏁 <span class="log-player" style="color:${cur.color}">${cur.name}</span> — СТАРТ <span class="log-positive">+2 000 000₴</span>`);toast('🏁 +2 000 000₴!');hp('heavy')}  if(p?.price){
     const own=pl.find(x=>(x.props||[]).includes(newPos)&&x.id!==myId);
     if(own){const h=(own.houses||{})[newPos]||0;const rent=Math.floor(p.price*.1*(1+h*.5));money=Math.max(0,money-rent);await db.ref('rooms/'+myRoom+'/players/'+own.id).update({money:own.money+rent});addLog(`💸 <span class="log-player" style="color:${cur.color}">${cur.name}</span>→<span class="log-player" style="color:${own.color}">${own.name}</span> <span class="log-negative">-${rent.toLocaleString()}₴</span>`);toast(`💸 Оренда -${rent.toLocaleString()}₴`)}
   }
@@ -2111,8 +1125,7 @@ async function doBotMove(r){
   let money=bot.money;const p=PROPS[newPos];
   if(newPos<bot.pos)money+=2000000;
   if(p?.price){const own=pl.find(x=>(x.props||[]).includes(newPos)&&x.id!==bot.id);if(own){const h=(own.houses||{})[newPos]||0;const rent=Math.floor(p.price*.1*(1+h*.5));money=Math.max(0,money-rent);await db.ref('rooms/'+myRoom+'/players/'+own.id).update({money:own.money+rent})}}
-  if(p?.type==='tax')money=Math.max(0,money-(p.amount||1000));
-  if(p?.type==='chance'){const bonuses=[-500000,-1000000,500000,1000000,250000,-250000,750000];const bon=bonuses[Math.floor(Math.random()*bonuses.length)];money=Math.max(0,money+bon)}
+  if(p?.type==='tax')money=Math.max(0,money-(p.amount||1000));  if(p?.type==='chance'){const bonuses=[-500000,-1000000,500000,1000000,250000,-250000,750000];const bon=bonuses[Math.floor(Math.random()*bonuses.length)];money=Math.max(0,money+bon)}
   const newDbls=(r.game.doubles||0)+(isDbl?1:0);
   let next=isDbl&&newDbls<3?r.game.current:(r.game.current+1)%pl.length;
   if(newDbls>=3)next=(r.game.current+1)%pl.length;
@@ -2161,8 +1174,7 @@ async function loadClans(){
     document.getElementById('clanBadge').textContent = '—';
   }
   const clansSnap = await db.ref('clans').once('value');
-  const clans = clansSnap.val() || {};
-  const clansList = Object.entries(clans).map(([id,data])=>({id,...data}));
+  const clans = clansSnap.val() || {};  const clansList = Object.entries(clans).map(([id,data])=>({id,...data}));
   let html = `<div style="margin-bottom:15px;"><button class="btn b-gold" onclick="showCreateClan()">➕ Створити клан</button></div>`;
   if(myClan && clans[myClan]){
     const myClanData = clans[myClan];
@@ -2211,8 +1223,7 @@ async function createClan(name, tag){
     await db.ref(`players/${myId}/clanId`).set(clanId);
     await db.ref(`players/${myId}/color`).set(myColor);
     toast(`Клан ${name} створено!`);
-    loadClans();
-  }catch(e){
+    loadClans();  }catch(e){
     console.error(e);
     toast('❌ Помилка створення клану');
   }
@@ -2261,8 +1272,7 @@ async function leaveClan(){
     toast('❌ Помилка виходу з клану');
   }
 }
-async function deleteClan(clanId){
-  if(!confirm('Видалити клан назавжди? Цю дію не можна скасувати.')) return;
+async function deleteClan(clanId){  if(!confirm('Видалити клан назавжди? Цю дію не можна скасувати.')) return;
   try{
     const clanSnap = await db.ref(`clans/${clanId}`).once('value');
     const clan = clanSnap.val();
@@ -2311,8 +1321,7 @@ function handleChatFocus(isFocused){
       if(chatContainer){
         chatContainer.scrollIntoView({behavior:'smooth',block:'end'});
       }
-    },300);
-  } else {
+    },300);  } else {
     const viewport = document.querySelector('meta[name="viewport"]');
     viewport.setAttribute('content', 'width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover');
   }
@@ -2344,4 +1353,4 @@ async function onReady(){
 onReady();
 </script>
 </body>
-  </html>
+</html>
