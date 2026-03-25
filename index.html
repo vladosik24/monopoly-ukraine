@@ -146,12 +146,12 @@ select option{background:var(--bg-main)}
 .btn-exit:active{transform:scale(.95)}
 .timer-bar{height:2px;background:rgba(255,255,255,.08);flex-shrink:0}
 .timer-fill{height:100%;background:var(--gold);transition:width 1s linear;width:100%}
-/* 🔴 ЩЕ БІЛЬШ РОЗШИРЕНА ЦЕНТРАЛЬНА КОЛОНКА - ОПТИМАЛЬНА */
+/* 🔴 МАКСИМАЛЬНО РОЗШИРЕНІ ВЕРХНІ/НИЖНІ КЛІТИНКИ */
 .game-main{
   flex:1;
   display:grid;
-  grid-template-columns: minmax(36px,9vw) minmax(340px,78vw) minmax(36px,9vw);
-  grid-template-rows: minmax(38px,7.5vw) 1fr minmax(38px,7.5vw);
+  grid-template-columns: minmax(32px,8vw) minmax(360px,82vw) minmax(32px,8vw);
+  grid-template-rows: minmax(36px,7vw) 1fr minmax(36px,7vw);
   gap:3px;
   padding:3px;
   overflow:hidden;
@@ -237,8 +237,8 @@ select option{background:var(--bg-main)}
 
 @media (max-width:768px){
   .game-main{
-    grid-template-columns: minmax(32px,8vw) minmax(280px,76vw) minmax(32px,8vw);
-    grid-template-rows: minmax(34px,7vw) 1fr minmax(34px,7vw);
+    grid-template-columns: minmax(28px,7vw) minmax(300px,80vw) minmax(28px,7vw);
+    grid-template-rows: minmax(34px,6.5vw) 1fr minmax(34px,6.5vw);
   }
   .game-center{min-width:0}
   .game-log{padding:2px;font-size:7px}
