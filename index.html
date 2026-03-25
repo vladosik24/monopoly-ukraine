@@ -237,28 +237,100 @@ select option{background:var(--bg-main)}
 .jp{background:var(--green);border:none;border-radius:6px;padding:4px 10px;color:white;font-size:10px;font-weight:700;cursor:pointer}
 .jp:active{transform:scale(.95)}
 
-@media (max-width:768px){
-  .game-main{
-    grid-template-columns: minmax(24px, 4.5vw) minmax(260px, 91vw) minmax(24px, 4.5vw);
-    grid-template-rows: minmax(38px, 7vw) 1fr minmax(38px, 7vw);
+/* ==================== ЗБІЛЬШЕНА ДОШКА МОНПОЛІЇ ==================== */
+.game-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(48px, 9.5vw) minmax(320px, 91vw) minmax(48px, 9.5vw);
+  grid-template-rows:    minmax(58px, 10.8vw) 1fr minmax(58px, 10.8vw);
+  gap: 5px;
+  padding: 5px;
+  overflow: hidden;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+}
+
+/* Клітинки — більші та красивіші */
+.cell {
+  border: 1.5px solid rgba(45,212,191,.4);
+  border-radius: 6px;
+  padding: 3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cell.corner {
+  border-width: 2px;
+  border-color: var(--accent);
+}
+
+/* Іконки (емодзі) — помітно більші */
+.cell-icon {
+  font-size: clamp(13px, 3.2vw, 18px);
+  margin-bottom: 3px;
+  line-height: 1;
+}
+
+/* Назва міста */
+.cell-name {
+  font-size: clamp(7.5px, 1.65vw, 10.5px);
+  font-weight: 800;
+  line-height: 1.05;
+  text-align: center;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* Ціна */
+.cell-price {
+  font-size: clamp(7px, 1.5vw, 9.5px);
+  font-weight: 900;
+  color: var(--gold);
+  margin-top: 2px;
+}
+
+/* Токени (фігурки гравців) */
+.tokens {
+  gap: 2px;
+}
+.tok {
+  width: clamp(9px, 2.2vw, 13px);
+  height: clamp(9px, 2.2vw, 13px);
+  border: 1.5px solid white;
+  box-shadow: 0 0 0 2px rgba(0,0,0,.85), 0 0 0 3px var(--accent2);
+}
+
+/* Будиночки */
+.houses {
+  gap: 2px;
+}
+.house-dot {
+  width: clamp(4px, 0.9vw, 6px);
+  height: clamp(4px, 0.9vw, 6px);
+}
+
+/* Кольорова смужка зверху клітинки */
+.cell-color-bar {
+  height: 5px;
+  border-radius: 4px 4px 0 0;
+}
+
+/* Додатково для кращого вигляду на маленьких екранах */
+@media (max-width: 380px) {
+  .game-main {
+    grid-template-columns: minmax(44px, 9vw) minmax(310px, 92vw) minmax(44px, 9vw);
+    grid-template-rows: minmax(54px, 10.2vw) 1fr minmax(54px, 10.2vw);
+    gap: 4px;
+    padding: 4px;
   }
-  .game-center{min-width:0}
-  .game-log{padding:2px;font-size:7px}  .chat-messages{max-height:32px;padding:2px}
-  .chat-input{font-size:8px;padding:2px 4px}
-  .chat-send{width:22px;height:22px;font-size:10px}
-  .player-card{min-width:100px;padding:3px 5px}
-  .player-avatar{width:26px;height:26px}
-  .player-name{font-size:8px}
-  .player-money{font-size:7px}
-  .btn-exit{padding:4px 8px;font-size:9px}
-  .cell-icon{font-size:clamp(8px,1.8vw,11px)}
-  .cell-name{font-size:clamp(3.5px,0.9vw,6px)}
-  .cell-price{font-size:clamp(3.5px,0.9vw,6px)}
-  .dice{width:28px;height:28px}
-  .btn-roll{padding:6px 12px;font-size:9px}
-  .game-header{padding:3px 6px;gap:3px;min-height:34px}
-  .move-display{font-size:10px}
-  .control-panel{padding:4px;gap:5px}
+  
+  .cell-icon { font-size: clamp(12px, 3vw, 16px); }
+  .cell-name   { font-size: clamp(7px, 1.55vw, 9.5px); }
+  .cell-price  { font-size: clamp(6.5px, 1.4vw, 9px); }
 }
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:var(--accent2);border-radius:2px}::-webkit-scrollbar-track{background:rgba(0,0,0,.2)}
 </style>
