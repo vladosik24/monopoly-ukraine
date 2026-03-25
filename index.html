@@ -1,21 +1,24 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
-<title>Монополія Україна</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700,900&family=Nunito:wght@600;700;800&display=swap');
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+
+
+
+
+Монополія Україна – 4 карти + Клани
+
+
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Nunito:wght@600;700;800&display=swap');
+
+html,body{height:100%;margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+input,textarea,select{font-size:16px !important}
+@media(max-width:768px){body{touch-action:manipulation}}
+
 body[data-theme="classic"]{--bg-dark:#0a1f1a;--bg-main:#0d2924;--bg-panel:#154038;--accent:#2dd4bf;--accent2:#14b8a6;--gold:#fbbf24;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;--text:#f1f5f9;--sub:#94a3b8}
 body[data-theme="fruit"]{--bg-dark:#1a2a1a;--bg-main:#1e3a1e;--bg-panel:#2a4a2a;--accent:#f97316;--accent2:#ea580c;--gold:#facc15;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;--text:#f1f5f9;--sub:#cbd5e1}
 body[data-theme="city"]{--bg-dark:#0a0f1e;--bg-main:#0d1a3a;--bg-panel:#1a2a5a;--accent:#3b82f6;--accent2:#2563eb;--gold:#fbbf24;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;--text:#f1f5f9;--sub:#94a3b8}
 body[data-theme="dark"]{--bg-dark:#0a0a0a;--bg-main:#111827;--bg-panel:#1f2937;--accent:#06b6d4;--accent2:#0891b2;--gold:#fbbf24;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;--text:#f9fafb;--sub:#9ca3af}
-html,body{height:100%;margin:0;padding:0;box-sizing:border-box;font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100dvh;overflow:hidden}
-input,textarea,select{font-size:16px !important}
-@media(max-width:768px){body{touch-action:manipulation}}
-.screen{display:none;flex-direction:column;min-height:100dvh;position:relative;z-index:1}
+
+body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100dvh;min-height:100vh;overflow:hidden}
+.screen{display:none;flex-direction:column;min-height:100dvh;min-height:100vh;position:relative;z-index:1}
 .screen.active{display:flex}
 #s-main{background:var(--bg-dark);overflow-y:auto}
 .main-header{background:linear-gradient(180deg,var(--bg-panel),var(--bg-main));padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:2px solid var(--accent2)}
@@ -44,10 +47,10 @@ input,textarea,select{font-size:16px !important}
 .room-row{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(45,212,191,.1);cursor:pointer;transition:background .15s;gap:8px}
 .room-row:active{background:rgba(45,212,191,.05)}
 .slots{display:flex;gap:5px;flex:1;align-items:center}
-.slot{width:42px;height:42px;border-radius:50%;border:2px solid rgba(45,212,191,.2);background:rgba(45,212,191,.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative}
-.slot.filled{border-color:rgba(45,212,191,.5)}
+.slot{width:42px;height:42px;border-radius:50%;border:2px solid rgba(45,212,191,.2);background:rgba(45,212,191,.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative}.slot.filled{border-color:rgba(45,212,191,.5)}
 .slot img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.slot-ltr{font-size:15px;font-weight:800;color:rgba(255,255,255,.5)}.slot.empty .slot-ltr{font-size:20px;color:rgba(255,255,255,.1)}
+.slot-ltr{font-size:15px;font-weight:800;color:rgba(255,255,255,.5)}
+.slot.empty .slot-ltr{font-size:20px;color:rgba(255,255,255,.1)}
 .row-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .arr{font-size:22px;font-weight:900;color:var(--gold)}
 .lgstrip{display:flex;gap:6px;padding:8px 14px;overflow-x:auto}
@@ -93,10 +96,10 @@ select option{background:var(--bg-main)}
 .dv::before,.dv::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1)}
 .srow{display:flex;align-items:center;gap:12px;padding:13px;border-bottom:1px solid rgba(45,212,191,.1)}
 .sinfo{flex:1;min-width:0}
-.sname{font-weight:700;font-size:14px}
-.sdesc{font-size:11px;color:var(--sub);margin-top:3px;line-height:1.4}
+.sname{font-weight:700;font-size:14px}.sdesc{font-size:11px;color:var(--sub);margin-top:3px;line-height:1.4}
 .toggle{width:44px;height:24px;border-radius:12px;background:rgba(255,255,255,.15);position:relative;cursor:pointer;transition:.3s;flex-shrink:0}
-.toggle.on{background:var(--green)}.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:.3s}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:.3s}
 .toggle.on::after{left:23px}
 .theme-dots{display:flex;gap:10px;padding:13px}
 .tdot{width:32px;height:32px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.2s}
@@ -125,11 +128,15 @@ select option{background:var(--bg-main)}
 .bb{background:rgba(168,85,247,.1);color:#c084fc;border:1px solid rgba(168,85,247,.3)}
 .bred{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.3)}
 .bbl{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
+
 #s-game{background:var(--bg-dark);height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;min-height:0}
 .game-header{background:linear-gradient(180deg,var(--bg-panel),var(--bg-main));padding:4px 8px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--accent2);flex-shrink:0;flex-wrap:wrap;gap:4px;min-height:36px}
 .game-info{display:flex;align-items:center;gap:10px}
+.timer-display{font-family:'Unbounded',sans-serif;font-size:11px;color:var(--gold)}
 .move-display{font-family:'Unbounded',sans-serif;font-size:11px;color:var(--sub)}
 .move-display span{color:var(--text);font-weight:700}
+
+/* 🔴 ГРАВЦІ В РЯДОК (ГОРИЗОНТАЛЬНО) */
 .players-top{display:flex;gap:8px;flex:1;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding:2px 0}
 .players-top::-webkit-scrollbar{display:none}
 .player-card{background:rgba(0,0,0,.3);border-radius:8px;padding:4px 6px;display:flex;align-items:center;gap:5px;min-width:110px;border:2px solid transparent;transition:.2s;flex-shrink:0}
@@ -138,67 +145,79 @@ select option{background:var(--bg-main)}
 .player-avatar img{width:100%;height:100%;object-fit:cover}
 .player-avatar .crown{position:absolute;bottom:-3px;right:-3px;font-size:10px;background:var(--gold);border-radius:50%;width:12px;height:12px;display:flex;align-items:center;justify-content:center}
 .player-info{flex:1;min-width:0}
-.player-name{font-family:'Unbounded',sans-serif;font-size:9px;font-weight:900;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.player-rank{font-size:7px;color:var(--accent);margin-top:1px}
+.player-name{font-family:'Unbounded',sans-serif;font-size:9px;font-weight:900;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.player-rank{font-size:7px;color:var(--accent);margin-top:1px}
 .player-money{font-family:'Unbounded',sans-serif;font-size:8px;color:var(--gold);margin-top:1px}
 .player-property{font-size:6px;color:var(--sub);display:flex;align-items:center;gap:2px;margin-top:1px}
+
 .btn-exit{background:linear-gradient(135deg,var(--green),#16a34a);color:white;border:none;border-radius:7px;padding:5px 10px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;cursor:pointer;text-transform:uppercase;flex-shrink:0}
 .btn-exit:active{transform:scale(.95)}
 .timer-bar{height:2px;background:rgba(255,255,255,.08);flex-shrink:0}
 .timer-fill{height:100%;background:var(--gold);transition:width 1s linear;width:100%}
-.game-main{flex:1;display:grid;grid-template-columns:minmax(52px,12vw) minmax(200px,48vw) minmax(52px,12vw);grid-template-rows:minmax(45px,9vw) 1fr minmax(45px,9vw);gap:3px;padding:3px;overflow:hidden;min-height:0;height:100%;width:100%}
-.board-side{display:flex;gap:2px;width:100%;height:100%;min-height:0}
+
+/* 🔴 ЗМЕНШЕНА КАРТА ДЛЯ МОБІЛЬНИХ */
+.game-main{flex:1;display:grid;grid-template-columns:minmax(50px,12vw) 1fr minmax(50px,12vw);grid-template-rows:minmax(45px,9vw) 1fr minmax(45px,9vw);gap:3px;padding:3px;overflow:auto;min-height:0;height:100%;width:100%}
+.board-side{display:flex;gap:3px;width:100%;height:100%;min-height:0}
 .board-side.horizontal{flex-direction:row;grid-column:2}
 .board-side.horizontal.top{grid-row:1}
 .board-side.horizontal.bottom{grid-row:3}
 .board-side.vertical{flex-direction:column}
 .board-side.vertical.left{grid-column:1;grid-row:2}
 .board-side.vertical.right{grid-column:3;grid-row:2}
-.cell{background:var(--bg-panel);border:1px solid rgba(45,212,191,.3);border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1px;position:relative;flex:1;min-width:0;min-height:0;cursor:pointer;transition:.15s;overflow:hidden}
+
+.cell{background:var(--bg-panel);border:1.5px solid rgba(45,212,191,.3);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;position:relative;flex:1;min-width:0;min-height:0;cursor:pointer;transition:.15s;overflow:hidden}
 .cell:active{transform:scale(.95)}
-.cell.corner{background:var(--bg-main);border-color:var(--accent);border-width:1.5px}
-.cell-color-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;z-index:2}
-.board-side.vertical .cell{transform:none !important}
-.board-side.vertical .cell > *{transform:none !important}
-.cell-icon{font-size:clamp(8px,1.8vw,12px);margin-bottom:0;line-height:1}
-.cell-name{font-size:clamp(4px,1vw,6px);text-align:center;color:var(--text);font-weight:700;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
-.cell-price{font-size:clamp(4px,1vw,6px);color:var(--gold);font-weight:800;margin-top:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
-.cell-owner{position:absolute;bottom:1px;left:1px;right:1px;height:2px;border-radius:1px;z-index:2}
-.tokens{position:absolute;top:1px;left:1px;right:1px;display:flex;justify-content:center;gap:1px;z-index:10;pointer-events:none}
-.tok{width:clamp(5px,1.3vw,7px);height:clamp(5px,1.3vw,7px);border-radius:50%;border:1px solid white;box-shadow:0 0 0 1px rgba(0,0,0,.9);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cell.corner{background:var(--bg-main);border-color:var(--accent);border-width:2px}
+.cell-color-bar{position:absolute;top:0;left:0;right:0;height:4px;border-radius:4px 4px 0 0;z-index:2}
+
+/* 🔴 ВЕРТИКАЛЬНІ КЛІТИНКИ - ТЕКСТ ЧИТАЄТЬСЯ ЗВЕРХУ ВНИЗ */
+.board-side.vertical .cell{
+  writing-mode:vertical-rl;
+  text-orientation:mixed;
+  transform:none !important;
+}
+.board-side.vertical .cell > *{
+  transform:none !important;
+}
+
+.cell-icon{font-size:clamp(10px,2.2vw,14px);margin-bottom:1px;line-height:1}
+.cell-name{font-size:clamp(5px,1.3vw,7px);text-align:center;color:var(--text);font-weight:700;line-height:1.1;word-break:break-word;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.cell-price{font-size:clamp(5px,1.3vw,7px);color:var(--gold);font-weight:800;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.cell-owner{position:absolute;bottom:2px;left:2px;right:2px;height:3px;border-radius:2px;z-index:2}
+.tokens{position:absolute;top:2px;left:2px;right:2px;display:flex;justify-content:center;gap:1px;z-index:10;pointer-events:none}
+.tok{width:clamp(6px,1.6vw,9px);height:clamp(6px,1.6vw,9px);border-radius:50%;border:1.5px solid white;box-shadow:0 0 0 1px rgba(0,0,0,.9),0 1px 2px rgba(0,0,0,.5);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .tok img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.tok-ltr{font-size:clamp(2px,0.6vw,4px);font-weight:900;color:white;line-height:1}
-.houses{position:absolute;bottom:3px;left:0;right:0;display:flex;justify-content:center;gap:1px;z-index:3}
-.house-dot{width:clamp(2px,0.5vw,3px);height:clamp(2px,0.5vw,3px);border-radius:50%}
-.game-center{grid-column:2;grid-row:2;background:var(--bg-main);border-radius:8px;display:flex;flex-direction:column;overflow:hidden;border:1.5px solid var(--accent2);min-width:0;max-width:100%}
-.game-log{flex:1;overflow-y:auto;padding:3px;font-size:8px;line-height:1.25;background:rgba(0,0,0,.2)}
-.game-log p{margin:1px 0;padding:2px 3px;background:rgba(45,212,191,.05);border-radius:3px;border-left:1.5px solid var(--accent)}
+.tok-ltr{font-size:clamp(3px,0.8vw,5px);font-weight:900;color:white;line-height:1}
+.houses{position:absolute;bottom:4px;left:0;right:0;display:flex;justify-content:center;gap:1px;z-index:3}
+.house-dot{width:clamp(3px,0.7vw,4px);height:clamp(3px,0.7vw,4px);border-radius:50%}
+.game-center{grid-column:2;grid-row:2;background:var(--bg-main);border-radius:8px;display:flex;flex-direction:column;overflow:hidden;border:1.5px solid var(--accent2)}
+.game-log{flex:1;overflow-y:auto;padding:4px;font-size:9px;line-height:1.4;background:rgba(0,0,0,.2)}
+.game-log p{margin:2px 0;padding:3px 4px;background:rgba(45,212,191,.05);border-radius:4px;border-left:2px solid var(--accent)}
 .log-player{font-weight:700}
 .log-action{color:var(--text)}
-.log-money{color:var(--gold);font-weight:700}
-.log-negative{color:var(--red);font-weight:700}
+.log-money{color:var(--gold);font-weight:700}.log-negative{color:var(--red);font-weight:700}
 .log-positive{color:var(--green);font-weight:700}
-.chat-area{border-top:1px solid var(--accent2);display:flex;flex-direction:column;flex-shrink:0}
-.chat-messages{max-height:45px;overflow-y:auto;padding:3px;background:rgba(0,0,0,.2)}
-.chat-message{margin:1px 0;padding:2px 3px;background:rgba(45,212,191,.1);border-radius:3px;font-size:7px}
-.chat-input-row{display:flex;gap:3px;padding:3px;background:var(--bg-panel)}
-.chat-input{flex:1;min-width:0;background:rgba(0,0,0,.3);border:1px solid var(--accent2);border-radius:6px;padding:4px 6px;color:var(--text);font-family:'Nunito',sans-serif;font-size:9px;outline:none}
+.chat-area{border-top:1.5px solid var(--accent2);display:flex;flex-direction:column;flex-shrink:0}
+.chat-messages{max-height:70px;overflow-y:auto;padding:4px;background:rgba(0,0,0,.2)}
+.chat-message{margin:1px 0;padding:3px 4px;background:rgba(45,212,191,.1);border-radius:4px;font-size:8px}
+.chat-input-row{display:flex;gap:4px;padding:4px;background:var(--bg-panel)}
+.chat-input{flex:1;background:rgba(0,0,0,.3);border:1px solid var(--accent2);border-radius:6px;padding:4px 6px;color:var(--text);font-family:'Nunito',sans-serif;font-size:10px;outline:none}
 .chat-input::placeholder{color:var(--sub)}
-.chat-send{width:24px;height:24px;border-radius:5px;background:var(--accent);border:none;color:var(--bg-dark);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.control-panel{background:var(--bg-panel);padding:5px;display:flex;gap:6px;align-items:center;justify-content:center;border-top:2px solid var(--accent2);flex-shrink:0}
-.dice-display{display:flex;gap:6px;align-items:center}
-.dice{width:32px;height:32px;background:white;border-radius:6px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:3px;gap:2px;box-shadow:0 2px 5px rgba(0,0,0,.3)}
-.dice-dot{background:#1e293b;border-radius:50%;align-self:center;justify-self:center;width:5px;height:5px}
-.btn-roll{background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark);border:none;border-radius:8px;padding:7px 14px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:900;cursor:pointer;text-transform:uppercase;box-shadow:0 2px 10px rgba(251,191,36,.4)}
+.chat-send{width:28px;height:28px;border-radius:5px;background:var(--accent);border:none;color:var(--bg-dark);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.control-panel{background:var(--bg-panel);padding:6px;display:flex;gap:8px;align-items:center;justify-content:center;border-top:2px solid var(--accent2);flex-shrink:0}
+.dice-display{display:flex;gap:8px;align-items:center}
+.dice{width:36px;height:36px;background:white;border-radius:8px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:4px;gap:2px;box-shadow:0 3px 6px rgba(0,0,0,.3)}
+.dice-dot{background:#1e293b;border-radius:50%;align-self:center;justify-self:center;width:6px;height:6px}
+.btn-roll{background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark);border:none;border-radius:10px;padding:8px 16px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:900;cursor:pointer;text-transform:uppercase;box-shadow:0 3px 12px rgba(251,191,36,.4)}
 .btn-roll:active{transform:scale(.95)}
 .btn-roll:disabled{opacity:.4;pointer-events:none}
 .btn-roll.my{animation:rollPulse 1.6s ease-in-out infinite}
-@keyframes rollPulse{0%,100%{box-shadow:0 2px 10px rgba(251,191,36,.5)}50%{box-shadow:0 4px 15px rgba(251,191,36,.8)}}
-.prop-buy{background:var(--bg-panel);border-top:1px solid rgba(45,212,191,.2);padding:3px 6px;display:none;align-items:center;gap:5px;flex-shrink:0}.pb-clr{width:6px;height:22px;border-radius:2px;flex-shrink:0}
+@keyframes rollPulse{0%,100%{box-shadow:0 3px 12px rgba(251,191,36,.5)}50%{box-shadow:0 5px 20px rgba(251,191,36,.8)}}
+.prop-buy{background:var(--bg-panel);border-top:1px solid rgba(45,212,191,.2);padding:4px 8px;display:none;align-items:center;gap:6px;flex-shrink:0}
+.pb-clr{width:8px;height:26px;border-radius:2px;flex-shrink:0}
 .pb-inf{flex:1;min-width:0}
-.pb-nm{font-weight:800;font-size:10px}
-.pb-pr{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:900;color:var(--gold)}
-.pb-btn{color:white;border:none;border-radius:5px;padding:5px 8px;font-family:'Nunito',sans-serif;font-size:9px;font-weight:800;cursor:pointer;flex-shrink:0}
+.pb-nm{font-weight:800;font-size:11px}
+.pb-pr{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:900;color:var(--gold)}
+.pb-btn{color:white;border:none;border-radius:6px;padding:6px 10px;font-family:'Nunito',sans-serif;font-size:10px;font-weight:800;cursor:pointer;flex-shrink:0}
 #s-win{align-items:center;justify-content:center;padding:28px 20px;text-align:center;background:var(--bg-dark)}
 .troph{font-size:68px;animation:trophAnim 1s ease-in-out infinite alternate}
 @keyframes trophAnim{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.08) rotate(4deg)}}
@@ -210,124 +229,111 @@ select option{background:var(--bg-main)}
 .toast.on{transform:translateX(-50%) translateY(0)}
 .jp{background:var(--green);border:none;border-radius:6px;padding:4px 10px;color:white;font-size:10px;font-weight:700;cursor:pointer}
 .jp:active{transform:scale(.95)}
-@media (max-width:768px){.game-main{grid-template-columns:minmax(44px,13vw) minmax(160px,50vw) minmax(44px,13vw);grid-template-rows:minmax(38px,8vw) 1fr minmax(38px,8vw)}.game-center{min-width:0}.game-log{padding:2px;font-size:7px}.chat-messages{max-height:28px;padding:2px}.chat-input{font-size:8px;padding:2px 4px}.chat-send{width:22px;height:22px;font-size:10px}.player-card{min-width:100px;padding:3px 5px}.player-avatar{width:26px;height:26px}.player-name{font-size:8px}.player-money{font-size:7px}.btn-exit{padding:4px 8px;font-size:9px}.cell-icon{font-size:clamp(7px,1.6vw,10px)}.cell-name{font-size:clamp(3px,0.9vw,5px)}.cell-price{font-size:clamp(3px,0.9vw,5px)}.dice{width:28px;height:28px}.btn-roll{padding:6px 12px;font-size:9px}.game-header{padding:3px 6px;gap:3px;min-height:34px}.move-display{font-size:10px}.control-panel{padding:4px;gap:5px}}
-::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:var(--accent2);border-radius:2px}::-webkit-scrollbar-track{background:rgba(0,0,0,.2)}
-</style>
-</head>
-<body data-theme="classic">
 
-<div id="s-main" class="screen active">
-  <div class="main-header">
-    <div style="display:flex;align-items:center;gap:9px;flex:1;min-width:0">
-      <div class="prof-av" id="profAv">?</div>
-      <div class="prof-info">
-        <div class="prof-name" id="profName">Гравець</div>
-        <div class="prof-sub" id="profLeague">🥉 Новачок</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:3px">
-          <div class="gold-badge">🪙 <span id="goldAmt">0</span></div>
-          <div class="clan-badge">🏰 <span id="clanBadge">—</span></div>
-        </div>
-      </div>
-    </div>
-    <div style="display:flex;gap:7px;flex-shrink:0">
-      <button class="settings-btn" onclick="openSettings()">⚙️</button>
-      <button class="create-btn" onclick="openCreate()">СТВОРИТИ ГРУ</button>
-    </div>
-  </div>
-  <div class="servers-strip" id="srvStrip"></div>
-  <div class="main-tabs">
-    <button class="mtab on" onclick="mTab('games',this)">ІГРИ</button>
-    <button class="mtab" onclick="mTab('active',this)">ПОЧАТІ</button>
-    <button class="mtab" onclick="mTab('league',this)">ЛІГИ</button>
-    <button class="mtab" onclick="mTab('clans',this)">КЛАНИ</button>
-    <button class="mtab" onclick="mTab('join',this)">КОД</button>
-  </div>
-  <div class="tc" id="tc-games">
-    <div class="rooms-hdr"><span class="rooms-lbl">Відкриті кімнати</span><button class="ref-btn" onclick="loadRooms()">↺</button></div>    <div id="roomsList"><div style="text-align:center;padding:40px;color:var(--sub)">⏳</div></div>
-  </div>
-  <div class="tc" id="tc-active" style="display:none">
-    <div class="rooms-hdr"><span class="rooms-lbl">Мої кімнати</span><div style="display:flex;gap:5px"><button class="ref-btn" style="color:var(--red)" onclick="adminDeleteAll()">🗑 Всі</button><button class="ref-btn" onclick="loadMyRooms()">↺</button></div></div>
-    <div id="myRoomsList"></div>
-  </div>
-  <div class="tc" id="tc-league" style="display:none"><div class="lgstrip" id="lgstrip"></div><div id="lgHdr"></div><div id="lgList"></div></div>
-  <div class="tc" id="tc-clans" style="display:none"><div id="clansContent"><div style="text-align:center;padding:40px;color:var(--sub)">⏳</div></div></div>
-  <div class="tc" id="tc-join" style="display:none"><div style="padding:12px 14px"><label class="lbl">Ваше ім'я</label><input id="pNj" placeholder="Введіть ім'я" maxlength="20"><label class="lbl">Код кімнати</label><input id="rC" placeholder="GAME-XXXX" maxlength="9" style="text-transform:uppercase;letter-spacing:2px"><button class="btn b-gold" onclick="joinByCode()">🚪 Приєднатися</button></div></div>
-</div>
+@media (max-width:768px){
+  .game-main{grid-template-columns:minmax(45px,14vw) 1fr minmax(45px,14vw);grid-template-rows:minmax(40px,8vw) 1fr minmax(40px,8vw)}
+  .player-card{min-width:100px;padding:3px 5px}
+  .player-avatar{width:26px;height:26px}
+  .player-name{font-size:8px}
+  .player-money{font-size:7px}
+  .btn-exit{padding:4px 8px;font-size:9px}
+  .cell-icon{font-size:clamp(9px,2vw,12px)}
+  .cell-name{font-size:clamp(4px,1.1vw,6px)}
+  .cell-price{font-size:clamp(4px,1.1vw,6px)}
+  .dice{width:32px;height:32px}
+  .btn-roll{padding:7px 14px;font-size:10px}
+  .game-header{padding:3px 6px;gap:3px;min-height:34px}
+  .timer-display,.move-display{font-size:10px}  .control-panel{padding:5px;gap:6px}
+}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--accent2);border-radius:2px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,.2)}
 
-<div class="overlay" id="createModal"><div class="sheet"><div class="sh-handle"></div><div class="sh-title">🎮 НОВА ГРА</div><div class="mg"><div class="mc" onclick="sm('classic',this)"><div class="me-ic">🎲</div><div class="mn">Класичний</div><div class="md">2–4 гравці</div></div><div class="mc" onclick="sm('teams',this)"><div class="me-ic">👥</div><div class="mn">Команди</div><div class="md">2×2</div></div><div class="mc" onclick="sm('vsbot',this)"><div class="me-ic">🤖</div><div class="mn">Проти бота</div><div class="md">1 vs боти</div></div><div class="mc" onclick="sm('mixed',this)"><div class="me-ic">🎯</div><div class="mn">Змішаний</div><div class="md">Гравці+боти</div></div></div><label class="lbl">Ваше ім'я</label><input id="pN" placeholder="Введіть ім'я" maxlength="20"><div id="bcw" style="display:none"><label class="lbl">Кількість ботів</label><select id="bC"><option value="1">1 бот</option><option value="2">2 боти</option><option value="3">3 боти</option></select></div><button class="btn b-gold" onclick="createRoom()">🎮 Створити</button><div class="dv">або</div><button class="btn b-surf" onclick="closeCreate()">Скасувати</button></div></div>
 
-<div class="overlay" id="settingsModal"><div class="sheet"><div class="sh-handle"></div><div class="sh-title">⚙️ НАЛАШТУВАННЯ</div><div class="srow"><div class="sinfo"><div class="sname">🎨 Тема</div><div class="sdesc">Кольорова схема інтерфейсу</div></div></div><div class="theme-dots"><div class="tdot on" style="background:linear-gradient(135deg,#0a1f1a,#2dd4bf)" onclick="setTheme('classic',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a1f0a,#16a34a)" onclick="setTheme('fruit',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a0f1e,#1d4ed8)" onclick="setTheme('city',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a0a0a,#06b6d4)" onclick="setTheme('dark',this)"></div></div><div class="srow"><div class="sinfo"><div class="sname">🔔 Вібрація</div><div class="sdesc">Haptic feedback при ходах</div></div><div class="toggle on" id="togHaptic" onclick="this.classList.toggle('on')"></div></div><div class="srow"><div class="sinfo"><div class="sname" id="myIdTxt">🆔 —</div><div class="sdesc">Ваш ігровий ID</div></div></div><div style="height:10px"></div><button class="btn b-surf" onclick="document.getElementById('settingsModal').classList.remove('on')">Закрити</button></div></div>
 
-<div id="s-lobby" class="screen"><div class="lhd"><div class="cb"><div class="cl">Код кімнати</div><div class="cv" id="lobbyCode">----</div></div><div style="text-align:center;margin-top:4px"><span class="mchip" id="mchip">🎲 Класичний</span></div></div><div class="ll" id="lobbyList"></div><div class="lf"><button class="btn b-green" id="startBtn" onclick="startGame()" disabled>⏳ Очікування...</button><button class="btn b-surf" onclick="leaveRoom()">← Вийти</button></div></div>
 
-<div id="s-game" class="screen"><div class="game-header" id="gameHeader"></div><div class="game-main" id="gameMain"><div class="board-side vertical left" id="boardLeft"></div><div class="board-side horizontal top" id="boardTop"></div><div class="game-center"><div class="game-log" id="gameLog"></div><div class="chat-area"><div class="chat-messages" id="chatMessages"></div><div class="chat-input-row"><input class="chat-input" id="chatInput" placeholder="Написати в чат..." maxlength="200" onkeydown="if(event.key==='Enter')sendChat()"><button class="chat-send" onclick="sendChat()">➤</button></div></div></div><div class="board-side vertical right" id="boardRight"></div><div class="board-side horizontal bottom" id="boardBottom"></div></div><div class="prop-buy" id="propBuy"></div><div class="control-panel"><div class="dice-display"><div class="dice" id="dice1"></div><div class="dice" id="dice2"></div></div><button class="btn-roll wait" id="rollBtn" onclick="rollDice()">🎲 Кинути кубики!</button></div></div>
 
-<div id="s-win" class="screen"><div class="troph">🏆</div><div class="wtitle">ПЕРЕМОЖЕЦЬ!</div><div class="wname" id="wN"></div><div class="wmoney" id="wM"></div><div class="wgold" id="wG"></div><div style="margin-top:22px;width:100%;max-width:260px"><button class="btn b-gold" onclick="location.reload()">🔄 Нова гра</button></div></div>
 
-<div class="toast" id="toast"></div>
+  
+    
+      ?
+      
+        Гравець
+        🥉 Новачок
+        
+          🪙 0
+          🏰 —
+        
+      
+    
+    
+      ⚙️
+      СТВОРИТИГРУ
+    
+  
+  
+  
+    ІГРИ
+    ПОЧАТІ
+    ЛІГИ
+    КЛАНИ
+    КОД
+  
+  
+    Відкриті кімнати↺
+    ⏳
+  
+  
+    Мої кімнати🗑 Всі↺
+    
+  
+  
+  ⏳
+  Ваше ім'яКод кімнати🚪 Приєднатися
 
-<script>
-// ========== НАЛАШТУВАННЯ ==========
-const tg = window.Telegram?.WebApp;
-if(tg){ tg.ready(); tg.expand(); }
-const TGU = tg?.initDataUnsafe?.user;
 
-const myId = (() => {
-  if(TGU?.id) return 'tg_' + TGU.id;
-  let id = localStorage.getItem('mono_uid');
-  if(!id){ id = 'p' + Date.now() + Math.random().toString(36).substr(2,4); localStorage.setItem('mono_uid', id); }
+🎮 НОВА ГРА🎲Класичний2–4 гравці👥Команди2×2🤖Проти бота1 vs боти🎯ЗмішанийГравці+ботиВаше ім'яКількість ботів1 бот2 боти3 боти🎮 СтворитиабоСкасувати
+
+
+⚙️ НАЛАШТУВАННЯ🎨 ТемаКольорова схема інтерфейсу🔔 ВібраціяHaptic feedback при ходах🆔 —Ваш ігровий IDЗакрити
+
+
+Код кімнати----🎲 Класичний⏳ Очікування...← Вийти
+
+
+➤🎲 Кинути кубики!
+
+
+🏆ПЕРЕМОЖЕЦЬ!🔄 Нова гра
+
+
+
+
+// ========== TELEGRAM ==========
+const tg=window.Telegram?.WebApp;
+if(tg){tg.ready();tg.expand();tg.setHeaderColor('#0a1f1a');tg.setBackgroundColor('#0a1f1a')}
+const TGU=tg?.initDataUnsafe?.user;
+
+const myId=(()=>{
+  if(TGU?.id) return 'tg_'+TGU.id;
+  let id=localStorage.getItem('mono_uid');
+  if(!id){id='p'+Date.now()+Math.random().toString(36).substr(2,4);localStorage.setItem('mono_uid',id)}
   return id;
 })();
-
-function hp(t='light'){ if(document.getElementById('togHaptic')?.classList.contains('on')) tg?.HapticFeedback?.impactOccurred(t); }
-function toast(msg, ms=2500){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'), ms); }
+function hp(t='light'){if(document.getElementById('togHaptic').classList.contains('on'))tg?.HapticFeedback?.impactOccurred(t)}
 
 // ========== FIREBASE ==========
-const FBC = { apiKey:"AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ", authDomain:"monopoly-ukraine.firebaseapp.com", databaseURL:"https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app", projectId:"monopoly-ukraine" };
-let db = null, firebaseReady = false;
+const FBC={apiKey:"AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",authDomain:"monopoly-ukraine.firebaseapp.com",databaseURL:"https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app",projectId:"monopoly-ukraine"};
+let db=null;
+(function(){
+  const s1=document.createElement('script');s1.src='https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js';
+  s1.onload=()=>{const s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js';
+    s2.onload=()=>{firebase.initializeApp(FBC);db=firebase.database();onReady()};document.body.appendChild(s2)};
+  document.body.appendChild(s1);
+})();
 
-function initFirebase(){
-  return new Promise((resolve) => {
-    if(window.firebase && firebase.database){
-      try{
-        firebase.initializeApp(FBC);
-        db = firebase.database();
-        firebaseReady = true;        console.log('✅ Firebase ready');
-        resolve();
-        return;
-      }catch(e){ console.warn('⚠️ Firebase init error:', e); }
-    }
-    // Завантажуємо Firebase
-    const s1 = document.createElement('script');
-    s1.src = 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js';
-    s1.onload = () => {
-      const s2 = document.createElement('script');
-      s2.src = 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js';
-      s2.onload = () => {
-        try{
-          firebase.initializeApp(FBC);
-          db = firebase.database();
-          firebaseReady = true;
-          console.log('✅ Firebase loaded');
-        }catch(e){ console.warn('⚠️ Firebase error:', e); }
-        resolve();
-      };
-      s2.onerror = () => { console.warn('⚠️ Firebase DB script failed'); resolve(); };
-      document.body.appendChild(s2);
-    };
-    s1.onerror = () => { console.warn('⚠️ Firebase app script failed'); resolve(); };
-    document.body.appendChild(s1);
-  });
-}
-
-// ========== ДАНІ ГРИ ==========
-const COLORS = ['#3b82f6','#ef4444','#22c55e','#f59e0b'];
-const CNAMES = ['🔵 Синій','🔴 Червоний','🟢 Зелений','🟡 Жовтий'];
-const MICONS = {classic:'🎲',teams:'👥',vsbot:'🤖',mixed:'🎯'};
-const MNAMES = {classic:'Класичний',teams:'Команди 2×2',vsbot:'Проти бота',mixed:'Змішаний'};
-const SERVERS = [{id:'classic',name:'Класичний',emoji:'🎲',theme:'classic'},{id:'fruit',name:'Фруктовий',emoji:'🍉',theme:'fruit'},{id:'city',name:'Мегаполіс',emoji:'🏙',theme:'city'},{id:'business',name:'Бізнес',emoji:'🏢',theme:'city'}];
-
-const LEAGUES = [
+// ========== ЛІГИ ==========
+const LEAGUES=[
   {id:'rookie',name:'Новачок',emoji:'🥉',min:0,color:'#cd7f32'},
   {id:'investor',name:'Інвестор',emoji:'💰',min:50,color:'#94a3b8'},
   {id:'magnate',name:'Магнат',emoji:'🎩',min:150,color:'#60a5fa'},
@@ -335,13 +341,26 @@ const LEAGUES = [
   {id:'elite',name:'Еліта',emoji:'💎',min:500,color:'#22d3ee'},
   {id:'oligarch',name:'Олігарх',emoji:'👑',min:800,color:'#fbbf24'},
 ];
-function getLeague(s){ let l=LEAGUES[0]; for(const lg of LEAGUES){ if(s>=lg.min) l=lg; } return l; }
+function getLeague(s){let l=LEAGUES[0];for(const lg of LEAGUES){if(s>=lg.min)l=lg}return l}
+// ========== КОНСТАНТИ ==========
+const COLORS=['#3b82f6','#ef4444','#22c55e','#f59e0b'];
+const CNAMES=['🔵 Синій','🔴 Червоний','🟢 Зелений','🟡 Жовтий'];
+const MICONS={classic:'🎲',teams:'👥',vsbot:'🤖',mixed:'🎯'};
+const MNAMES={classic:'Класичний',teams:'Команди 2×2',vsbot:'Проти бота',mixed:'Змішаний'};
+const SERVERS=[
+  {id:'classic', name:'Класичний', emoji:'🎲', theme:'classic'},
+  {id:'fruit', name:'Фруктовий', emoji:'🍉', theme:'fruit'},
+  {id:'city', name:'Мегаполіс', emoji:'🏙', theme:'city'},
+  {id:'business', name:'Бізнес', emoji:'🏢', theme:'city'}
+];
 
+// ========== КАРТИ ==========
 const MAP_CLASSIC = [
   {name:'СТАРТ',short:'СТАРТ',type:'corner',emoji:'🏁',pos:0},
   {name:'Луцьк',short:'Луцьк',price:600,color:'#b45309',emoji:'🏙',pos:1},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:2},
-  {name:'Рівне',short:'Рівне',price:600,color:'#b45309',emoji:'🌆',pos:3},  {name:'Податок',short:'Податок',type:'tax',amount:2000,emoji:'💸',pos:4},
+  {name:'Рівне',short:'Рівне',price:600,color:'#b45309',emoji:'🌆',pos:3},
+  {name:'Податок',short:'Податок',type:'tax',amount:2000,emoji:'💸',pos:4},
   {name:'Вокзал Київ',short:'Вокзал',price:2000,type:'station',emoji:'🚂',pos:5},
   {name:'Житомир',short:'Житомир',price:1000,color:'#1d4ed8',emoji:'🏘',pos:6},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:7},
@@ -371,560 +390,831 @@ const MAP_CLASSIC = [
   {name:'Запоріжжя',short:'Запор',price:3000,color:'#15803d',emoji:'⚔️',pos:31},
   {name:'Дніпро',short:'Дніпро',price:3000,color:'#15803d',emoji:'🌊',pos:32},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:33},
-  {name:'Кривий Ріг',short:'Кр.Ріг',price:3200,color:'#15803d',emoji:'🏭',pos:34},
-  {name:'Вокзал Харків',short:'Вокзал',price:2000,type:'station',emoji:'🚂',pos:35},
+  {name:'Кривий Ріг',short:'Кр.Ріг',price:3200,color:'#15803d',emoji:'🏭',pos:34},  {name:'Вокзал Харків',short:'Вокзал',price:2000,type:'station',emoji:'🚂',pos:35},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:36},
   {name:'Харків',short:'Харків',price:3500,color:'#6d28d9',emoji:'🎓',pos:37},
   {name:'Податок',short:'Податок',type:'tax',amount:1000,emoji:'💸',pos:38},
   {name:'Київ',short:'Київ',price:4000,color:'#6d28d9',emoji:'🏛',pos:39}
 ];
-const MAPS = {classic: MAP_CLASSIC, fruit: MAP_CLASSIC, city: MAP_CLASSIC, business: MAP_CLASSIC};
-let PROPS = MAP_CLASSIC, curServer = 'classic';
+
+const MAP_FRUIT = [
+  {name:'СТАРТ',short:'СТАРТ',type:'corner',emoji:'🏁',pos:0},
+  {name:'Вишня',short:'Вишня',price:500,color:'#dc2626',emoji:'🍒',pos:1},
+  {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:2},
+  {name:'Полуниця',short:'Полун.',price:500,color:'#dc2626',emoji:'🍓',pos:3},
+  {name:'Податок',short:'Податок',type:'tax',amount:1500,emoji:'💸',pos:4},
+  {name:'Ринок 1',short:'Ринок',price:1800,type:'station',emoji:'🏪',pos:5},
+  {name:'Лимон',short:'Лимон',price:900,color:'#ca8a04',emoji:'🍋',pos:6},
+  {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:7},
+  {name:'Банан',short:'Банан',price:900,color:'#ca8a04',emoji:'🍌',pos:8},
+  {name:'Груша',short:'Груша',price:1100,color:'#ca8a04',emoji:'🍐',pos:9},
+  {name:'ТАМОЖНЯ',short:'ТАМОЖНЯ',type:'corner',emoji:'🚫',pos:10},
+  {name:'Апельсин',short:'Апельс',price:1300,color:'#ea580c',emoji:'🍊',pos:11},
+  {name:'Склад',short:'Склад',price:1400,type:'utility',emoji:'🏭',pos:12},
+  {name:'Персик',short:'Персик',price:1300,color:'#ea580c',emoji:'🍑',pos:13},
+  {name:'Манго',short:'Манго',price:1500,color:'#ea580c',emoji:'🥭',pos:14},
+  {name:'Ринок 2',short:'Ринок',price:1800,type:'station',emoji:'🏪',pos:15},
+  {name:'Ківі',short:'Ківі',price:1700,color:'#16a34a',emoji:'🥝',pos:16},
+  {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:17},
+  {name:'Яблуко',short:'Яблуко',price:1700,color:'#16a34a',emoji:'🍎',pos:18},
+  {name:'Авокадо',short:'Авок.',price:1900,color:'#16a34a',emoji:'🥑',pos:19},
+  {name:'ВІДПУСТКА',short:'ВІДПУСК',type:'corner',emoji:'🏖',pos:20},
+  {name:'Виноград',short:'Виногр.',price:2100,color:'#7c3aed',emoji:'🍇',pos:21},
+  {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:22},
+  {name:'Диня',short:'Диня',price:2100,color:'#7c3aed',emoji:'🍈',pos:23},
+  {name:'Кокос',short:'Кокос',price:2300,color:'#7c3aed',emoji:'🥥',pos:24},
+  {name:'Ринок 3',short:'Ринок',price:1800,type:'station',emoji:'🏪',pos:25},
+  {name:'Ананас',short:'Ананас',price:2500,color:'#b45309',emoji:'🍍',pos:26},
+  {name:'Папая',short:'Папая',price:2500,color:'#b45309',emoji:'🫐',pos:27},
+  {name:'Склад 2',short:'Склад',price:1400,type:'utility',emoji:'🏭',pos:28},
+  {name:'Гранат',short:'Гранат',price:2700,color:'#b45309',emoji:'🍎',pos:29},
+  {name:'ПОЛІЦІЯ',short:'ПОЛІЦІЯ',type:'corner',emoji:'👮',pos:30},
+  {name:'Чорниця',short:'Чорн.',price:2900,color:'#1d4ed8',emoji:'🫐',pos:31},
+  {name:'Аличя',short:'Алича',price:2900,color:'#1d4ed8',emoji:'🍑',pos:32},
+  {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:33},
+  {name:'Кавун',short:'Кавун',price:3100,color:'#1d4ed8',emoji:'🍉',pos:34},
+  {name:'Ринок 4',short:'Ринок',price:1800,type:'station',emoji:'🏪',pos:35},
+  {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:36},
+  {name:'VIP Полуниця',short:'VIP',price:3400,color:'#be185d',emoji:'🍓',pos:37},
+  {name:'Суперподаток',short:'Податок',type:'tax',amount:2000,emoji:'💸',pos:38},
+  {name:'Золотий Кавун',short:'Золот.',price:3900,color:'#be185d',emoji:'🏆',pos:39}
+];
+const MAP_INTERNATIONAL = [
+  {name:"СТАРТ", short:"СТАРТ", type:"corner", emoji:"🏁", pos:0},
+  {name:"Токіо", short:"Токіо", price:460000, color:"#b45309", emoji:"🗼", pos:1},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:2},
+  {name:"Дубай", short:"Дубай", price:460000, color:"#b45309", emoji:"🏜️", pos:3},
+  {name:"ПОДАТОК", short:"ПОДАТОК", type:"tax", amount:200000, emoji:"💸", pos:4},
+  {name:"МІЖНАРОДНИЙ АЕРОПОРТ", short:"АЕРОПОРТ", price:1300000, type:"station", emoji:"✈️", pos:5},
+  {name:"Нью-Йорк", short:"Нью-Йорк", price:780000, color:"#1d4ed8", emoji:"🗽", pos:6},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:7},
+  {name:"Лондон", short:"Лондон", price:780000, color:"#1d4ed8", emoji:"🇬🇧", pos:8},
+  {name:"Париж", short:"Париж", price:900000, color:"#1d4ed8", emoji:"🗼", pos:9},
+  {name:"В'ЯЗНИЦЯ", short:"В'ЯЗНИЦЯ", type:"jail", emoji:"⛓", pos:10},
+  {name:"Рим", short:"Рим", price:1100000, color:"#be185d", emoji:"🏛️", pos:11},
+  {name:"ЕЛЕКТРОСТАНЦІЯ", short:"ЕЛЕКТРО", price:1400000, type:"utility", emoji:"⚡", pos:12},
+  {name:"Берлін", short:"Берлін", price:1100000, color:"#be185d", emoji:"🏛️", pos:13},
+  {name:"Барселона", short:"Барселона", price:1300000, color:"#be185d", emoji:"🏖️", pos:14},
+  {name:"EUROSTAR", short:"EUROSTAR", price:1300000, type:"station", emoji:"🚄", pos:15},
+  {name:"Амстердам", short:"Амстердам", price:1500000, color:"#c2410c", emoji:"🌷", pos:16},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:17},
+  {name:"Сінгапур", short:"Сінгапур", price:1500000, color:"#c2410c", emoji:"🌴", pos:18},
+  {name:"Гонконг", short:"Гонконг", price:1700000, color:"#c2410c", emoji:"🏙️", pos:19},
+  {name:"ВІДПУСТКА", short:"ВІДПУСТКА", type:"corner", emoji:"🏖", pos:20},
+  {name:"Сідней", short:"Сідней", price:1900000, color:"#b91c1c", emoji:"🏄", pos:21},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:22},
+  {name:"Ріо-де-Жанейро", short:"Ріо", price:1900000, color:"#b91c1c", emoji:"🗿", pos:23},
+  {name:"Кейптаун", short:"Кейптаун", price:2100000, color:"#b91c1c", emoji:"🏔️", pos:24},
+  {name:"КРУЇЗНИЙ ТЕРМІНАЛ", short:"КРУЇЗ", price:1300000, type:"station", emoji:"🚢", pos:25},
+  {name:"Мумбаї", short:"Мумбаї", price:2300000, color:"#a16207", emoji:"🕌", pos:26},
+  {name:"Стамбул", short:"Стамбул", price:2300000, color:"#a16207", emoji:"🕌", pos:27},
+  {name:"ВОДОКАНАЛ", short:"ВОДОКАН", price:1400000, type:"utility", emoji:"💧", pos:28},
+  {name:"Шанхай", short:"Шанхай", price:2500000, color:"#a16207", emoji:"🏙️", pos:29},
+  {name:"ПОЛІЦІЯ", short:"ПОЛІЦІЯ", type:"jail", emoji:"👮", pos:30},
+  {name:"Сеул", short:"Сеул", price:2700000, color:"#15803d", emoji:"🏯", pos:31},
+  {name:"Мехіко", short:"Мехіко", price:2700000, color:"#15803d", emoji:"🗿", pos:32},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:33},
+  {name:"Лос-Анджелес", short:"Лос-Анджелес", price:2900000, color:"#15803d", emoji:"🎬", pos:34},
+  {name:"КОСМОДРОМ", short:"КОСМОДРОМ", price:1300000, type:"station", emoji:"🚀", pos:35},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:36},
+  {name:"Лас-Вегас", short:"Лас-Вегас", price:3200000, color:"#6d28d9", emoji:"🎰", pos:37},
+  {name:"ПОДАТОК", short:"ПОДАТОК", type:"tax", amount:1000000, emoji:"💸", pos:38},
+  {name:"Сідней", short:"Сідней", price:4000000, color:"#6d28d9", emoji:"🏄", pos:39}
+];
+
+const MAP_BUSINESS = [
+  {name:"СТАРТ", short:"СТАРТ", type:"corner", emoji:"🏁", pos:0},
+  {name:"Кав'ярня", short:"Кав'ярня", price:460000, color:"#b45309", emoji:"☕", pos:1},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:2},
+  {name:"Шаурма", short:"Шаурма", price:460000, color:"#b45309", emoji:"🌯", pos:3},
+  {name:"ПОДАТОК", short:"ПОДАТОК", type:"tax", amount:200000, emoji:"💸", pos:4},
+  {name:"БІЗНЕС-ЦЕНТР", short:"БІЗНЕС-Ц", price:1300000, type:"station", emoji:"🏢", pos:5},  {name:"Пейнтбольний клуб", short:"Пейнтбол", price:780000, color:"#1d4ed8", emoji:"🎯", pos:6},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:7},
+  {name:"Ігроіндустрія", short:"Ігроіндустр.", price:780000, color:"#1d4ed8", emoji:"🎮", pos:8},
+  {name:"Мікробіологічна промисловість", short:"Мікробіол.", price:900000, color:"#1d4ed8", emoji:"🧫", pos:9},
+  {name:"В'ЯЗНИЦЯ", short:"В'ЯЗНИЦЯ", type:"jail", emoji:"⛓", pos:10},
+  {name:"Автосалон", short:"Автосалон", price:1100000, color:"#be185d", emoji:"🚗", pos:11},
+  {name:"ЕЛЕКТРОСТАНЦІЯ", short:"ЕЛЕКТРО", price:1400000, type:"utility", emoji:"⚡", pos:12},
+  {name:"Фітнес-клуб", short:"Фітнес", price:1100000, color:"#be185d", emoji:"🏋️", pos:13},
+  {name:"Спа-центр", short:"Спа", price:1300000, color:"#be185d", emoji:"💆", pos:14},
+  {name:"ТЕХНОПАРК", short:"ТЕХНОПАРК", price:1300000, type:"station", emoji:"🔬", pos:15},
+  {name:"Бізнес-центр", short:"Бізнес-ц", price:1500000, color:"#c2410c", emoji:"🏢", pos:16},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:17},
+  {name:"Торговий центр", short:"ТРЦ", price:1500000, color:"#c2410c", emoji:"🛍️", pos:18},
+  {name:"Кінотеатр", short:"Кіно", price:1700000, color:"#c2410c", emoji:"🎬", pos:19},
+  {name:"ВІДПУСТКА", short:"ВІДПУСТКА", type:"corner", emoji:"🏖", pos:20},
+  {name:"Ресторан", short:"Ресторан", price:1900000, color:"#b91c1c", emoji:"🍽️", pos:21},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:22},
+  {name:"Готель", short:"Готель", price:1900000, color:"#b91c1c", emoji:"🏨", pos:23},
+  {name:"Нічний клуб", short:"Нічний", price:2100000, color:"#b91c1c", emoji:"🪩", pos:24},
+  {name:"БІЗНЕС-АВІАЦІЯ", short:"БІЗНЕС-АВІА", price:1300000, type:"station", emoji:"✈️", pos:25},
+  {name:"Технопарк", short:"Технопарк", price:2300000, color:"#a16207", emoji:"🔬", pos:26},
+  {name:"Логістичний центр", short:"Логістика", price:2300000, color:"#a16207", emoji:"📦", pos:27},
+  {name:"ВОДОКАНАЛ", short:"ВОДОКАН", price:1400000, type:"utility", emoji:"💧", pos:28},
+  {name:"Аеропорт", short:"Аеропорт", price:2500000, color:"#a16207", emoji:"✈️", pos:29},
+  {name:"ПОЛІЦІЯ", short:"ПОЛІЦІЯ", type:"jail", emoji:"👮", pos:30},
+  {name:"Інноваційний центр", short:"Інновації", price:2700000, color:"#15803d", emoji:"💡", pos:31},
+  {name:"Стартап-хаб", short:"Стартап", price:2700000, color:"#15803d", emoji:"🚀", pos:32},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:33},
+  {name:"Коворкінг", short:"Коворкінг", price:2900000, color:"#15803d", emoji:"💻", pos:34},
+  {name:"БІЗНЕС-ХАБ", short:"БІЗНЕС-ХАБ", price:1300000, type:"station", emoji:"🏭", pos:35},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:36},
+  {name:"Мегамол", short:"Мегамол", price:3200000, color:"#6d28d9", emoji:"🏬", pos:37},
+  {name:"ПОДАТОК", short:"ПОДАТОК", type:"tax", amount:1000000, emoji:"💸", pos:38},
+  {name:"Бізнес-імперія", short:"Імперія", price:4000000, color:"#6d28d9", emoji:"👑", pos:39}
+];
+
+const MAPS = {classic: MAP_CLASSIC, fruit: MAP_FRUIT, city: MAP_INTERNATIONAL, business: MAP_BUSINESS};
+let PROPS = MAP_CLASSIC;
+let curServer = 'classic';
 
 // ========== ГЛОБАЛЬНІ ЗМІННІ ==========
-let myRoom=null, myName='Гравець', selMode=null;
-let roomOff=null, chatOff=null, botTmr=null, timerInt=null;
-let gameShown=false, boardBuilt=false;
-let myScore=0, myWins=0, myGold=0, curLgIdx=0;
-let timerSec=75, gameStartTime=null, gameTimerInterval=null;
-let myClan=null, clanChatListener=null, myColor=COLORS[0];
+let myRoom=null,myName='Гравець',selMode=null;
+let roomOff=null,chatOff=null,botTmr=null,timerInt=null;
+let gameShown=false,boardBuilt=false;
+let myScore=0,myWins=0,myGold=0,curLgIdx=0;
+let timerSec=75;
+let gameStartTime=null, gameTimerInterval=null;
+let myClan=null, clanChatListener=null;
+let myColor = COLORS[0];
+// ========== ДОПОМІЖНІ ФУНКЦІЇ ==========
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function toast(msg,ms=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),ms)}
+function openCreate(){document.getElementById('createModal').classList.add('on')}
+function closeCreate(){document.getElementById('createModal').classList.remove('on')}
+function openSettings(){document.getElementById('settingsModal').classList.add('on')}
+['createModal','settingsModal'].forEach(id=>{document.getElementById(id).addEventListener('click',function(e){if(e.target===this)this.classList.remove('on')})});
 
-// ========== UI ФУНКЦІЇ ==========
-function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id)?.classList.add('active'); }function openCreate(){ document.getElementById('createModal')?.classList.add('on'); }
-function closeCreate(){ document.getElementById('createModal')?.classList.remove('on'); }
-function openSettings(){ document.getElementById('settingsModal')?.classList.add('on'); }
-['createModal','settingsModal'].forEach(id=>{ document.getElementById(id)?.addEventListener('click', function(e){ if(e.target===this) this.classList.remove('on'); }); });
-
-function setTheme(name, el){
-  document.body.setAttribute('data-theme', name);
-  if(el){ document.querySelectorAll('.tdot').forEach(d=>d.classList.remove('on')); el.classList.add('on'); }
-  localStorage.setItem('mono_theme', name);
+function setTheme(name,el){
+  document.body.setAttribute('data-theme',name);
+  if(el){document.querySelectorAll('.tdot').forEach(d=>d.classList.remove('on'));el.classList.add('on')}
+  localStorage.setItem('mono_theme',name);
   const themeToServer = {classic:'classic', fruit:'fruit', city:'city', dark:'city'};
   if(themeToServer[name]) setSrv(themeToServer[name]);
 }
-function mTab(n, el){
-  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on')); el?.classList.add('on');
-  ['games','active','league','clans','join'].forEach(x=>{ const tc=document.getElementById('tc-'+x); if(tc) tc.style.display = x===n ? 'block' : 'none'; });
-  if(n==='league') renderLeagueStrip();
-  if(n==='games') loadRooms();
-  if(n==='active') loadMyRooms();
-  if(n==='clans') loadClans();
+function mTab(n,el){
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');
+  ['games','active','league','clans','join'].forEach(x=>{
+    const tc=document.getElementById('tc-'+x);if(tc)tc.style.display=x===n?'block':'none';
+  });
+  if(n==='league')renderLeagueStrip();
+  if(n==='games')loadRooms();
+  if(n==='active')loadMyRooms();
+  if(n==='clans')loadClans();
 }
-function sm(m, el){ selMode=m; document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on')); el?.classList.add('on'); document.getElementById('bcw').style.display = (m==='vsbot'||m==='mixed') ? 'block' : 'none'; hp('light'); }
-function renderServers(){ document.getElementById('srvStrip').innerHTML = SERVERS.map(s=>`<div class="srv-btn ${s.id===curServer?'on':''}" onclick="setSrv('${s.id}')">${s.emoji} ${s.name}</div>`).join(''); }
-function setSrv(id){ curServer=id; PROPS=MAPS[id]||MAP_CLASSIC; renderServers(); loadRooms(); hp('light'); }
+function sm(m,el){
+  selMode=m;document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on'));el.classList.add('on');
+  document.getElementById('bcw').style.display=(m==='vsbot'||m==='mixed')?'block':'none';hp('light');
+}
+function renderServers(){
+  document.getElementById('srvStrip').innerHTML=SERVERS.map(s=>${s.emoji} ${s.name}).join('');
+}
+function setSrv(id){
+  curServer=id;
+  PROPS=MAPS[id];
+  renderServers();
+  loadRooms();
+  hp('light');
+}
 
-// ========== ПРОФІЛЬ ==========
+// ========== ПРОФІЛЬ І ЛІГИ ==========
 async function loadProfile(){
-  if(!firebaseReady){ document.getElementById('profLeague').textContent='🥉 Новачок'; document.getElementById('goldAmt').textContent='0'; return; }
-  try{
-    const snap = await db.ref('players/'+myId).once('value');
-    const d = snap.val() || {score:0,wins:0,gold:0,name:myName,clanId:null,color:COLORS[0]};
-    myScore=d.score||0; myWins=d.wins||0; myGold=d.gold||0; myClan=d.clanId||null; if(d.color) myColor=d.color;
-    const lg = getLeague(myScore);
-    document.getElementById('profLeague').textContent = lg.emoji+' '+lg.name;
-    document.getElementById('goldAmt').textContent = myGold;
-    if(myClan){ const clanSnap = await db.ref(`clans/${myClan}/name`).once('value'); document.getElementById('clanBadge').textContent = clanSnap.val() || 'Клан'; }
-    else { document.getElementById('clanBadge').textContent = '—'; }
-  }catch(e){ console.warn('Profile load error:', e); }
+  const snap=await db.ref('players/'+myId).once('value');
+  const d=snap.val()||{score:0,wins:0,gold:0,name:myName,clanId:null,color:COLORS[0]};
+  myScore=d.score||0;myWins=d.wins||0;myGold=d.gold||0;
+  myClan = d.clanId || null;
+  if(d.color) myColor = d.color;
+  const lg=getLeague(myScore);
+  document.getElementById('profLeague').textContent=lg.emoji+' '+lg.name;
+  document.getElementById('goldAmt').textContent=myGold;  if(myClan){
+    const clanSnap = await db.ref(clans/${myClan}/name).once('value');
+    document.getElementById('clanBadge').textContent = clanSnap.val() || 'Клан';
+  } else {
+    document.getElementById('clanBadge').textContent = '—';
+  }
 }
 async function saveProfile(sc=0,wi=0,go=0){
-  if(!firebaseReady) return;
-  myScore+=sc; myWins+=wi; myGold+=go;
-  const lg = getLeague(myScore);
-  try{ await db.ref('players/'+myId).set({name:myName,score:myScore,wins:myWins,gold:myGold,league:lg.id,photoUrl:TGU?.photo_url||null,updatedAt:Date.now(), clanId:myClan, color:myColor});
-    document.getElementById('profLeague').textContent = lg.emoji+' '+lg.name;
-    document.getElementById('goldAmt').textContent = myGold;
-  }catch(e){ console.warn('Profile save error:', e); }
+  myScore+=sc;myWins+=wi;myGold+=go;
+  const lg=getLeague(myScore);
+  await db.ref('players/'+myId).set({name:myName,score:myScore,wins:myWins,gold:myGold,league:lg.id,photoUrl:TGU?.photo_url||null,updatedAt:Date.now(), clanId:myClan, color:myColor});
+  document.getElementById('profLeague').textContent=lg.emoji+' '+lg.name;
+  document.getElementById('goldAmt').textContent=myGold;
+}
+async function cleanOldRooms(){
+  try{
+    const snap=await db.ref('rooms').once('value');
+    const d=snap.val();if(!d)return;
+    const now=Date.now(),batch={};
+    Object.entries(d).forEach(([k,r])=>{
+      if(now-(r.createdAt||0)>7200000||r.status==='finished'||!r.players||!Object.keys(r.players).length)
+        batch['rooms/'+k]=null;
+    });
+    if(Object.keys(batch).length)await db.ref().update(batch);
+  }catch(e){}
+}
+function renderLeagueStrip(){
+  document.getElementById('lgstrip').innerHTML=LEAGUES.map((l,i)=>${l.emoji}).join('');
+  showLeague(curLgIdx);
+}
+async function showLeague(idx){
+  curLgIdx=idx;const l=LEAGUES[idx];
+  document.querySelectorAll('.lgico').forEach((el,i)=>{
+    el.classList.toggle('on',i===idx);el.style.borderColor=i===idx?LEAGUES[i].color:'transparent';
+  });
+  document.getElementById('lgHdr').innerHTML=${l.emoji} ${l.name} лігаВід ${l.min} очок · +30 за перемогу · +5 за купівлю · +10 🪙 за перемогу;
+  const snap=await db.ref('players').orderByChild('league').equalTo(l.id).limitToLast(100).once('value');
+  const d=snap.val();
+  if(!d){document.getElementById('lgList').innerHTML='😕 Немає гравців';return}
+  const uniq={};
+  Object.values(d).forEach(p=>{
+    const key=p.name||'?';
+    if(!uniq[key]||(p.score||0)>(uniq[key].score||0))uniq[key]=p;
+  });
+  const pl=Object.values(uniq).sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,25);
+  document.getElementById('lgList').innerHTML=pl.map((p,i)=>{
+    const nc=i===0?'g':i===1?'s':i===2?'b':'';
+    const isMe=p.name===myName;
+    const av=p.photoUrl?`:${(p.name||'?')[0].toUpperCase()}`;
+    return${i+1}${av}${p.name||'?'}${isMe?' (Ви)':''}🏆 ${p.wins||0} · 🪙 ${p.gold||0}${p.score||0};  }).join('');
 }
 
 // ========== КІМНАТИ ==========
-function mkSlots(r, sz=42){  const pl = Object.values(r.players||{}).filter(p=>!p.isBot);
+function mkSlots(r,sz=42){
+  const pl=Object.values(r.players||{}).filter(p=>!p.isBot);
   let s='';
-  for(let i=0;i<4;i++){
-    const p=pl[i];
-    if(p){
-      const c=p.color||'#3b82f6', ini=(p.name||'?')[0].toUpperCase();
-      const img = p.photoUrl ? `<img src="${p.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:${sz*.36}px;font-weight:800;color:white">${ini}</span>` : `<span class="slot-ltr">${ini}</span>`;
-      s += `<div class="slot filled" style="width:${sz}px;height:${sz}px;border-color:${c};background:${c}22;">${img}</div>`;
-    } else { s += `<div class="slot empty" style="width:${sz}px;height:${sz}px"><span class="slot-ltr">○</span></div>`; }
+  for(let i=0;i${ini}:${ini}`;
+      s+=${img};
+    }else s+=○;
   }
   return s;
 }
 async function loadRooms(){
-  const el = document.getElementById('roomsList'); if(!el) return;
-  el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--sub)">⏳</div>';
-  if(!firebaseReady || !db){ el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">🔌 Підключення...</div>'; return; }
-  try{
-    const snap = await db.ref('rooms').orderByChild('status').equalTo('waiting').once('value');
-    const d = snap.val();
-    const list = d ? Object.entries(d).map(([k,r])=>({...r,code:r.code||k})).filter(r=>{
-      const pl = Object.values(r.players||{});
-      return pl.length>0 && pl.length<4 && pl.some(p=>!p.isBot) && (r.server||'classic')===curServer;
-    }) : [];
-    if(!list.length){ el.innerHTML = '<div style="text-align:center;padding:50px 20px"><div style="font-size:36px;margin-bottom:10px">🎲</div><div style="color:var(--sub);font-size:13px">Немає кімнат на сервері</div></div>'; return; }
-    el.innerHTML = list.slice(0,15).map(r=>`<div class="room-row" onclick="quickJoin('${r.code}')"><div class="slots">${mkSlots(r)}</div><div class="row-right"><span style="font-size:20px">${MICONS[r.mode]||'🎲'}</span><span class="arr">›</span></div></div>`).join('');
-  }catch(e){ console.warn('Load rooms error:', e); el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">❌ Помилка</div>'; }
+  const el=document.getElementById('roomsList');if(!el||!db)return;
+  el.innerHTML='⏳';
+  const snap=await db.ref('rooms').orderByChild('status').equalTo('waiting').once('value');
+  const d=snap.val();
+  const list=d?Object.entries(d).map(([k,r])=>({...r,code:r.code||k})).filter(r=>{
+    const pl=Object.values(r.players||{});
+    return pl.length>0&&pl.length!p.isBot)&&(r.server||'classic')===curServer;
+  }):[];
+  if(!list.length){el.innerHTML='🎲Немає кімнат на сервері';return}
+  el.innerHTML=list.slice(0,15).map(r=>${mkSlots(r)}${MICONS[r.mode]||'🎲'}›).join('');
 }
 async function loadMyRooms(){
-  const el = document.getElementById('myRoomsList'); if(!el) return;
-  el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--sub)">⏳</div>';
-  if(!firebaseReady || !db){ el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">🔌 Підключення...</div>'; return; }
-  try{
-    const snap = await db.ref('rooms').once('value');
-    const d = snap.val(); if(!d){ el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">😕 Немає кімнат</div>'; return; }
-    const list = Object.entries(d).map(([k,r])=>({...r,code:r.code||k})).filter(r=>r.hostId===myId || (r.players&&r.players[myId]));
-    if(!list.length){ el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">😕 Немає ваших кімнат</div>'; return; }
-    const sc={waiting:'#f59e0b',playing:'#22c55e',finished:'#64748b'}, sn={waiting:'⏳ Очікування',playing:'🎮 Активна',finished:'✅ Завершена'};
-    el.innerHTML = list.sort((a,b)=>({waiting:0,playing:1,finished:2}[a.status]||0)-({waiting:0,playing:1,finished:2}[b.status]||0)).map(r=>{
-      const st=r.status||'waiting'; let btns='';
-      const bs=c=>`background:${c}22;border:1px solid ${c}55;color:${c};border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif`;
-      if(st==='waiting'){ btns=`<button onclick="event.stopPropagation();adminRejoin('${r.code}')" style="${bs('#3b82f6')}">▶ Зайти</button><button onclick="event.stopPropagation();adminForceStart('${r.code}')" style="${bs('#22c55e')}">⚡ Старт</button><button onclick="event.stopPropagation();adminDelete('${r.code}')" style="${bs('#ef4444')}">🗑</button>`; }
-      else if(st==='playing'){ btns=`<button onclick="event.stopPropagation();adminRejoin('${r.code}')" style="${bs('#f59e0b')}">▶ Зайти</button><button onclick="event.stopPropagation();adminFinish('${r.code}')" style="${bs('#6d28d9')}">⏹ Фініш</button><button onclick="event.stopPropagation();adminDelete('${r.code}')" style="${bs('#ef4444')}">🗑</button>`; }
-      else { btns=`<button onclick="event.stopPropagation();adminDelete('${r.code}')" style="${bs('#ef4444')}">🗑 Видалити</button>`; }
-      return `<div style="padding:10px 14px;border-bottom:1px solid rgba(45,212,191,.06)"><div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><div style="display:flex;gap:4px">${mkSlots(r,32)}</div><div style="flex:1;min-width:0"><div style="font-weight:800;font-size:13px">${r.code}</div><div style="font-size:10px;color:var(--sub)">${MNAMES[r.mode]||'?'}</div></div><div style="font-size:10px;font-weight:700;color:${sc[st]}">${sn[st]}</div></div><div style="display:flex;gap:5px;flex-wrap:wrap">${btns}</div></div>`;
-    }).join('');
-  }catch(e){ console.warn('Load my rooms error:', e); el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">❌ Помилка</div>'; }
+  const el=document.getElementById('myRoomsList');if(!el||!db)return;
+  el.innerHTML='⏳';
+  const snap=await db.ref('rooms').once('value');
+  const d=snap.val();
+  if(!d){el.innerHTML='😕 Немає кімнат';return}
+  const list=Object.entries(d).map(([k,r])=>({...r,code:r.code||k})).filter(r=>r.hostId===myId||(r.players&&r.players[myId]));
+  if(!list.length){el.innerHTML='😕 Немає ваших кімнат';return}
+  const sc={waiting:'#f59e0b',playing:'#22c55e',finished:'#64748b'};
+  const sn={waiting:'⏳ Очікування',playing:'🎮 Активна',finished:'✅ Завершена'};
+  el.innerHTML=list.sort((a,b)=>({waiting:0,playing:1,finished:2}[a.status]||0)-({waiting:0,playing:1,finished:2}[b.status]||0)).map(r=>{
+    const st=r.status||'waiting';
+    let btns='';
+    const bs=c=>background:${c}22;border:1px solid ${c}55;color:${c};border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;
+    if(st==='waiting'){btns=▶ Зайти⚡ Старт🗑}
+    else if(st==='playing'){btns=▶ Зайти⏹ Фініш🗑}
+    else{btns=🗑 Видалити}
+    return${mkSlots(r,32)}${r.code}${MNAMES[r.mode]||'?'}${sn[st]}${btns};
+  }).join('');
 }
-async function adminRejoin(code){
-  myName = ['pN','pNj'].map(id=>document.getElementById(id)?.value?.trim()).find(v=>v) || TGU?.first_name || 'Гравець';
-  if(!firebaseReady || !db){ toast('❌ Немає підключення'); return; }  try{
-    const snap = await db.ref('rooms/'+code).once('value');
-    const r = snap.val(); if(!r){ toast('❌ Не знайдено'); return; }
-    PROPS = MAPS[r.server||'classic'] || MAP_CLASSIC;
-    if(r.players && r.players[myId]){
-      myRoom=code; selMode=r.mode;
-      if(r.status==='waiting') openLobby(r.mode);
-      else { gameShown=false; boardBuilt=false; listenRoom(); showScreen('s-game'); buildBoard(); gameShown=true; }
-      return;
-    }
-    await joinToRoom(code);
-  }catch(e){ toast('❌ Помилка: '+e.message); }
-}
-async function adminForceStart(c){ if(db) await db.ref('rooms/'+c).update({status:'playing'}); toast('⚡ Гра розпочата!'); loadMyRooms(); }
-async function adminFinish(c){ if(db) await db.ref('rooms/'+c).update({status:'finished'}); toast('⏹ Завершено'); loadMyRooms(); }
-async function adminDelete(c){ if(db) await db.ref('rooms/'+c).remove(); toast('🗑 Видалено'); loadMyRooms(); loadRooms(); }
-async function adminDeleteAll(){
-  if(!firebaseReady || !db){ toast('❌ Немає підключення'); return; }
-  try{
-    const snap = await db.ref('rooms').once('value'); const d=snap.val(); if(!d) return;
-    const batch={}; Object.entries(d).forEach(([k,r])=>{ if(r.hostId===myId || (r.players&&r.players[myId])) batch['rooms/'+k]=null; });
-    if(Object.keys(batch).length) await db.ref().update(batch);
-    toast('🗑 Всі видалено'); loadMyRooms(); loadRooms();
-  }catch(e){ toast('❌ Помилка: '+e.message); }
-}
-function avHtml(p, sz=38){
-  const c=p.color||'#3b82f6', ini=(p.name||'?')[0].toUpperCase();
-  const st=`width:${sz}px;height:${sz}px;background:${c}22;border-color:${c};color:${c}`;
-  if(p.photoUrl) return `<div class="av" style="${st}"><img src="${p.photoUrl}" onerror="this.style.display='none'" alt="${ini}"><span style="position:absolute;font-size:${sz*.42}px;font-weight:800">${ini}</span></div>`;
-  return `<div class="av" style="${st}">${ini}</div>`;
-}
-function myData(idx=0){ return {id:myId,name:myName,pos:0,money:15000000,props:[],houses:{},online:true,color:COLORS[idx],colorName:CNAMES[idx],isBot:false,photoUrl:TGU?.photo_url||null}; }
-
-async function createRoom(){
-  if(!selMode){ toast('⚠️ Оберіть режим!'); return; }
-  myName = document.getElementById('pN')?.value?.trim() || TGU?.first_name || 'Гравець';
-  myRoom = 'GAME-'+Math.random().toString(36).substr(2,4).toUpperCase();
-  PROPS = MAPS[curServer];
-  const players={}; players[myId]=myData(0);
-  if(selMode==='teams') players[myId].team='red';
-  if(selMode==='vsbot'||selMode==='mixed'){
-    const cnt = parseInt(document.getElementById('bC')?.value) || 1;
-    for(let i=0;i<cnt;i++) players['bot_'+i]={id:'bot_'+i,name:'Бот '+(i+1),pos:0,money:15000000,props:[],houses:{},online:true,color:COLORS[i+1],colorName:CNAMES[i+1],isBot:true,photoUrl:null};
+async function adminRejoin(code){  myName=['pN','pNj'].map(id=>document.getElementById(id)?.value?.trim()).find(v=>v)||TGU?.first_name||'Гравець';
+  const snap=await db.ref('rooms/'+code).once('value');
+  const r=snap.val();if(!r){toast('❌ Не знайдено');return}
+  PROPS=MAPS[r.server||'classic']||MAP_CLASSIC;
+  if(r.players&&r.players[myId]){
+    myRoom=code;selMode=r.mode;
+    if(r.status==='waiting')openLobby(r.mode);
+    else{gameShown=false;boardBuilt=false;listenRoom();showScreen('s-game');buildBoard();gameShown=true}
+    return;
   }
-  const room = {code:myRoom,mode:selMode,status:'waiting',hostId:myId,server:curServer,players,game:{current:0,dice1:0,dice2:0,lastRoll:0,doubles:0},createdAt:Date.now()};
-  if(selMode==='teams') room.teams={red:[myId],blue:[]};
-  if(firebaseReady && db) await db.ref('rooms/'+myRoom).set(room);
-  closeCreate(); openLobby(selMode); hp('medium');
+  await joinToRoom(code);
 }
-async function quickJoin(code){ myName=['pN','pNj'].map(id=>document.getElementById(id)?.value?.trim()).find(v=>v)||TGU?.first_name||'Гравець'; await joinToRoom(code); }async function joinByCode(){
-  myName = document.getElementById('pNj')?.value?.trim() || TGU?.first_name || 'Гравець';
-  const code = document.getElementById('rC')?.value?.trim().toUpperCase();
-  if(!code){ toast('⚠️ Введіть код'); return; }
+async function adminForceStart(c){await db.ref('rooms/'+c).update({status:'playing'});toast('⚡ Гра розпочата!');loadMyRooms()}
+async function adminFinish(c){await db.ref('rooms/'+c).update({status:'finished'});toast('⏹ Завершено');loadMyRooms()}
+async function adminDelete(c){await db.ref('rooms/'+c).remove();toast('🗑 Видалено');loadMyRooms();loadRooms()}
+async function adminDeleteAll(){
+  const snap=await db.ref('rooms').once('value');const d=snap.val();if(!d)return;
+  const batch={};
+  Object.entries(d).forEach(([k,r])=>{if(r.hostId===myId||(r.players&&r.players[myId]))batch['rooms/'+k]=null});
+  if(Object.keys(batch).length)await db.ref().update(batch);
+  toast('🗑 Всі видалено');loadMyRooms();loadRooms();
+}
+function avHtml(p,sz=38){
+  const c=p.color||'#3b82f6',ini=(p.name||'?')[0].toUpperCase();
+  const st=width:${sz}px;height:${sz}px;background:${c}22;border-color:${c};color:${c};
+  if(p.photoUrl)return${ini};
+  return${ini};
+}
+function myData(idx=0){
+  return{id:myId,name:myName,pos:0,money:15000000,props:[],houses:{},online:true,color:COLORS[idx],colorName:CNAMES[idx],isBot:false,photoUrl:TGU?.photo_url||null};
+}
+async function createRoom(){
+  if(!selMode){toast('⚠️ Оберіть режим!');return}
+  myName=document.getElementById('pN').value.trim()||TGU?.first_name||'Гравець';
+  myRoom='GAME-'+Math.random().toString(36).substr(2,4).toUpperCase();
+  PROPS=MAPS[curServer];
+  const players={};players[myId]=myData(0);
+  if(selMode==='teams')players[myId].team='red';
+  if(selMode==='vsbot'||selMode==='mixed'){
+    const cnt=parseInt(document.getElementById('bC').value);
+    for(let i=0;idocument.getElementById(id)?.value?.trim()).find(v=>v)||TGU?.first_name||'Гравець';
+  await joinToRoom(code);}
+async function joinByCode(){
+  myName=document.getElementById('pNj').value.trim()||TGU?.first_name||'Гравець';
+  const code=document.getElementById('rC').value.trim().toUpperCase();
+  if(!code){toast('⚠️ Введіть код');return}
   await joinToRoom(code);
 }
 async function joinToRoom(code){
-  if(!firebaseReady || !db){ toast('❌ Немає підключення'); return; }
-  try{
-    const snap = await db.ref('rooms/'+code).once('value');
-    if(!snap.val()){ toast('❌ Кімнату не знайдено'); return; }
-    const r = snap.val();
-    const pl = Object.values(r.players||{});
-    if(pl.length>=4){ toast('❌ Кімната повна'); return; }
-    if(r.status!=='waiting'){ toast('❌ Гра вже йде'); return; }
-    myRoom=code; selMode=r.mode; PROPS=MAPS[r.server||'classic'];
-    const np = myData(pl.length);
-    if(r.mode==='teams'){ const rc=Object.values(r.players).filter(p=>p.team==='red').length; np.team=rc<2?'red':'blue'; }
-    await db.ref('rooms/'+myRoom+'/players/'+myId).set(np);
-    openLobby(r.mode); hp('medium');
-  }catch(e){ toast('❌ Помилка: '+e.message); }
-}
-function openLobby(mode){
-  document.getElementById('lobbyCode').textContent = myRoom;
-  document.getElementById('mchip').textContent = (MICONS[mode]||'🎲')+' '+(MNAMES[mode]||mode);
-  showScreen('s-lobby'); listenRoom();
-}
-async function startGame(){ if(db) await db.ref('rooms/'+myRoom).update({status:'playing'}); hp('heavy'); }
-async function leaveRoom(){
-  stopTimer(); stopGameTimer();
-  if(clanChatListener && myClan && db){ db.ref(`clanChat/${myClan}`).off('value', clanChatListener); clanChatListener=null; }
-  if(roomOff && db){ db.ref('rooms/'+myRoom).off('value', roomOff); roomOff=null; }
-  if(chatOff && db){ db.ref('rooms/'+myRoom+'/chat').off('value', chatOff); chatOff=null; }
-  if(myRoom && db) await db.ref('rooms/'+myRoom+'/players/'+myId).remove();
-  if(myRoom && db){
-    const s = await db.ref('rooms/'+myRoom+'/players').once('value'); const p=s.val();
-    if(!p || !Object.keys(p).filter(k=>!k.startsWith('bot')).length) await db.ref('rooms/'+myRoom).remove();
-  }
-  myRoom=null; selMode=null; gameShown=false; boardBuilt=false;
+  if(!db){toast('❌ Немає підключення');return}
+  const snap=await db.ref('rooms/'+code).once('value');
+  if(!snap.val()){toast('❌ Кімнату не знайдено');return}
+  const r=snap.val();
+  const pl=Object.values(r.players||{});
+  if(pl.length>=4){toast('❌ Кімната повна');return}
+  if(r.status!=='waiting'){toast('❌ Гра вже йде');return}
+  myRoom=code;selMode=r.mode;
+  PROPS=MAPS[r.server||'classic'];
+  const np=myData(pl.length);
+  if(r.mode==='teams'){const rc=Object.values(r.players).filter(p=>p.team==='red').length;np.team=rc!k.startsWith('bot')).length)await db.ref('rooms/'+myRoom).remove()}
+  myRoom=null;selMode=null;gameShown=false;boardBuilt=false;
   document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on'));
-  showScreen('s-main'); loadRooms();
+  showScreen('s-main');loadRooms();
 }
 function listenRoom(){
-  if(!firebaseReady || !db) return;
-  if(roomOff) db.ref('rooms/'+myRoom).off('value', roomOff);
-  roomOff = db.ref('rooms/'+myRoom).on('value', snap=>{
-    const r = snap.val(); if(!r) return;
-    if(r.status==='waiting') renderLobby(r);
-    else if(r.status==='playing') renderGame(r);
-    else if(r.status==='finished') renderWinner(r);  });
+  if(roomOff)db.ref('rooms/'+myRoom).off('value',roomOff);
+  roomOff=db.ref('rooms/'+myRoom).on('value',snap=>{
+    const r=snap.val();if(!r)return;
+    if(r.status==='waiting')renderLobby(r);
+    else if(r.status==='playing')renderGame(r);
+    else if(r.status==='finished')renderWinner(r);  });
 }
 function renderLobby(r){
-  const pl = Object.values(r.players||{});
-  const hostId = r.hostId || (pl.find(p=>!p.isBot)?.id) || null;
-  const minH = r.mode==='teams' ? 4 : (r.mode==='vsbot'||r.mode==='mixed') ? 1 : 2;
-  const hCnt = pl.filter(p=>!p.isBot).length;
-  document.getElementById('lobbyList').innerHTML = pl.map(p=>{
+  const pl=Object.values(r.players||{});
+  const hostId=r.hostId||(pl.find(p=>!p.isBot)?.id)||null;
+  const minH=r.mode==='teams'?4:(r.mode==='vsbot'||r.mode==='mixed')?1:2;
+  const hCnt=pl.filter(p=>!p.isBot).length;
+  document.getElementById('lobbyList').innerHTML=pl.map(p=>{
     let b='';
-    if(p.id===myId) b+='<span class="bdg by">Ви</span> ';
-    if(p.id===hostId) b+='<span class="bdg bh">👑</span> ';
-    if(p.isBot) b+='<span class="bdg bb">🤖</span>';
-    if(p.team==='red') b+=' <span class="bdg bred">Червона</span>';
-    if(p.team==='blue') b+=' <span class="bdg bbl">Синя</span>';
-    return `<div class="pc"><div class="aw">${avHtml(p,38)}<div class="avb">${p.isBot?'🤖':'👤'}</div></div><div class="pi"><div class="pn">${p.name}</div><div class="pd">${p.colorName} ${b}</div></div><div class="pm">${p.money.toLocaleString()}₴</div></div>`;
+    if(p.id===myId)b+='Ви ';
+    if(p.id===hostId)b+='👑 ';
+    if(p.isBot)b+='🤖';
+    if(p.team==='red')b+=' Червона';
+    if(p.team==='blue')b+=' Синя';
+    return${avHtml(p,38)}${p.isBot?'🤖':'👤'}${p.name}${p.colorName} ${b}${p.money.toLocaleString()}₴;
   }).join('');
-  const btn = document.getElementById('startBtn');
-  const isHost = hostId===myId, canStart = hCnt>=minH;
-  btn.disabled = !canStart || !isHost;
-  btn.textContent = !isHost ? '⏳ Чекаємо хоста...' : !canStart ? `⏳ Ще ${minH-hCnt} гравців` : `▶️ Почати (${pl.length})`;
+  const btn=document.getElementById('startBtn');
+  const isHost=hostId===myId,canStart=hCnt>=minH;
+  btn.disabled=!canStart||!isHost;
+  btn.textContent=!isHost?'⏳ Чекаємо хоста...':!canStart?⏳ Ще ${minH-hCnt} гравців:▶️ Почати (${pl.length});
 }
-
-// ========== ГРА ==========
 function startTimer(isMyTurn){
-  stopTimer(); timerSec=75;
-  const header = document.getElementById('gameHeader');
-  let bar = header?.querySelector('.timer-bar');
-  if(!bar){ bar=document.createElement('div'); bar.className='timer-bar'; bar.style.cssText='height:2px;background:rgba(255,255,255,.08);flex-shrink:0'; header?.appendChild(bar); }
-  let fill = bar?.querySelector('.timer-fill');
-  if(!fill){ fill=document.createElement('div'); fill.className='timer-fill'; fill.style.cssText='height:100%;background:var(--gold);transition:width 1s linear;width:100%'; bar?.appendChild(fill); }
-  fill.style.width='100%'; fill.style.background='var(--gold)';
-  if(!isMyTurn) return;
-  timerInt = setInterval(()=>{
+  stopTimer();timerSec=75;
+  const header=document.getElementById('gameHeader');
+  let bar=header.querySelector('.timer-bar');
+  if(!bar){
+    bar=document.createElement('div');bar.className='timer-bar';bar.style.cssText='height:2px;background:rgba(255,255,255,.08);flex-shrink:0';
+    header.appendChild(bar);
+  }
+  let fill=bar.querySelector('.timer-fill');
+  if(!fill){
+    fill=document.createElement('div');fill.className='timer-fill';fill.style.cssText='height:100%;background:var(--gold);transition:width 1s linear;width:100%';
+    bar.appendChild(fill);
+  }
+  fill.style.width='100%';fill.style.background='var(--gold)';
+  if(!isMyTurn)return;
+  timerInt=setInterval(()=>{
     timerSec--;
-    fill.style.width = Math.max(0, timerSec/75*100) + '%';
-    if(timerSec<=15) fill.style.background='var(--red)';
-    if(timerSec<=0){ stopTimer(); toast('⏰ Час вийшов!'); rollDice(); }
+    fill.style.width=Math.max(0,timerSec/75*100)+'%';
+    if(timerSec{    const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
+    const mins = Math.floor(elapsed / 60);
+    const secs = elapsed % 60;
+    timerSpan.textContent = ${mins}:${secs.toString().padStart(2,'0')};
   }, 1000);
 }
-function stopTimer(){ if(timerInt){ clearInterval(timerInt); timerInt=null; } }
-function startGameTimer(){ if(gameTimerInterval) clearInterval(gameTimerInterval); gameStartTime=Date.now(); }
-function stopGameTimer(){ if(gameTimerInterval){ clearInterval(gameTimerInterval); gameTimerInterval=null; gameStartTime=null; } }
+function stopGameTimer(){if(gameTimerInterval){clearInterval(gameTimerInterval); gameTimerInterval=null; gameStartTime=null;}}
 function buildBoard(){
-  if(boardBuilt) return; boardBuilt=true;
-  const top=document.getElementById('boardTop'), bottom=document.getElementById('boardBottom'), left=document.getElementById('boardLeft'), right=document.getElementById('boardRight');
-  if(!top||!bottom||!left||!right) return;
-  top.innerHTML=''; bottom.innerHTML=''; left.innerHTML=''; right.innerHTML='';
-  for(let i=0;i<10;i++) top.appendChild(createCell(PROPS[i]));
-  for(let i=10;i<20;i++) right.appendChild(createCell(PROPS[i]));
-  for(let i=29;i>=20;i--) bottom.appendChild(createCell(PROPS[i]));  for(let i=39;i>=30;i--) left.appendChild(createCell(PROPS[i]));
+  if(boardBuilt)return;boardBuilt=true;
+  const top=document.getElementById('boardTop'),bottom=document.getElementById('boardBottom'),left=document.getElementById('boardLeft'),right=document.getElementById('boardRight');
+  top.innerHTML='';bottom.innerHTML='';left.innerHTML='';right.innerHTML='';
+  for(let i=0;i=20;i--)bottom.appendChild(createCell(PROPS[i]));
+  for(let i=39;i>=30;i--)left.appendChild(createCell(PROPS[i]));
 }
 function createCell(p){
-  const div = document.createElement('div');
-  div.className = 'cell' + (p.type==='corner' ? ' corner' : '');
-  div.id = 'cell-'+p.pos;
+  const div=document.createElement('div');
+  div.className='cell'+(p.type==='corner'?' corner':'');
+  div.id='cell-'+p.pos;
   let html='';
-  if(p.color) html += `<div class="cell-color-bar" style="background:${p.color}"></div>`;
-  html += `<div class="cell-icon">${p.emoji}</div><div class="cell-name">${p.short}</div>`;
-  if(p.price) html += `<div class="cell-price">${p.price.toLocaleString()}₴</div>`;
-  html += `<div class="tokens" id="tok-${p.pos}"></div>`;
-  if(p.color) html += `<div class="houses" id="h-${p.pos}"></div>`;
-  div.innerHTML = html;
+  if(p.color) html+=``;
+  html+=${p.emoji};
+  html+=${p.short};
+  if(p.price) html+=${p.price.toLocaleString()}₴;
+  html+=``;
+  if(p.color) html+=``;
+  div.innerHTML=html;
   return div;
 }
-function hasMonopoly(pl, uid, pos){
-  const p = PROPS[pos]; if(!p?.color) return false;
-  const sameColor = PROPS.filter(x=>x.color===p.color && x.price);
-  const me = pl.find(x=>x.id===uid); if(!me) return false;
+function hasMonopoly(pl,uid,pos){
+  const p=PROPS[pos];if(!p?.color)return false;
+  const sameColor=PROPS.filter(x=>x.color===p.color&&x.price);
+  const me=pl.find(x=>x.id===uid);if(!me)return false;
   return sameColor.every(x=>(me.props||[]).includes(x.pos));
 }
 function renderGame(r){
   if(!gameShown){
-    PROPS = MAPS[r.server||'classic'] || MAP_CLASSIC;
-    buildBoard(); showScreen('s-game'); gameShown=true; listenChat(); startGameTimer();
-    const first = Object.values(r.players)[r.game.current];
-    addLog(`🎮 Гра почалась! <span class="log-player" style="color:${first?.color}">${first?.name}</span> ходить першим`);
+    PROPS=MAPS[r.server||'classic']||MAP_CLASSIC;
+    buildBoard();showScreen('s-game');gameShown=true;listenChat();
+    startGameTimer();
+    const first=Object.values(r.players)[r.game.current];
+    addLog(🎮 Гра почалась! ${first?.name} ходить першим);
   }
-  const pl = Object.values(r.players||{});
-  const me = pl.find(p=>p.id===myId) || pl[0];
-  const cur = pl[r.game?.current||0];
-  const isMy = cur?.id===myId;
-  const others = pl.filter(p=>p.id!==myId);
-  const meImg = me.photoUrl ? `<img src="${me.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:13px;font-weight:800;color:white">${(me.name||'?')[0].toUpperCase()}</span>` : `<span>${(me.name||'?')[0].toUpperCase()}</span>`;
-  let hdr = `<div class="game-info"><div class="move-display">Хід: <span>${r.game.current+1}/${pl.length}</span> 👁</div></div><div class="players-top"><div class="player-card ${isMy?'active':''}"><div class="player-avatar" style="border-color:${me.color};background:${me.color}22;color:${me.color};position:relative">${meImg}${isMy?'<div class="crown">👑</div>':''}</div><div class="player-info"><div class="player-name">${me.name} ${isMy?'(Ви)':''}</div><div class="player-rank">${me.colorName}</div><div class="player-money">$ ${me.money.toLocaleString()}</div><div class="player-property">🏠 ${(me.props||[]).length}</div></div></div>`;
+  const pl=Object.values(r.players||{});
+  const me=pl.find(p=>p.id===myId)||pl[0];
+  const cur=pl[r.game?.current||0];
+  const isMy=cur?.id===myId;
+  const others=pl.filter(p=>p.id!==myId);
+  const meImg=me.photoUrl?${(me.name||'?')[0].toUpperCase()}:${(me.name||'?')[0].toUpperCase()};  let hdr=Час: 0:00Хід: ${r.game.current+1}/${pl.length} 👁${meImg}${isMy?'👑':''}${me.name} ${isMy?'(Ви)':''}${me.colorName}$ ${me.money.toLocaleString()}🏠 ${(me.props||[]).length};
   if(others.length){
     others.forEach(p=>{
-      const isAct = cur?.id===p.id;
-      const pImg = p.photoUrl ? `<img src="${p.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:10px;font-weight:800;color:white">${p.isBot?'🤖':(p.name||'?')[0].toUpperCase()}</span>` : `<span>${p.isBot?'🤖':(p.name||'?')[0].toUpperCase()}</span>`;
-      hdr += `<div class="player-card ${isAct?'active':''}"><div class="player-avatar" style="border-color:${p.color};background:${p.color}22;color:${p.color};position:relative">${pImg}</div><div class="player-info"><div class="player-name">${p.name}</div><div class="player-rank">${p.colorName}</div><div class="player-money">$ ${(p.money/1000).toFixed(1)}k</div><div class="player-property">🏠 ${(p.props||[]).length}</div></div></div>`;
+      const isAct=cur?.id===p.id;
+      const pImg=p.photoUrl?${p.isBot?'🤖':(p.name||'?')[0].toUpperCase()}:${p.isBot?'🤖':(p.name||'?')[0].toUpperCase()};
+      hdr+=${pImg}${p.name}${p.colorName}$ ${(p.money/1000).toFixed(1)}k🏠 ${(p.props||[]).length};
     });
   }
-  hdr += `</div><button class="btn-exit" onclick="leaveRoom()">Вийти</button>`;
-  document.getElementById('gameHeader').innerHTML = hdr;
+  hdr+=Вийти;
+  document.getElementById('gameHeader').innerHTML=hdr;
+
   document.querySelectorAll('.tokens').forEach(el=>el.innerHTML='');
   pl.forEach(p=>{
-    const cont = document.getElementById('tok-'+p.pos); if(!cont) return;
-    const t = document.createElement('div'); t.className='tok'; t.style.background=p.color;
-    t.style.boxShadow = `0 0 0 1.5px rgba(0,0,0,.9),0 0 0 2.5px white,0 0 0 3.5px ${p.color}`;
-    if(p.photoUrl){ const img=document.createElement('img'); img.src=p.photoUrl; img.onerror=()=>{img.remove(); const s=document.createElement('div'); s.className='tok-ltr'; s.textContent=(p.name||'?')[0].toUpperCase(); t.appendChild(s)}; t.appendChild(img); }    else { const s=document.createElement('div'); s.className='tok-ltr'; s.textContent=p.isBot?'🤖':(p.name||'?')[0].toUpperCase(); t.appendChild(s); }
+    const cont=document.getElementById('tok-'+p.pos);if(!cont)return;
+    const t=document.createElement('div');t.className='tok';t.style.background=p.color;
+    t.style.boxShadow=0 0 0 1.5px rgba(0,0,0,.9),0 0 0 2.5px white,0 0 0 3.5px ${p.color};
+    if(p.photoUrl){const img=document.createElement('img');img.src=p.photoUrl;img.onerror=()=>{img.remove();const s=document.createElement('div');s.className='tok-ltr';s.textContent=(p.name||'?')[0].toUpperCase();t.appendChild(s)};t.appendChild(img)}
+    else{const s=document.createElement('div');s.className='tok-ltr';s.textContent=p.isBot?'🤖':(p.name||'?')[0].toUpperCase();t.appendChild(s)}
     cont.appendChild(t);
   });
   document.querySelectorAll('.houses').forEach(el=>el.innerHTML='');
   document.querySelectorAll('.cell-owner').forEach(el=>el.remove());
   pl.forEach(p=>{
     Object.entries(p.houses||{}).forEach(([pos,cnt])=>{
-      const el = document.getElementById('h-'+pos); if(!el) return;
-      el.innerHTML=''; for(let i=0;i<cnt;i++){ const d=document.createElement('div'); d.className='house-dot'; d.style.background=p.color; el.appendChild(d); }
-    });
-    (p.props||[]).forEach(pos=>{
-      const cell = document.getElementById('cell-'+pos); if(!cell) return;
-      const old = cell.querySelector('.cell-owner'); if(old) old.remove();
-      const strip = document.createElement('div'); strip.className='cell-owner'; strip.style.background=p.color;
+      const el=document.getElementById('h-'+pos);if(!el)return;
+      el.innerHTML='';
+      for(let i=0;i{
+      const cell=document.getElementById('cell-'+pos);if(!cell)return;
+      const old=cell.querySelector('.cell-owner');if(old)old.remove();
+      const strip=document.createElement('div');strip.className='cell-owner';strip.style.background=p.color;
       cell.appendChild(strip);
     });
   });
-  if(r.game.dice1 && r.game.dice2){ renderDice('dice1', r.game.dice1); renderDice('dice2', r.game.dice2); }
-  const btn = document.getElementById('rollBtn');
-  btn.disabled = !isMy;
-  btn.className = 'btn-roll ' + (isMy ? 'my' : 'wait');
-  btn.textContent = isMy ? '🎲 Кинути кубики!' : '⏳ Хід: ' + cur?.name;
+  if(r.game.dice1&&r.game.dice2){
+    renderDice('dice1',r.game.dice1);
+    renderDice('dice2',r.game.dice2);
+  }
+  const btn=document.getElementById('rollBtn');
+  btn.disabled=!isMy;
+  btn.className='btn-roll '+(isMy?'my':'wait');
+  btn.textContent=isMy?'🎲 Кинути кубики!':'⏳ Хід: '+cur?.name;
   startTimer(isMy);
-  renderPropBuy(r, pl, cur, isMy);
-  if(cur?.isBot && r.status==='playing'){ clearTimeout(botTmr); botTmr=setTimeout(()=>doBotMove(r), 1800); }
+  renderPropBuy(r,pl,cur,isMy);
+  if(cur?.isBot&&r.status==='playing'){clearTimeout(botTmr);botTmr=setTimeout(()=>doBotMove(r),1800)}
   checkWinner(r);
 }
-function renderDice(id, value){
-  const dice = document.getElementById(id); if(!dice) return;
-  dice.innerHTML='';
-  const patterns = {1:[[1,1]],2:[[0,0],[2,2]],3:[[0,0],[1,1],[2,2]],4:[[0,0],[0,2],[2,0],[2,2]],5:[[0,0],[0,2],[1,1],[2,0],[2,2]],6:[[0,0],[0,2],[1,0],[1,2],[2,0],[2,2]]};
-  const pattern = patterns[value] || [[1,1]];
-  for(let i=0;i<3;i++) for(let j=0;j<3;j++){
-    const dot = document.createElement('div');
-    if(pattern.some(([r,c])=>r===i && c===j)) dot.className='dice-dot';
-    dice.appendChild(dot);
+function renderDice(id,value){
+  const dice=document.getElementById(id);  dice.innerHTML='';
+  const patterns={1:[[1,1]],2:[[0,0],[2,2]],3:[[0,0],[1,1],[2,2]],4:[[0,0],[0,2],[2,0],[2,2]],5:[[0,0],[0,2],[1,1],[2,0],[2,2]],6:[[0,0],[0,2],[1,0],[1,2],[2,0],[2,2]]};
+  const pattern=patterns[value]||[[1,1]];
+  for(let i=0;ir===i&&c===j)) dot.className='dice-dot';
+      dice.appendChild(dot);
+    }
   }
 }
-function renderPropBuy(r, pl, cur, isMy){
-  const pb = document.getElementById('propBuy');
-  if(!isMy || !cur){ pb.style.display='none'; return; }
-  const pos = cur.pos, p = PROPS[pos];
+function renderPropBuy(r,pl,cur,isMy){
+  const pb=document.getElementById('propBuy');
+  if(!isMy||!cur){pb.style.display='none';return}
+  const pos=cur.pos,p=PROPS[pos];
   if(p?.price){
-    const own = pl.find(x=>(x.props||[]).includes(pos));
+    const own=pl.find(x=>(x.props||[]).includes(pos));
     if(!own){
       pb.style.display='flex';
-      pb.innerHTML = `${p.color?`<div class="pb-clr" style="background:${p.color}"></div>`:''}<div class="pb-inf"><div class="pb-nm">${p.emoji} ${p.name}</div><div class="pb-pr">${p.price.toLocaleString()}₴</div></div><button class="pb-btn" style="background:linear-gradient(135deg,#22c55e,#16a34a)" onclick="buyProp(${pos},${p.price})">Купити</button>`;
-    } else if(own.id===myId){
-      const h=(cur.houses||{})[pos]||0, hc=Math.floor(p.price*.5);
-      const mono = hasMonopoly(pl, myId, pos);      if(h<4 && mono){
-        pb.style.display='flex';
-        pb.innerHTML = `${p.color?`<div class="pb-clr" style="background:${p.color}"></div>`:''}<div class="pb-inf"><div class="pb-nm">${p.emoji} ${p.name}</div><div class="pb-pr" style="font-size:10px">🏠×${h} · +🏠 ${hc.toLocaleString()}₴</div></div><button class="pb-btn" style="background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark)" onclick="buildHouse(${pos},${hc})">+🏠</button>`;
+      pb.innerHTML=${p.color?:''}${p.emoji} ${p.name}${p.price.toLocaleString()}₴Купити;
+    }else if(own.id===myId){
+      const h=(cur.houses||{})[pos]||0,hc=Math.floor(p.price*.5);
+      const mono=hasMonopoly(pl,myId,pos);
+      if(h:''}${p.emoji} ${p.name}🏠×${h} · +🏠 ${hc.toLocaleString()}₴+🏠;
         return;
       }
       pb.style.display='none';
-    } else { pb.style.display='none'; }
-  } else { pb.style.display='none'; }
+    }else{pb.style.display='none'}
+  }else{pb.style.display='none'}
 }
 function listenChat(){
-  if(!firebaseReady || !db || !myRoom) return;
-  if(chatOff) db.ref('rooms/'+myRoom+'/chat').off('value', chatOff);
-  chatOff = db.ref('rooms/'+myRoom+'/chat').limitToLast(50).on('value', snap=>{
-    const d = snap.val(); if(!d) return;
-    const log = document.getElementById('chatMessages'); if(!log) return;
-    log.innerHTML = Object.values(d).sort((a,b)=>a.ts-b.ts).map(m=>{
-      const isMe = m.uid===myId;
-      return `<div class="chat-message" style="${isMe?'text-align:right;background:rgba(251,191,36,.15)':''}"><strong style="color:${m.color}">${m.name}:</strong> ${m.text}</div>`;
+  if(chatOff)db.ref('rooms/'+myRoom+'/chat').off('value',chatOff);
+  chatOff=db.ref('rooms/'+myRoom+'/chat').limitToLast(50).on('value',snap=>{
+    const d=snap.val();if(!d)return;
+    const log=document.getElementById('chatMessages');if(!log)return;
+    log.innerHTML=Object.values(d).sort((a,b)=>a.ts-b.ts).map(m=>{
+      const isMe=m.uid===myId;
+      return${m.name}: ${m.text};
     }).join('');
-    log.scrollTop = log.scrollHeight;
+    log.scrollTop=log.scrollHeight;
   });
 }
 async function sendChat(){
-  const inp = document.getElementById('chatInput');
-  const text = inp?.value?.trim(); if(!text || !myRoom || !db) return;
+  const inp=document.getElementById('chatInput');
+  const text=inp.value.trim();if(!text||!myRoom)return;
   inp.value='';
-  const me = await db.ref('rooms/'+myRoom+'/players/'+myId).once('value');
-  const p = me.val();
-  await db.ref('rooms/'+myRoom+'/chat').push({uid:myId,name:myName,text:text,color:p?.color||COLORS[0],photo:TGU?.photo_url||null,ts:Date.now()});
+  const me=await db.ref('rooms/'+myRoom+'/players/'+myId).once('value');
+  const p=me.val();  await db.ref('rooms/'+myRoom+'/chat').push({uid:myId,name:myName,text,color:p?.color||COLORS[0],photo:TGU?.photo_url||null,ts:Date.now()});
 }
 function addLog(html){
-  const log = document.getElementById('gameLog'); if(!log) return;
-  const p = document.createElement('p'); p.innerHTML = html;
+  const log=document.getElementById('gameLog');if(!log)return;
+  const p=document.createElement('p');p.innerHTML=html;
   log.appendChild(p);
-  while(log.children.length>40) log.removeChild(log.firstChild);
-  log.scrollTop = log.scrollHeight;
+  while(log.children.length>40)log.removeChild(log.firstChild);
+  log.scrollTop=log.scrollHeight;
 }
 async function rollDice(){
-  if(!firebaseReady || !db || !myRoom) return; stopTimer();
-  try{
-    const snap = await db.ref('rooms/'+myRoom).once('value');
-    const r = snap.val(); if(!r) return;
-    const pl = Object.values(r.players);
-    const cur = pl[r.game.current];
-    if(cur?.id!==myId){ toast('⚠️ Не ваш хід!'); return; }
-    hp('medium');
-    const d1 = Math.ceil(Math.random()*6), d2 = Math.ceil(Math.random()*6);
-    const isDbl = d1===d2;
-    const newPos = (cur.pos + d1 + d2) % 40;
-    let money = cur.money; const p = PROPS[newPos];    const newDbls = (r.game.doubles||0) + (isDbl?1:0);
-    addLog(`<span class="log-player" style="color:${cur.color}">${cur.name}</span> <span class="log-action">🎲</span> <span class="log-money">${d1}+${d2}=${d1+d2}</span>${isDbl?' <span class="log-positive">ДУБЛЬ!</span>':''} → <span class="log-action">${p.name}</span>`);
-    if(newPos < cur.pos){ money+=2000000; addLog(`🏁 <span class="log-player" style="color:${cur.color}">${cur.name}</span> — СТАРТ <span class="log-positive">+2 000 000₴</span>`); toast('🏁 +2 000 000₴!'); hp('heavy'); }
-    if(p?.price){
-      const own = pl.find(x=>(x.props||[]).includes(newPos) && x.id!==myId);
-      if(own){ const h=(own.houses||{})[newPos]||0; const rent=Math.floor(p.price*.1*(1+h*.5)); money=Math.max(0,money-rent); await db.ref('rooms/'+myRoom+'/players/'+own.id).update({money:own.money+rent}); addLog(`💸 <span class="log-player" style="color:${cur.color}">${cur.name}</span>→<span class="log-player" style="color:${own.color}">${own.name}</span> <span class="log-negative">-${rent.toLocaleString()}₴</span>`); toast(`💸 Оренда -${rent.toLocaleString()}₴`); }
-    }
-    if(p?.type==='tax'){ money=Math.max(0,money-(p.amount||1000)); addLog(`💸 <span class="log-player" style="color:${cur.color}">${cur.name}</span> податок <span class="log-negative">-${p.amount.toLocaleString()}₴</span>`); toast(`💸 -${p.amount.toLocaleString()}₴`); hp('heavy'); }
-    if(p?.type==='chance'){
-      const bonuses = [-500000,-1000000,500000,1000000,250000,-250000,750000,-750000,1500000];
-      const bon = bonuses[Math.floor(Math.random()*bonuses.length)];
-      money = Math.max(0, money+bon);
-      addLog(`❓ <span class="log-player" style="color:${cur.color}">${cur.name}</span> Шанс: <span class="${bon>0?'log-positive':'log-negative'}">${bon>0?'+':''}${bon.toLocaleString()}₴</span>`);
-      toast(`❓ ${bon>0?'+':''}${bon.toLocaleString()}₴`);
-    }
-    await db.ref('rooms/'+myRoom+'/players/'+myId).update({pos:newPos, money});
-    let next = isDbl && newDbls<3 ? r.game.current : (r.game.current+1)%pl.length;
-    if(newDbls>=3){ next=(r.game.current+1)%pl.length; addLog(`🚫 <span class="log-player" style="color:${cur.color}">${cur.name}</span> — 3 дублі, хід передано!`); }
-    await db.ref('rooms/'+myRoom+'/game').update({dice1:d1,dice2:d2,current:next,lastRoll:Date.now(),doubles:isDbl?newDbls:0});
-  }catch(e){ toast('❌ Помилка: '+e.message); }
-}
-async function buyProp(pos, price){
-  if(!firebaseReady || !db || !myRoom) return;
-  try{
-    const snap = await db.ref('rooms/'+myRoom).once('value');
-    const me = Object.values(snap.val()?.players||{}).find(p=>p.id===myId);
-    if(!me || me.money<price){ toast('❌ Недостатньо!'); hp('heavy'); return; }
-    const p = PROPS[pos];
-    await db.ref('rooms/'+myRoom+'/players/'+myId).update({props:[...(me.props||[]),pos], money:me.money-price});
-    addLog(`🏠 <span class="log-player" style="color:${me.color}">${me.name}</span> <span class="log-action">купує</span> <span class="log-money">${p.name}</span> <span class="log-negative">-${price.toLocaleString()}₴</span>`);
-    toast(`🏠 ${p.name} куплено!`); hp('medium');
-    await saveProfile(5,0,0);
-  }catch(e){ toast('❌ Помилка: '+e.message); }
-}
-async function buildHouse(pos, cost){
-  if(!firebaseReady || !db || !myRoom) return;
-  try{
-    const snap = await db.ref('rooms/'+myRoom).once('value');
-    const r = snap.val(); if(!r) return;
-    const pl = Object.values(r.players||{});
-    const me = pl.find(p=>p.id===myId);
-    if(!me || me.money<cost){ toast('❌ Недостатньо!'); hp('heavy'); return; }
-    if(!hasMonopoly(pl, myId, pos)){ toast('❌ Потрібна монополія!'); hp('heavy'); return; }
-    const houses = {...(me.houses||{})};
-    houses[pos] = (houses[pos]||0) + 1;
-    if(houses[pos]>4){ toast('❌ Максимум 4!'); return; }
-    await db.ref('rooms/'+myRoom+'/players/'+myId).update({houses, money:me.money-cost});
-    addLog(`🏠 <span class="log-player" style="color:${me.color}">${me.name}</span> <span class="log-action">будує на</span> <span class="log-money">${PROPS[pos].name}</span> (${houses[pos]}/4)`);
-    toast(`🏠 (${houses[pos]}/4)`); hp('medium');
-  }catch(e){ toast('❌ Помилка: '+e.message); }}
-async function doBotMove(r){
-  if(!firebaseReady || !db) return;
-  const pl = Object.values(r.players);
-  const bot = pl[r.game.current]; if(!bot?.isBot) return;
-  const d1 = Math.ceil(Math.random()*6), d2 = Math.ceil(Math.random()*6);
-  const isDbl = d1===d2, newPos = (bot.pos+d1+d2)%40;
-  let money = bot.money; const p = PROPS[newPos];
-  if(newPos < bot.pos) money += 2000000;
+  if(!db||!myRoom)return;stopTimer();
+  const snap=await db.ref('rooms/'+myRoom).once('value');
+  const r=snap.val();if(!r)return;
+  const pl=Object.values(r.players);
+  const cur=pl[r.game.current];
+  if(cur?.id!==myId){toast('⚠️ Не ваш хід!');return}
+  hp('medium');
+  const d1=Math.ceil(Math.random()6),d2=Math.ceil(Math.random()6);
+  const isDbl=d1===d2;
+  const newPos=(cur.pos+d1+d2)%40;
+  let money=cur.money;const p=PROPS[newPos];
+  const newDbls=(r.game.doubles||0)+(isDbl?1:0);
+  addLog(${cur.name} 🎲 ${d1}+${d2}=${d1+d2}${isDbl?' ДУБЛЬ!':''} → ${p.name});
+  if(newPos${cur.name} — СТАРТ +2 000 000₴`);toast('🏁 +2 000 000₴!');hp('heavy')}
   if(p?.price){
-    const own = pl.find(x=>(x.props||[]).includes(newPos) && x.id!==bot.id);
-    if(own){ const h=(own.houses||{})[newPos]||0; const rent=Math.floor(p.price*.1*(1+h*.5)); money=Math.max(0,money-rent); await db.ref('rooms/'+myRoom+'/players/'+own.id).update({money:own.money+rent}); }
+    const own=pl.find(x=>(x.props||[]).includes(newPos)&&x.id!==myId);
+    if(own){const h=(own.houses||{})[newPos]||0;const rent=Math.floor(p.price.1(1+h*.5));money=Math.max(0,money-rent);await db.ref('rooms/'+myRoom+'/players/'+own.id).update({money:own.money+rent});addLog(💸 ${cur.name}→${own.name} -${rent.toLocaleString()}₴);toast(💸 Оренда -${rent.toLocaleString()}₴)}
   }
-  if(p?.type==='tax') money = Math.max(0, money-(p.amount||1000));
-  if(p?.type==='chance'){ const bonuses=[-500000,-1000000,500000,1000000,250000,-250000,750000]; const bon=bonuses[Math.floor(Math.random()*bonuses.length)]; money=Math.max(0,money+bon); }
-  const newDbls = (r.game.doubles||0)+(isDbl?1:0);
-  let next = isDbl && newDbls<3 ? r.game.current : (r.game.current+1)%pl.length;
-  if(newDbls>=3) next = (r.game.current+1)%pl.length;
-  await db.ref('rooms/'+myRoom+'/players/'+bot.id).update({pos:newPos, money});
+  if(p?.type==='tax'){money=Math.max(0,money-(p.amount||1000));addLog(💸 ${cur.name} податок -${p.amount.toLocaleString()}₴);toast(💸 -${p.amount.toLocaleString()}₴);hp('heavy')}
+  if(p?.type==='chance'){
+    const bonuses=[-500000,-1000000,500000,1000000,250000,-250000,750000,-750000,1500000];
+    const bon=bonuses[Math.floor(Math.random()*bonuses.length)];
+    money=Math.max(0,money+bon);
+    addLog(❓ ${cur.name} Шанс: 0?'log-positive':'log-negative'}">${bon>0?'+':''}${bon.toLocaleString()}₴);
+    toast(❓ ${bon>0?'+':''}${bon.toLocaleString()}₴);
+  }
+  await db.ref('rooms/'+myRoom+'/players/'+myId).update({pos:newPos,money});
+  let next=isDbl&&newDbls=3){next=(r.game.current+1)%pl.length;addLog(🚫 ${cur.name} — 3 дублі, хід передано!)}
   await db.ref('rooms/'+myRoom+'/game').update({dice1:d1,dice2:d2,current:next,lastRoll:Date.now(),doubles:isDbl?newDbls:0});
-  addLog(`🤖 <span class="log-player" style="color:${bot.color}">${bot.name}</span> <span class="log-action">🎲</span> <span class="log-money">${d1+d2}</span>${isDbl?' ДУБЛЬ!':''} → <span class="log-action">${PROPS[newPos].name}</span>`);
+}
+async function buyProp(pos,price){
+  const snap=await db.ref('rooms/'+myRoom).once('value');
+  const me=Object.values(snap.val()?.players||{}).find(p=>p.id===myId);
+  if(!me||me.money${me.name} купує ${p.name} -${price.toLocaleString()}₴`);
+  toast(🏠 ${p.name} куплено!);hp('medium');
+  await saveProfile(5,0,0);}
+async function buildHouse(pos,cost){
+  const snap=await db.ref('rooms/'+myRoom).once('value');
+  const r=snap.val();if(!r)return;
+  const pl=Object.values(r.players||{});
+  const me=pl.find(p=>p.id===myId);
+  if(!me||me.money4){toast('❌ Максимум 4!');return}
+  await db.ref('rooms/'+myRoom+'/players/'+myId).update({houses,money:me.money-cost});
+  addLog(🏠 ${me.name} будує на ${PROPS[pos].name} (${houses[pos]}/4));
+  toast(🏠 (${houses[pos]}/4));hp('medium');
+}
+async function doBotMove(r){
+  const pl=Object.values(r.players);
+  const bot=pl[r.game.current];if(!bot?.isBot)return;
+  const d1=Math.ceil(Math.random()6),d2=Math.ceil(Math.random()6);
+  const isDbl=d1===d2,newPos=(bot.pos+d1+d2)%40;
+  let money=bot.money;const p=PROPS[newPos];
+  if(newPos(x.props||[]).includes(newPos)&&x.id!==bot.id);if(own){const h=(own.houses||{})[newPos]||0;const rent=Math.floor(p.price.1(1+h*.5));money=Math.max(0,money-rent);await db.ref('rooms/'+myRoom+'/players/'+own.id).update({money:own.money+rent})}}
+  if(p?.type==='tax')money=Math.max(0,money-(p.amount||1000));
+  if(p?.type==='chance'){const bonuses=[-500000,-1000000,500000,1000000,250000,-250000,750000];const bon=bonuses[Math.floor(Math.random()*bonuses.length)];money=Math.max(0,money+bon)}
+  const newDbls=(r.game.doubles||0)+(isDbl?1:0);
+  let next=isDbl&&newDbls=3)next=(r.game.current+1)%pl.length;
+  await db.ref('rooms/'+myRoom+'/players/'+bot.id).update({pos:newPos,money});
+  await db.ref('rooms/'+myRoom+'/game').update({dice1:d1,dice2:d2,current:next,lastRoll:Date.now(),doubles:isDbl?newDbls:0});
+  addLog(🤖 ${bot.name} 🎲 ${d1+d2}${isDbl?' ДУБЛЬ!':''} → ${PROPS[newPos].name});
   setTimeout(async()=>{
-    const s2 = await db.ref('rooms/'+myRoom).once('value'); const r2=s2.val(); if(!r2) return;
-    const pl2 = Object.values(r2.players||{}); const b2 = pl2.find(x=>x.id===bot.id); if(!b2) return;
-    if(p?.price && b2.money>=p.price){
-      const alr = pl2.find(x=>(x.props||[]).includes(newPos));
-      if(!alr && p.price < b2.money*.6){
-        await db.ref('rooms/'+myRoom+'/players/'+bot.id).update({props:[...(b2.props||[]),newPos], money:b2.money-p.price});
-        addLog(`🤖 <span class="log-player" style="color:${bot.color}">${bot.name}</span> <span class="log-action">купує</span> <span class="log-money">${p.name}</span>`);
-      }
-    }
-  }, 700);
+    const s2=await db.ref('rooms/'+myRoom).once('value');const r2=s2.val();if(!r2)return;
+    const pl2=Object.values(r2.players||{});const b2=pl2.find(x=>x.id===bot.id);if(!b2)return;
+    if(p?.price&&b2.money>=p.price){const alr=pl2.find(x=>(x.props||[]).includes(newPos));if(!alr&&p.price${bot.name} купує ${p.name}`)}}
+  },700);
 }
 function checkWinner(r){
-  const pl = Object.values(r.players||{});
-  if(pl.filter(p=>p.money>0).length<=1 && pl.length>=2){
-    const w = pl.reduce((a,b)=>a.money>b.money?a:b);
-    if(db) db.ref('rooms/'+myRoom).update({status:'finished', winner:w.id});
+  const pl=Object.values(r.players||{});
+  if(pl.filter(p=>p.money>0).length=2){
+    const w=pl.reduce((a,b)=>a.money>b.money?a:b);
+    db.ref('rooms/'+myRoom).update({status:'finished',winner:w.id});
   }
 }
 async function renderWinner(r){
-  stopTimer(); stopGameTimer();
-  const pl = Object.values(r.players||{});
-  const w = pl.find(p=>p.id===r.winner) || pl[0]; if(!w) return;
-  const isMe = w.id===myId;
-  if(isMe) await saveProfile(30,1,10);
-  if(myRoom && db) await db.ref('rooms/'+myRoom).update({status:'finished'});
-  document.getElementById('wN').innerHTML = `<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px">${avHtml(w,50)}<span>${w.name}${isMe?' (Ви!)':''}</span></div>`;
-  document.getElementById('wM').textContent = w.money.toLocaleString()+'₴';
-  document.getElementById('wG').innerHTML = isMe ? '🪙 +10 золота · ⭐ +30 очок' : '';  showScreen('s-win');
-  if(isMe){ hp('heavy'); tg?.HapticFeedback?.notificationOccurred('success'); }
+  stopTimer();stopGameTimer();
+  const pl=Object.values(r.players||{});
+  const w=pl.find(p=>p.id===r.winner)||pl[0];if(!w)return;
+  const isMe=w.id===myId;
+  if(isMe)await saveProfile(30,1,10);  if(myRoom)await db.ref('rooms/'+myRoom).update({status:'finished'});
+  document.getElementById('wN').innerHTML=${avHtml(w,50)}${w.name}${isMe?' (Ви!)':''};
+  document.getElementById('wM').textContent=w.money.toLocaleString()+'₴';
+  document.getElementById('wG').innerHTML=isMe?'🪙 +10 золота · ⭐ +30 очок':'';
+  showScreen('s-win');
+  if(isMe){hp('heavy');tg?.HapticFeedback?.notificationOccurred('success')}
 }
 
-// ========== КЛАНИ (спрощено) ==========
+// ========== КЛАНИ ==========
 async function loadClans(){
-  const container = document.getElementById('clansContent'); if(!container) return;
-  container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">⏳ Завантаження...</div>';
-  if(!firebaseReady || !db){ container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">🔌 Підключення...</div>'; return; }
+  const container = document.getElementById('clansContent');
+  if(!db) return;
+  container.innerHTML = '⏳ Завантаження...';
+  const userSnap = await db.ref(players/${myId}).once('value');
+  const user = userSnap.val() || {};
+  myClan = user.clanId || null;
+  if(myClan){
+    const clanSnap = await db.ref(clans/${myClan}/name).once('value');
+    document.getElementById('clanBadge').textContent = clanSnap.val() || 'Клан';
+  } else {
+    document.getElementById('clanBadge').textContent = '—';
+  }
+  const clansSnap = await db.ref('clans').once('value');
+  const clans = clansSnap.val() || {};
+  const clansList = Object.entries(clans).map(([id,data])=>({id,...data}));
+  let html = ➕ Створити клан;
+  if(myClan && clans[myClan]){
+    const myClanData = clans[myClan];
+    html += `
+      🏰 ${myClanData.name} (${myClanData.tag})
+      Засновник: ${myClanData.ownerName}
+      👥 Учасники: ${myClanData.members?.length||0}
+      Покинути клан
+      ${myClanData.ownerId===myId ? 🗑 Видалити клан : ''}
+    `;
+    html += 💬 Чат клану➤;
+    listenClanChat(myClan);
+  } else {
+    html += Доступні клани;
+    if(clansList.length===0) html += Немає кланів. Створіть перший!;
+    else clansList.forEach(clan=>{
+      html += `
+        ${clan.name} (${clan.tag})
+        👥 ${clan.members?.length||0} | 👑 ${clan.ownerName}
+        Приєднатися →
+      `;
+    });
+  }
+  container.innerHTML = html;
+}function showCreateClan(){
+  const name = prompt('Назва клану (макс 20 символів)','');
+  if(!name) return;
+  const tag = prompt('Тег клану (2-5 символів, наприклад GOLD)','').toUpperCase();
+  if(!tag) return;
+  createClan(name, tag);
+}
+async function createClan(name, tag){
   try{
-    const userSnap = await db.ref(`players/${myId}`).once('value');
-    const user = userSnap.val() || {};
-    myClan = user.clanId || null;
-    if(myClan){
-      const clanSnap = await db.ref(`clans/${myClan}/name`).once('value');
-      document.getElementById('clanBadge').textContent = clanSnap.val() || 'Клан';
-    } else { document.getElementById('clanBadge').textContent = '—'; }
-    container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--sub)">🏰 Клан: ${myClan ? document.getElementById('clanBadge').textContent : 'Немає'}</div>`;
-  }catch(e){ container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">❌ Помилка</div>'; }
+    if(!db) return;
+    const clanId = 'clan_'+Date.now()+'_'+Math.random().toString(36).substr(2,4);
+    const newClan = {
+      name: name.slice(0,20),
+      tag: tag.slice(0,5),
+      ownerId: myId,
+      ownerName: myName,
+      members: [myId],
+      createdAt: Date.now()
+    };
+    await db.ref(clans/${clanId}).set(newClan);
+    await db.ref(players/${myId}/clanId).set(clanId);
+    await db.ref(players/${myId}/color).set(myColor);
+    toast(Клан ${name} створено!);
+    loadClans();
+  }catch(e){
+    console.error(e);
+    toast('❌ Помилка створення клану');
+  }
+}
+async function joinClan(clanId){
+  try{
+    if(!db) return;
+    const clanSnap = await db.ref(clans/${clanId}).once('value');
+    const clan = clanSnap.val();
+    if(!clan) return;
+    if(clan.members && clan.members.length>=30){toast('Клан переповнений');return;}
+    const members = clan.members || [];
+    if(members.includes(myId)){toast('Ви вже в клані');return;}
+    members.push(myId);
+    await db.ref(clans/${clanId}/members).set(members);
+    await db.ref(players/${myId}/clanId).set(clanId);
+    await db.ref(players/${myId}/color).set(myColor);
+    toast(Ви приєдналися до ${clan.name});
+    loadClans();
+  }catch(e){
+    console.error(e);
+    toast('❌ Помилка приєднання');
+  }
+}
+async function leaveClan(){  try{
+    if(!db || !myClan) return;
+    const clanSnap = await db.ref(clans/${myClan}).once('value');
+    const clan = clanSnap.val();
+    if(!clan) return;
+    let members = clan.members || [];
+    members = members.filter(id=>id!==myId);
+    await db.ref(clans/${myClan}/members).set(members);
+    await db.ref(players/${myId}/clanId).remove();
+    if(clan.ownerId===myId && members.length>0){
+      const newOwner = members[0];
+      await db.ref(clans/${myClan}/ownerId).set(newOwner);
+      const newOwnerSnap = await db.ref(players/${newOwner}/name).once('value');
+      await db.ref(clans/${myClan}/ownerName).set(newOwnerSnap.val()||'Гравець');
+      toast(Ви передали керівництво ${newOwnerSnap.val()});
+    }
+    toast('Ви покинули клан');
+    loadClans();
+  }catch(e){
+    console.error(e);
+    toast('❌ Помилка виходу з клану');
+  }
+}
+async function deleteClan(clanId){
+  if(!confirm('Видалити клан назавжди? Цю дію не можна скасувати.')) return;
+  try{
+    const clanSnap = await db.ref(clans/${clanId}).once('value');
+    const clan = clanSnap.val();
+    if(!clan || clan.ownerId!==myId) return;
+    const members = clan.members || [];
+    for(let mid of members){
+      await db.ref(players/${mid}/clanId).remove();
+    }
+    await db.ref(clans/${clanId}).remove();
+    toast('Клан видалено');
+    loadClans();
+  }catch(e){
+    console.error(e);
+    toast('❌ Помилка видалення клану');
+  }
+}
+function listenClanChat(clanId){
+  if(clanChatListener) db.ref(clanChat/${clanId}).off('value', clanChatListener);
+  clanChatListener = db.ref(clanChat/${clanId}).limitToLast(50).on('value', snap=>{
+    const msgs = snap.val();
+    const container = document.getElementById('clanChatMessages');
+    if(!container) return;
+    if(!msgs){ container.innerHTML=''; return; }
+    container.innerHTML = Object.values(msgs).sort((a,b)=>a.ts-b.ts).map(m=>{
+      const isMe = m.uid===myId;      return ${m.name}: ${m.text};
+    }).join('');
+    container.scrollTop = container.scrollHeight;
+  });
+}
+async function sendClanChat(){
+  if(!myClan) return;
+  const inp = document.getElementById('clanChatInput');
+  const text = inp.value.trim();
+  if(!text) return;
+  inp.value='';
+  const me = {uid:myId, name:myName, color:myColor, text, ts:Date.now()};
+  await db.ref(clanChat/${myClan}).push(me);
+}
+function handleChatFocus(isFocused){
+  if(isFocused){
+    const viewport = document.querySelector('meta[name="viewport"]');
+    viewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
+    setTimeout(()=>{
+      const chatContainer = document.getElementById('clanChatMessages');
+      if(chatContainer){
+        chatContainer.scrollIntoView({behavior:'smooth',block:'end'});
+      }
+    },300);
+  } else {
+    const viewport = document.querySelector('meta[name="viewport"]');
+    viewport.setAttribute('content', 'width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover');
+  }
 }
 
 // ========== ІНІЦІАЛІЗАЦІЯ ==========
 async function onReady(){
-  await initFirebase();
-  const saved = localStorage.getItem('mono_theme') || 'classic';
-  setTheme(saved, null);
-  document.querySelectorAll('.tdot').forEach((d,i)=>{ d.classList.toggle('on', ['classic','fruit','city','dark'][i]===saved); });
+  const saved=localStorage.getItem('mono_theme')||'classic';
+  setTheme(saved,null);
+  document.querySelectorAll('.tdot').forEach((d,i)=>{
+    d.classList.toggle('on','classic','fruit','city','dark'===saved);
+  });
   if(TGU){
-    const n = TGU.first_name + (TGU.last_name ? ' '+TGU.last_name : '');
-    myName = n;
-    ['pN','pNj'].forEach(id=>{ const el=document.getElementById(id); if(el && !el.value) el.value=n; });
-    const av = document.getElementById('profAv');
-    if(TGU.photo_url) av.innerHTML = `<img src="${TGU.photo_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
-    else av.textContent = n[0].toUpperCase();
-    document.getElementById('profName').textContent = n;
-    document.getElementById('myIdTxt').textContent = '🆔 ' + myId;
+    const n=TGU.first_name+(TGU.last_name?' '+TGU.last_name:'');
+    myName=n;
+    ['pN','pNj'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=n});
+    const av=document.getElementById('profAv');
+    if(TGU.photo_url)av.innerHTML=``;
+    else av.textContent=n[0].toUpperCase();
+    document.getElementById('profName').textContent=n;
+    document.getElementById('myIdTxt').textContent='🆔 '+myId;
   }
   await loadProfile();
-  renderServers();
-  loadRooms();
+  cleanOldRooms();
+  renderServers();  loadRooms();
   renderLeagueStrip();
 }
+onReady();
 
-// Запуск
-window.addEventListener('DOMContentLoaded', onReady);
-</script>
-</body>
-</html>
+
+
