@@ -132,7 +132,6 @@ select option{background:var(--bg-main)}
 #s-game{background:var(--bg-dark);height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;min-height:0}
 .game-header{background:linear-gradient(180deg,var(--bg-panel),var(--bg-main));padding:4px 8px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--accent2);flex-shrink:0;flex-wrap:wrap;gap:4px;min-height:36px}
 .game-info{display:flex;align-items:center;gap:10px}
-/* таймер прибрано – видалено .timer-display */
 .move-display{font-family:'Unbounded',sans-serif;font-size:11px;color:var(--sub)}
 .move-display span{color:var(--text);font-weight:700}
 .players-top{display:flex;gap:8px;flex:1;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding:2px 0}
@@ -151,12 +150,12 @@ select option{background:var(--bg-main)}
 .timer-bar{height:2px;background:rgba(255,255,255,.08);flex-shrink:0}
 .timer-fill{height:100%;background:var(--gold);transition:width 1s linear;width:100%}
 
-/* 🔴 ЗБІЛЬШЕНО ЦЕНТРАЛЬНУ ОБЛАСТЬ */
+/* 🔴 ЗБІЛЬШЕНО ЦЕНТРАЛЬНУ КОЛОНКУ ТА ВИСОТУ ВЕРХНЬОГО/НИЖНЬОГО РЯДІВ */
 .game-main{
   flex:1;
   display:grid;
-  grid-template-columns: minmax(52px,12vw) minmax(160px,38vw) minmax(52px,12vw);
-  grid-template-rows: minmax(32px,6vw) 1fr minmax(32px,6vw);
+  grid-template-columns: minmax(52px,12vw) minmax(190px,45vw) minmax(52px,12vw);
+  grid-template-rows: minmax(36px,7vw) 1fr minmax(36px,7vw);
   gap:3px;
   padding:3px;
   overflow:hidden;
@@ -284,8 +283,8 @@ select option{background:var(--bg-main)}
 
 @media (max-width:768px){
   .game-main{
-    grid-template-columns: minmax(44px,13vw) minmax(130px,38vw) minmax(44px,13vw);
-    grid-template-rows: minmax(28px,6vw) 1fr minmax(28px,6vw);
+    grid-template-columns: minmax(44px,13vw) minmax(150px,48vw) minmax(44px,13vw);
+    grid-template-rows: minmax(30px,8vw) 1fr minmax(30px,8vw);
   }
   .game-center{min-width:0}
   .game-log{padding:2px;font-size:7px}
@@ -895,8 +894,7 @@ function stopTimer(){if(timerInt){clearInterval(timerInt);timerInt=null}}
 function startGameTimer(){
   if(gameTimerInterval) clearInterval(gameTimerInterval);
   gameStartTime = Date.now();
-  // таймер текстового відображення прибрано – відповідно не оновлюємо
-  // просто нічого не робимо
+  // таймер текстового відображення прибрано
 }
 function stopGameTimer(){if(gameTimerInterval){clearInterval(gameTimerInterval); gameTimerInterval=null; gameStartTime=null;}}
 function buildBoard(){
@@ -942,7 +940,6 @@ function renderGame(r){
   const isMy=cur?.id===myId;
   const others=pl.filter(p=>p.id!==myId);
   const meImg=me.photoUrl?`<img src="${me.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:13px;font-weight:800;color:white">${(me.name||'?')[0].toUpperCase()}</span>`:`<span>${(me.name||'?')[0].toUpperCase()}</span>`;
-  // видаляємо timer-display із заголовка
   let hdr=`<div class="game-info"><div class="move-display">Хід: <span>${r.game.current+1}/${pl.length}</span> 👁</div></div><div class="players-top"><div class="player-card ${isMy?'active':''}"><div class="player-avatar" style="border-color:${me.color};background:${me.color}22;color:${me.color};position:relative">${meImg}${isMy?'<div class="crown">👑</div>':''}</div><div class="player-info"><div class="player-name">${me.name} ${isMy?'(Ви)':''}</div><div class="player-rank">${me.colorName}</div><div class="player-money">$ ${me.money.toLocaleString()}</div><div class="player-property">🏠 ${(me.props||[]).length}</div></div></div>`;
   if(others.length){
     others.forEach(p=>{
