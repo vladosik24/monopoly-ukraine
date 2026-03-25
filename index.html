@@ -148,12 +148,12 @@ select option{background:var(--bg-main)}
 .btn-exit:active{transform:scale(.95)}.timer-bar{height:2px;background:rgba(255,255,255,.08);flex-shrink:0}
 .timer-fill{height:100%;background:var(--gold);transition:width 1s linear;width:100%}
 
-/* 🔴 ОПТИМІЗОВАНО ДЛЯ TELEGRAM MINI APPS */
+/* 🔴 ЗБІЛЬШЕНІ КВАДРАТИКИ - ОПТИМІЗОВАНО */
 .game-main{
   flex:1;
   display:grid;
-  grid-template-columns: minmax(24px, 4.5vw) minmax(320px, 91vw) minmax(24px, 4.5vw);
-  grid-template-rows: minmax(34px, 6.5vw) 1fr minmax(34px, 6.5vw);
+  grid-template-columns: minmax(28px, 5vw) minmax(300px, 90vw) minmax(28px, 5vw);
+  grid-template-rows: minmax(40px, 7.5vw) 1fr minmax(40px, 7.5vw);
   gap:3px;
   padding:3px;
   overflow:hidden;
@@ -168,22 +168,22 @@ select option{background:var(--bg-main)}
 .board-side.vertical{flex-direction:column}
 .board-side.vertical.left{grid-column:1;grid-row:2}
 .board-side.vertical.right{grid-column:3;grid-row:2}
-.cell{background:var(--bg-panel);border:1px solid rgba(45,212,191,.3);border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1px;position:relative;flex:1;min-width:0;min-height:0;cursor:pointer;transition:.15s;overflow:hidden}
+.cell{background:var(--bg-panel);border:1px solid rgba(45,212,191,.3);border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;position:relative;flex:1;min-width:0;min-height:0;cursor:pointer;transition:.15s;overflow:hidden}
 .cell:active{transform:scale(.95)}
 .cell.corner{background:var(--bg-main);border-color:var(--accent);border-width:1.5px}
 .cell-color-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;z-index:2}
 .board-side.vertical .cell{transform:none !important}
 .board-side.vertical .cell > *{transform:none !important}
-.cell-icon{font-size:clamp(7px,1.6vw,11px);margin-bottom:0;line-height:1}
-.cell-name{font-size:clamp(3.5px,0.85vw,5.5px);text-align:center;color:var(--text);font-weight:700;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;word-break:break-word}
-.cell-price{font-size:clamp(3.5px,0.85vw,5.5px);color:var(--gold);font-weight:800;margin-top:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.cell-icon{font-size:clamp(9px,2vw,13px);margin-bottom:1px;line-height:1}
+.cell-name{font-size:clamp(4px,1vw,6.5px);text-align:center;color:var(--text);font-weight:700;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;word-break:break-word}
+.cell-price{font-size:clamp(4px,1vw,6.5px);color:var(--gold);font-weight:800;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 .cell-owner{position:absolute;bottom:1px;left:1px;right:1px;height:2px;border-radius:1px;z-index:2}
 .tokens{position:absolute;top:1px;left:1px;right:1px;display:flex;justify-content:center;gap:1px;z-index:10;pointer-events:none}
-.tok{width:clamp(5px,1.2vw,7px);height:clamp(5px,1.2vw,7px);border-radius:50%;border:1px solid white;box-shadow:0 0 0 1px rgba(0,0,0,.9);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.tok{width:clamp(6px,1.4vw,8px);height:clamp(6px,1.4vw,8px);border-radius:50%;border:1px solid white;box-shadow:0 0 0 1px rgba(0,0,0,.9);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .tok img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.tok-ltr{font-size:clamp(2px,0.55vw,4px);font-weight:900;color:white;line-height:1}
+.tok-ltr{font-size:clamp(2.5px,0.65vw,4.5px);font-weight:900;color:white;line-height:1}
 .houses{position:absolute;bottom:3px;left:0;right:0;display:flex;justify-content:center;gap:1px;z-index:3}
-.house-dot{width:clamp(2px,0.45vw,3px);height:clamp(2px,0.45vw,3px);border-radius:50%}
+.house-dot{width:clamp(2.5px,0.55vw,3.5px);height:clamp(2.5px,0.55vw,3.5px);border-radius:50%}
 
 .game-center{
   grid-column:2;
@@ -239,8 +239,8 @@ select option{background:var(--bg-main)}
 
 @media (max-width:768px){
   .game-main{
-    grid-template-columns: minmax(20px, 4vw) minmax(280px, 92vw) minmax(20px, 4vw);
-    grid-template-rows: minmax(32px, 6vw) 1fr minmax(32px, 6vw);
+    grid-template-columns: minmax(24px, 4.5vw) minmax(260px, 91vw) minmax(24px, 4.5vw);
+    grid-template-rows: minmax(38px, 7vw) 1fr minmax(38px, 7vw);
   }
   .game-center{min-width:0}
   .game-log{padding:2px;font-size:7px}  .chat-messages{max-height:32px;padding:2px}
@@ -251,9 +251,9 @@ select option{background:var(--bg-main)}
   .player-name{font-size:8px}
   .player-money{font-size:7px}
   .btn-exit{padding:4px 8px;font-size:9px}
-  .cell-icon{font-size:clamp(6.5px,1.5vw,10px)}
-  .cell-name{font-size:clamp(3px,0.8vw,5px)}
-  .cell-price{font-size:clamp(3px,0.8vw,5px)}
+  .cell-icon{font-size:clamp(8px,1.8vw,11px)}
+  .cell-name{font-size:clamp(3.5px,0.9vw,6px)}
+  .cell-price{font-size:clamp(3.5px,0.9vw,6px)}
   .dice{width:28px;height:28px}
   .btn-roll{padding:6px 12px;font-size:9px}
   .game-header{padding:3px 6px;gap:3px;min-height:34px}
