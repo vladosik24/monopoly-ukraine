@@ -47,7 +47,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text)
 .room-row{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(45,212,191,.1);cursor:pointer;transition:background .15s;gap:8px}
 .room-row:active{background:rgba(45,212,191,.05)}
 .slots{display:flex;gap:5px;flex:1;align-items:center}
-.slot{width:42px;height:42px;border-radius:50%;border:2px solid rgba(45,212,191,.2);background:rgba(45,212,191,.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative}.slot.filled{border-color:rgba(45,212,191,.5)}.slot img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.slot{width:42px;height:42px;border-radius:50%;border:2px solid rgba(45,212,191,.2);background:rgba(45,212,191,.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative}.slot.filled{border-color:rgba(45,212,191,.5)}
+.slot img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .slot-ltr{font-size:15px;font-weight:800;color:rgba(255,255,255,.5)}
 .slot.empty .slot-ltr{font-size:20px;color:rgba(255,255,255,.1)}
 .row-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
@@ -96,7 +97,8 @@ select option{background:var(--bg-main)}
 .srow{display:flex;align-items:center;gap:12px;padding:13px;border-bottom:1px solid rgba(45,212,191,.1)}
 .sinfo{flex:1;min-width:0}
 .sname{font-weight:700;font-size:14px}.sdesc{font-size:11px;color:var(--sub);margin-top:3px;line-height:1.4}
-.toggle{width:44px;height:24px;border-radius:12px;background:rgba(255,255,255,.15);position:relative;cursor:pointer;transition:.3s;flex-shrink:0}.toggle.on{background:var(--green)}
+.toggle{width:44px;height:24px;border-radius:12px;background:rgba(255,255,255,.15);position:relative;cursor:pointer;transition:.3s;flex-shrink:0}
+.toggle.on{background:var(--green)}
 .toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:.3s}
 .toggle.on::after{left:23px}
 .theme-dots{display:flex;gap:10px;padding:13px}
@@ -145,14 +147,15 @@ select option{background:var(--bg-main)}
 .player-money{font-family:'Unbounded',sans-serif;font-size:8px;color:var(--gold);margin-top:1px}.player-property{font-size:6px;color:var(--sub);display:flex;align-items:center;gap:2px;margin-top:1px}
 .btn-exit{background:linear-gradient(135deg,var(--green),#16a34a);color:white;border:none;border-radius:7px;padding:5px 10px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;cursor:pointer;text-transform:uppercase;flex-shrink:0}
 .btn-exit:active{transform:scale(.95)}
-.timer-bar{height:2px;background:rgba(255,255,255,.08);flex-shrink:0}.timer-fill{height:100%;background:var(--gold);transition:width 1s linear;width:100%}
+.timer-bar{height:2px;background:rgba(255,255,255,.08);flex-shrink:0}
+.timer-fill{height:100%;background:var(--gold);transition:width 1s linear;width:100%}
 
-/* 🔴 РОЗШИРЕНО ВЕРХНІ/НИЖНІ КЛІТИНКИ ТА ЛОГ */
+/* 🔴 ОНОВЛЕНА СІТКА: ширша центральна колонка, бічні вузькі, верх/низ вищі */
 .game-main{
   flex:1;
   display:grid;
-  grid-template-columns: minmax(52px,12vw) minmax(200px,48vw) minmax(52px,12vw);
-  grid-template-rows: minmax(45px,9vw) 1fr minmax(45px,9vw);
+  grid-template-columns: minmax(52px, 11vw) minmax(240px, 55vw) minmax(52px, 11vw);
+  grid-template-rows: minmax(40px, 7vw) 1fr minmax(40px, 7vw);
   gap:3px;
   padding:3px;
   overflow:hidden;
@@ -194,7 +197,8 @@ select option{background:var(--bg-main)}
   overflow:hidden;
   border:1.5px solid var(--accent2);
   min-width:0;
-  max-width:100%;}
+  max-width:100%;
+}
 .game-log{
   flex:1;
   overflow-y:auto;
@@ -243,7 +247,8 @@ select option{background:var(--bg-main)}
   background:var(--accent);
   border:none;
   color:var(--bg-dark);
-  font-size:11px;  cursor:pointer;
+  font-size:11px;
+  cursor:pointer;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -278,12 +283,12 @@ select option{background:var(--bg-main)}
 
 @media (max-width:768px){
   .game-main{
-    grid-template-columns: minmax(44px,13vw) minmax(160px,50vw) minmax(44px,13vw);
-    grid-template-rows: minmax(38px,8vw) 1fr minmax(38px,8vw);
+    grid-template-columns: minmax(44px, 12vw) minmax(180px, 55vw) minmax(44px, 12vw);
+    grid-template-rows: minmax(32px, 8vw) 1fr minmax(32px, 8vw);
   }
   .game-center{min-width:0}
   .game-log{padding:2px;font-size:7px}
-  .chat-messages{max-height:28px;padding:2px}
+  .chat-messages{max-height:35px;padding:2px}
   .chat-input{font-size:8px;padding:2px 4px}
   .chat-send{width:22px;height:22px;font-size:10px}
   .player-card{min-width:100px;padding:3px 5px}
@@ -292,7 +297,8 @@ select option{background:var(--bg-main)}
   .player-money{font-size:7px}
   .btn-exit{padding:4px 8px;font-size:9px}
   .cell-icon{font-size:clamp(7px,1.6vw,10px)}
-  .cell-name{font-size:clamp(3px,0.9vw,5px)}  .cell-price{font-size:clamp(3px,0.9vw,5px)}
+  .cell-name{font-size:clamp(3px,0.9vw,5px)}
+  .cell-price{font-size:clamp(3px,0.9vw,5px)}
   .dice{width:28px;height:28px}
   .btn-roll{padding:6px 12px;font-size:9px}
   .game-header{padding:3px 6px;gap:3px;min-height:34px}
@@ -341,7 +347,8 @@ select option{background:var(--bg-main)}
     <div id="myRoomsList"></div>
   </div>
   <div class="tc" id="tc-league" style="display:none"><div class="lgstrip" id="lgstrip"></div><div id="lgHdr"></div><div id="lgList"></div></div>
-  <div class="tc" id="tc-clans" style="display:none"><div id="clansContent"><div style="text-align:center;padding:40px;color:var(--sub)">⏳</div></div></div>  <div class="tc" id="tc-join" style="display:none"><div style="padding:12px 14px"><label class="lbl">Ваше ім'я</label><input id="pNj" placeholder="Введіть ім'я" maxlength="20"><label class="lbl">Код кімнати</label><input id="rC" placeholder="GAME-XXXX" maxlength="9" style="text-transform:uppercase;letter-spacing:2px"><button class="btn b-gold" onclick="joinByCode()">🚪 Приєднатися</button></div></div>
+  <div class="tc" id="tc-clans" style="display:none"><div id="clansContent"><div style="text-align:center;padding:40px;color:var(--sub)">⏳</div></div></div>
+  <div class="tc" id="tc-join" style="display:none"><div style="padding:12px 14px"><label class="lbl">Ваше ім'я</label><input id="pNj" placeholder="Введіть ім'я" maxlength="20"><label class="lbl">Код кімнати</label><input id="rC" placeholder="GAME-XXXX" maxlength="9" style="text-transform:uppercase;letter-spacing:2px"><button class="btn b-gold" onclick="joinByCode()">🚪 Приєднатися</button></div></div>
 </div>
 
 <div class="overlay" id="createModal"><div class="sheet"><div class="sh-handle"></div><div class="sh-title">🎮 НОВА ГРА</div><div class="mg"><div class="mc" onclick="sm('classic',this)"><div class="me-ic">🎲</div><div class="mn">Класичний</div><div class="md">2–4 гравці</div></div><div class="mc" onclick="sm('teams',this)"><div class="me-ic">👥</div><div class="mn">Команди</div><div class="md">2×2</div></div><div class="mc" onclick="sm('vsbot',this)"><div class="me-ic">🤖</div><div class="mn">Проти бота</div><div class="md">1 vs боти</div></div><div class="mc" onclick="sm('mixed',this)"><div class="me-ic">🎯</div><div class="mn">Змішаний</div><div class="md">Гравці+боти</div></div></div><label class="lbl">Ваше ім'я</label><input id="pN" placeholder="Введіть ім'я" maxlength="20"><div id="bcw" style="display:none"><label class="lbl">Кількість ботів</label><select id="bC"><option value="1">1 бот</option><option value="2">2 боти</option><option value="3">3 боти</option></select></div><button class="btn b-gold" onclick="createRoom()">🎮 Створити</button><div class="dv">або</div><button class="btn b-surf" onclick="closeCreate()">Скасувати</button></div></div>
@@ -390,6 +397,7 @@ const LEAGUES=[
   {id:'oligarch',name:'Олігарх',emoji:'👑',min:800,color:'#fbbf24'},
 ];
 function getLeague(s){let l=LEAGUES[0];for(const lg of LEAGUES){if(s>=lg.min)l=lg}return l}
+
 // ========== КОНСТАНТИ ==========
 const COLORS=['#3b82f6','#ef4444','#22c55e','#f59e0b'];
 const CNAMES=['🔵 Синій','🔴 Червоний','🟢 Зелений','🟡 Жовтий'];
@@ -439,7 +447,8 @@ const MAP_CLASSIC = [
   {name:'Дніпро',short:'Дніпро',price:3000,color:'#15803d',emoji:'🌊',pos:32},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:33},
   {name:'Кривий Ріг',short:'Кр.Ріг',price:3200,color:'#15803d',emoji:'🏭',pos:34},
-  {name:'Вокзал Харків',short:'Вокзал',price:2000,type:'station',emoji:'🚂',pos:35},  {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:36},
+  {name:'Вокзал Харків',short:'Вокзал',price:2000,type:'station',emoji:'🚂',pos:35},
+  {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:36},
   {name:'Харків',short:'Харків',price:3500,color:'#6d28d9',emoji:'🎓',pos:37},
   {name:'Податок',short:'Податок',type:'tax',amount:1000,emoji:'💸',pos:38},
   {name:'Київ',short:'Київ',price:4000,color:'#6d28d9',emoji:'🏛',pos:39}
@@ -488,7 +497,8 @@ const MAP_FRUIT = [
   {name:'Золотий Кавун',short:'Золот.',price:3900,color:'#be185d',emoji:'🏆',pos:39}
 ];
 
-const MAP_INTERNATIONAL = [  {name:"СТАРТ", short:"СТАРТ", type:"corner", emoji:"🏁", pos:0},
+const MAP_INTERNATIONAL = [
+  {name:"СТАРТ", short:"СТАРТ", type:"corner", emoji:"🏁", pos:0},
   {name:"Токіо", short:"Токіо", price:460000, color:"#b45309", emoji:"🗼", pos:1},
   {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:2},
   {name:"Дубай", short:"Дубай", price:460000, color:"#b45309", emoji:"🏜️", pos:3},
@@ -537,7 +547,8 @@ const MAP_BUSINESS = [
   {name:"Шаурма", short:"Шаурма", price:460000, color:"#b45309", emoji:"🌯", pos:3},
   {name:"ПОДАТОК", short:"ПОДАТОК", type:"tax", amount:200000, emoji:"💸", pos:4},
   {name:"БІЗНЕС-ЦЕНТР", short:"БІЗНЕС-Ц", price:1300000, type:"station", emoji:"🏢", pos:5},
-  {name:"Пейнтбольний клуб", short:"Пейнтбол", price:780000, color:"#1d4ed8", emoji:"🎯", pos:6},  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:7},
+  {name:"Пейнтбольний клуб", short:"Пейнтбол", price:780000, color:"#1d4ed8", emoji:"🎯", pos:6},
+  {name:"ШАНС", short:"ШАНС", type:"chance", emoji:"❓", pos:7},
   {name:"Ігроіндустрія", short:"Ігроіндустр.", price:780000, color:"#1d4ed8", emoji:"🎮", pos:8},
   {name:"Мікробіологічна промисловість", short:"Мікробіол.", price:900000, color:"#1d4ed8", emoji:"🧫", pos:9},
   {name:"В'ЯЗНИЦЯ", short:"В'ЯЗНИЦЯ", type:"jail", emoji:"⛓", pos:10},
@@ -586,7 +597,8 @@ let gameStartTime=null, gameTimerInterval=null;
 let myClan=null, clanChatListener=null;
 let myColor = COLORS[0];
 
-// ========== ДОПОМІЖНІ ФУНКЦІЇ ==========function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+// ========== ДОПОМІЖНІ ФУНКЦІЇ ==========
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function toast(msg,ms=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),ms)}
 function openCreate(){document.getElementById('createModal').classList.add('on')}
 function closeCreate(){document.getElementById('createModal').classList.remove('on')}
@@ -635,7 +647,8 @@ async function loadProfile(){
   const lg=getLeague(myScore);
   document.getElementById('profLeague').textContent=lg.emoji+' '+lg.name;
   document.getElementById('goldAmt').textContent=myGold;
-  if(myClan){    const clanSnap = await db.ref(`clans/${myClan}/name`).once('value');
+  if(myClan){
+    const clanSnap = await db.ref(`clans/${myClan}/name`).once('value');
     document.getElementById('clanBadge').textContent = clanSnap.val() || 'Клан';
   } else {
     document.getElementById('clanBadge').textContent = '—';
@@ -684,7 +697,8 @@ async function showLeague(idx){
     const isMe=p.name===myName;
     const av=p.photoUrl?`<div class="rav" style="border-color:${l.color}"><img src="${p.photoUrl}" onerror="this.parentElement.textContent='${(p.name||'?')[0].toUpperCase()}'"></div>`:`<div class="rav" style="border-color:${l.color};background:${l.color}22;color:${l.color}">${(p.name||'?')[0].toUpperCase()}</div>`;
     return`<div class="rank-row ${isMe?'me':''}"><div class="rnum ${nc}">${i+1}</div>${av}<div class="ri"><div class="rname">${p.name||'?'}${isMe?' (Ви)':''}</div><div class="rsub">🏆 ${p.wins||0} · 🪙 ${p.gold||0}</div></div><div class="rscore" style="color:${l.color}">${p.score||0}</div></div>`;
-  }).join('');}
+  }).join('');
+}
 
 // ========== КІМНАТИ ==========
 function mkSlots(r,sz=42){
@@ -733,7 +747,8 @@ async function loadMyRooms(){
   }).join('');
 }
 async function adminRejoin(code){
-  myName=['pN','pNj'].map(id=>document.getElementById(id)?.value?.trim()).find(v=>v)||TGU?.first_name||'Гравець';  const snap=await db.ref('rooms/'+code).once('value');
+  myName=['pN','pNj'].map(id=>document.getElementById(id)?.value?.trim()).find(v=>v)||TGU?.first_name||'Гравець';
+  const snap=await db.ref('rooms/'+code).once('value');
   const r=snap.val();if(!r){toast('❌ Не знайдено');return}
   PROPS=MAPS[r.server||'classic']||MAP_CLASSIC;
   if(r.players&&r.players[myId]){
@@ -782,7 +797,8 @@ async function createRoom(){
 async function quickJoin(code){
   myName=['pN','pNj'].map(id=>document.getElementById(id)?.value?.trim()).find(v=>v)||TGU?.first_name||'Гравець';
   await joinToRoom(code);
-}async function joinByCode(){
+}
+async function joinByCode(){
   myName=document.getElementById('pNj').value.trim()||TGU?.first_name||'Гравець';
   const code=document.getElementById('rC').value.trim().toUpperCase();
   if(!code){toast('⚠️ Введіть код');return}
@@ -831,7 +847,8 @@ function listenRoom(){
     if(r.status==='waiting')renderLobby(r);
     else if(r.status==='playing')renderGame(r);
     else if(r.status==='finished')renderWinner(r);
-  });}
+  });
+}
 function renderLobby(r){
   const pl=Object.values(r.players||{});
   const hostId=r.hostId||(pl.find(p=>!p.isBot)?.id)||null;
@@ -880,7 +897,8 @@ function startGameTimer(){
   // таймер текстового відображення прибрано
 }
 function stopGameTimer(){if(gameTimerInterval){clearInterval(gameTimerInterval); gameTimerInterval=null; gameStartTime=null;}}
-function buildBoard(){  if(boardBuilt)return;boardBuilt=true;
+function buildBoard(){
+  if(boardBuilt)return;boardBuilt=true;
   const top=document.getElementById('boardTop'),bottom=document.getElementById('boardBottom'),left=document.getElementById('boardLeft'),right=document.getElementById('boardRight');
   top.innerHTML='';bottom.innerHTML='';left.innerHTML='';right.innerHTML='';
   for(let i=0;i<10;i++)top.appendChild(createCell(PROPS[i]));
@@ -929,7 +947,8 @@ function renderGame(r){
       const pImg=p.photoUrl?`<img src="${p.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:10px;font-weight:800;color:white">${p.isBot?'🤖':(p.name||'?')[0].toUpperCase()}</span>`:`<span>${p.isBot?'🤖':(p.name||'?')[0].toUpperCase()}</span>`;
       hdr+=`<div class="player-card ${isAct?'active':''}"><div class="player-avatar" style="border-color:${p.color};background:${p.color}22;color:${p.color};position:relative">${pImg}</div><div class="player-info"><div class="player-name">${p.name}</div><div class="player-rank">${p.colorName}</div><div class="player-money">$ ${(p.money/1000).toFixed(1)}k</div><div class="player-property">🏠 ${(p.props||[]).length}</div></div></div>`;
     });
-  }  hdr+=`</div><button class="btn-exit" onclick="leaveRoom()">Вийти</button>`;
+  }
+  hdr+=`</div><button class="btn-exit" onclick="leaveRoom()">Вийти</button>`;
   document.getElementById('gameHeader').innerHTML=hdr;
 
   document.querySelectorAll('.tokens').forEach(el=>el.innerHTML='');
@@ -978,7 +997,8 @@ function renderDice(id,value){
     for(let j=0;j<3;j++){
       const dot=document.createElement('div');
       if(pattern.some(([r,c])=>r===i&&c===j)) dot.className='dice-dot';
-      dice.appendChild(dot);    }
+      dice.appendChild(dot);
+    }
   }
 }
 function renderPropBuy(r,pl,cur,isMy){
@@ -1027,7 +1047,8 @@ function addLog(html){
   const p=document.createElement('p');p.innerHTML=html;
   log.appendChild(p);
   while(log.children.length>40)log.removeChild(log.firstChild);
-  log.scrollTop=log.scrollHeight;}
+  log.scrollTop=log.scrollHeight;
+}
 async function rollDice(){
   if(!db||!myRoom)return;stopTimer();
   const snap=await db.ref('rooms/'+myRoom).once('value');
@@ -1076,7 +1097,8 @@ async function buildHouse(pos,cost){
   const pl=Object.values(r.players||{});
   const me=pl.find(p=>p.id===myId);
   if(!me||me.money<cost){toast('❌ Недостатньо!');hp('heavy');return}
-  if(!hasMonopoly(pl,myId,pos)){toast('❌ Потрібна монополія!');hp('heavy');return}  const houses={...(me.houses||{})};
+  if(!hasMonopoly(pl,myId,pos)){toast('❌ Потрібна монополія!');hp('heavy');return}
+  const houses={...(me.houses||{})};
   houses[pos]=(houses[pos]||0)+1;
   if(houses[pos]>4){toast('❌ Максимум 4!');return}
   await db.ref('rooms/'+myRoom+'/players/'+myId).update({houses,money:me.money-cost});
@@ -1125,6 +1147,7 @@ async function renderWinner(r){
   showScreen('s-win');
   if(isMe){hp('heavy');tg?.HapticFeedback?.notificationOccurred('success')}
 }
+
 // ========== КЛАНИ ==========
 async function loadClans(){
   const container = document.getElementById('clansContent');
@@ -1174,7 +1197,8 @@ function showCreateClan(){
   if(!tag) return;
   createClan(name, tag);
 }
-async function createClan(name, tag){  try{
+async function createClan(name, tag){
+  try{
     if(!db) return;
     const clanId = 'clan_'+Date.now()+'_'+Math.random().toString(36).substr(2,4);
     const newClan = {
@@ -1223,7 +1247,8 @@ async function leaveClan(){
     if(!clan) return;
     let members = clan.members || [];
     members = members.filter(id=>id!==myId);
-    await db.ref(`clans/${myClan}/members`).set(members);    await db.ref(`players/${myId}/clanId`).remove();
+    await db.ref(`clans/${myClan}/members`).set(members);
+    await db.ref(`players/${myId}/clanId`).remove();
     if(clan.ownerId===myId && members.length>0){
       const newOwner = members[0];
       await db.ref(`clans/${myClan}/ownerId`).set(newOwner);
@@ -1272,7 +1297,8 @@ function listenClanChat(clanId){
 }
 async function sendClanChat(){
   if(!myClan) return;
-  const inp = document.getElementById('clanChatInput');  const text = inp.value.trim();
+  const inp = document.getElementById('clanChatInput');
+  const text = inp.value.trim();
   if(!text) return;
   inp.value='';
   const me = {uid:myId, name:myName, color:myColor, text, ts:Date.now()};
