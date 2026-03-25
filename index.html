@@ -2,7 +2,9 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Монополія Україна</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
@@ -45,9 +47,9 @@ input,textarea,select{font-size:16px !important}
 .room-row:active{background:rgba(45,212,191,.05)}
 .slots{display:flex;gap:5px;flex:1;align-items:center}
 .slot{width:42px;height:42px;border-radius:50%;border:2px solid rgba(45,212,191,.2);background:rgba(45,212,191,.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative}
-.slot.filled{border-color:rgba(45,212,191,.5)}
-.slot img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.slot-ltr{font-size:15px;font-weight:800;color:rgba(255,255,255,.5)}.slot.empty .slot-ltr{font-size:20px;color:rgba(255,255,255,.1)}
+.slot.filled{border-color:rgba(45,212,191,.5)}.slot img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.slot-ltr{font-size:15px;font-weight:800;color:rgba(255,255,255,.5)}
+.slot.empty .slot-ltr{font-size:20px;color:rgba(255,255,255,.1)}
 .row-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .arr{font-size:22px;font-weight:900;color:var(--gold)}
 .lgstrip{display:flex;gap:6px;padding:8px 14px;overflow-x:auto}
@@ -94,9 +96,9 @@ select option{background:var(--bg-main)}
 .srow{display:flex;align-items:center;gap:12px;padding:13px;border-bottom:1px solid rgba(45,212,191,.1)}
 .sinfo{flex:1;min-width:0}
 .sname{font-weight:700;font-size:14px}
-.sdesc{font-size:11px;color:var(--sub);margin-top:3px;line-height:1.4}
-.toggle{width:44px;height:24px;border-radius:12px;background:rgba(255,255,255,.15);position:relative;cursor:pointer;transition:.3s;flex-shrink:0}
-.toggle.on{background:var(--green)}.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:.3s}
+.sdesc{font-size:11px;color:var(--sub);margin-top:3px;line-height:1.4}.toggle{width:44px;height:24px;border-radius:12px;background:rgba(255,255,255,.15);position:relative;cursor:pointer;transition:.3s;flex-shrink:0}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:.3s}
 .toggle.on::after{left:23px}
 .theme-dots{display:flex;gap:10px;padding:13px}
 .tdot{width:32px;height:32px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.2s}
@@ -143,15 +145,15 @@ select option{background:var(--bg-main)}
 .player-money{font-family:'Unbounded',sans-serif;font-size:8px;color:var(--gold);margin-top:1px}
 .player-property{font-size:6px;color:var(--sub);display:flex;align-items:center;gap:2px;margin-top:1px}
 .btn-exit{background:linear-gradient(135deg,var(--green),#16a34a);color:white;border:none;border-radius:7px;padding:5px 10px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;cursor:pointer;text-transform:uppercase;flex-shrink:0}
-.btn-exit:active{transform:scale(.95)}
-.timer-bar{height:2px;background:rgba(255,255,255,.08);flex-shrink:0}
+.btn-exit:active{transform:scale(.95)}.timer-bar{height:2px;background:rgba(255,255,255,.08);flex-shrink:0}
 .timer-fill{height:100%;background:var(--gold);transition:width 1s linear;width:100%}
-/* 🔴 МАКСИМАЛЬНО РОЗШИРЕНІ ВЕРХНІ/НИЖНІ КЛІТИНКИ - ОПТИМАЛЬНО */
+
+/* 🔴 ОПТИМІЗОВАНО ДЛЯ TELEGRAM MINI APPS */
 .game-main{
   flex:1;
   display:grid;
-  grid-template-columns: minmax(28px,7vw) minmax(380px,86vw) minmax(28px,7vw);
-  grid-template-rows: minmax(36px,7vw) 1fr minmax(36px,7vw);
+  grid-template-columns: minmax(24px, 4.5vw) minmax(320px, 91vw) minmax(24px, 4.5vw);
+  grid-template-rows: minmax(34px, 6.5vw) 1fr minmax(34px, 6.5vw);
   gap:3px;
   padding:3px;
   overflow:hidden;
@@ -172,16 +174,16 @@ select option{background:var(--bg-main)}
 .cell-color-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;z-index:2}
 .board-side.vertical .cell{transform:none !important}
 .board-side.vertical .cell > *{transform:none !important}
-.cell-icon{font-size:clamp(8px,1.8vw,12px);margin-bottom:0;line-height:1}
-.cell-name{font-size:clamp(4px,1vw,6px);text-align:center;color:var(--text);font-weight:700;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
-.cell-price{font-size:clamp(4px,1vw,6px);color:var(--gold);font-weight:800;margin-top:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.cell-icon{font-size:clamp(7px,1.6vw,11px);margin-bottom:0;line-height:1}
+.cell-name{font-size:clamp(3.5px,0.85vw,5.5px);text-align:center;color:var(--text);font-weight:700;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;word-break:break-word}
+.cell-price{font-size:clamp(3.5px,0.85vw,5.5px);color:var(--gold);font-weight:800;margin-top:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 .cell-owner{position:absolute;bottom:1px;left:1px;right:1px;height:2px;border-radius:1px;z-index:2}
 .tokens{position:absolute;top:1px;left:1px;right:1px;display:flex;justify-content:center;gap:1px;z-index:10;pointer-events:none}
-.tok{width:clamp(5px,1.3vw,7px);height:clamp(5px,1.3vw,7px);border-radius:50%;border:1px solid white;box-shadow:0 0 0 1px rgba(0,0,0,.9);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.tok{width:clamp(5px,1.2vw,7px);height:clamp(5px,1.2vw,7px);border-radius:50%;border:1px solid white;box-shadow:0 0 0 1px rgba(0,0,0,.9);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .tok img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.tok-ltr{font-size:clamp(2px,0.6vw,4px);font-weight:900;color:white;line-height:1}
+.tok-ltr{font-size:clamp(2px,0.55vw,4px);font-weight:900;color:white;line-height:1}
 .houses{position:absolute;bottom:3px;left:0;right:0;display:flex;justify-content:center;gap:1px;z-index:3}
-.house-dot{width:clamp(2px,0.5vw,3px);height:clamp(2px,0.5vw,3px);border-radius:50%}
+.house-dot{width:clamp(2px,0.45vw,3px);height:clamp(2px,0.45vw,3px);border-radius:50%}
 
 .game-center{
   grid-column:2;
@@ -192,9 +194,9 @@ select option{background:var(--bg-main)}
   flex-direction:column;
   overflow:hidden;
   border:1.5px solid var(--accent2);
-  min-width:0;
-  width:100%;
-}.game-log{flex:1;overflow-y:auto;padding:3px;font-size:8px;line-height:1.25;background:rgba(0,0,0,.2)}
+  min-width:0;  width:100%;
+}
+.game-log{flex:1;overflow-y:auto;padding:3px;font-size:8px;line-height:1.25;background:rgba(0,0,0,.2)}
 .game-log p{margin:1px 0;padding:2px 3px;background:rgba(45,212,191,.05);border-radius:3px;border-left:1.5px solid var(--accent)}
 .log-player{font-weight:700}
 .log-action{color:var(--text)}
@@ -237,21 +239,21 @@ select option{background:var(--bg-main)}
 
 @media (max-width:768px){
   .game-main{
-    grid-template-columns: minmax(24px,6vw) minmax(320px,84vw) minmax(24px,6vw);
-    grid-template-rows: minmax(34px,6.5vw) 1fr minmax(34px,6.5vw);
+    grid-template-columns: minmax(20px, 4vw) minmax(280px, 92vw) minmax(20px, 4vw);
+    grid-template-rows: minmax(32px, 6vw) 1fr minmax(32px, 6vw);
   }
   .game-center{min-width:0}
-  .game-log{padding:2px;font-size:7px}
-  .chat-messages{max-height:32px;padding:2px}
-  .chat-input{font-size:8px;padding:2px 4px}  .chat-send{width:22px;height:22px;font-size:10px}
+  .game-log{padding:2px;font-size:7px}  .chat-messages{max-height:32px;padding:2px}
+  .chat-input{font-size:8px;padding:2px 4px}
+  .chat-send{width:22px;height:22px;font-size:10px}
   .player-card{min-width:100px;padding:3px 5px}
   .player-avatar{width:26px;height:26px}
   .player-name{font-size:8px}
   .player-money{font-size:7px}
   .btn-exit{padding:4px 8px;font-size:9px}
-  .cell-icon{font-size:clamp(7px,1.6vw,10px)}
-  .cell-name{font-size:clamp(3px,0.9vw,5px)}
-  .cell-price{font-size:clamp(3px,0.9vw,5px)}
+  .cell-icon{font-size:clamp(6.5px,1.5vw,10px)}
+  .cell-name{font-size:clamp(3px,0.8vw,5px)}
+  .cell-price{font-size:clamp(3px,0.8vw,5px)}
   .dice{width:28px;height:28px}
   .btn-roll{padding:6px 12px;font-size:9px}
   .game-header{padding:3px 6px;gap:3px;min-height:34px}
@@ -290,9 +292,9 @@ select option{background:var(--bg-main)}
     <button class="mtab" onclick="mTab('join',this)">КОД</button>
   </div>
   <div class="tc" id="tc-games">
-    <div class="rooms-hdr"><span class="rooms-lbl">Відкриті кімнати</span><button class="ref-btn" onclick="loadRooms()">↺</button></div>
-    <div id="roomsList"><div style="text-align:center;padding:40px;color:var(--sub)">⏳</div></div>
-  </div>  <div class="tc" id="tc-active" style="display:none">
+    <div class="rooms-hdr"><span class="rooms-lbl">Відкриті кімнати</span><button class="ref-btn" onclick="loadRooms()">↺</button></div>    <div id="roomsList"><div style="text-align:center;padding:40px;color:var(--sub)">⏳</div></div>
+  </div>
+  <div class="tc" id="tc-active" style="display:none">
     <div class="rooms-hdr"><span class="rooms-lbl">Мої кімнати</span><div style="display:flex;gap:5px"><button class="ref-btn" style="color:var(--red)" onclick="adminDeleteAll()">🗑 Всі</button><button class="ref-btn" onclick="loadMyRooms()">↺</button></div></div>
     <div id="myRoomsList"></div>
   </div>
@@ -339,9 +341,9 @@ function initFirebase(){
       try{
         firebase.initializeApp(FBC);
         db = firebase.database();
-        firebaseReady = true;
-        console.log('✅ Firebase ready');
-        resolve();        return;
+        firebaseReady = true;        console.log('✅ Firebase ready');
+        resolve();
+        return;
       }catch(e){ console.warn('⚠️ Firebase init error:', e); }
     }
     const s1 = document.createElement('script');
@@ -388,9 +390,9 @@ const MAP_CLASSIC = [
   {name:'Луцьк',short:'Луцьк',price:600,color:'#b45309',emoji:'🏙',pos:1},
   {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:2},
   {name:'Рівне',short:'Рівне',price:600,color:'#b45309',emoji:'🌆',pos:3},
-  {name:'Податок',short:'Податок',type:'tax',amount:2000,emoji:'💸',pos:4},
-  {name:'Вокзал Київ',short:'Вокзал',price:2000,type:'station',emoji:'🚂',pos:5},
-  {name:'Житомир',short:'Житомир',price:1000,color:'#1d4ed8',emoji:'🏘',pos:6},  {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:7},
+  {name:'Податок',short:'Податок',type:'tax',amount:2000,emoji:'💸',pos:4},  {name:'Вокзал Київ',short:'Вокзал',price:2000,type:'station',emoji:'🚂',pos:5},
+  {name:'Житомир',short:'Житомир',price:1000,color:'#1d4ed8',emoji:'🏘',pos:6},
+  {name:'Шанс',short:'?',type:'chance',emoji:'❓',pos:7},
   {name:'Чернігів',short:'Чернігів',price:1000,color:'#1d4ed8',emoji:'⛪',pos:8},
   {name:'Суми',short:'Суми',price:1200,color:'#1d4ed8',emoji:'🌃',pos:9},
   {name:"В'ЯЗНИЦЯ",short:"В'ЯЗН",type:'corner',emoji:'⛓',pos:10},
@@ -437,9 +439,9 @@ let myClan=null, clanChatListener=null, myColor=COLORS[0];
 
 // ========== UI ФУНКЦІЇ ==========
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id)?.classList.add('active'); }
-function openCreate(){ document.getElementById('createModal')?.classList.add('on'); }
-function closeCreate(){ document.getElementById('createModal')?.classList.remove('on'); }
-function openSettings(){ document.getElementById('settingsModal')?.classList.add('on'); }['createModal','settingsModal'].forEach(id=>{ document.getElementById(id)?.addEventListener('click', function(e){ if(e.target===this) this.classList.remove('on'); }); });
+function openCreate(){ document.getElementById('createModal')?.classList.add('on'); }function closeCreate(){ document.getElementById('createModal')?.classList.remove('on'); }
+function openSettings(){ document.getElementById('settingsModal')?.classList.add('on'); }
+['createModal','settingsModal'].forEach(id=>{ document.getElementById(id)?.addEventListener('click', function(e){ if(e.target===this) this.classList.remove('on'); }); });
 
 function setTheme(name, el){
   document.body.setAttribute('data-theme', name);
@@ -486,9 +488,9 @@ async function saveProfile(sc=0,wi=0,go=0){
 
 // ========== КІМНАТИ ==========
 function mkSlots(r, sz=42){
-  const pl = Object.values(r.players||{}).filter(p=>!p.isBot);
-  let s='';
-  for(let i=0;i<4;i++){    const p=pl[i];
+  const pl = Object.values(r.players||{}).filter(p=>!p.isBot);  let s='';
+  for(let i=0;i<4;i++){
+    const p=pl[i];
     if(p){
       const c=p.color||'#3b82f6', ini=(p.name||'?')[0].toUpperCase();
       const img = p.photoUrl ? `<img src="${p.photoUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span style="position:absolute;font-size:${sz*.36}px;font-weight:800;color:white">${ini}</span>` : `<span class="slot-ltr">${ini}</span>`;
@@ -535,9 +537,9 @@ async function loadMyRooms(){
 async function adminRejoin(code){
   myName = ['pN','pNj'].map(id=>document.getElementById(id)?.value?.trim()).find(v=>v) || TGU?.first_name || 'Гравець';
   if(!firebaseReady || !db){ toast('❌ Немає підключення'); return; }
-  try{
-    const snap = await db.ref('rooms/'+code).once('value');
-    const r = snap.val(); if(!r){ toast('❌ Не знайдено'); return; }    PROPS = MAPS[r.server||'classic'] || MAP_CLASSIC;
+  try{    const snap = await db.ref('rooms/'+code).once('value');
+    const r = snap.val(); if(!r){ toast('❌ Не знайдено'); return; }
+    PROPS = MAPS[r.server||'classic'] || MAP_CLASSIC;
     if(r.players && r.players[myId]){
       myRoom=code; selMode=r.mode;
       if(r.status==='waiting') openLobby(r.mode);
@@ -584,9 +586,9 @@ async function createRoom(){
   closeCreate(); openLobby(selMode); hp('medium');
 }
 async function quickJoin(code){ myName=['pN','pNj'].map(id=>document.getElementById(id)?.value?.trim()).find(v=>v)||TGU?.first_name||'Гравець'; await joinToRoom(code); }
-async function joinByCode(){
-  myName = document.getElementById('pNj')?.value?.trim() || TGU?.first_name || 'Гравець';
-  const code = document.getElementById('rC')?.value?.trim().toUpperCase();  if(!code){ toast('⚠️ Введіть код'); return; }
+async function joinByCode(){  myName = document.getElementById('pNj')?.value?.trim() || TGU?.first_name || 'Гравець';
+  const code = document.getElementById('rC')?.value?.trim().toUpperCase();
+  if(!code){ toast('⚠️ Введіть код'); return; }
   await joinToRoom(code);
 }
 async function joinToRoom(code){
@@ -633,9 +635,9 @@ function listenRoom(){
     if(r.status==='waiting') renderLobby(r);
     else if(r.status==='playing') renderGame(r);
     else if(r.status==='finished') renderWinner(r);
-  });
-}
-function renderLobby(r){  const pl = Object.values(r.players||{});
+  });}
+function renderLobby(r){
+  const pl = Object.values(r.players||{});
   const hostId = r.hostId || (pl.find(p=>!p.isBot)?.id) || null;
   const minH = r.mode==='teams' ? 4 : (r.mode==='vsbot'||r.mode==='mixed') ? 1 : 2;
   const hCnt = pl.filter(p=>!p.isBot).length;
@@ -682,9 +684,9 @@ function buildBoard(){
   for(let i=0;i<10;i++) top.appendChild(createCell(PROPS[i]));
   for(let i=10;i<20;i++) right.appendChild(createCell(PROPS[i]));
   for(let i=29;i>=20;i--) bottom.appendChild(createCell(PROPS[i]));
-  for(let i=39;i>=30;i--) left.appendChild(createCell(PROPS[i]));
-}
-function createCell(p){  const div = document.createElement('div');
+  for(let i=39;i>=30;i--) left.appendChild(createCell(PROPS[i]));}
+function createCell(p){
+  const div = document.createElement('div');
   div.className = 'cell' + (p.type==='corner' ? ' corner' : '');
   div.id = 'cell-'+p.pos;
   let html='';
@@ -731,9 +733,9 @@ function renderGame(r){
     const t = document.createElement('div'); t.className='tok'; t.style.background=p.color;
     t.style.boxShadow = `0 0 0 1.5px rgba(0,0,0,.9),0 0 0 2.5px white,0 0 0 3.5px ${p.color}`;
     if(p.photoUrl){ const img=document.createElement('img'); img.src=p.photoUrl; img.onerror=()=>{img.remove(); const s=document.createElement('div'); s.className='tok-ltr'; s.textContent=(p.name||'?')[0].toUpperCase(); t.appendChild(s)}; t.appendChild(img); }
-    else { const s=document.createElement('div'); s.className='tok-ltr'; s.textContent=p.isBot?'🤖':(p.name||'?')[0].toUpperCase(); t.appendChild(s); }
-    cont.appendChild(t);
-  });  document.querySelectorAll('.houses').forEach(el=>el.innerHTML='');
+    else { const s=document.createElement('div'); s.className='tok-ltr'; s.textContent=p.isBot?'🤖':(p.name||'?')[0].toUpperCase(); t.appendChild(s); }    cont.appendChild(t);
+  });
+  document.querySelectorAll('.houses').forEach(el=>el.innerHTML='');
   document.querySelectorAll('.cell-owner').forEach(el=>el.remove());
   pl.forEach(p=>{
     Object.entries(p.houses||{}).forEach(([pos,cnt])=>{
@@ -780,9 +782,9 @@ function renderPropBuy(r, pl, cur, isMy){
     } else if(own.id===myId){
       const h=(cur.houses||{})[pos]||0, hc=Math.floor(p.price*.5);
       const mono = hasMonopoly(pl, myId, pos);
-      if(h<4 && mono){
-        pb.style.display='flex';
-        pb.innerHTML = `${p.color?`<div class="pb-clr" style="background:${p.color}"></div>`:''}<div class="pb-inf"><div class="pb-nm">${p.emoji} ${p.name}</div><div class="pb-pr" style="font-size:10px">🏠×${h} · +🏠 ${hc.toLocaleString()}₴</div></div><button class="pb-btn" style="background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark)" onclick="buildHouse(${pos},${hc})">+🏠</button>`;        return;
+      if(h<4 && mono){        pb.style.display='flex';
+        pb.innerHTML = `${p.color?`<div class="pb-clr" style="background:${p.color}"></div>`:''}<div class="pb-inf"><div class="pb-nm">${p.emoji} ${p.name}</div><div class="pb-pr" style="font-size:10px">🏠×${h} · +🏠 ${hc.toLocaleString()}₴</div></div><button class="pb-btn" style="background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark)" onclick="buildHouse(${pos},${hc})">+🏠</button>`;
+        return;
       }
       pb.style.display='none';
     } else { pb.style.display='none'; }
@@ -829,9 +831,9 @@ async function rollDice(){
     const isDbl = d1===d2;
     const newPos = (cur.pos + d1 + d2) % 40;
     let money = cur.money; const p = PROPS[newPos];
-    const newDbls = (r.game.doubles||0) + (isDbl?1:0);
-    addLog(`<span class="log-player" style="color:${cur.color}">${cur.name}</span> <span class="log-action">🎲</span> <span class="log-money">${d1}+${d2}=${d1+d2}</span>${isDbl?' <span class="log-positive">ДУБЛЬ!</span>':''} → <span class="log-action">${p.name}</span>`);
-    if(newPos < cur.pos){ money+=2000000; addLog(`🏁 <span class="log-player" style="color:${cur.color}">${cur.name}</span> — СТАРТ <span class="log-positive">+2 000 000₴</span>`); toast('🏁 +2 000 000₴!'); hp('heavy'); }    if(p?.price){
+    const newDbls = (r.game.doubles||0) + (isDbl?1:0);    addLog(`<span class="log-player" style="color:${cur.color}">${cur.name}</span> <span class="log-action">🎲</span> <span class="log-money">${d1}+${d2}=${d1+d2}</span>${isDbl?' <span class="log-positive">ДУБЛЬ!</span>':''} → <span class="log-action">${p.name}</span>`);
+    if(newPos < cur.pos){ money+=2000000; addLog(`🏁 <span class="log-player" style="color:${cur.color}">${cur.name}</span> — СТАРТ <span class="log-positive">+2 000 000₴</span>`); toast('🏁 +2 000 000₴!'); hp('heavy'); }
+    if(p?.price){
       const own = pl.find(x=>(x.props||[]).includes(newPos) && x.id!==myId);
       if(own){ const h=(own.houses||{})[newPos]||0; const rent=Math.floor(p.price*.1*(1+h*.5)); money=Math.max(0,money-rent); await db.ref('rooms/'+myRoom+'/players/'+own.id).update({money:own.money+rent}); addLog(`💸 <span class="log-player" style="color:${cur.color}">${cur.name}</span>→<span class="log-player" style="color:${own.color}">${own.name}</span> <span class="log-negative">-${rent.toLocaleString()}₴</span>`); toast(`💸 Оренда -${rent.toLocaleString()}₴`); }
     }
@@ -878,9 +880,9 @@ async function buildHouse(pos, cost){
     addLog(`🏠 <span class="log-player" style="color:${me.color}">${me.name}</span> <span class="log-action">будує на</span> <span class="log-money">${PROPS[pos].name}</span> (${houses[pos]}/4)`);
     toast(`🏠 (${houses[pos]}/4)`); hp('medium');
   }catch(e){ toast('❌ Помилка: '+e.message); }
-}
-async function doBotMove(r){
-  if(!firebaseReady || !db) return;  const pl = Object.values(r.players);
+}async function doBotMove(r){
+  if(!firebaseReady || !db) return;
+  const pl = Object.values(r.players);
   const bot = pl[r.game.current]; if(!bot?.isBot) return;
   const d1 = Math.ceil(Math.random()*6), d2 = Math.ceil(Math.random()*6);
   const isDbl = d1===d2, newPos = (bot.pos+d1+d2)%40;
@@ -927,9 +929,9 @@ async function renderWinner(r){
   document.getElementById('wN').innerHTML = `<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px">${avHtml(w,50)}<span>${w.name}${isMe?' (Ви!)':''}</span></div>`;
   document.getElementById('wM').textContent = w.money.toLocaleString()+'₴';
   document.getElementById('wG').innerHTML = isMe ? '🪙 +10 золота · ⭐ +30 очок' : '';
-  showScreen('s-win');
-  if(isMe){ hp('heavy'); tg?.HapticFeedback?.notificationOccurred('success'); }
+  showScreen('s-win');  if(isMe){ hp('heavy'); tg?.HapticFeedback?.notificationOccurred('success'); }
 }
+
 // ========== КЛАНИ (спрощено) ==========
 async function loadClans(){
   const container = document.getElementById('clansContent'); if(!container) return;
