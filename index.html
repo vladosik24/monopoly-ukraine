@@ -682,7 +682,8 @@ async function loadProfile(){
 async function saveProfile(sc=0,wi=0,go=0){
   if(!db)return;myScore+=sc;myWins+=wi;myGold+=go;
   const lg=getLeague(myScore);
-  await db.ref('players/'+myId).update({name:myName,score:myScore,wins:myWins,gold:myGold,league:lg.id,photoUrl:TGU?.photo_url||null,updatedAt:Date.now(),clanId:myClan,color:myColor,stats:myStats});
+  // Завжди зберігаємо під myId — один запис на гравця
+  await db.ref('players/'+myId).set({name:myName,score:myScore,wins:myWins,gold:myGold,league:lg.id,photoUrl:TGU?.photo_url||null,updatedAt:Date.now(),clanId:myClan,color:myColor,stats:myStats});
   document.getElementById('profLeague').textContent=lg.emoji+' '+lg.name;
   document.getElementById('goldAmt').textContent=myGold;
 }
@@ -702,11 +703,14 @@ async function showLeague(idx){
   document.querySelectorAll('.lgico').forEach((el,i)=>{el.classList.toggle('on',i===idx);el.style.borderColor=i===idx?LEAGUES[i].color:'transparent'});
   document.getElementById('lgHdr').innerHTML=`<div class="lg-hdr"><div class="lg-title">${l.emoji} ${l.name} ліга</div><div class="lg-desc">Від ${l.min} очок · +30 за перемогу · +5 за покупку</div></div>`;
   if(!db){document.getElementById('lgList').innerHTML='';return}
-  const snap=await db.ref('players').orderByChild('league').equalTo(l.id).limitToLast(200).once('value');
+  const snap=await db.ref('players').once('value');
   const d=snap.val();if(!d){document.getElementById('lgList').innerHTML='<div style="text-align:center;padding:20px;color:var(--sub)">😕 Немає гравців</div>';return}
-  // Дедуплікація по ID (унікальний ключ Firebase), не по імені
-  const byId={};Object.entries(d).forEach(([uid,p])=>{if(!byId[uid]||(p.score||0)>(byId[uid].score||0))byId[uid]={...p,uid}});
-  const pl=Object.values(byId).sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,25);
+  // Кожен ключ Firebase = унікальний гравець, фільтруємо по лізі
+  const pl=Object.entries(d)
+    .filter(([uid,p])=>p.league===l.id)
+    .map(([uid,p])=>({...p,uid}))
+    .sort((a,b)=>(b.score||0)-(a.score||0))
+    .slice(0,25);
   document.getElementById('lgList').innerHTML=pl.map((p,i)=>{
     const nc=i===0?'g':i===1?'s':i===2?'b':'';const isMe=p.uid===myId;
     const av=p.photoUrl?`<div class="rav" style="border-color:${l.color}"><img src="${p.photoUrl}" onerror="this.parentElement.textContent='${(p.name||'?')[0].toUpperCase()}'"></div>`:`<div class="rav" style="border-color:${l.color};background:${l.color}22;color:${l.color}">${(p.name||'?')[0].toUpperCase()}</div>`;
