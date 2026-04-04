@@ -12,6 +12,11 @@ body[data-theme="classic"]{--bg-dark:#0a1f1a;--bg-main:#0d2924;--bg-panel:#15403
 body[data-theme="fruit"]{--bg-dark:#1a2a1a;--bg-main:#1e3a1e;--bg-panel:#2a4a2a;--accent:#f97316;--accent2:#ea580c;--gold:#facc15;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;--text:#f1f5f9;--sub:#cbd5e1}
 body[data-theme="city"]{--bg-dark:#0a0f1e;--bg-main:#0d1a3a;--bg-panel:#1a2a5a;--accent:#3b82f6;--accent2:#2563eb;--gold:#fbbf24;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;--text:#f1f5f9;--sub:#94a3b8}
 body[data-theme="dark"]{--bg-dark:#0a0a0a;--bg-main:#111827;--bg-panel:#1f2937;--accent:#06b6d4;--accent2:#0891b2;--gold:#fbbf24;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;--text:#f9fafb;--sub:#9ca3af}
+body[data-theme="purple"]{--bg-dark:#0d0a1f;--bg-main:#130d2e;--bg-panel:#1e1245;--accent:#a78bfa;--accent2:#7c3aed;--gold:#fbbf24;--red:#ef4444;--green:#22c55e;--blue:#818cf8;--text:#f5f3ff;--sub:#a5b4fc}
+body[data-theme="sunset"]{--bg-dark:#1a0a0a;--bg-main:#2a0f0f;--bg-panel:#3a1515;--accent:#fb7185;--accent2:#e11d48;--gold:#fbbf24;--red:#ef4444;--green:#22c55e;--blue:#f97316;--text:#fff1f2;--sub:#fda4af}
+body[data-theme="ocean"]{--bg-dark:#020617;--bg-main:#0c1445;--bg-panel:#0f1f6a;--accent:#38bdf8;--accent2:#0284c7;--gold:#fbbf24;--red:#ef4444;--green:#34d399;--blue:#818cf8;--text:#e0f2fe;--sub:#7dd3fc}
+body[data-theme="forest"]{--bg-dark:#0a1a0a;--bg-main:#0f2a0f;--bg-panel:#1a3d1a;--accent:#4ade80;--accent2:#16a34a;--gold:#fbbf24;--red:#f87171;--green:#4ade80;--blue:#60a5fa;--text:#f0fdf4;--sub:#86efac}
+body[data-theme="gold"]{--bg-dark:#1a1200;--bg-main:#2a1e00;--bg-panel:#3d2d00;--accent:#fbbf24;--accent2:#f59e0b;--gold:#fbbf24;--red:#ef4444;--green:#22c55e;--blue:#60a5fa;--text:#fffbeb;--sub:#fcd34d}
 html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100dvh;overflow:hidden}
 input,textarea,select{font-size:16px!important}
 .screen{display:none;flex-direction:column;min-height:100dvh;position:relative;z-index:1}
@@ -389,7 +394,17 @@ input:focus,select:focus{border-color:var(--gold)}
 <!-- MODALS -->
 <div class="overlay" id="createModal"><div class="sheet"><div class="sh-handle"></div><div class="sh-title">🎮 НОВА ГРА</div><div class="mg"><div class="mc" onclick="sm('classic',this)"><div class="me-ic">🎲</div><div class="mn">Класичний</div><div class="md">2–4 гравці</div></div><div class="mc" onclick="sm('teams',this)"><div class="me-ic">👥</div><div class="mn">Команди</div><div class="md">2×2</div></div><div class="mc" onclick="sm('vsbot',this)"><div class="me-ic">🤖</div><div class="mn">Проти бота</div><div class="md">1 vs боти</div></div><div class="mc" onclick="sm('mixed',this)"><div class="me-ic">🎯</div><div class="mn">Змішаний</div><div class="md">Гравці+боти</div></div></div><label class="lbl">Ваше ім'я</label><input id="pN" placeholder="Введіть ім'я" maxlength="20"><div id="bcw" style="display:none"><label class="lbl">Кількість ботів</label><select id="bC"><option value="1">1 бот</option><option value="2">2 боти</option><option value="3">3 боти</option></select></div><button class="btn b-gold" onclick="createRoom()">🎮 Створити</button><div class="dv">або</div><button class="btn b-surf" onclick="closeCreate()">Скасувати</button></div></div>
 
-<div class="overlay" id="settingsModal"><div class="sheet"><div class="sh-handle"></div><div class="sh-title">⚙️ НАЛАШТУВАННЯ</div><div class="srow"><div class="sinfo"><div class="sname">🎨 Тема</div></div></div><div class="theme-dots"><div class="tdot on" style="background:linear-gradient(135deg,#0a1f1a,#2dd4bf)" onclick="setTheme('classic',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a1f0a,#16a34a)" onclick="setTheme('fruit',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a0f1e,#1d4ed8)" onclick="setTheme('city',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a0a0a,#06b6d4)" onclick="setTheme('dark',this)"></div></div>
+<div class="overlay" id="settingsModal"><div class="sheet"><div class="sh-handle"></div><div class="sh-title">⚙️ НАЛАШТУВАННЯ</div><div class="srow"><div class="sinfo"><div class="sname">🎨 Тема</div></div></div><div class="theme-dots" style="flex-wrap:wrap;gap:10px;padding:13px">
+<div class="tdot on" style="background:linear-gradient(135deg,#0a1f1a,#2dd4bf)" onclick="setTheme('classic',this)" title="Класична"></div>
+<div class="tdot" style="background:linear-gradient(135deg,#1a2a1a,#f97316)" onclick="setTheme('fruit',this)" title="Фруктова"></div>
+<div class="tdot" style="background:linear-gradient(135deg,#0a0f1e,#3b82f6)" onclick="setTheme('city',this)" title="Місто"></div>
+<div class="tdot" style="background:linear-gradient(135deg,#0a0a0a,#06b6d4)" onclick="setTheme('dark',this)" title="Темна"></div>
+<div class="tdot" style="background:linear-gradient(135deg,#0d0a1f,#a78bfa)" onclick="setTheme('purple',this)" title="Фіолет"></div>
+<div class="tdot" style="background:linear-gradient(135deg,#1a0a0a,#fb7185)" onclick="setTheme('sunset',this)" title="Захід"></div>
+<div class="tdot" style="background:linear-gradient(135deg,#020617,#38bdf8)" onclick="setTheme('ocean',this)" title="Океан"></div>
+<div class="tdot" style="background:linear-gradient(135deg,#0a1a0a,#4ade80)" onclick="setTheme('forest',this)" title="Ліс"></div>
+<div class="tdot" style="background:linear-gradient(135deg,#1a1200,#fbbf24)" onclick="setTheme('gold',this)" title="Золота"></div>
+</div>
 <div class="srow" style="flex-direction:column;align-items:flex-start;gap:8px"><div class="sinfo"><div class="sname">🌍 Сервер</div><div class="sdesc">Тема ігрової карти</div></div><div class="servers-strip" id="srvStrip" style="padding:0;border:none;flex-wrap:wrap;gap:6px"></div></div>
 <div class="srow"><div class="sinfo"><div class="sname">🔔 Вібрація</div><div class="sdesc">Haptic feedback</div></div><div class="toggle on" id="togHaptic" onclick="this.classList.toggle('on')"></div></div><div class="srow"><div class="sinfo"><div class="sname">🔊 Звуки</div><div class="sdesc">Ігрові звукові ефекти</div></div><div class="toggle on" id="togSound" onclick="this.classList.toggle('on')"></div></div><div class="srow"><div class="sinfo"><div class="sname">🧹 Очистити дублі</div><div class="sdesc">Видалити старі записи в лізі</div></div><button class="btn-sm" style="background:var(--red);color:white;padding:6px 10px" onclick="cleanDuplicates()">Очистити</button></div><div style="height:10px"></div><button class="btn b-surf" onclick="document.getElementById('settingsModal').classList.remove('on')">Закрити</button></div></div>
 
@@ -682,7 +697,12 @@ function openSettings(){document.getElementById('settingsModal').classList.add('
 ['createModal','settingsModal','tradeModal','profileModal','auctionModal','jailModal','cardModal'].forEach(id=>{
   const el=document.getElementById(id);if(el)el.addEventListener('click',function(e){if(e.target===this)this.classList.remove('on')});
 });
-function setTheme(name,el){document.body.setAttribute('data-theme',name);if(el){document.querySelectorAll('.tdot').forEach(d=>d.classList.remove('on'));el.classList.add('on')}localStorage.setItem('mono_theme',name)}
+function setTheme(name,el){
+  document.body.setAttribute('data-theme',name);
+  document.querySelectorAll('.tdot').forEach(d=>d.classList.remove('on'));
+  if(el)el.classList.add('on');
+  localStorage.setItem('mono_theme',name);
+}
 function mTab(n,el){
   document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');
   ['games','active','league','clans','daily','join'].forEach(x=>{const tc=document.getElementById('tc-'+x);if(tc)tc.style.display=x===n?'block':'none'});
@@ -1790,7 +1810,15 @@ function checkSeason(){
 async function onReady(){
   await initFirebase();
   const saved=localStorage.getItem('mono_theme')||'classic';
-  setTheme(saved,null);document.querySelectorAll('.tdot').forEach((d,i)=>{d.classList.toggle('on',['classic','fruit','city','dark'][i]===saved)});
+  document.body.setAttribute('data-theme',saved);
+  // Підсвітити активну крапку після рендеру налаштувань
+  setTimeout(()=>{
+    document.querySelectorAll('.tdot').forEach(d=>d.classList.remove('on'));
+    const themes=['classic','fruit','city','dark','purple','sunset','ocean','forest','gold'];
+    const idx=themes.indexOf(saved);
+    const dots=document.querySelectorAll('.tdot');
+    if(dots[idx])dots[idx].classList.add('on');
+  },100);
   if(TGU){const n=TGU.first_name+(TGU.last_name?' '+TGU.last_name:'');myName=n;['pN','pNj'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=n});const av=document.getElementById('profAv');if(TGU.photo_url)av.innerHTML=`<img src="${TGU.photo_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;else av.textContent=n[0].toUpperCase();document.getElementById('profName').textContent=n;document.getElementById('myIdTxt').textContent='🆔 '+myId;}
   await loadProfile();
   // Завантажити XP
