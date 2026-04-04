@@ -370,6 +370,7 @@ input:focus,select:focus{border-color:var(--gold)}
     <div class="dice-display"><div class="dice" id="dice1"></div><div class="dice" id="dice2"></div></div>
     <button class="btn-roll wait" id="rollBtn" onclick="rollDice()">🎲 Кинути!</button>
     <button class="btn-sm" id="tradeBtn" style="background:linear-gradient(135deg,#3b82f6,#2563eb);color:white" onclick="openTrade()" disabled>🔄</button>
+    <button class="btn-sm" id="buildBtn" style="background:linear-gradient(135deg,#22c55e,#16a34a);color:white" onclick="openBuildMenu()" disabled>🏗</button>
     <button class="btn-sm" id="mortgageBtn" style="background:rgba(255,255,255,.1);color:var(--text);border:1px solid rgba(255,255,255,.2)" onclick="openMortgage()" disabled>🏦</button>
   </div>
 </div>
@@ -701,18 +702,56 @@ async function showLeague(idx){
   document.querySelectorAll('.lgico').forEach((el,i)=>{el.classList.toggle('on',i===idx);el.style.borderColor=i===idx?LEAGUES[i].color:'transparent'});
   document.getElementById('lgHdr').innerHTML=`<div class="lg-hdr"><div class="lg-title">${l.emoji} ${l.name} ліга</div><div class="lg-desc">Від ${l.min} очок · +30 за перемогу · +5 за покупку</div></div>`;
   if(!db){document.getElementById('lgList').innerHTML='';return}
-  const snap=await db.ref('players').orderByChild('league').equalTo(l.id).limitToLast(100).once('value');
+  const snap=await db.ref('players').orderByChild('league').equalTo(l.id).limitToLast(200).once('value');
   const d=snap.val();if(!d){document.getElementById('lgList').innerHTML='<div style="text-align:center;padding:20px;color:var(--sub)">😕 Немає гравців</div>';return}
-  const uniq={};Object.values(d).forEach(p=>{const key=p.name||'?';if(!uniq[key]||(p.score||0)>(uniq[key].score||0))uniq[key]=p});
-  const pl=Object.values(uniq).sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,25);
+  // Дедуплікація по ID (унікальний ключ Firebase), не по імені
+  const byId={};Object.entries(d).forEach(([uid,p])=>{if(!byId[uid]||(p.score||0)>(byId[uid].score||0))byId[uid]={...p,uid}});
+  const pl=Object.values(byId).sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,25);
   document.getElementById('lgList').innerHTML=pl.map((p,i)=>{
-    const nc=i===0?'g':i===1?'s':i===2?'b':'';const isMe=p.name===myName;
+    const nc=i===0?'g':i===1?'s':i===2?'b':'';const isMe=p.uid===myId;
     const av=p.photoUrl?`<div class="rav" style="border-color:${l.color}"><img src="${p.photoUrl}" onerror="this.parentElement.textContent='${(p.name||'?')[0].toUpperCase()}'"></div>`:`<div class="rav" style="border-color:${l.color};background:${l.color}22;color:${l.color}">${(p.name||'?')[0].toUpperCase()}</div>`;
-    return`<div class="rank-row ${isMe?'me':''}"><div class="rnum ${nc}">${i+1}</div>${av}<div class="ri"><div class="rname">${p.name||'?'}${isMe?' (Ви)':''}</div><div class="rsub">🏆 ${p.wins||0} · 🪙 ${p.gold||0}</div></div><div class="rscore" style="color:${l.color}">${p.score||0}</div></div>`;
+    return`<div class="rank-row ${isMe?'me':''}" onclick="openLeagueProfile('${p.uid}')" style="cursor:pointer">
+      <div class="rnum ${nc}">${i+1}</div>${av}
+      <div class="ri"><div class="rname">${p.name||'?'}${isMe?' (Ви)':''}</div><div class="rsub">🏆 ${p.wins||0} · 🪙 ${p.gold||0} · 🎮 ${p.stats?.games_played||0}</div></div>
+      <div class="rscore" style="color:${l.color}">${p.score||0}</div>
+    </div>`;
   }).join('');
 }
 
-// ===== КІМНАТИ =====
+async function openLeagueProfile(uid){
+  if(!db)return;
+  const snap=await db.ref('players/'+uid).once('value');
+  const p=snap.val();if(!p)return;
+  const isMe=uid===myId;
+  if(isMe){openProfile();return}
+  const lg=getLeague(p.score||0);
+  // Побудувати модалку профілю іншого гравця
+  const modal=document.getElementById('profileModal');
+  const av=document.getElementById('profBigAv');
+  if(p.photoUrl)av.innerHTML=`<img src="${p.photoUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+  else{av.innerHTML='';av.textContent=(p.name||'?')[0].toUpperCase()}
+  document.getElementById('profModalName').textContent=p.name||'?';
+  document.getElementById('profModalLeague').textContent=lg.emoji+' '+lg.name;
+  document.getElementById('profStatScore').textContent=p.score||0;
+  document.getElementById('profStatWins').textContent=p.wins||0;
+  document.getElementById('profStatGold').textContent=p.gold||0;
+  document.getElementById('profModalClan').textContent=p.clanId?'Є клан':'Не в клані';
+  document.getElementById('detailStats').innerHTML=`
+    <div class="stat-card"><div class="stat-card-val">${p.stats?.props_bought||0}</div><div class="stat-card-lbl">🏠 Куплено</div></div>
+    <div class="stat-card"><div class="stat-card-val">${p.stats?.houses_built||0}</div><div class="stat-card-lbl">🏗 Будинків</div></div>
+    <div class="stat-card"><div class="stat-card-val">${p.stats?.games_played||0}</div><div class="stat-card-lbl">🎮 Ігор</div></div>
+    <div class="stat-card"><div class="stat-card-val">${formatMoney(p.stats?.rent_earned||0)}</div><div class="stat-card-lbl">💰 Зароблено</div></div>`;
+  // Досягнення
+  const earned=new Set(Object.keys(p.achievements||{}));
+  document.getElementById('achievList').innerHTML=ACHIEVEMENTS.map(a=>`
+    <div class="achiev-item ${earned.has(a.id)?'earned':''}">
+      <span class="ai-icon">${a.icon}</span>
+      <div class="ai-name">${a.name}</div>
+      <div class="ai-desc">${a.desc}</div>
+      <div class="ai-reward">${earned.has(a.id)?'✅':'🔒'}</div>
+    </div>`).join('');
+  modal.classList.add('on');
+}
 function mkSlots(r,sz=42){
   const pl=Object.values(r.players||{}).filter(p=>!p.isBot);let s='';
   for(let i=0;i<4;i++){const p=pl[i];if(p){const c=p.color||'#3b82f6',ini=(p.name||'?')[0].toUpperCase();s+=`<div class="slot filled" style="width:${sz}px;height:${sz}px;border-color:${c};background:${c}22;font-size:${sz*.36}px;font-weight:800;color:${c}">${p.photoUrl?`<img src="${p.photoUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`:`<span>${ini}</span>`}</div>`;}else s+=`<div class="slot empty" style="width:${sz}px;height:${sz}px"><span class="slot-ltr">○</span></div>`;}
@@ -881,9 +920,67 @@ function renderGame(r){
   const btn=document.getElementById('rollBtn');btn.disabled=!isMy;btn.className='btn-roll '+(isMy?'my':'wait');btn.textContent=isMy?'🎲 Кинути!':'⏳ '+cur?.name;
   const tb=document.getElementById('tradeBtn');if(tb)tb.disabled=!isMy||(me.props||[]).length===0;
   const mb=document.getElementById('mortgageBtn');if(mb)mb.disabled=!isMy||(me.props||[]).length===0;
+  // Кнопка будівництва — активна якщо є монополія і є де будувати
+  const bb=document.getElementById('buildBtn');
+  if(bb){
+    const hasBuildable=isMy&&(me.props||[]).some(pos=>{
+      const prop=PROPS[pos];if(!prop?.color)return false;
+      const h=(me.houses||{})[pos]||0;
+      return h<4&&hasMonopoly(pl,myId,pos);
+    });
+    bb.disabled=!hasBuildable;
+    bb.style.opacity=hasBuildable?'1':'0.35';
+    bb.title=hasBuildable?'Побудувати будинок':'Потрібна монополія';
+  }
   startTimer(isMy);renderPropBuy(r,pl,cur,isMy);
   if(cur?.isBot&&r.status==='playing'){clearTimeout(botTmr);botTmr=setTimeout(()=>doBotMove(r),1800)}
   checkWinner(r);
+}
+
+// ===== МЕНЮ БУДІВНИЦТВА =====
+async function openBuildMenu(){
+  if(!db||!myRoom)return;
+  const snap=await db.ref('rooms/'+myRoom).once('value');const r=snap.val();if(!r)return;
+  const pl=Object.values(r.players||{});const me=pl.find(p=>p.id===myId);
+  if(!me){toast('❌ Помилка');return}
+  // Знайти всі власності де є монополія і можна будувати
+  const buildable=(me.props||[]).filter(pos=>{
+    const prop=PROPS[pos];if(!prop?.color)return false;
+    const h=(me.houses||{})[pos]||0;
+    return h<4&&hasMonopoly(pl,myId,pos)&&!(me.mortgaged||[]).includes(pos);
+  });
+  if(buildable.length===0){toast('❌ Немає монополій для будівництва');return}
+  // Групуємо по кольору
+  const byColor={};buildable.forEach(pos=>{const prop=PROPS[pos];if(!byColor[prop.color])byColor[prop.color]=[];byColor[prop.color].push(pos)});
+  let html=`<div style="margin-bottom:10px;font-size:12px;color:var(--sub)">Оберіть де будувати (💰 = 50% ціни)</div><div class="trade-list">`;
+  buildable.forEach(pos=>{
+    const prop=PROPS[pos];const h=(me.houses||{})[pos]||0;const cost=Math.floor(prop.price*.5);
+    const canAfford=me.money>=cost;
+    html+=`<div class="trade-item ${!canAfford?'':''}${canAfford?'':'opacity:.5'}" style="${!canAfford?'opacity:.5':''}">
+      ${prop.color?`<div style="width:10px;height:36px;border-radius:3px;background:${prop.color};flex-shrink:0"></div>`:''}
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:800;font-size:12px">${prop.emoji} ${prop.name}</div>
+        <div style="display:flex;gap:4px;margin-top:3px">${'🟡'.repeat(h)}${'⬜'.repeat(4-h)} <span style="font-size:10px;color:var(--sub)">${h}/4</span></div>
+        <div style="font-size:10px;color:var(--gold);margin-top:2px">${cost.toLocaleString()}₴</div>
+      </div>
+      ${canAfford?`<button class="pb-btn" style="background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--bg-dark);font-size:11px" onclick="buildHouseFromMenu(${pos},${cost})">+🏠</button>`:`<span style="font-size:10px;color:var(--red)">Мало$</span>`}
+    </div>`;
+  });
+  html+=`</div><button class="btn b-surf" style="margin-top:10px" onclick="document.getElementById('tradeModal').classList.remove('on')">Закрити</button>`;
+  document.getElementById('tradeContent').innerHTML=html;
+  document.getElementById('tradeModal').classList.add('on');
+}
+async function buildHouseFromMenu(pos,cost){
+  await buildHouse(pos,cost);
+  document.getElementById('tradeModal').classList.remove('on');
+  // Перевідкрити меню після побудови якщо ще є де будувати
+  setTimeout(async()=>{
+    if(!db||!myRoom)return;
+    const snap=await db.ref('rooms/'+myRoom).once('value');const r=snap.val();if(!r)return;
+    const pl=Object.values(r.players||{});const me=pl.find(p=>p.id===myId);if(!me)return;
+    const stillBuildable=(me.props||[]).some(p=>{const prop=PROPS[p];if(!prop?.color)return false;return(me.houses||{})[p]<4&&hasMonopoly(pl,myId,p)&&!(me.mortgaged||[]).includes(p)});
+    if(stillBuildable)openBuildMenu();
+  },400);
 }
 function renderDice(id,value){
   const dice=document.getElementById(id);dice.innerHTML='';
