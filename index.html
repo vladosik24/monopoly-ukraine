@@ -669,7 +669,11 @@ function formatMoney(n){if(n>=1e9)return(n/1e9).toFixed(1)+'млрд';if(n>=1e6)
 async function loadProfile(){
   if(!db)return;
   const snap=await db.ref('players/'+myId).once('value');const d=snap.val()||{};
-  myScore=d.score||0;myWins=d.wins||0;myGold=d.gold||0;myClan=d.clanId||null;
+  // Беремо максимум між локальним і збереженим (щоб не втратити дані)
+  myScore=Math.max(d.score||0,myScore);
+  myWins=Math.max(d.wins||0,myWins);
+  myGold=Math.max(d.gold||0,myGold);
+  myClan=d.clanId||null;
   if(d.color)myColor=d.color;
   if(d.stats)myStats={...myStats,...d.stats};
   if(d.achievements)Object.keys(d.achievements).forEach(k=>earnedAchievements.add(k));
@@ -682,8 +686,14 @@ async function loadProfile(){
 async function saveProfile(sc=0,wi=0,go=0){
   if(!db)return;myScore+=sc;myWins+=wi;myGold+=go;
   const lg=getLeague(myScore);
-  // Завжди зберігаємо під myId — один запис на гравця
-  await db.ref('players/'+myId).set({name:myName,score:myScore,wins:myWins,gold:myGold,league:lg.id,photoUrl:TGU?.photo_url||null,updatedAt:Date.now(),clanId:myClan,color:myColor,stats:myStats});
+  // Читаємо існуючі дані щоб не затерти achievements та інше
+  const existing=(await db.ref('players/'+myId).once('value')).val()||{};
+  await db.ref('players/'+myId).set({
+    ...existing,
+    name:myName,score:myScore,wins:myWins,gold:myGold,
+    league:lg.id,photoUrl:TGU?.photo_url||null,
+    updatedAt:Date.now(),clanId:myClan,color:myColor,stats:myStats
+  });
   document.getElementById('profLeague').textContent=lg.emoji+' '+lg.name;
   document.getElementById('goldAmt').textContent=myGold;
 }
