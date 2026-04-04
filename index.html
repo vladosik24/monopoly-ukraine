@@ -1052,12 +1052,20 @@ function buildBoard(){
   for(let i=39;i>=30;i--)left.appendChild(createCell(PROPS[i]));
 }
 function createCell(p){
-  const div=document.createElement('div');div.className='cell'+(p.type==='corner'?' corner':'');div.id='cell-'+p.pos;
-  let html='';if(p.color)html+=`<div class="cell-color-bar" style="background:${p.color}"></div>`;
-  html+=`<div class="cell-icon">${p.emoji}</div><div class="cell-name">${p.short}</div>`;
+  const div=document.createElement('div');
+  div.className='cell'+(p.type==='corner'?' corner':'');
+  div.id='cell-'+p.pos;
+  let html='';
+  if(p.color)html+=`<div class="cell-color-bar" style="background:${p.color}"></div>`;
+  html+=`<div class="cell-icon">${p.emoji}</div>`;
+  // Підпис: для chance/treasury — окремий текст
+  const label = p.type==='chance'?'ШАНС' : p.type==='treasury'?'СКАРБ' : p.short;
+  html+=`<div class="cell-name">${label}</div>`;
   if(p.price)html+=`<div class="cell-price">${p.price.toLocaleString()}₴</div>`;
-  html+=`<div class="tokens" id="tok-${p.pos}"></div>`;if(p.color)html+=`<div class="houses" id="h-${p.pos}"></div>`;
-  div.innerHTML=html;return div;
+  html+=`<div class="tokens" id="tok-${p.pos}"></div>`;
+  if(p.color)html+=`<div class="houses" id="h-${p.pos}"></div>`;
+  div.innerHTML=html;
+  return div;
 }
 
 // ===== ОРЕНДА =====
