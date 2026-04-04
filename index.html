@@ -306,12 +306,12 @@ input:focus,select:focus{border-color:var(--gold)}
   </div>
   <div class="servers-strip" id="srvStrip"></div>
   <div class="main-tabs">
-    <button class="mtab on" onclick="mTab('games',this)">ІГРИ</button>
-    <button class="mtab" onclick="mTab('active',this)">ПОЧАТІ</button>
-    <button class="mtab" onclick="mTab('league',this)">ЛІГИ</button>
-    <button class="mtab" onclick="mTab('clans',this)">КЛАНИ</button>
+    <button class="mtab on" onclick="mTab('games',this)">🎮 ІГРИ</button>
+    <button class="mtab" onclick="mTab('active',this)">⚡ ПОЧАТІ</button>
+    <button class="mtab" onclick="mTab('league',this)">🏆 ЛІГИ</button>
+    <button class="mtab" onclick="mTab('clans',this)">🏰 КЛАНИ</button>
     <button class="mtab" onclick="mTab('daily',this)">📅 БОНУС</button>
-    <button class="mtab" onclick="mTab('join',this)">КОД</button>
+    <button class="mtab" onclick="mTab('join',this)">🚪 КОД</button>
   </div>
   <div class="tc" id="tc-games"><div class="rooms-hdr"><span class="rooms-lbl">Відкриті кімнати</span><button class="ref-btn" onclick="loadRooms()">↺</button></div><div id="roomsList"><div style="text-align:center;padding:40px;color:var(--sub)">⏳</div></div></div>
   <div class="tc" id="tc-active" style="display:none"><div class="rooms-hdr"><span class="rooms-lbl">Мої кімнати</span><div style="display:flex;gap:5px"><button class="ref-btn" style="color:var(--red)" onclick="adminDeleteAll()">🗑 Всі</button><button class="ref-btn" onclick="loadMyRooms()">↺</button></div></div><div id="myRoomsList"></div></div>
@@ -1244,23 +1244,67 @@ async function selectTheirProp(){
 }
 async function selectTheirPropFinal(pos){
   tradeTheirProp=pos;const mp=PROPS[tradeMyProp];const tp=PROPS[pos];
-  document.getElementById('tradeContent').innerHTML=`<div style="margin-bottom:12px;font-size:13px;font-weight:700;text-align:center">Підтвердіть обмін</div><div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px"><div style="text-align:center;background:rgba(45,212,191,.07);border-radius:10px;padding:10px">${mp.emoji}<div style="font-size:11px;font-weight:800">${mp.name}</div><div style="font-size:10px;color:var(--sub)">${mp.price?.toLocaleString()}₴</div></div><div style="font-size:20px">⇄</div><div style="text-align:center;background:rgba(45,212,191,.07);border-radius:10px;padding:10px">${tp.emoji}<div style="font-size:11px;font-weight:800">${tp.name}</div><div style="font-size:10px;color:var(--sub)">${tp.price?.toLocaleString()}₴</div></div></div><button class="btn b-gold" onclick="confirmTrade()">✅ Обміняти</button><button class="btn b-surf" onclick="document.getElementById('tradeModal').classList.remove('on')">Скасувати</button>`;
+  const diff=( tp.price||0)-(mp.price||0);// позитивне = я доплачую, негативне = вони доплачують
+  const diffAbs=Math.abs(diff);
+  const diffLabel=diff>0
+    ?`<div style="margin:8px 0;font-size:12px;color:var(--sub)">Різниця в ціні: <span style="color:var(--red)">+${diffAbs.toLocaleString()}₴ доплата від вас</span></div>`
+    :diff<0
+    ?`<div style="margin:8px 0;font-size:12px;color:var(--sub)">Різниця в ціні: <span style="color:var(--green)">+${diffAbs.toLocaleString()}₴ отримаєте від них</span></div>`
+    :'';
+  document.getElementById('tradeContent').innerHTML=`
+    <div style="margin-bottom:10px;font-size:13px;font-weight:700;text-align:center">Підтвердіть обмін</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px">
+      <div style="text-align:center;background:rgba(45,212,191,.07);border-radius:10px;padding:10px;flex:1">
+        ${mp.color?`<div style="width:100%;height:4px;border-radius:2px;background:${mp.color};margin-bottom:6px"></div>`:''}
+        <div style="font-size:18px">${mp.emoji}</div>
+        <div style="font-size:11px;font-weight:800;margin-top:4px">${mp.name}</div>
+        <div style="font-size:10px;color:var(--gold)">${mp.price?.toLocaleString()}₴</div>
+      </div>
+      <div style="font-size:22px;flex-shrink:0">⇄</div>
+      <div style="text-align:center;background:rgba(45,212,191,.07);border-radius:10px;padding:10px;flex:1">
+        ${tp.color?`<div style="width:100%;height:4px;border-radius:2px;background:${tp.color};margin-bottom:6px"></div>`:''}
+        <div style="font-size:18px">${tp.emoji}</div>
+        <div style="font-size:11px;font-weight:800;margin-top:4px">${tp.name}</div>
+        <div style="font-size:10px;color:var(--gold)">${tp.price?.toLocaleString()}₴</div>
+      </div>
+    </div>
+    ${diffLabel}
+    ${diff!==0?`<div style="margin-bottom:8px">
+      <label class="lbl">Ваша доплата грошима (₴)</label>
+      <input id="tradeExtraMoney" type="number" min="0" placeholder="0" value="${diff>0?diffAbs:0}" style="margin-bottom:4px">
+      <div style="font-size:10px;color:var(--sub)">0 = без доплати · введіть суму якщо хочете компенсувати різницю</div>
+    </div>`:`<div style="margin-bottom:8px">
+      <label class="lbl">Додаткова доплата грошима (₴)</label>
+      <input id="tradeExtraMoney" type="number" min="0" placeholder="0" value="0" style="margin-bottom:4px">
+    </div>`}
+    <button class="btn b-gold" onclick="confirmTrade()">✅ Обміняти</button>
+    <button class="btn b-surf" onclick="selectTheirProp()">← Назад</button>`;
 }
 async function confirmTrade(){
   if(!db||!myRoom||tradeMyProp===null||tradeTheirProp===null||!tradeTarget)return;
   const snap=await db.ref('rooms/'+myRoom).once('value');const r=snap.val();if(!r)return;
   const pl=Object.values(r.players||{});const me=pl.find(p=>p.id===myId);const them=pl.find(p=>p.id===tradeTarget.id);
   if(!me||!them)return;
+  const extraInput=document.getElementById('tradeExtraMoney');
+  const extraMoney=parseInt(extraInput?.value||'0')||0;
+  if(extraMoney>0&&me.money<extraMoney){toast('❌ Недостатньо грошей для доплати!');return}
+  // Передача власностей
   const myProps=(me.props||[]).filter(p=>p!==tradeMyProp);myProps.push(tradeTheirProp);
   const theirProps=(them.props||[]).filter(p=>p!==tradeTheirProp);theirProps.push(tradeMyProp);
+  // Будинки переходять разом
   const myHouses={...(me.houses||{})};const theirHouses={...(them.houses||{})};
   const mhc=myHouses[tradeMyProp]||0;const thc=theirHouses[tradeTheirProp]||0;
   delete myHouses[tradeMyProp];delete theirHouses[tradeTheirProp];
   if(mhc)theirHouses[tradeMyProp]=mhc;if(thc)myHouses[tradeTheirProp]=thc;
-  await db.ref('rooms/'+myRoom+'/players/'+myId).update({props:myProps,houses:myHouses});
-  await db.ref('rooms/'+myRoom+'/players/'+tradeTarget.id).update({props:theirProps,houses:theirHouses});
-  addLog(`🔄 <span class="log-player" style="color:${me.color}">${me.name}</span> ⇄ <span class="log-player" style="color:${them.color}">${them.name}</span>: ${PROPS[tradeMyProp].name} ↔ ${PROPS[tradeTheirProp].name}`);
-  toast('🔄 Обмін!');hp('medium');document.getElementById('tradeModal').classList.remove('on');
+  // Гроші
+  const myNewMoney=me.money-extraMoney;
+  const theirNewMoney=them.money+extraMoney;
+  await db.ref('rooms/'+myRoom+'/players/'+myId).update({props:myProps,houses:myHouses,money:myNewMoney});
+  await db.ref('rooms/'+myRoom+'/players/'+tradeTarget.id).update({props:theirProps,houses:theirHouses,money:theirNewMoney});
+  const mp=PROPS[tradeMyProp];const tp=PROPS[tradeTheirProp];
+  addLog(`🔄 <span class="log-player" style="color:${me.color}">${me.name}</span> ⇄ <span class="log-player" style="color:${them.color}">${them.name}</span>: ${mp.name} ↔ ${tp.name}${extraMoney>0?` <span class="log-negative">+${extraMoney.toLocaleString()}₴</span>`:''}`);
+  toast(`🔄 Обмін${extraMoney>0?' з доплатою '+extraMoney.toLocaleString()+'₴':''}!`);hp('medium');
+  document.getElementById('tradeModal').classList.remove('on');
 }
 
 // ===== БАНКРУТСТВО =====
