@@ -17,6 +17,11 @@ body[data-theme="sunset"]{--bg-dark:#1a0a0a;--bg-main:#2a0f0f;--bg-panel:#3a1515
 body[data-theme="ocean"]{--bg-dark:#020617;--bg-main:#0c1445;--bg-panel:#0f1f6a;--accent:#38bdf8;--accent2:#0284c7;--gold:#fbbf24;--red:#ef4444;--green:#34d399;--blue:#818cf8;--text:#e0f2fe;--sub:#7dd3fc}
 body[data-theme="forest"]{--bg-dark:#0a1a0a;--bg-main:#0f2a0f;--bg-panel:#1a3d1a;--accent:#4ade80;--accent2:#16a34a;--gold:#fbbf24;--red:#f87171;--green:#4ade80;--blue:#60a5fa;--text:#f0fdf4;--sub:#86efac}
 body[data-theme="gold"]{--bg-dark:#1a1200;--bg-main:#2a1e00;--bg-panel:#3d2d00;--accent:#fbbf24;--accent2:#f59e0b;--gold:#fbbf24;--red:#ef4444;--green:#22c55e;--blue:#60a5fa;--text:#fffbeb;--sub:#fcd34d}
+body[data-theme="cherry"]{--bg-dark:#1a0a12;--bg-main:#2d0f1e;--bg-panel:#42152d;--accent:#f472b6;--accent2:#db2777;--gold:#fbbf24;--red:#ef4444;--green:#22c55e;--blue:#a78bfa;--text:#fdf2f8;--sub:#f9a8d4}
+body[data-theme="lava"]{--bg-dark:#1a0800;--bg-main:#2d1000;--bg-panel:#431800;--accent:#fb923c;--accent2:#ea580c;--gold:#facc15;--red:#ef4444;--green:#22c55e;--blue:#60a5fa;--text:#fff7ed;--sub:#fdba74}
+body[data-theme="mint"]{--bg-dark:#001a12;--bg-main:#002a1e;--bg-panel:#003d2c;--accent:#6ee7b7;--accent2:#059669;--gold:#fbbf24;--red:#ef4444;--green:#6ee7b7;--blue:#60a5fa;--text:#ecfdf5;--sub:#a7f3d0}
+body[data-theme="night"]{--bg-dark:#05051a;--bg-main:#08082e;--bg-panel:#0d0d42;--accent:#818cf8;--accent2:#4f46e5;--gold:#e879f9;--red:#ef4444;--green:#22c55e;--blue:#38bdf8;--text:#eef2ff;--sub:#c7d2fe}
+body[data-theme="sand"]{--bg-dark:#1a1410;--bg-main:#2a2018;--bg-panel:#3d2e22;--accent:#d4a574;--accent2:#b8864e;--gold:#fbbf24;--red:#ef4444;--green:#4ade80;--blue:#60a5fa;--text:#fefce8;--sub:#d4a574}
 html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100dvh;overflow:hidden}
 input,textarea,select{font-size:16px!important}
 .screen{display:none;flex-direction:column;min-height:100dvh;position:relative;z-index:1}
@@ -404,6 +409,11 @@ input:focus,select:focus{border-color:var(--gold)}
 <div class="tdot" style="background:linear-gradient(135deg,#020617,#38bdf8)" onclick="setTheme('ocean',this)" title="Океан"></div>
 <div class="tdot" style="background:linear-gradient(135deg,#0a1a0a,#4ade80)" onclick="setTheme('forest',this)" title="Ліс"></div>
 <div class="tdot" style="background:linear-gradient(135deg,#1a1200,#fbbf24)" onclick="setTheme('gold',this)" title="Золота"></div>
+<div class="tdot" style="background:linear-gradient(135deg,#1a0a12,#f472b6)" onclick="setTheme('cherry',this)" title="Вишня"></div>
+<div class="tdot" style="background:linear-gradient(135deg,#1a0800,#fb923c)" onclick="setTheme('lava',this)" title="Лава"></div>
+<div class="tdot" style="background:linear-gradient(135deg,#001a12,#6ee7b7)" onclick="setTheme('mint',this)" title="М'ята"></div>
+<div class="tdot" style="background:linear-gradient(135deg,#05051a,#818cf8)" onclick="setTheme('night',this)" title="Ніч"></div>
+<div class="tdot" style="background:linear-gradient(135deg,#1a1410,#d4a574)" onclick="setTheme('sand',this)" title="Пісок"></div>
 </div>
 <div class="srow" style="flex-direction:column;align-items:flex-start;gap:8px"><div class="sinfo"><div class="sname">🌍 Сервер</div><div class="sdesc">Тема ігрової карти</div></div><div class="servers-strip" id="srvStrip" style="padding:0;border:none;flex-wrap:wrap;gap:6px"></div></div>
 <div class="srow"><div class="sinfo"><div class="sname">🔔 Вібрація</div><div class="sdesc">Haptic feedback</div></div><div class="toggle on" id="togHaptic" onclick="this.classList.toggle('on')"></div></div><div class="srow"><div class="sinfo"><div class="sname">🔊 Звуки</div><div class="sdesc">Ігрові звукові ефекти</div></div><div class="toggle on" id="togSound" onclick="this.classList.toggle('on')"></div></div><div class="srow"><div class="sinfo"><div class="sname">🧹 Очистити дублі</div><div class="sdesc">Видалити старі записи в лізі</div></div><button class="btn-sm" style="background:var(--red);color:white;padding:6px 10px" onclick="cleanDuplicates()">Очистити</button></div><div style="height:10px"></div><button class="btn b-surf" onclick="document.getElementById('settingsModal').classList.remove('on')">Закрити</button></div></div>
@@ -1814,7 +1824,7 @@ async function onReady(){
   // Підсвітити активну крапку після рендеру налаштувань
   setTimeout(()=>{
     document.querySelectorAll('.tdot').forEach(d=>d.classList.remove('on'));
-    const themes=['classic','fruit','city','dark','purple','sunset','ocean','forest','gold'];
+    const themes=['classic','fruit','city','dark','purple','sunset','ocean','forest','gold','cherry','lava','mint','night','sand'];
     const idx=themes.indexOf(saved);
     const dots=document.querySelectorAll('.tdot');
     if(dots[idx])dots[idx].classList.add('on');
