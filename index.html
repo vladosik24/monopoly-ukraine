@@ -300,8 +300,21 @@ input:focus,select:focus{border-color:var(--gold)}
 .hist-result{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
 .hist-result.win{background:rgba(34,197,94,.2);border:2px solid #22c55e}
 .hist-result.lose{background:rgba(239,68,68,.15);border:2px solid #ef4444}
-/* STATS */
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:62px;background:var(--bg-panel);border-top:1.5px solid rgba(45,212,191,.25);display:flex;align-items:stretch;z-index:50;max-width:480px;margin:0 auto;box-shadow:0 -4px 20px rgba(0,0,0,.4)}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:transparent;color:var(--sub);cursor:pointer;font-family:'Nunito',sans-serif;font-size:9px;font-weight:700;transition:.2s;position:relative;padding:6px 0}
+.bnav-btn:active{transform:scale(.9)}
+.bnav-btn.on{color:var(--gold)}
+.bnav-btn.on .bnav-ico{background:rgba(251,191,36,.15);border-radius:10px}
+.bnav-ico{font-size:22px;width:36px;height:28px;display:flex;align-items:center;justify-content:center;transition:.2s}
+.bnav-dot{position:absolute;top:6px;right:calc(50% - 20px);width:7px;height:7px;background:var(--red);border-radius:50%;border:1.5px solid var(--bg-panel)}
+#s-main{padding-bottom:62px}
+/* SERVERS — горизонтальний скрол з чіткими кнопками */
+.servers-strip{display:flex;gap:6px;padding:8px 14px;overflow-x:auto;flex-shrink:0;border-bottom:1.5px solid rgba(45,212,191,.2);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.servers-strip::-webkit-scrollbar{display:none}
+.srv-btn{display:flex;align-items:center;gap:5px;padding:7px 14px;border:2px solid rgba(45,212,191,.25);border-radius:20px;background:rgba(45,212,191,.06);color:var(--accent);font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;transition:.2s;flex-shrink:0}
+.srv-btn:active{transform:scale(.94)}
+.srv-btn.on{border-color:var(--gold);color:var(--gold);background:rgba(251,191,36,.12);box-shadow:0 0 10px rgba(251,191,36,.2)}
 .stat-card{background:rgba(45,212,191,.05);border:1px solid rgba(45,212,191,.15);border-radius:10px;padding:10px}
 .stat-card-val{font-family:'Unbounded',sans-serif;font-size:16px;font-weight:900;color:var(--accent)}
 .stat-card-lbl{font-size:10px;color:var(--sub);margin-top:2px}
@@ -336,12 +349,6 @@ input:focus,select:focus{border-color:var(--gold)}
         </div>
       </div>
     </div>
-    <div style="display:flex;gap:7px;flex-shrink:0">
-      <button class="settings-btn" onclick="openShop()" title="Магазин">🛒</button>
-      <button class="settings-btn" onclick="openHistory()" title="Історія">📋</button>
-      <button class="settings-btn" onclick="openSettings()">⚙️</button>
-      <button class="create-btn" onclick="openCreate()">СТВОРИТИ ГРУ</button>
-    </div>
   </div>
   <div class="servers-strip" id="srvStrip"></div>
   <div class="main-tabs">
@@ -358,6 +365,26 @@ input:focus,select:focus{border-color:var(--gold)}
   <div class="tc" id="tc-clans" style="display:none"><div id="clansContent"><div style="text-align:center;padding:40px;color:var(--sub)">⏳</div></div></div>
   <div class="tc" id="tc-daily" style="display:none"><div style="padding:16px 14px" id="dailyContent"></div></div>
   <div class="tc" id="tc-join" style="display:none"><div style="padding:12px 14px"><label class="lbl">Ваше ім'я</label><input id="pNj" placeholder="Введіть ім'я" maxlength="20"><label class="lbl">Код кімнати</label><input id="rC" placeholder="GAME-XXXX" maxlength="9" style="text-transform:uppercase"><button class="btn b-gold" onclick="joinByCode()">🚪 Приєднатися</button><div class="dv">або</div><button class="btn b-surf" onclick="document.getElementById('observerModal').classList.add('on')">👁 Спостерігати за грою</button></div></div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="bnav-btn on" id="bn-games" onclick="bnav('games',this)">
+      <div class="bnav-ico">🎮</div><span>ІГРИ</span>
+    </button>
+    <button class="bnav-btn" id="bn-shop" onclick="openShop()">
+      <div class="bnav-ico">🛒</div><span>МАГАЗИН</span>
+    </button>
+    <button class="bnav-btn" style="position:relative" onclick="openCreate()">
+      <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#f59e0b);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:var(--bg-dark);box-shadow:0 4px 16px rgba(251,191,36,.55);position:absolute;top:-20px;border:3px solid var(--bg-dark)">+</div>
+      <div style="margin-top:26px;font-size:9px;font-weight:800;color:var(--gold)">НОВА ГРА</div>
+    </button>
+    <button class="bnav-btn" id="bn-history" onclick="openHistory()">
+      <div class="bnav-ico">📋</div><span>ІСТОРІЯ</span>
+    </button>
+    <button class="bnav-btn" id="bn-settings" onclick="openSettings()">
+      <div class="bnav-ico">⚙️</div><span>БІЛЬШЕ</span>
+    </button>
+  </nav>
 </div>
 
 <!-- MODALS -->
@@ -665,8 +692,20 @@ function mTab(n,el){
   if(n==='daily')renderDailyBonus();
 }
 function sm(m,el){selMode=m;document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on'));el.classList.add('on');document.getElementById('bcw').style.display=(m==='vsbot'||m==='mixed')?'block':'none';hp('light')}
-function renderServers(){document.getElementById('srvStrip').innerHTML=SERVERS.map(s=>`<div class="srv-btn ${s.id===curServer?'on':''}" onclick="setSrv('${s.id}')">${s.emoji} ${s.name}</div>`).join('')}
+function bnav(tab, el){
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('on'));
+  if(el)el.classList.add('on');
+  // Sync with top tabs
+  const tabMap={games:0,active:1,league:2,clans:3,daily:4,join:5};
+  const tabBtns=document.querySelectorAll('.mtab');
+  if(tabMap[tab]!==undefined){
+    tabBtns.forEach(b=>b.classList.remove('on'));
+    tabBtns[tabMap[tab]]?.classList.add('on');
+    mTab(tab,tabBtns[tabMap[tab]]);
+  }
+}
 function setSrv(id){curServer=id;PROPS=MAPS[id];renderServers();loadRooms();hp('light')}
+function renderServers(){document.getElementById('srvStrip').innerHTML=SERVERS.map(s=>`<div class="srv-btn ${s.id===curServer?'on':''}" onclick="setSrv('${s.id}')">${s.emoji} ${s.name}</div>`).join('')}
 
 // ===== ДОСЯГНЕННЯ =====
 function checkAchievements(playerData){
