@@ -324,7 +324,7 @@ input:focus,select:focus{border-color:var(--gold)}
 <!-- MODALS -->
 <div class="overlay" id="createModal"><div class="sheet"><div class="sh-handle"></div><div class="sh-title">🎮 НОВА ГРА</div><div class="mg"><div class="mc" onclick="sm('classic',this)"><div class="me-ic">🎲</div><div class="mn">Класичний</div><div class="md">2–4 гравці</div></div><div class="mc" onclick="sm('teams',this)"><div class="me-ic">👥</div><div class="mn">Команди</div><div class="md">2×2</div></div><div class="mc" onclick="sm('vsbot',this)"><div class="me-ic">🤖</div><div class="mn">Проти бота</div><div class="md">1 vs боти</div></div><div class="mc" onclick="sm('mixed',this)"><div class="me-ic">🎯</div><div class="mn">Змішаний</div><div class="md">Гравці+боти</div></div></div><label class="lbl">Ваше ім'я</label><input id="pN" placeholder="Введіть ім'я" maxlength="20"><div id="bcw" style="display:none"><label class="lbl">Кількість ботів</label><select id="bC"><option value="1">1 бот</option><option value="2">2 боти</option><option value="3">3 боти</option></select></div><button class="btn b-gold" onclick="createRoom()">🎮 Створити</button><div class="dv">або</div><button class="btn b-surf" onclick="closeCreate()">Скасувати</button></div></div>
 
-<div class="overlay" id="settingsModal"><div class="sheet"><div class="sh-handle"></div><div class="sh-title">⚙️ НАЛАШТУВАННЯ</div><div class="srow"><div class="sinfo"><div class="sname">🎨 Тема</div></div></div><div class="theme-dots"><div class="tdot on" style="background:linear-gradient(135deg,#0a1f1a,#2dd4bf)" onclick="setTheme('classic',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a1f0a,#16a34a)" onclick="setTheme('fruit',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a0f1e,#1d4ed8)" onclick="setTheme('city',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a0a0a,#06b6d4)" onclick="setTheme('dark',this)"></div></div><div class="srow"><div class="sinfo"><div class="sname">🔔 Вібрація</div><div class="sdesc">Haptic feedback</div></div><div class="toggle on" id="togHaptic" onclick="this.classList.toggle('on')"></div></div><div class="srow"><div class="sinfo"><div class="sname">🔊 Звуки</div><div class="sdesc">Ігрові звукові ефекти</div></div><div class="toggle on" id="togSound" onclick="this.classList.toggle('on')"></div></div><div class="srow"><div class="sinfo"><div class="sname" id="myIdTxt">🆔 —</div><div class="sdesc">Ваш ігровий ID</div></div></div><div style="height:10px"></div><button class="btn b-surf" onclick="document.getElementById('settingsModal').classList.remove('on')">Закрити</button></div></div>
+<div class="overlay" id="settingsModal"><div class="sheet"><div class="sh-handle"></div><div class="sh-title">⚙️ НАЛАШТУВАННЯ</div><div class="srow"><div class="sinfo"><div class="sname">🎨 Тема</div></div></div><div class="theme-dots"><div class="tdot on" style="background:linear-gradient(135deg,#0a1f1a,#2dd4bf)" onclick="setTheme('classic',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a1f0a,#16a34a)" onclick="setTheme('fruit',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a0f1e,#1d4ed8)" onclick="setTheme('city',this)"></div><div class="tdot" style="background:linear-gradient(135deg,#0a0a0a,#06b6d4)" onclick="setTheme('dark',this)"></div></div><div class="srow"><div class="sinfo"><div class="sname">🔔 Вібрація</div><div class="sdesc">Haptic feedback</div></div><div class="toggle on" id="togHaptic" onclick="this.classList.toggle('on')"></div></div><div class="srow"><div class="sinfo"><div class="sname">🔊 Звуки</div><div class="sdesc">Ігрові звукові ефекти</div></div><div class="toggle on" id="togSound" onclick="this.classList.toggle('on')"></div></div><div class="srow"><div class="sinfo"><div class="sname">🧹 Очистити дублі</div><div class="sdesc">Видалити старі записи в лізі</div></div><button class="btn-sm" style="background:var(--red);color:white;padding:6px 10px" onclick="cleanDuplicates()">Очистити</button></div><div style="height:10px"></div><button class="btn b-surf" onclick="document.getElementById('settingsModal').classList.remove('on')">Закрити</button></div></div>
 
 <!-- PROFILE MODAL -->
 <div class="overlay" id="profileModal"><div class="prof-sheet"><div class="sh-handle"></div><div class="prof-big-av" id="profBigAv">?</div><div style="text-align:center"><div class="prof-name" id="profModalName">Гравець</div><div style="margin-top:4px" id="profModalLeague">🥉 Новачок</div></div><div class="stat-row"><div class="stat-box"><div class="stat-val" id="profStatScore">0</div><div class="stat-lbl">⭐ Очки</div></div><div class="stat-box"><div class="stat-val" id="profStatWins">0</div><div class="stat-lbl">🏆 Перемоги</div></div><div class="stat-box"><div class="stat-val" id="profStatGold">0</div><div class="stat-lbl">🪙 Золото</div></div></div>
@@ -687,7 +687,26 @@ async function saveProfile(sc=0,wi=0,go=0){
   document.getElementById('profLeague').textContent=lg.emoji+' '+lg.name;
   document.getElementById('goldAmt').textContent=myGold;
 }
-async function saveStats(){if(db)await db.ref(`players/${myId}/stats`).set(myStats)}
+async function cleanDuplicates(){
+  if(!db){toast('❌ Немає підключення');return}
+  toast('⏳ Очищення...');
+  try{
+    const snap=await db.ref('players').once('value');
+    const all=snap.val();if(!all){toast('✅ Вже чисто');return}
+    // Знайти всі записи з тим самим ім'ям що і myName — видалити ті що не myId
+    const batch={};
+    Object.entries(all).forEach(([uid,p])=>{
+      if(uid!==myId && p.name===myName){
+        batch['players/'+uid]=null;
+      }
+    });
+    if(Object.keys(batch).length===0){toast('✅ Дублів немає');return}
+    await db.ref().update(batch);
+    toast(`✅ Видалено ${Object.keys(batch).length} дублів!`);
+    hp('medium');
+    renderLeagueStrip();
+  }catch(e){toast('❌ Помилка: '+e.message)}
+}
 async function cleanOldRooms(){
   if(!db)return;
   try{const snap=await db.ref('rooms').once('value');const d=snap.val();if(!d)return;const now=Date.now(),batch={};Object.entries(d).forEach(([k,r])=>{if(now-(r.createdAt||0)>7200000||r.status==='finished')batch['rooms/'+k]=null});if(Object.keys(batch).length)await db.ref().update(batch);}catch(e){}
@@ -705,12 +724,16 @@ async function showLeague(idx){
   if(!db){document.getElementById('lgList').innerHTML='';return}
   const snap=await db.ref('players').once('value');
   const d=snap.val();if(!d){document.getElementById('lgList').innerHTML='<div style="text-align:center;padding:20px;color:var(--sub)">😕 Немає гравців</div>';return}
-  // Кожен ключ Firebase = унікальний гравець, фільтруємо по лізі
-  const pl=Object.entries(d)
+  // Фільтр по лізі, дедуплікація спочатку по uid потім по імені
+  const byName={};
+  Object.entries(d)
     .filter(([uid,p])=>p.league===l.id)
-    .map(([uid,p])=>({...p,uid}))
-    .sort((a,b)=>(b.score||0)-(a.score||0))
-    .slice(0,25);
+    .forEach(([uid,p])=>{
+      const key=p.name||uid;
+      if(!byName[key]||(p.score||0)>(byName[key].score||0))
+        byName[key]={...p,uid};
+    });
+  const pl=Object.values(byName).sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,25);
   document.getElementById('lgList').innerHTML=pl.map((p,i)=>{
     const nc=i===0?'g':i===1?'s':i===2?'b':'';const isMe=p.uid===myId;
     const av=p.photoUrl?`<div class="rav" style="border-color:${l.color}"><img src="${p.photoUrl}" onerror="this.parentElement.textContent='${(p.name||'?')[0].toUpperCase()}'"></div>`:`<div class="rav" style="border-color:${l.color};background:${l.color}22;color:${l.color}">${(p.name||'?')[0].toUpperCase()}</div>`;
