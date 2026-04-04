@@ -220,8 +220,8 @@ input:focus,select:focus{border-color:var(--gold)}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e1040;border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:9px 16px;font-size:12px;font-weight:700;z-index:9999;transition:transform .3s;white-space:nowrap;max-width:80vw}
 .toast.on{transform:translateX(-50%) translateY(0)}
 /* ACHIEVEMENT POPUP */
-.achiev-popup{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-120px);background:linear-gradient(135deg,#1e1040,#0d2924);border:2px solid var(--gold);border-radius:14px;padding:12px 18px;font-size:13px;font-weight:700;z-index:9998;transition:transform .4s;display:flex;align-items:center;gap:10px;max-width:85vw;box-shadow:0 4px 20px rgba(251,191,36,.4)}
-.achiev-popup.on{transform:translateX(-50%) translateY(0)}
+.achiev-popup{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-160px);background:linear-gradient(135deg,#1e1040,#0d2924);border:2px solid var(--gold);border-radius:14px;padding:12px 18px;font-size:13px;font-weight:700;z-index:9998;transition:transform .4s,opacity .4s;display:flex;align-items:center;gap:10px;max-width:85vw;box-shadow:0 4px 20px rgba(251,191,36,.4);cursor:pointer;pointer-events:none;opacity:0}
+.achiev-popup.on{transform:translateX(-50%) translateY(0);pointer-events:auto;opacity:1}
 .achiev-icon{font-size:28px}
 /* PROFILE */
 .prof-sheet{background:var(--bg-main);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:22px 18px 36px;max-height:88vh;overflow-y:auto}
@@ -573,6 +573,7 @@ function checkAchievements(playerData){
     }
   });
 }
+let achievTimer=null;
 function showAchievPopup(a){
   document.getElementById('achievIcon').textContent=a.icon;
   document.getElementById('achievText').textContent=a.name;
@@ -580,8 +581,10 @@ function showAchievPopup(a){
   const el=document.getElementById('achievPopup');
   el.classList.add('on');
   playSound('win');
-  setTimeout(()=>el.classList.remove('on'),3500);
+  if(achievTimer)clearTimeout(achievTimer);
+  achievTimer=setTimeout(()=>{el.classList.remove('on');achievTimer=null},3500);
 }
+document.getElementById('achievPopup').addEventListener('click',function(){this.classList.remove('on');if(achievTimer){clearTimeout(achievTimer);achievTimer=null}});
 
 // ===== КОНФЕТІ =====
 function showConfetti(){
