@@ -1,626 +1,810 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Монополія Україна</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Nunito:wght@600;700;800&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body[data-theme="classic"] { --bg-dark: #0a1f1a; --bg-main: #0d2924; --bg-panel: #154038; --accent: #2dd4bf; --accent2: #14b8a6; --gold: #fbbf24; --red: #ef4444; --green: #22c55e; --blue: #3b82f6; --text: #f1f5f9; --sub: #94a3b8; }
-        body[data-theme="fruit"] { --bg-dark: #1a2a1a; --bg-main: #1e3a1e; --bg-panel: #2a4a2a; --accent: #f97316; --accent2: #ea580c; --gold: #facc15; --red: #ef4444; --green: #22c55e; --blue: #3b82f6; --text: #f1f5f9; --sub: #cbd5e1; }
-        body[data-theme="city"] { --bg-dark: #0a0f1e; --bg-main: #0d1a3a; --bg-panel: #1a2a5a; --accent: #3b82f6; --accent2: #2563eb; --gold: #fbbf24; --red: #ef4444; --green: #22c55e; --blue: #3b82f6; --text: #f1f5f9; --sub: #94a3b8; }
-        body[data-theme="dark"] { --bg-dark: #0a0a0a; --bg-main: #111827; --bg-panel: #1f2937; --accent: #06b6d4; --accent2: #0891b2; --gold: #fbbf24; --red: #ef4444; --green: #22c55e; --blue: #3b82f6; --text: #f9fafb; --sub: #9ca3af; }
-        body[data-theme="purple"] { --bg-dark: #0d0a1f; --bg-main: #130d2e; --bg-panel: #1e1245; --accent: #a78bfa; --accent2: #7c3aed; --gold: #fbbf24; --red: #ef4444; --green: #22c55e; --blue: #818cf8; --text: #f5f3ff; --sub: #a5b4fc; }
-        html, body { height: 100%; font-family: 'Nunito', sans-serif; background: var(--bg-dark); color: var(--text); min-height: 100dvh; overflow: hidden; }
-        input, textarea, select { font-size: 16px !important; }
-        .screen { display: none; flex-direction: column; min-height: 100dvh; position: relative; z-index: 1; }
-        .screen.active { display: flex; }
-        #s-main { background: var(--bg-dark); overflow-y: auto; padding-bottom: 70px; }
-        .main-header { background: linear-gradient(180deg, var(--bg-panel), var(--bg-main)); padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 2px solid var(--accent2); }
-        .prof-av { width: 50px; height: 50px; border-radius: 50%; border: 3px solid var(--gold); box-shadow: 0 0 12px rgba(251,191,36,.4); overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; background: var(--bg-panel); color: var(--gold); cursor: pointer; transition: .2s; }
-        .prof-av:active { transform: scale(.9); }
-        .prof-av img { width: 100%; height: 100%; object-fit: cover; }
-        .prof-info { flex: 1; min-width: 0; }
-        .prof-name { font-family: 'Unbounded', sans-serif; font-size: 13px; font-weight: 900; color: var(--gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .prof-sub { font-size: 10px; color: var(--sub); margin-top: 2px; }
-        .gold-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(251,191,36,.12); border: 1px solid rgba(251,191,36,.3); border-radius: 10px; padding: 3px 8px; font-size: 11px; font-weight: 700; color: var(--gold); margin-top: 3px; }
-        .clan-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(45,212,191,.12); border: 1px solid rgba(45,212,191,.3); border-radius: 10px; padding: 3px 8px; font-size: 11px; font-weight: 700; color: var(--accent); margin-top: 3px; margin-left: 6px; }
-        .main-tabs { display: flex; border-bottom: 1px solid rgba(45,212,191,.2); background: rgba(0,0,0,.2); padding: 0 6px; overflow-x: auto; flex-shrink: 0; }
-        .main-tabs::-webkit-scrollbar { display: none; }
-        .mtab { padding: 10px 14px; border: none; background: transparent; color: var(--sub); font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; border-bottom: 2.5px solid transparent; white-space: nowrap; transition: .2s; }
-        .mtab.on { color: var(--gold); border-bottom-color: var(--gold); }
-        .tc { flex: 1; overflow-y: auto; padding-bottom: 16px; }
-        .rooms-hdr { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px 6px; }
-        .rooms-lbl { font-family: 'Unbounded', sans-serif; font-size: 10px; font-weight: 700; color: var(--sub); text-transform: uppercase; letter-spacing: .5px; }
-        .ref-btn { background: rgba(45,212,191,.1); border: 1px solid var(--accent2); border-radius: 7px; padding: 5px 10px; color: var(--accent); font-size: 13px; cursor: pointer; }
-        .room-row { display: flex; align-items: center; padding: 12px 14px; border-bottom: 1px solid rgba(45,212,191,.1); cursor: pointer; gap: 10px; transition: .15s; }
-        .room-row:active { background: rgba(45,212,191,.05); }
-        .slots { display: flex; gap: 6px; flex: 1; align-items: center; }
-        .slot { width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(45,212,191,.2); background: rgba(45,212,191,.05); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; position: relative; }
-        .slot.filled { border-color: rgba(45,212,191,.5); }
-        .slot img { width: 100%; height: 100%; object-fit: cover; }
-        .slot-ltr { font-size: 16px; font-weight: 800; color: rgba(255,255,255,.5); }
-        .slot.empty .slot-ltr { font-size: 22px; color: rgba(255,255,255,.1); }
-        .row-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-        .arr { font-size: 24px; font-weight: 900; color: var(--gold); }
-        .lgstrip { display: flex; gap: 8px; padding: 10px 14px; overflow-x: auto; }
-        .lgico { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; border: 3px solid transparent; transition: .2s; background: rgba(45,212,191,.05); flex-shrink: 0; }
-        .lgico.active { border-color: var(--gold); background: rgba(251,191,36,.1); box-shadow: 0 0 10px rgba(251,191,36,.3); }
-        .lg-hdr { background: linear-gradient(135deg, rgba(45,212,191,.2), rgba(45,212,191,.06)); border: 1px solid var(--accent2); border-radius: 14px; padding: 14px; margin: 6px 14px 10px; }
-        .lg-title { font-family: 'Unbounded', sans-serif; font-size: 14px; font-weight: 900; color: var(--gold); }
-        .lg-desc { font-size: 11px; color: var(--sub); margin-top: 5px; }
-        .rank-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid rgba(45,212,191,.05); }
-        .rank-row.me { background: rgba(251,191,36,.07); }
-        .rnum { width: 24px; font-family: 'Unbounded', sans-serif; font-size: 13px; font-weight: 900; color: var(--sub); text-align: center; }
-        .rnum.g { color: #ffd700; } .rnum.s { color: #c0c0c0; } .rnum.b { color: #cd7f32; }
-        .rav { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; border: 2px solid; overflow: hidden; flex-shrink: 0; }
-        .rav img { width: 100%; height: 100%; object-fit: cover; }
-        .ri { flex: 1; min-width: 0; }
-        .rname { font-weight: 800; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .rsub { font-size: 10px; color: var(--sub); margin-top: 1px; }
-        .rscore { font-family: 'Unbounded', sans-serif; font-size: 16px; font-weight: 900; }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); display: none; align-items: flex-end; justify-content: center; z-index: 100; backdrop-filter: blur(4px); }
-        .overlay.on { display: flex; }
-        .sheet { background: var(--bg-main); border-radius: 20px 20px 0 0; width: 100%; max-width: 480px; padding: 18px 16px 32px; max-height: 92vh; overflow-y: auto; }
-        .sh-handle { width: 40px; height: 4px; background: rgba(255,255,255,.2); border-radius: 2px; margin: 0 auto 14px; }
-        .sh-title { font-family: 'Unbounded', sans-serif; font-size: 15px; font-weight: 900; color: var(--gold); text-align: center; margin-bottom: 14px; }
-        .mg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-        .mc { background: rgba(45,212,191,.05); border: 1.5px solid rgba(45,212,191,.2); border-radius: 12px; padding: 13px 10px; text-align: center; cursor: pointer; transition: .18s; }
-        .mc:active { transform: scale(.95); }
-        .mc.on { border-color: var(--gold); background: rgba(251,191,36,.08); }
-        .me-ic { font-size: 24px; margin-bottom: 3px; }
-        .mn { font-family: 'Unbounded', sans-serif; font-size: 10px; font-weight: 700; }
-        .md { font-size: 10px; color: var(--sub); margin-top: 2px; }
-        label.lbl { font-size: 10px; font-weight: 700; color: var(--sub); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 5px; display: block; }
-        input, select { width: 100%; padding: 11px 14px; background: rgba(45,212,191,.07); border: 1.5px solid rgba(45,212,191,.2); border-radius: 11px; color: var(--text); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 9px; }
-        input:focus, select:focus { border-color: var(--gold); }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 11px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; cursor: pointer; transition: .18s; margin-bottom: 7px; }
-        .btn:active { transform: scale(.97); }
-        .b-gold { background: linear-gradient(135deg, var(--gold), #f59e0b); color: var(--bg-dark); }
-        .b-green { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
-        .b-surf { background: rgba(45,212,191,.07); border: 1.5px solid rgba(45,212,191,.2); color: var(--text); }
-        .b-red { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
-        .clan-compact { padding: 10px 14px; }
-        .clan-section { background: rgba(45,212,191,.05); border: 1px solid rgba(45,212,191,.15); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
-        .clan-chat-msgs { height: 120px; overflow-y: auto; background: rgba(0,0,0,.2); border-radius: 8px; padding: 8px; margin-bottom: 8px; font-size: 12px; }
-        .clan-chat-msg { margin: 3px 0; padding: 4px 6px; background: rgba(45,212,191,.08); border-radius: 5px; }
-        .jp { background: var(--green); border: none; border-radius: 6px; padding: 5px 12px; color: white; font-size: 11px; font-weight: 700; cursor: pointer; }
-        .jp:active { transform: scale(.95); }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 62px; background: var(--bg-panel); border-top: 1.5px solid rgba(45,212,191,.25); display: flex; align-items: stretch; z-index: 50; max-width: 480px; margin: 0 auto; box-shadow: 0 -4px 20px rgba(0,0,0,.4); }
-        .bnav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: none; background: transparent; color: var(--sub); cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 9px; font-weight: 700; transition: .2s; position: relative; padding: 6px 0; }
-        .bnav-btn:active { transform: scale(.9); }
-        .bnav-btn.on { color: var(--gold); }
-        .bnav-btn.on .bnav-ico { background: rgba(251,191,36,.15); border-radius: 10px; }
-        .bnav-ico { font-size: 22px; width: 36px; height: 28px; display: flex; align-items: center; justify-content: center; transition: .2s; }
-        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1e1040; border: 1px solid rgba(255,255,255,.18); border-radius: 12px; padding: 10px 18px; font-size: 13px; font-weight: 700; z-index: 9999; transition: transform .3s; white-space: nowrap; max-width: 85vw; word-break: break-word; text-align: center; }
-        .toast.on { transform: translateX(-50%) translateY(0); }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 2px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Монополія UA</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --felt:#0F3D2E; --felt-dark:#0A2B20; --parchment:#F2E8D5; --parchment-dark:#E3D5B8;
+  --ink:#1B1F2A; --gold:#C9A227; --gold-light:#E9CE6B; --maroon:#7A2E2E;
+  --brown:#8B4A2B; --lightblue:#8FCBEB; --pink:#D6539E; --orange:#E8892B;
+  --red:#D6403B; --yellow:#F0D93B; --green:#2E9E5B; --darkblue:#1D3E6E;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;height:100%;background:var(--felt-dark);
+  font-family:'Inter',sans-serif; color:var(--parchment); overflow:hidden;}
+.mono{font-family:'JetBrains Mono',monospace;}
+.disp{font-family:'Bitter',serif;}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;}
+.hidden{display:none !important;}
+
+/* ---------- SCREENS ---------- */
+.screen{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:20px 16px;
+  background:radial-gradient(ellipse at top, #124a37 0%, var(--felt-dark) 70%);}
+.brand{text-align:center;margin-bottom:22px;}
+.brand h1{font-family:'Bitter',serif;font-weight:900;font-size:30px;margin:0;
+  color:var(--gold-light);letter-spacing:.5px;text-shadow:0 2px 0 rgba(0,0,0,.35);}
+.brand p{margin:4px 0 0;font-size:13px;color:var(--parchment-dark);opacity:.8;}
+
+.card{background:var(--parchment);color:var(--ink);border-radius:14px;padding:18px;
+  box-shadow:0 8px 22px rgba(0,0,0,.35), inset 0 0 0 2px var(--gold);margin-bottom:14px;}
+.card h3{margin:0 0 10px;font-family:'Bitter',serif;font-size:16px;color:var(--felt);}
+label.lbl{font-size:12px;font-weight:600;color:var(--maroon);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px;}
+input.field{width:100%;padding:12px 14px;border-radius:9px;border:2px solid var(--parchment-dark);
+  background:#fff;font-size:16px;font-family:'JetBrains Mono',monospace;text-align:center;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--ink);}
+input.field:focus{outline:none;border-color:var(--gold);}
+
+.btn{border:none;border-radius:11px;padding:14px 18px;font-size:15px;font-weight:700;
+  font-family:'Inter',sans-serif;cursor:pointer;width:100%;transition:transform .08s;}
+.btn:active{transform:scale(.97);}
+.btn-gold{background:linear-gradient(180deg,var(--gold-light),var(--gold));color:#3a2a06;
+  box-shadow:0 4px 0 #8a6e17, 0 6px 12px rgba(0,0,0,.3);}
+.btn-outline{background:transparent;color:var(--parchment);border:2px solid var(--parchment-dark);}
+.btn-maroon{background:linear-gradient(180deg,#9a4040,var(--maroon));color:#fff;
+  box-shadow:0 4px 0 #4d1c1c;}
+.btn-sm{padding:9px 12px;font-size:13px;width:auto;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.row{display:flex;gap:10px;}
+.row .btn{flex:1;}
+
+.playerRow{display:flex;align-items:center;gap:10px;padding:9px 10px;background:var(--parchment-dark);
+  border-radius:10px;margin-bottom:7px;}
+.tok{width:30px;height:30px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#fff;font-size:13px;box-shadow:0 0 0 2px rgba(0,0,0,.15) inset;overflow:hidden;}
+.tok img{width:100%;height:100%;object-fit:cover;}
+.playerRow .nm{font-weight:600;font-size:14px;flex:1;}
+.playerRow .tag{font-size:11px;background:var(--gold);color:#3a2a06;padding:2px 7px;border-radius:20px;font-weight:700;}
+
+/* ---------- GAME SCREEN ---------- */
+#gameScreen{padding:8px;gap:8px;}
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:2px 6px 4px;}
+#roomTag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--parchment-dark);}
+#turnBadge{display:flex;align-items:center;gap:8px;background:var(--parchment);color:var(--ink);
+  padding:5px 12px 5px 5px;border-radius:30px;box-shadow:0 3px 0 rgba(0,0,0,.3);}
+#turnBadge .seal{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#fff;font-size:12px;box-shadow:0 0 0 2px var(--gold);overflow:hidden;}
+#turnBadge .seal img{width:100%;height:100%;object-fit:cover;}
+#turnBadge span.tt{font-size:12px;font-weight:700;}
+
+#boardWrap{flex:none;width:100%;aspect-ratio:1/1;max-height:58vh;margin:0 auto;position:relative;}
+#board{position:absolute;inset:0;display:grid;grid-template-columns:repeat(11,1fr);grid-template-rows:repeat(11,1fr);
+  background:var(--felt);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.4), inset 0 0 0 3px var(--gold);gap:1px;padding:4px;}
+.cell{background:var(--parchment);position:relative;display:flex;flex-direction:column;overflow:hidden;
+  border-radius:2px;font-size:6px;}
+.cell .grp{height:22%;flex:none;}
+.cell .cn{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;
+  padding:1px;line-height:1.05;font-size:6.4px;color:var(--ink);font-family:'Inter',sans-serif;}
+.cell .pr{font-size:5.6px;text-align:center;color:var(--maroon);font-weight:700;padding-bottom:1px;font-family:'JetBrains Mono',monospace;}
+.cell.corner{background:var(--felt);align-items:center;justify-content:center;}
+.cell.corner .cn{font-size:8px;color:var(--gold-light);font-weight:900;font-family:'Bitter',serif;}
+.cell.special{background:var(--felt-dark);}
+.cell.special .cn{color:var(--gold-light);font-size:6.6px;}
+.center-area{position:absolute;left:9.1%;top:9.1%;right:9.1%;bottom:9.1%;background:var(--felt);
+  border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  box-shadow:inset 0 0 0 2px rgba(201,162,39,.5);}
+.center-area .glogo{font-family:'Bitter',serif;font-weight:900;color:var(--gold-light);font-size:clamp(12px,3.6vmin,20px);letter-spacing:1px;
+  text-shadow:0 2px 0 rgba(0,0,0,.4);text-align:center;}
+.dice{display:flex;gap:8px;}
+.die{width:clamp(26px,7vmin,38px);height:clamp(26px,7vmin,38px);background:var(--parchment);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--ink);font-size:clamp(14px,4vmin,20px);
+  box-shadow:0 3px 0 var(--parchment-dark);font-family:'JetBrains Mono',monospace;}
+.die.rolling{animation:shake .12s infinite;}
+@keyframes shake{0%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}100%{transform:rotate(-8deg)}}
+.tokLayer{position:absolute;inset:0;pointer-events:none;}
+.tokOnBoard{position:absolute;width:8%;height:8%;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:7px;font-weight:800;color:#fff;box-shadow:0 0 0 1.5px #fff, 0 2px 3px rgba(0,0,0,.4);
+  transition:left .35s ease, top .35s ease;overflow:hidden;}
+.tokOnBoard img{width:100%;height:100%;object-fit:cover;}
+
+#logPanel{flex:none;background:var(--felt);border-radius:10px;padding:8px 10px;margin-top:6px;
+  box-shadow:inset 0 0 0 1px rgba(201,162,39,.3);max-height:56px;overflow-y:auto;}
+#logPanel div{font-size:11px;color:var(--parchment-dark);margin-bottom:2px;}
+#logPanel div:last-child{color:var(--gold-light);font-weight:600;}
+
+#ledger{background:var(--parchment);color:var(--ink);border-radius:12px;padding:10px 12px;margin-top:6px;
+  box-shadow:0 4px 0 rgba(0,0,0,.25), inset 0 0 0 2px var(--gold);flex:1;overflow-y:auto;min-height:0;}
+#ledger h4{margin:0 0 6px;font-family:'Bitter',serif;font-size:13px;color:var(--felt);
+  border-bottom:2px dashed var(--parchment-dark);padding-bottom:5px;}
+.ledgerRow{display:flex;align-items:center;gap:8px;padding:6px 2px;border-bottom:1px solid var(--parchment-dark);}
+.ledgerRow:last-child{border-bottom:none;}
+.ledgerRow .tok{width:22px;height:22px;font-size:10px;}
+.ledgerRow .nm{flex:1;font-weight:600;font-size:12.5px;}
+.ledgerRow .bal{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:var(--felt);}
+.ledgerRow.bankrupt{opacity:.4;text-decoration:line-through;}
+.ledgerRow.me{background:var(--parchment-dark);border-radius:8px;}
+
+#actionBar{flex:none;padding:8px 2px 2px;}
+
+/* ---------- MODAL ---------- */
+.modalBg{position:fixed;inset:0;background:rgba(6,20,15,.75);display:flex;align-items:flex-end;justify-content:center;z-index:50;}
+.modalBox{background:var(--parchment);color:var(--ink);width:100%;max-width:480px;border-radius:18px 18px 0 0;
+  padding:20px 18px 26px;box-shadow:0 -8px 24px rgba(0,0,0,.4);}
+.modalBox h3{margin:0 0 6px;font-family:'Bitter',serif;font-size:19px;color:var(--felt);}
+.modalBox p{margin:0 0 16px;font-size:14px;color:#3a3a3a;line-height:1.4;}
+.chip{display:inline-block;padding:2px 10px;border-radius:20px;color:#fff;font-size:11px;font-weight:700;margin-bottom:10px;}
+
+.propList{max-height:130px;overflow-y:auto;margin-top:6px;}
+.propMini{display:flex;align-items:center;gap:6px;padding:5px 0;font-size:12px;border-bottom:1px solid var(--parchment-dark);}
+.propMini .sw{width:12px;height:12px;border-radius:3px;flex:none;}
+.propMini .nm2{flex:1;}
+.propMini button{font-size:10px;padding:4px 8px;border-radius:6px;border:none;background:var(--maroon);color:#fff;font-weight:700;}
+
+#toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:var(--felt);color:var(--gold-light);
+  padding:9px 16px;border-radius:30px;font-size:13px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.4);
+  z-index:60;box-shadow:inset 0 0 0 1px var(--gold);opacity:0;transition:opacity .25s;pointer-events:none;}
+#toast.show{opacity:1;}
+</style>
 </head>
-<body data-theme="classic">
+<body>
+<div id="app">
 
-    <!-- MAIN SCREEN -->
-    <div id="s-main" class="screen active">
-        <div class="main-header">
-            <div style="display:flex;align-items:center;gap:9px;flex:1;min-width:0">
-                <div class="prof-av" id="profAv" onclick="openProfile()">?</div>
-                <div class="prof-info">
-                    <div class="prof-name" id="profName">Гравець</div>
-                    <div class="prof-sub" id="profLeague">🥉 Новачок</div>
-                    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:3px">
-                        <div class="gold-badge">🪙 <span id="goldAmt">0</span></div>
-                        <div class="clan-badge">🏰 <span id="clanBadge">—</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="main-tabs">
-            <button class="mtab on" onclick="mTab('games',this)">🎮 ІГРИ</button>
-            <button class="mtab" onclick="mTab('active',this)">⚡ ПОЧАТІ</button>
-            <button class="mtab" onclick="mTab('league',this)">🏆 ЛІГИ</button>
-            <button class="mtab" onclick="mTab('clans',this)">🏰 КЛАНИ</button>
-            <button class="mtab" onclick="mTab('daily',this)">📅 БОНУС</button>
-        </div>
-        <div class="tc" id="tc-games"><div class="rooms-hdr"><span class="rooms-lbl">Відкриті кімнати</span><button class="ref-btn" onclick="loadRooms()">↺</button></div><div id="roomsList"><div style="text-align:center;padding:40px;color:var(--sub)">⏳</div></div></div>
-        <div class="tc" id="tc-active" style="display:none"><div class="rooms-hdr"><span class="rooms-lbl">Мої кімнати</span><button class="ref-btn" onclick="loadMyRooms()">↺</button></div><div id="myRoomsList"></div></div>
-        <div class="tc" id="tc-league" style="display:none"><div class="lgstrip" id="lgstrip"></div><div id="lgHdr"></div><div id="lgList"></div></div>
-        <div class="tc" id="tc-clans" style="display:none"><div id="clansContent"><div style="text-align:center;padding:40px;color:var(--sub)">⏳</div></div></div>
-        <div class="tc" id="tc-daily" style="display:none"><div style="padding:16px 14px" id="dailyContent"></div></div>
-        <nav class="bottom-nav">
-            <button class="bnav-btn on" id="bn-games" onclick="bnav('games',this)"><div class="bnav-ico">🎮</div><span>ІГРИ</span></button>
-            <button class="bnav-btn" id="bn-league" onclick="bnav('league',this)"><div class="bnav-ico">🏆</div><span>ЛІГИ</span></button>
-            <button class="bnav-btn" style="position:relative" onclick="openCreate()"><div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#f59e0b);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:var(--bg-dark);box-shadow:0 4px 16px rgba(251,191,36,.55);position:absolute;top:-20px;border:3px solid var(--bg-dark)">+</div><div style="margin-top:26px;font-size:9px;font-weight:800;color:var(--gold)">НОВА ГРА</div></button>
-            <button class="bnav-btn" id="bn-clans" onclick="bnav('clans',this)"><div class="bnav-ico">🏰</div><span>КЛАНИ</span></button>
-            <button class="bnav-btn" id="bn-settings" onclick="openSettings()"><div class="bnav-ico">⚙️</div><span>БІЛЬШЕ</span></button>
-        </nav>
+  <!-- ===== SETUP CONFIG SCREEN (Firebase не налаштовано) ===== -->
+  <div id="configScreen" class="screen hidden">
+    <div class="brand"><h1>⚠ Налаштування</h1><p>Потрібно вписати Firebase конфіг у код файлу</p></div>
+    <div class="card"><p style="font-size:13px;line-height:1.5">Відкрий файл, знайди <b>FIREBASE_CONFIG</b> на початку тега &lt;script&gt; і встав дані свого проєкту з Firebase Console → Project settings → Web app. Realtime Database має бути увімкнена, правила читання/запису відкриті (для тесту: <span class="mono">".read": true, ".write": true</span>).</p></div>
+  </div>
+
+  <!-- ===== LOBBY: створити/приєднатись ===== -->
+  <div id="lobbyScreen" class="screen">
+    <div class="brand">
+      <h1>МОНОПОЛІЯ UA</h1>
+      <p>Мультиплеєрна гра для компанії до 8 гравців</p>
     </div>
 
-    <!-- Modals -->
-    <div class="overlay" id="createModal">
-        <div class="sheet">
-            <div class="sh-handle"></div>
-            <div class="sh-title">Нова гра</div>
-            <label class="lbl">Ваше ім'я</label>
-            <input id="pN" placeholder="Введіть ім'я" maxlength="20">
-            <button class="btn b-gold" onclick="createRoom()">✅ Створити кімнату</button>
-            <button class="btn b-surf" onclick="closeCreate()">❌ Скасувати</button>
-        </div>
+    <div class="card">
+      <h3>➕ Створити кімнату</h3>
+      <button class="btn btn-gold" id="btnCreate">Створити нову гру</button>
     </div>
 
-    <div class="overlay" id="settingsModal">
-        <div class="sheet">
-            <div class="sh-handle"></div>
-            <div class="sh-title">Налаштування</div>
-            <button class="btn b-surf" onclick="closeSettings()">Закрити</button>
-        </div>
+    <div class="card">
+      <h3>🔑 Приєднатись до гри</h3>
+      <label class="lbl">Код кімнати</label>
+      <input class="field" id="joinCode" maxlength="4" placeholder="ABCD" style="margin-bottom:10px">
+      <button class="btn btn-outline" id="btnJoin" style="color:var(--felt);border-color:var(--felt)">Приєднатись</button>
+    </div>
+  </div>
+
+  <!-- ===== WAITING ROOM ===== -->
+  <div id="waitScreen" class="screen hidden">
+    <div class="brand">
+      <h1 style="font-size:22px">Кімната <span id="roomCodeLabel" class="mono" style="color:var(--gold)"></span></h1>
+      <p>Поділись кодом з друзями в чаті</p>
+    </div>
+    <div class="card">
+      <h3>Гравці (<span id="playerCount">0</span>/8)</h3>
+      <div id="playerListWait"></div>
+    </div>
+    <button class="btn btn-gold hidden" id="btnStartGame">Почати гру</button>
+    <p id="waitHint" style="text-align:center;font-size:12px;color:var(--parchment-dark);margin-top:10px">Очікуємо, поки хост розпочне гру...</p>
+    <button class="btn btn-outline" id="btnLeaveWait" style="margin-top:14px">Вийти з кімнати</button>
+  </div>
+
+  <!-- ===== GAME SCREEN ===== -->
+  <div id="gameScreen" class="screen hidden">
+    <div id="topbar">
+      <span id="roomTag" class="mono"></span>
+      <div id="turnBadge"><div class="seal" id="sealTok">?</div><span class="tt" id="turnText">Хід гравця</span></div>
     </div>
 
-    <div class="overlay" id="profileModal">
-        <div class="sheet">
-            <div class="sh-handle"></div>
-            <div class="sh-title">Профіль</div>
-            <button class="btn b-surf" onclick="closeProfile()">Закрити</button>
-        </div>
+    <div id="boardWrap">
+      <div id="board"></div>
+      <div class="center-area">
+        <div class="glogo">МОНОПОЛІЯ<br>UA</div>
+        <div class="dice"><div class="die" id="die1">1</div><div class="die" id="die2">1</div></div>
+      </div>
+      <div class="tokLayer" id="tokLayer"></div>
     </div>
 
-    <div id="toast" class="toast"></div>
+    <div id="logPanel"></div>
+    <div id="ledger"><h4>📒 Банківська книга</h4><div id="ledgerBody"></div></div>
 
-    <script>
-        // ===== TELEGRAM =====
-        const tg = window.Telegram?.WebApp;
-        if (tg) { tg.ready(); tg.expand(); tg.setHeaderColor('#0a1f1a'); tg.setBackgroundColor('#0a1f1a') }
-        const TGU = tg?.initDataUnsafe?.user;
-        const myId = (() => {
-            if (TGU?.id) return 'tg_' + TGU.id;
-            let id = localStorage.getItem('mono_uid');
-            if (!id) { id = 'p' + Date.now() + Math.random().toString(36).substr(2, 4); localStorage.setItem('mono_uid', id) }
-            return id;
-        })();
-        
-        // Отримуємо аватарку з Telegram
-        const myAvatar = TGU?.photo_url || null;
-        
-        function hp(t = 'light') { if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred(t) }
+    <div id="actionBar">
+      <div class="row">
+        <button class="btn btn-gold" id="btnRoll" disabled>🎲 Кинути кубики</button>
+        <button class="btn btn-maroon hidden" id="btnEndTurn">Завершити хід</button>
+      </div>
+      <button class="btn btn-outline" id="btnMyProps" style="margin-top:8px">🏠 Мої власності</button>
+    </div>
+  </div>
 
-        // ===== FIREBASE =====
-        const FBC = { apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ", authDomain: "monopoly-ukraine.firebaseapp.com", databaseURL: "https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app", projectId: "monopoly-ukraine" };
-        let db = null;
-        function initFirebase() {
-            return new Promise(resolve => {
-                if (window.firebase && firebase.database) { try { firebase.initializeApp(FBC); db = firebase.database(); resolve(); } catch (e) { resolve(); } return; }
-                const s1 = document.createElement('script'); s1.src = 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js';
-                s1.onload = () => {
-                    const s2 = document.createElement('script'); s2.src = 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js';
-                    s2.onload = () => { try { firebase.initializeApp(FBC); db = firebase.database(); } catch (e) {} resolve(); };
-                    document.body.appendChild(s2);
-                };
-                document.body.appendChild(s1);
-            });
-        }
+</div>
 
-        // ===== CONFIGURATION =====
-        const LEAGUES = [
-            { name: 'Новачок', icon: '🥉', min: 0, color: '#cd7f32' },
-            { name: 'Любитель', icon: '🥈', min: 500, color: '#c0c0c0' },
-            { name: 'Профі', icon: '🥇', min: 1500, color: '#ffd700' },
-            { name: 'Магнат', icon: '💎', min: 3000, color: '#3b82f6' },
-            { name: 'Легенда', icon: '👑', min: 6000, color: '#a78bfa' }
-        ];
-        function getLeague(s) { let l = LEAGUES[0]; for (const lg of LEAGUES) { if (s >= lg.min) l = lg } return l }
-        const COLORS = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b'];
+<div id="toast"></div>
 
-        // ===== GLOBAL STATE =====
-        let myRoom = null, myName = 'Гравець', myScore = 0, myWins = 0, myGold = 0, myClan = null, clanChatListener = null;
-        let selectedLeague = 0;
+<script>
+/* =========================================================
+   FIREBASE CONFIG — заміни на свій проєкт (Firebase Console)
+   ========================================================= */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
+  authDomain: "monopoly-ukraine.firebaseapp.com",
+  databaseURL: "https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "monopoly-ukraine",
+  storageBucket: "monopoly-ukraine.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456"
+};
 
-        // ===== UI HELPERS =====
-        function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active') }
-        function toast(msg, ms = 2500) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), ms) }
-        function openCreate() { document.getElementById('createModal').classList.add('on') }
-        function closeCreate() { document.getElementById('createModal').classList.remove('on') }
-        function openSettings() { document.getElementById('settingsModal').classList.add('on') }
-        function closeSettings() { document.getElementById('settingsModal').classList.remove('on') }
-        function openProfile() { document.getElementById('profileModal').classList.add('on') }
-        function closeProfile() { document.getElementById('profileModal').classList.remove('on') }
-        function bnav(tab, el) { document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('on')); el.classList.add('on'); mTab(tab, document.querySelector(`.mtab[onclick*="${tab}"]`)) }
+let db = null;
+let firebaseReady = false;
+try{
+  if(FIREBASE_CONFIG.apiKey !== "REPLACE_ME"){
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
+    firebaseReady = true;
+  }
+}catch(e){ console.error(e); }
 
-        function mTab(n, el) {
-            document.querySelectorAll('.mtab').forEach(t => t.classList.remove('on'));
-            el.classList.add('on');
-            ['games', 'active', 'league', 'clans', 'daily'].forEach(x => {
-                const tc = document.getElementById('tc-' + x);
-                if (tc) tc.style.display = x === n ? 'block' : 'none';
-            });
-            if (n === 'league') renderLeagueStrip();
-            if (n === 'games') loadRooms();
-            if (n === 'active') loadMyRooms();
-            if (n === 'clans') loadClans();
-            if (n === 'daily') renderDailyBonus();
-        }
+const tg = window.Telegram ? window.Telegram.WebApp : null;
+if(tg){ tg.ready(); tg.expand(); }
+const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+const MY_ID = tgUser ? String(tgUser.id) : ("guest_" + Math.random().toString(36).slice(2,9));
+const MY_NAME = tgUser ? (tgUser.first_name + (tgUser.last_name ? " "+tgUser.last_name : "")) : "Гравець";
+const MY_AVATAR = tgUser ? (tgUser.photo_url || null) : null;
 
-        // ===== ROOMS =====
-        async function createRoom() {
-            if (!db) { toast('❌ Помилка бази даних'); return; }
-            const name = document.getElementById('pN').value.trim() || myName;
-            myName = name;
-            const roomId = 'GAME-' + Math.random().toString(36).substr(2, 4).toUpperCase();
-            await db.ref('rooms/' + roomId).set({
-                mode: 'classic',
-                map: 'classic',
-                players: { [myId]: { id: myId, name: myName, color: COLORS[0], money: 15000000, pos: 0, props: [], houses: {}, mortgaged: [], inJail: false, jailTurns: 0, bankrupt: false, avatar: myAvatar } },
-                game: { current: 0, started: false, turn: 0 },
-                createdAt: Date.now(),
-                ownerId: myId
-            });
-            await db.ref('players/' + myId).update({ name: myName, lastRoom: roomId, avatar: myAvatar });
-            myRoom = roomId;
-            closeCreate();
-            toast('✅ Кімнату створено! Код: ' + roomId);
-            loadRooms();
-        }
+/* ---------------- BOARD DATA ---------------- */
+const GC = {brown:"#8B4A2B",lightblue:"#8FCBEB",pink:"#D6539E",orange:"#E8892B",
+  red:"#D6403B",yellow:"#F0D93B",green:"#2E9E5B",darkblue:"#1D3E6E"};
 
-        async function loadRooms() {
-            if (!db) return;
-            const container = document.getElementById('roomsList');
-            container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">⏳ Завантаження...</div>';
-            const snap = await db.ref('rooms').orderByChild('createdAt').limitToLast(20).once('value');
-            const rooms = snap.val() || {};
-            const list = Object.entries(rooms).filter(([id, r]) => !r.game?.started && r.players && Object.keys(r.players).length < 4).reverse();
-            if (list.length === 0) {
-                container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">Немає відкритих кімнат</div>';
-                return;
-            }
-            container.innerHTML = list.map(([id, r]) => {
-                const players = Object.values(r.players || {});
-                const slots = Array(4).fill(0).map((_, i) => {
-                    const p = players[i];
-                    if (p) {
-                        const avatarHtml = p.avatar ? `<img src="${p.avatar}" alt="">` : `<div class="slot-ltr">${p.name[0]}</div>`;
-                        return `<div class="slot filled" style="border-color:${p.color}">${avatarHtml}</div>`;
-                    }
-                    return `<div class="slot empty"><div class="slot-ltr">+</div></div>`;
-                }).join('');
-                return `<div class="room-row" onclick="joinRoom('${id}')"><div class="slots">${slots}</div><div class="row-right"><div class="arr">→</div></div></div>`;
-            }).join('');
-        }
+const BOARD = [
+  {t:"go",n:"СТАРТ"},
+  {t:"prop",n:"Бердичів",p:60,r:4,g:"brown"},
+  {t:"chest",n:"Казна громади"},
+  {t:"prop",n:"Ізмаїл",p:60,r:4,g:"brown"},
+  {t:"tax",n:"Податок на прибуток",amt:200},
+  {t:"rail",n:"Вокзал Північ",p:200},
+  {t:"prop",n:"Тернопіль",p:100,r:6,g:"lightblue"},
+  {t:"chance",n:"Шанс"},
+  {t:"prop",n:"Рівне",p:100,r:6,g:"lightblue"},
+  {t:"prop",n:"Луцьк",p:120,r:8,g:"lightblue"},
+  {t:"jail",n:"В'язниця"},
+  {t:"prop",n:"Хмельницький",p:140,r:10,g:"pink"},
+  {t:"util",n:"Водоканал",p:150},
+  {t:"prop",n:"Вінниця",p:140,r:10,g:"pink"},
+  {t:"prop",n:"Житомир",p:160,r:12,g:"pink"},
+  {t:"rail",n:"Вокзал Схід",p:200},
+  {t:"prop",n:"Черкаси",p:180,r:14,g:"orange"},
+  {t:"chest",n:"Казна громади"},
+  {t:"prop",n:"Кропивницький",p:180,r:14,g:"orange"},
+  {t:"prop",n:"Суми",p:200,r:16,g:"orange"},
+  {t:"parking",n:"Вільна парковка"},
+  {t:"prop",n:"Чернігів",p:220,r:18,g:"red"},
+  {t:"chance",n:"Шанс"},
+  {t:"prop",n:"Полтава",p:220,r:18,g:"red"},
+  {t:"prop",n:"Кременчук",p:240,r:20,g:"red"},
+  {t:"rail",n:"Вокзал Південь",p:200},
+  {t:"prop",n:"Запоріжжя",p:260,r:22,g:"yellow"},
+  {t:"prop",n:"Миколаїв",p:260,r:22,g:"yellow"},
+  {t:"util",n:"Енергозбут",p:150},
+  {t:"prop",n:"Херсон",p:280,r:24,g:"yellow"},
+  {t:"gotojail",n:"До в'язниці"},
+  {t:"prop",n:"Івано-Франківськ",p:300,r:26,g:"green"},
+  {t:"prop",n:"Чернівці",p:300,r:26,g:"green"},
+  {t:"chest",n:"Казна громади"},
+  {t:"prop",n:"Ужгород",p:320,r:28,g:"green"},
+  {t:"rail",n:"Вокзал Захід",p:200},
+  {t:"chance",n:"Шанс"},
+  {t:"prop",n:"Львів",p:350,r:35,g:"darkblue"},
+  {t:"tax",n:"Податок на розкіш",amt:100},
+  {t:"prop",n:"Київ",p:400,r:50,g:"darkblue"}
+];
 
-        async function loadMyRooms() {
-            if (!db) return;
-            const container = document.getElementById('myRoomsList');
-            container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">⏳</div>';
-            const snap = await db.ref('rooms').orderByChild('ownerId').equalTo(myId).once('value');
-            const rooms = snap.val() || {};
-            const list = Object.entries(rooms);
-            if (list.length === 0) {
-                container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">У вас немає кімнат</div>';
-                return;
-            }
-            container.innerHTML = list.map(([id, r]) => {
-                const players = Object.values(r.players || {});
-                const slots = Array(4).fill(0).map((_, i) => {
-                    const p = players[i];
-                    if (p) {
-                        const avatarHtml = p.avatar ? `<img src="${p.avatar}" alt="">` : `<div class="slot-ltr">${p.name[0]}</div>`;
-                        return `<div class="slot filled" style="border-color:${p.color}">${avatarHtml}</div>`;
-                    }
-                    return `<div class="slot empty"><div class="slot-ltr">+</div></div>`;
-                }).join('');
-                return `<div class="room-row" onclick="joinRoom('${id}')"><div class="slots">${slots}</div><div class="row-right"><button class="ref-btn" style="color:var(--red)" onclick="event.stopPropagation();deleteRoom('${id}')">🗑</button><div class="arr">→</div></div></div>`;
-            }).join('');
-        }
+const CHANCE = [
+  {tx:"Банк помилково нарахував вам 200₴",amt:200},
+  {tx:"Штраф за перевищення швидкості: 50₴",amt:-50},
+  {tx:"Пройдіть на СТАРТ, отримайте 200₴",move:0,collect:true},
+  {tx:"Вирушайте до в'язниці!",jail:true},
+  {tx:"Отримайте карту «Звільнення з в'язниці»",jailfree:true},
+  {tx:"Ремонт доріг обійшовся у 100₴",amt:-100},
+  {tx:"Перемога в конкурсі, отримайте 100₴",amt:100},
+  {tx:"Переїзд до вокзалу Схід",move:15,collect:false}
+];
+const CHEST = [
+  {tx:"Повернення податків: отримайте 20₴",amt:20},
+  {tx:"Лікарняні рахунки: заплатіть 100₴",amt:-100},
+  {tx:"Продаж акцій: отримайте 50₴",amt:50},
+  {tx:"Отримайте спадщину 100₴",amt:100},
+  {tx:"Оплата навчання: заплатіть 150₴",amt:-150},
+  {tx:"Отримайте карту «Звільнення з в'язниці»",jailfree:true},
+  {tx:"День народження! Кожен дає вам 10₴",fromAll:10},
+  {tx:"Вирушайте до в'язниці!",jail:true}
+];
 
-        async function deleteRoom(id) {
-            if (!confirm('Видалити кімнату?')) return;
-            await db.ref('rooms/' + id).remove();
-            loadMyRooms();
-        }
+const COLORS = ["#E63946","#457B9D","#2A9D8F","#F4A261","#9B5DE5","#F72585","#4CC9F0","#FFD166"];
 
-        async function joinRoom(id) {
-            if (!db) return;
-            const snap = await db.ref('rooms/' + id).once('value');
-            const r = snap.val();
-            if (!r) { toast('❌ Кімната не знайдена'); return; }
-            if (r.game?.started) { toast('⚠️ Гра вже почалася'); return; }
-            const players = Object.values(r.players || {});
-            if (players.length >= 4) { toast('❌ Кімната заповнена'); return; }
-            const myIdx = players.length;
-            await db.ref('rooms/' + id + '/players/' + myId).set({
-                id: myId,
-                name: myName,
-                color: COLORS[myIdx],
-                money: 15000000,
-                pos: 0,
-                props: [],
-                houses: {},
-                mortgaged: [],
-                inJail: false,
-                jailTurns: 0,
-                bankrupt: false,
-                avatar: myAvatar
-            });
-            myRoom = id;
-            toast('✅ Ви приєдналися до кімнати!');
-            loadRooms();
-        }
+/* ---------------- STATE ---------------- */
+let room = null;      // room code
+let game = null;      // latest snapshot from firebase
+let isHost = false;
+let roomRef = null;
+let rollingLock = false;
 
-        // ===== LEAGUE =====
-        async function renderLeagueStrip() {
-            const container = document.getElementById('lgstrip');
-            container.innerHTML = LEAGUES.map((lg, i) => `<div class="lgico ${selectedLeague === i ? 'active' : ''}" onclick="selectLeague(${i})">${lg.icon}</div>`).join('');
-            const curLg = LEAGUES[selectedLeague];
-            document.getElementById('lgHdr').innerHTML = `<div class="lg-hdr"><div class="lg-title">${curLg.icon} ${curLg.name}</div><div class="lg-desc">Потрібно від ${curLg.min} очок</div></div>`;
-            const snap = await db.ref('players').orderByChild('score').limitToLast(20).once('value');
-            const players = Object.entries(snap.val() || {}).map(([id, p]) => ({ id, ...p })).reverse();
-            document.getElementById('lgList').innerHTML = players.map((p, i) => {
-                const avatarHtml = p.avatar ? `<img src="${p.avatar}" alt="">` : `${(p.name || 'Гравець')[0]}`;
-                return `
-                <div class="rank-row ${p.id === myId ? 'me' : ''}">
-                    <div class="rnum ${i === 0 ? 'g' : i === 1 ? 's' : i === 2 ? 'b' : ''}">${i + 1}</div>
-                    <div class="rav" style="border-color:${COLORS[i % 4]};background:${COLORS[i % 4]}20;color:${COLORS[i % 4]}">${avatarHtml}</div>
-                    <div class="ri"><div class="rname">${p.name || 'Гравець'}</div><div class="rsub">${getLeague(p.score || 0).icon} ${getLeague(p.score || 0).name}</div></div>
-                    <div class="rscore" style="color:${getLeague(p.score || 0).color}">${p.score || 0}</div>
-                </div>
-            `}).join('');
-        }
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove('show'), 2200);
+}
+function genCode(){
+  const L = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  let s=""; for(let i=0;i<4;i++) s+=L[Math.floor(Math.random()*L.length)];
+  return s;
+}
+function show(id){
+  ["configScreen","lobbyScreen","waitScreen","gameScreen"].forEach(s=>{
+    document.getElementById(s).classList.toggle('hidden', s!==id);
+  });
+}
 
-        function selectLeague(idx) {
-            selectedLeague = idx;
-            renderLeagueStrip();
-        }
+if(!firebaseReady){ show('configScreen'); }
 
-        // ===== CLANS =====
-        async function loadClans() {
-            const container = document.getElementById('clansContent');
-            if (!container) return;
-            container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--sub)">⏳</div>';
-            if (!db) return;
-            const userSnap = await db.ref(`players/${myId}`).once('value');
-            const user = userSnap.val() || {};
-            myClan = user.clanId || null;
-            if (myClan) {
-                const cs = await db.ref(`clans/${myClan}/name`).once('value');
-                document.getElementById('clanBadge').textContent = cs.val() || 'Клан';
-            } else {
-                document.getElementById('clanBadge').textContent = '—';
-            }
-            const clansSnap = await db.ref('clans').once('value');
-            const clans = clansSnap.val() || {};
-            const clansList = Object.entries(clans).map(([id, data]) => ({ id, ...data }));
-            let html = `<div class="clan-compact"><button class="btn b-gold" style="margin-bottom:10px" onclick="showCreateClan()">➕ Створити клан</button>`;
-            if (myClan && clans[myClan]) {
-                const cd = clans[myClan];
-                html += `
-                <div class="clan-section">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-                        <div><strong>🏰 ${cd.name}</strong> <span style="font-size:10px;color:var(--sub)">[${cd.tag}]</span></div>
-                        <div style="font-size:11px;color:var(--sub)">👥 ${cd.members?.length || 0}</div>
-                    </div>
-                    <div style="font-size:11px;color:var(--sub);margin-bottom:10px">👑 ${cd.ownerName}</div>
-                    <div style="display:flex;gap:6px;margin-bottom:10px">
-                        <button class="btn b-surf" style="padding:8px;font-size:12px;margin-bottom:0;flex:1" onclick="leaveClan()">Покинути</button>
-                        ${cd.ownerId === myId ? `<button class="btn b-red" style="padding:8px;font-size:12px;margin-bottom:0;flex:1" onclick="deleteClan('${myClan}')">🗑</button>` : ''}
-                    </div>
-                    <div style="margin-top:10px;border-top:1px solid rgba(45,212,191,.15);padding-top:10px">
-                        <div style="font-size:11px;font-weight:700;color:var(--sub);margin-bottom:6px">💬 Чат клану</div>
-                        <div id="clanChatMessages" class="clan-chat-msgs"></div>
-                        <div style="display:flex;gap:6px">
-                            <input id="clanChatInput" style="flex:1;padding:8px 10px;font-size:12px" placeholder="Повідомлення..." maxlength="100" onkeydown="if(event.key==='Enter')sendClanChat()">
-                            <button class="btn b-gold" style="margin:0;width:auto;padding:8px 14px" onclick="sendClanChat()">➤</button>
-                        </div>
-                    </div>
-                </div>`;
-                listenClanChat(myClan);
-            } else {
-                if (clansList.length === 0) html += `<div style="text-align:center;color:var(--sub);padding:20px">Немає кланів</div>`;
-                else clansList.forEach(clan => {
-                    html += `
-                    <div class="room-row" style="border-radius:10px;margin-bottom:8px;justify-content:space-between">
-                        <div><strong>${clan.name}</strong> <span style="font-size:10px;color:var(--sub)">[${clan.tag}]</span></div>
-                        <div style="display:flex;align-items:center;gap:8px">
-                            <div style="font-size:11px;color:var(--sub)">👥 ${clan.members?.length || 0}</div>
-                            <button class="jp" onclick="joinClan('${clan.id}')">→</button>
-                        </div>
-                    </div>`;
-                });
-            }
-            html += `</div>`;
-            container.innerHTML = html;
-        }
+/* ---------------- CREATE / JOIN ---------------- */
+document.getElementById('btnCreate').onclick = async ()=>{
+  if(!checkFb()) return;
+  const code = genCode();
+  room = code;
+  isHost = true;
+  const initial = {
+    status:"waiting",
+    hostId: MY_ID,
+    turnOrder: [],
+    currentTurn: 0,
+    doublesCount: 0,
+    phase: "lobby",
+    log: ["Кімнату створено. Очікуємо гравців..."],
+    players: { [MY_ID]: newPlayer(MY_ID, MY_NAME, 0) }
+  };
+  roomRef = db.ref('rooms/'+code);
+  await roomRef.set(initial);
+  attachListener();
+};
 
-        function showCreateClan() {
-            if (myClan) { toast('⚠️ Ви вже в клані! Спочатку покиньте поточний.'); return; }
-            const name = prompt('Назва клану', '');
-            if (!name) return;
-            const tag = prompt('Тег (2-5 символів)', '').toUpperCase();
-            if (!tag) return;
-            createClan(name, tag);
-        }
+document.getElementById('btnJoin').onclick = async ()=>{
+  if(!checkFb()) return;
+  const code = document.getElementById('joinCode').value.trim().toUpperCase();
+  if(code.length!==4){ toast("Введи 4-символьний код"); return; }
+  const ref = db.ref('rooms/'+code);
+  const snap = await ref.get();
+  if(!snap.exists()){ toast("Кімнату не знайдено"); return; }
+  const data = snap.val();
+  if(data.status!=="waiting"){ toast("Гра вже почалась"); return; }
+  const count = Object.keys(data.players||{}).length;
+  if(count>=8){ toast("Кімната заповнена"); return; }
+  room = code; isHost = (data.hostId===MY_ID); roomRef = ref;
+  if(!data.players[MY_ID]){
+    await ref.child('players/'+MY_ID).set(newPlayer(MY_ID, MY_NAME, count));
+    await pushLog(MY_NAME+" приєднався(лась) до гри");
+  }
+  attachListener();
+};
 
-        async function createClan(name, tag) {
-            if (!db) return;
-            if (myClan) { toast('⚠️ Ви вже перебуваєте в клані'); return; }
-            try {
-                const clanId = 'clan_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
-                await db.ref(`clans/${clanId}`).set({
-                    name: name.slice(0, 20), tag: tag.slice(0, 5), ownerId: myId, ownerName: myName,
-                    members: [myId], createdAt: Date.now()
-                });
-                await db.ref(`players/${myId}/clanId`).set(clanId);
-                toast(`Клан ${name} створено!`);
-                loadClans();
-            } catch (e) { toast('❌ Помилка створення клану'); }
-        }
+document.getElementById('btnLeaveWait').onclick = ()=>{
+  if(roomRef) roomRef.off();
+  location.reload();
+};
 
-        async function joinClan(clanId) {
-            if (!db) return;
-            if (myClan) { toast('⚠️ Ви вже в клані'); return; }
-            try {
-                const cs = await db.ref(`clans/${clanId}`).once('value');
-                const clan = cs.val();
-                if (!clan) { toast('Клан не знайдено'); return; }
-                const members = clan.members || [];
-                if (members.length >= 30) { toast('Клан заповнений'); return; }
-                if (members.includes(myId)) { toast('Ви вже в цьому клані'); return; }
-                members.push(myId);
-                await db.ref(`clans/${clanId}/members`).set(members);
-                await db.ref(`players/${myId}/clanId`).set(clanId);
-                toast('Ви приєдналися до клану!');
-                loadClans();
-            } catch (e) { toast('❌ Помилка приєднання'); }
-        }
+function checkFb(){
+  if(!firebaseReady){ toast("Спочатку налаштуй Firebase у файлі"); return false; }
+  return true;
+}
+function newPlayer(id,name,order){
+  return { name, order, pos:0, balance:1500, props:[], inJail:false, jailTurns:0,
+    jailFree:false, bankrupt:false, color: COLORS[order % COLORS.length], avatar: MY_AVATAR };
+}
 
-        async function leaveClan() {
-            if (!db || !myClan) return;
-            try {
-                const cs = await db.ref(`clans/${myClan}`).once('value');
-                const clan = cs.val();
-                if (!clan) return;
-                let members = (clan.members || []).filter(id => id !== myId);
-                await db.ref(`clans/${myClan}/members`).set(members);
-                await db.ref(`players/${myId}/clanId`).remove();
-                if (clan.ownerId === myId && members.length > 0) {
-                    await db.ref(`clans/${myClan}/ownerId`).set(members[0]);
-                    const ns = await db.ref(`players/${members[0]}/name`).once('value');
-                    await db.ref(`clans/${myClan}/ownerName`).set(ns.val() || 'Гравець');
-                }
-                if (clanChatListener) {
-                    db.ref(`clanChat/${myClan}`).off('value', clanChatListener);
-                    clanChatListener = null;
-                }
-                toast('Ви покинули клан');
-                loadClans();
-            } catch (e) { toast('❌ Помилка'); }
-        }
+function attachListener(){
+  roomRef.on('value', snap=>{
+    if(!snap.exists()) return;
+    game = snap.val();
+    render();
+  });
+}
 
-        async function deleteClan(clanId) {
-            if (!confirm('Видалити клан назавжди?')) return;
-            if (!db) return;
-            try {
-                const cs = await db.ref(`clans/${clanId}`).once('value');
-                const clan = cs.val();
-                if (!clan || clan.ownerId !== myId) { toast('❌ Немає прав'); return; }
-                for (let mid of clan.members || []) {
-                    await db.ref(`players/${mid}/clanId`).remove();
-                }
-                await db.ref(`clans/${clanId}`).remove();
-                await db.ref(`clanChat/${clanId}`).remove();
-                if (clanChatListener) {
-                    db.ref(`clanChat/${clanId}`).off('value', clanChatListener);
-                    clanChatListener = null;
-                }
-                toast('Клан видалено');
-                loadClans();
-            } catch (e) { toast('❌ Помилка видалення'); }
-        }
+/* ---------------- WAIT ROOM RENDER ---------------- */
+function renderWait(){
+  show('waitScreen');
+  document.getElementById('roomCodeLabel').textContent = room;
+  const players = Object.entries(game.players||{}).sort((a,b)=>a[1].order-b[1].order);
+  document.getElementById('playerCount').textContent = players.length;
+  const wrap = document.getElementById('playerListWait');
+  wrap.innerHTML = "";
+  players.forEach(([pid,p])=>{
+    const row = document.createElement('div'); row.className='playerRow';
+    const avatarHtml = p.avatar ? `<img src="${p.avatar}" alt="">` : p.name[0].toUpperCase();
+    row.innerHTML = `<div class="tok" style="background:${p.color}">${avatarHtml}</div>
+      <div class="nm">${p.name}</div>${pid===game.hostId?'<div class="tag">ХОСТ</div>':''}`;
+    wrap.appendChild(row);
+  });
+  const startBtn = document.getElementById('btnStartGame');
+  const canStart = isHost && players.length>=2;
+  startBtn.classList.toggle('hidden', !canStart);
+  document.getElementById('waitHint').classList.toggle('hidden', canStart);
+}
+document.getElementById('btnStartGame').onclick = async ()=>{
+  const players = Object.entries(game.players).sort((a,b)=>a[1].order-b[1].order);
+  const order = players.map(p=>p[0]);
+  // shuffle turn order
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  await roomRef.update({ status:"playing", phase:"await-roll", turnOrder: order, currentTurn: 0 });
+  await pushLog("Гру розпочато! Хід визначено випадково.");
+};
 
-        // ===== CLAN CHAT =====
-        function listenClanChat(clanId) {
-            if (!db) return;
-            if (clanChatListener) {
-                db.ref(`clanChat/${clanId}`).off('value', clanChatListener);
-            }
-            clanChatListener = db.ref(`clanChat/${clanId}`).limitToLast(30).on('value', snap => {
-                const msgs = snap.val();
-                const container = document.getElementById('clanChatMessages');
-                if (!container) return;
-                if (!msgs) { container.innerHTML = '<div style="color:var(--sub);text-align:center;padding:10px">Повідомлень немає</div>'; return; }
-                container.innerHTML = Object.values(msgs).sort((a, b) => a.ts - b.ts).map(m => {
-                    const isMe = m.uid === myId;
-                    return `<div class="clan-chat-msg" style="${isMe ? 'background:rgba(251,191,36,.1);text-align:right' : ''}"><strong style="color:${m.color || '#2dd4bf'}">${m.name}:</strong> ${m.text}</div>`;
-                }).join('');
-                container.scrollTop = container.scrollHeight;
-            });
-        }
+/* ---------------- GAME RENDER ---------------- */
+function buildBoardDom(){
+  const board = document.getElementById('board');
+  if(board.children.length) return;
+  for(let i=0;i<40;i++){
+    const c = BOARD[i];
+    const div = document.createElement('div');
+    div.className = 'cell';
+    div.dataset.i = i;
+    const pos = cellPos(i);
+    div.style.gridColumn = pos.col; div.style.gridRow = pos.row;
+    if(i%10===0){ div.classList.add('corner'); div.innerHTML = `<div class="cn">${c.n}</div>`; }
+    else if(["chance","chest","tax","rail","util"].includes(c.t)){
+      div.classList.add('special');
+      div.innerHTML = `<div class="cn">${iconFor(c.t)}<br>${c.n}</div>`;
+    } else {
+      div.innerHTML = `<div class="grp" style="background:${GC[c.g]}"></div><div class="cn">${c.n}</div><div class="pr">${c.p}₴</div>`;
+    }
+    div.onclick = ()=> openCellInfo(i);
+    board.appendChild(div);
+  }
+}
+function iconFor(t){ return {chance:"❓",chest:"📦",tax:"💸",rail:"🚂",util:"🔧"}[t]||""; }
+function cellPos(i){
+  if(i===0) return {row:11,col:11};
+  if(i>=1&&i<=9) return {row:11, col:11-i};
+  if(i===10) return {row:11,col:1};
+  if(i>=11&&i<=19) return {row:11-(i-10), col:1};
+  if(i===20) return {row:1,col:1};
+  if(i>=21&&i<=29) return {row:1, col:1+(i-20)};
+  if(i===30) return {row:1,col:11};
+  return {row:1+(i-30), col:11};
+}
 
-        async function sendClanChat() {
-            if (!myClan || !db) return;
-            const inp = document.getElementById('clanChatInput');
-            const text = inp.value.trim();
-            if (!text) return;
-            inp.value = '';
-            await db.ref(`clanChat/${myClan}`).push({ uid: myId, name: myName, color: COLORS[0], text, ts: Date.now() });
-        }
+function render(){
+  if(!game) return;
+  if(game.status==="waiting"){ renderWait(); return; }
+  show('gameScreen');
+  buildBoardDom();
+  document.getElementById('roomTag').textContent = "Кімната "+room;
 
-        // ===== DAILY BONUS =====
-        const DAILY_REWARDS = [50, 75, 100, 150, 200, 300, 500];
-        async function renderDailyBonus() {
-            const container = document.getElementById('dailyContent');
-            if (!container) return;
-            const now = Date.now();
-            const last = parseInt(localStorage.getItem('daily_last') || '0');
-            const streak = parseInt(localStorage.getItem('daily_streak') || '0');
-            const dayMs = 86400000;
-            const elapsed = now - last;
-            const canClaim = elapsed >= dayMs;
-            const streakBroken = elapsed > dayMs * 2;
-            const currentStreak = streakBroken ? 0 : streak;
-            const todayIdx = Math.min(currentStreak, 6);
-            const reward = DAILY_REWARDS[todayIdx];
-            let dots = '';
-            for (let i = 0; i < 7; i++) {
-                const done = i < currentStreak;
-                const isToday = i === currentStreak && canClaim;
-                dots += `<div style="width:30px;height:30px;border-radius:50%;background:${done ? 'rgba(251,191,36,.3)' : 'rgba(255,255,255,.1)'};border:2px solid ${isToday ? 'white' : done ? 'var(--gold)' : 'rgba(255,255,255,.2)'};display:flex;align-items:center;justify-content:center;font-size:12px">${done ? '✓' : DAILY_REWARDS[i] + '🪙'}</div>`;
-            }
-            container.innerHTML = `
-                <div style="background:linear-gradient(135deg, rgba(251,191,36,.15), rgba(45,212,191,.1));border:2px solid var(--gold);border-radius:14px;padding:16px;text-align:center">
-                    <div style="font-size:12px;color:var(--sub);margin-bottom:4px">Щоденний бонус</div>
-                    <div style="font-family:'Unbounded',sans-serif;font-size:28px;font-weight:900;color:var(--gold)">${currentStreak} 🔥</div>
-                    <div style="font-size:11px;color:var(--sub);margin-bottom:8px">днів поспіль</div>
-                    <div style="display:flex;gap:6px;justify-content:center;margin:10px 0">${dots}</div>
-                    <div style="font-size:13px;font-weight:800;margin:10px 0">Сьогодні: <span style="color:var(--gold)">${reward} 🪙</span></div>
-                    ${canClaim ? `<button class="btn b-gold" onclick="claimDaily(${reward},${currentStreak})">🎁 Отримати бонус!</button>` : `<div style="color:var(--sub);font-size:12px;margin-top:8px">⏰ Наступний через ${Math.ceil((dayMs - elapsed) / 3600000)}г</div>`}
-                </div>`;
-        }
+  const order = game.turnOrder;
+  const curId = order[game.currentTurn];
+  const curP = game.players[curId];
+  const sealTok = document.getElementById('sealTok');
+  if(curP.avatar){
+    sealTok.innerHTML = `<img src="${curP.avatar}" alt="">`;
+  } else {
+    sealTok.textContent = curP.name[0].toUpperCase();
+  }
+  sealTok.style.background = curP.color;
+  document.getElementById('turnText').textContent = (curId===MY_ID ? "Твій хід!" : "Хід: "+curP.name);
 
-        async function claimDaily(reward, streak) {
-            const newStreak = streak + 1;
-            localStorage.setItem('daily_last', Date.now().toString());
-            localStorage.setItem('daily_streak', newStreak.toString());
-            myGold += reward;
-            if (db) await db.ref('players/' + myId + '/gold').set(myGold);
-            document.getElementById('goldAmt').textContent = myGold;
-            toast(`🎁 +${reward} 🪙 Стрік: ${newStreak} 🔥`);
-            hp('heavy');
-            renderDailyBonus();
-        }
+  // tokens
+  const layer = document.getElementById('tokLayer');
+  layer.innerHTML = "";
+  let idx=0;
+  Object.entries(game.players).forEach(([pid,p])=>{
+    if(p.bankrupt) return;
+    const pos = cellPos(p.pos);
+    const el = document.createElement('div');
+    el.className='tokOnBoard';
+    el.style.background = p.color;
+    if(p.avatar){
+      el.innerHTML = `<img src="${p.avatar}" alt="">`;
+    } else {
+      el.textContent = p.name[0].toUpperCase();
+    }
+    const cellPct = 100/11;
+    const offset = (idx%4)* (cellPct*0.16);
+    el.style.left = ( (pos.col-1)*cellPct + cellPct*0.22 + offset ) + "%";
+    el.style.top = ( (pos.row-1)*cellPct + cellPct*0.22 + offset ) + "%";
+    layer.appendChild(el);
+    idx++;
+  });
 
-        // ===== INIT =====
-        async function onReady() {
-            await initFirebase();
-            if (db) {
-                const snap = await db.ref('players/' + myId).once('value');
-                const p = snap.val() || {};
-                myName = p.name || TGU?.first_name || 'Гравець';
-                myScore = p.score || 0;
-                myWins = p.wins || 0;
-                myGold = p.gold || 0;
-            }
-            document.getElementById('profName').textContent = myName;
-            document.getElementById('goldAmt').textContent = myGold;
-            
-            // Встановлюємо аватарку з Telegram
-            const profAv = document.getElementById('profAv');
-            if (myAvatar) {
-                profAv.innerHTML = `<img src="${myAvatar}" alt="">`;
-            } else {
-                profAv.textContent = myName[0];
-            }
-            
-            const lg = getLeague(myScore);
-            document.getElementById('profLeague').textContent = lg.icon + ' ' + lg.name;
-            
-            loadRooms();
-            const last = parseInt(localStorage.getItem('daily_last') || '0');
-            if (Date.now() - last >= 86400000) {
-                setTimeout(() => toast('🎁 Є щоденний бонус! Вкладка "📅 БОНУС"', 4000), 1500);
-            }
-        }
+  // dice
+  if(game.lastDice){
+    document.getElementById('die1').textContent = game.lastDice[0];
+    document.getElementById('die2').textContent = game.lastDice[1];
+  }
 
-        onReady();
-    </script>
+  // log
+  const logP = document.getElementById('logPanel');
+  const logs = (game.log||[]).slice(-6);
+  logP.innerHTML = logs.map(l=>`<div>${l}</div>`).join("");
+  logP.scrollTop = logP.scrollHeight;
+
+  // ledger
+  const lb = document.getElementById('ledgerBody');
+  lb.innerHTML = "";
+  Object.entries(game.players).sort((a,b)=>a[1].order-b[1].order).forEach(([pid,p])=>{
+    const row = document.createElement('div');
+    row.className = 'ledgerRow'+(p.bankrupt?' bankrupt':'')+(pid===MY_ID?' me':'');
+    const avatarHtml = p.avatar ? `<img src="${p.avatar}" alt="">` : p.name[0].toUpperCase();
+    row.innerHTML = `<div class="tok" style="background:${p.color}">${avatarHtml}</div>
+      <div class="nm">${p.name}${pid===curId?' 🎲':''}</div><div class="bal mono">${p.balance}₴</div>`;
+    lb.appendChild(row);
+  });
+
+  // action bar
+  const isMyTurn = curId===MY_ID && !curP.bankrupt;
+  const rollBtn = document.getElementById('btnRoll');
+  const endBtn = document.getElementById('btnEndTurn');
+  rollBtn.disabled = !(isMyTurn && (game.phase==="await-roll"));
+  rollBtn.classList.toggle('hidden', game.phase==="await-end");
+  endBtn.classList.toggle('hidden', !(isMyTurn && game.phase==="await-end"));
+
+  if(game.phase==="buy-decision" && curId===MY_ID){
+    showBuyModal(curP.pos);
+  }
+  if(game.phase==="game-over"){
+    const winner = game.players[game.winner];
+    if(!document.getElementById('winModal')){
+      const bg = document.createElement('div'); bg.className='modalBg'; bg.id='winModal';
+      bg.innerHTML = `<div class="modalBox" style="text-align:center">
+        <h3>🏆 Гру завершено!</h3>
+        <p style="font-size:16px;font-weight:700">${winner.name} переміг(ла)!</p>
+        <button class="btn btn-gold" onclick="location.reload()">На головну</button>
+      </div>`;
+      document.body.appendChild(bg);
+    }
+  }
+}
+
+/* ---------------- ACTIONS ---------------- */
+document.getElementById('btnRoll').onclick = async ()=>{
+  if(rollingLock) return;
+  rollingLock = true;
+  const d1el=document.getElementById('die1'), d2el=document.getElementById('die2');
+  d1el.classList.add('rolling'); d2el.classList.add('rolling');
+  await new Promise(r=>setTimeout(r,450));
+  d1el.classList.remove('rolling'); d2el.classList.remove('rolling');
+
+  const d1 = 1+Math.floor(Math.random()*6), d2 = 1+Math.floor(Math.random()*6);
+  const isDouble = d1===d2;
+  const order = game.turnOrder;
+  const curId = order[game.currentTurn];
+  let p = {...game.players[curId]};
+  let doublesCount = (game.doublesCount||0) + (isDouble?1:0);
+
+  await roomRef.update({ lastDice:[d1,d2] });
+  await pushLog(`${p.name} кидає кубики: ${d1} + ${d2}`);
+
+  if(p.inJail){
+    if(isDouble){
+      p.inJail = false; p.jailTurns = 0;
+      await pushLog(`${p.name} викинув(ла) дублі та виходить з в'язниці!`);
+    } else {
+      p.jailTurns = (p.jailTurns||0)+1;
+      if(p.jailTurns>=3){
+        p.inJail=false; p.jailTurns=0; p.balance-=50;
+        await pushLog(`${p.name} платить 50₴ і виходить з в'язниці`);
+      } else {
+        await roomRef.child('players/'+curId).update(p);
+        await roomRef.update({ phase:"await-end", doublesCount:0 });
+        rollingLock=false; return;
+      }
+    }
+  }
+
+  if(isDouble && doublesCount>=3){
+    p.pos = 10; p.inJail = true; p.jailTurns=0;
+    await roomRef.child('players/'+curId).update(p);
+    await pushLog(`${p.name} тричі поспіль викинув(ла) дублі — прямо до в'язниці!`);
+    await roomRef.update({ phase:"await-end", doublesCount:0 });
+    rollingLock=false; return;
+  }
+
+  const oldPos = p.pos;
+  let newPos = (oldPos + d1 + d2) % 40;
+  if(newPos < oldPos){
+    p.balance += 200;
+    await pushLog(`${p.name} проходить через СТАРТ, отримує 200₴`);
+  }
+  p.pos = newPos;
+  await roomRef.child('players/'+curId).update({pos:p.pos, balance:p.balance});
+  await roomRef.update({ doublesCount });
+
+  await resolveLanding(curId, newPos, isDouble);
+  rollingLock=false;
+};
+
+async function resolveLanding(pid, pos, isDouble){
+  const cell = BOARD[pos];
+  let p = {...game.players[pid]};
+  await pushLog(`${p.name} потрапляє на «${cell.n}»`);
+
+  if(cell.t==="go"){ await endOrContinue(isDouble); return; }
+  if(cell.t==="jail"||cell.t==="parking"){ await endOrContinue(isDouble); return; }
+  if(cell.t==="gotojail"){
+    p.pos=10; p.inJail=true; p.jailTurns=0;
+    await roomRef.child('players/'+pid).update(p);
+    await pushLog(`${p.name} відправляється до в'язниці!`);
+    await roomRef.update({ phase:"await-end" });
+    return;
+  }
+  if(cell.t==="tax"){
+    await applyMoney(pid, -cell.amt, `${p.name} сплачує податок ${cell.amt}₴`);
+    await endOrContinue(isDouble); return;
+  }
+  if(cell.t==="chance"||cell.t==="chest"){
+    const deck = cell.t==="chance"?CHANCE:CHEST;
+    const card = deck[Math.floor(Math.random()*deck.length)];
+    await pushLog("Картка: "+card.tx);
+    if(card.jailfree){
+      await roomRef.child('players/'+pid).update({jailFree:true});
+    } else if(card.jail){
+      await roomRef.child('players/'+pid).update({pos:10, inJail:true, jailTurns:0});
+      await roomRef.update({ phase:"await-end" });
+      return;
+    } else if(card.move!==undefined){
+      let np=card.move;
+      let bonus=0;
+      if(card.collect && np<pos) bonus=200;
+      await roomRef.child('players/'+pid).update({pos:np, balance: p.balance+bonus});
+      await resolveLanding(pid, np, false);
+      return;
+    } else if(card.fromAll!==undefined){
+      const others = Object.entries(game.players).filter(([id,pl])=>id!==pid && !pl.bankrupt);
+      let gain=0;
+      for(const [oid,op] of others){
+        await roomRef.child('players/'+oid).update({balance: op.balance-card.fromAll});
+        gain += card.fromAll;
+      }
+      await roomRef.child('players/'+pid).update({balance: p.balance+gain});
+    } else if(card.amt!==undefined){
+      await applyMoney(pid, card.amt, null);
+    }
+    await endOrContinue(isDouble); return;
+  }
+
+  if(cell.t==="prop"||cell.t==="rail"||cell.t==="util"){
+    const owner = findOwner(pos);
+    if(!owner){
+      await roomRef.update({ phase:"buy-decision" });
+      return;
+    } else if(owner!==pid){
+      const rent = computeRent(pos, owner);
+      await payRent(pid, owner, rent, cell.n);
+      await endOrContinue(isDouble); return;
+    } else {
+      await endOrContinue(isDouble); return;
+    }
+  }
+  await endOrContinue(isDouble);
+}
+
+function findOwner(pos){
+  for(const [pid,p] of Object.entries(game.players)){
+    if((p.props||[]).includes(pos)) return pid;
+  }
+  return null;
+}
+function computeRent(pos, ownerId){
+  const cell = BOARD[pos];
+  const owner = game.players[ownerId];
+  if(cell.t==="prop"){
+    const groupIdxs = BOARD.map((c,i)=>c.g===cell.g?i:-1).filter(i=>i>=0);
+    const ownsAll = groupIdxs.every(i=>(owner.props||[]).includes(i));
+    return ownsAll ? cell.r*2 : cell.r;
+  }
+  if(cell.t==="rail"){
+    const count = BOARD.map((c,i)=>c.t==="rail"?i:-1).filter(i=>i>=0).filter(i=>(owner.props||[]).includes(i)).length;
+    return [0,25,50,100,200][count]||25;
+  }
+  if(cell.t==="util"){
+    const count = BOARD.map((c,i)=>c.t==="util"?i:-1).filter(i=>i>=0).filter(i=>(owner.props||[]).includes(i)).length;
+    const diceSum = (game.lastDice||[1,1]).reduce((a,b)=>a+b,0);
+    return diceSum * (count>=2?10:4);
+  }
+  return 0;
+}
+async function payRent(payerId, ownerId, amount, name){
+  let payer = game.players[payerId], owner = game.players[ownerId];
+  await roomRef.child('players/'+payerId).update({balance: payer.balance - amount});
+  await roomRef.child('players/'+ownerId).update({balance: owner.balance + amount});
+  await pushLog(`${payer.name} платить ${amount}₴ гравцю ${owner.name} за «${name}»`);
+  await checkBankrupt(payerId, payer.balance - amount);
+}
+async function applyMoney(pid, amount, logmsg){
+  let p = game.players[pid];
+  const nb = p.balance + amount;
+  await roomRef.child('players/'+pid).update({balance: nb});
+  if(logmsg) await pushLog(logmsg);
+  await checkBankrupt(pid, nb);
+}
+async function checkBankrupt(pid, balance){
+  if(balance < 0){
+    await roomRef.child('players/'+pid).update({bankrupt:true, props:[]});
+    await pushLog(`💀 ${game.players[pid].name} збанкрутував(ла) і вибуває з гри!`);
+    const alive = Object.entries(game.players).filter(([id,p])=> id===pid? false : !p.bankrupt);
+    if(alive.length===1){
+      await roomRef.update({ status:"finished", phase:"game-over", winner: alive[0][0] });
+    }
+  }
+}
+async function endOrContinue(isDouble){
+  if(isDouble){
+    await roomRef.update({ phase:"await-roll" });
+    await pushLog("Дублі! Ще один кидок.");
+  } else {
+    await roomRef.update({ phase:"await-end" });
+  }
+}
+document.getElementById('btnEndTurn').onclick = async ()=>{
+  const order = game.turnOrder;
+  let next = game.currentTurn;
+  for(let i=0;i<order.length;i++){
+    next = (next+1)%order.length;
+    if(!game.players[order[next]].bankrupt) break;
+  }
+  await roomRef.update({ currentTurn: next, phase:"await-roll", doublesCount:0 });
+};
+async function pushLog(msg){
+  const log = (game.log||[]).concat(msg).slice(-30);
+  await roomRef.update({ log });
+}
+
+/* ---------------- BUY MODAL ---------------- */
+function showBuyModal(pos){
+  if(document.getElementById('buyModal')) return;
+  const cell = BOARD[pos];
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='buyModal';
+  bg.innerHTML = `<div class="modalBox">
+    ${cell.g?`<span class="chip" style="background:${GC[cell.g]}">${cell.g}</span>`:''}
+    <h3>${cell.n}</h3>
+    <p>Ця власність вільна. Купити за <b>${cell.p}₴</b>?</p>
+    <div class="row"><button class="btn btn-outline" id="declineBuy" style="color:var(--felt);border-color:var(--felt)">Відмовитись</button>
+    <button class="btn btn-gold" id="confirmBuy">Купити за ${cell.p}₴</button></div>
+  </div>`;
+  document.body.appendChild(bg);
+  document.getElementById('confirmBuy').onclick = async ()=>{
+    const order = game.turnOrder; const pid = order[game.currentTurn];
+    const p = game.players[pid];
+    if(p.balance < cell.p){ toast("Недостатньо грошей!"); return; }
+    const props = (p.props||[]).concat(pos);
+    await roomRef.child('players/'+pid).update({ balance: p.balance-cell.p, props });
+    await pushLog(`${p.name} купує «${cell.n}» за ${cell.p}₴`);
+    bg.remove();
+    await endOrContinue(false);
+  };
+  document.getElementById('declineBuy').onclick = async ()=>{
+    bg.remove();
+    await pushLog(`Ніхто не купив «${cell.n}»`);
+    await endOrContinue(false);
+  };
+}
+
+/* ---------------- CELL INFO / MY PROPS ---------------- */
+function openCellInfo(i){
+  const cell = BOARD[i];
+  if(!["prop","rail","util"].includes(cell.t)) return;
+  const owner = findOwner(i);
+  const ownerName = owner ? game.players[owner].name : "вільна";
+  toast(`${cell.n} — ${cell.p}₴ · власник: ${ownerName}`);
+}
+document.getElementById('btnMyProps').onclick = ()=>{
+  const p = game.players[MY_ID];
+  if(!p) return;
+  const props = (p.props||[]).map(i=>BOARD[i]);
+  const bg = document.createElement('div'); bg.className='modalBg';
+  bg.innerHTML = `<div class="modalBox">
+    <h3>🏠 Мої власності</h3>
+    <div class="propList">${ props.length? props.map(c=>`<div class="propMini"><div class="sw" style="background:${GC[c.g]||'#888'}"></div><div class="nm2">${c.n}</div><div class="mono">${c.p}₴</div></div>`).join("") : '<p>У тебе поки немає власностей</p>'}</div>
+    <button class="btn btn-outline" style="margin-top:12px;color:var(--felt);border-color:var(--felt)" id="closeProps">Закрити</button>
+  </div>`;
+  document.body.appendChild(bg);
+  document.getElementById('closeProps').onclick = ()=>bg.remove();
+};
+</script>
 </body>
 </html>
