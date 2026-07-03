@@ -27,7 +27,7 @@ html,body{margin:0;padding:0;height:100%;background:var(--felt-dark);
 /* ---------- SCREENS ---------- */
 .screen{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:20px 16px;
   background:radial-gradient(ellipse at top, #124a37 0%, var(--felt-dark) 70%);}
-.brand{text-align:center;margin-bottom:22px;}
+.brand{text-align:center;margin-bottom:14px;}
 .brand h1{font-family:'Bitter',serif;font-weight:900;font-size:30px;margin:0;
   color:var(--gold-light);letter-spacing:.5px;text-shadow:0 2px 0 rgba(0,0,0,.35);}
 .brand p{margin:4px 0 0;font-size:13px;color:var(--parchment-dark);opacity:.8;}
@@ -62,6 +62,30 @@ input.field:focus{outline:none;border-color:var(--gold);}
 .playerRow .nm{font-weight:600;font-size:14px;flex:1;}
 .playerRow .tag{font-size:11px;background:var(--gold);color:#3a2a06;padding:2px 7px;border-radius:20px;font-weight:700;}
 
+/* ---------- LOBBY TOP BAR ---------- */
+.miniBar{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.18);border-radius:14px;
+  padding:8px 10px;margin-bottom:14px;box-shadow:inset 0 0 0 1px rgba(201,162,39,.35);}
+.miniAv{width:38px;height:38px;border-radius:50%;flex:none;background:var(--parchment);color:var(--felt);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;overflow:hidden;
+  box-shadow:0 0 0 2px var(--gold);}
+.miniAv img{width:100%;height:100%;object-fit:cover;}
+.miniInfo{flex:1;min-width:0;}
+.miniName{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.miniGold{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold-light);margin-top:1px;}
+.iconBtn{width:38px;height:38px;border-radius:10px;border:none;background:rgba(201,162,39,.18);
+  color:var(--gold-light);font-size:17px;cursor:pointer;flex:none;box-shadow:inset 0 0 0 1px rgba(201,162,39,.4);}
+.iconBtn:active{transform:scale(.92);}
+
+/* ---------- ROOM LIST ---------- */
+.roomRow{display:flex;align-items:center;gap:10px;background:var(--parchment-dark);border-radius:10px;
+  padding:9px 10px;margin-bottom:7px;cursor:pointer;}
+.roomRow:active{opacity:.8;}
+.roomRow .rInfo{flex:1;min-width:0;}
+.roomRow .rCode{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;letter-spacing:.1em;}
+.roomRow .rSub{font-size:11px;color:var(--maroon);margin-top:1px;}
+.roomRow .rArrow{font-size:20px;font-weight:900;color:var(--maroon);}
+.emptyHint{text-align:center;color:var(--maroon);opacity:.7;font-size:12px;padding:14px;}
+
 /* ---------- GAME SCREEN ---------- */
 #gameScreen{padding:8px;gap:8px;}
 #topbar{display:flex;align-items:center;justify-content:space-between;padding:2px 6px 4px;}
@@ -73,7 +97,7 @@ input.field:focus{outline:none;border-color:var(--gold);}
 #turnBadge .seal img{width:100%;height:100%;object-fit:cover;}
 #turnBadge span.tt{font-size:12px;font-weight:700;}
 
-#boardWrap{flex:none;width:100%;aspect-ratio:1/1;max-height:58vh;margin:0 auto;position:relative;}
+#boardWrap{flex:none;width:100%;aspect-ratio:1/1;max-height:50vh;margin:0 auto;position:relative;}
 #board{position:absolute;inset:0;display:grid;grid-template-columns:repeat(11,1fr);grid-template-rows:repeat(11,1fr);
   background:var(--felt);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.4), inset 0 0 0 3px var(--gold);gap:1px;padding:4px;}
 .cell{background:var(--parchment);position:relative;display:flex;flex-direction:column;overflow:hidden;
@@ -103,13 +127,13 @@ input.field:focus{outline:none;border-color:var(--gold);}
   transition:left .35s ease, top .35s ease;overflow:hidden;}
 .tokOnBoard img{width:100%;height:100%;object-fit:cover;}
 
-#logPanel{flex:none;background:var(--felt);border-radius:10px;padding:8px 10px;margin-top:6px;
-  box-shadow:inset 0 0 0 1px rgba(201,162,39,.3);max-height:56px;overflow-y:auto;}
+#logPanel{flex:none;background:var(--felt);border-radius:10px;padding:6px 10px;margin-top:6px;
+  box-shadow:inset 0 0 0 1px rgba(201,162,39,.3);max-height:44px;overflow-y:auto;}
 #logPanel div{font-size:11px;color:var(--parchment-dark);margin-bottom:2px;}
 #logPanel div:last-child{color:var(--gold-light);font-weight:600;}
 
-#ledger{background:var(--parchment);color:var(--ink);border-radius:12px;padding:10px 12px;margin-top:6px;
-  box-shadow:0 4px 0 rgba(0,0,0,.25), inset 0 0 0 2px var(--gold);flex:1;overflow-y:auto;min-height:0;}
+#ledger{background:var(--parchment);color:var(--ink);border-radius:12px;padding:8px 12px;margin-top:6px;
+  box-shadow:0 4px 0 rgba(0,0,0,.25), inset 0 0 0 2px var(--gold);flex:none;max-height:28vh;overflow-y:auto;min-height:0;}
 #ledger h4{margin:0 0 6px;font-family:'Bitter',serif;font-size:13px;color:var(--felt);
   border-bottom:2px dashed var(--parchment-dark);padding-bottom:5px;}
 .ledgerRow{display:flex;align-items:center;gap:8px;padding:6px 2px;border-bottom:1px solid var(--parchment-dark);}
@@ -120,12 +144,24 @@ input.field:focus{outline:none;border-color:var(--gold);}
 .ledgerRow.bankrupt{opacity:.4;text-decoration:line-through;}
 .ledgerRow.me{background:var(--parchment-dark);border-radius:8px;}
 
+/* ---------- CHAT ---------- */
+#chatPanel{flex:1;display:flex;flex-direction:column;min-height:0;background:var(--felt);border-radius:10px;
+  margin-top:6px;box-shadow:inset 0 0 0 1px rgba(201,162,39,.3);overflow:hidden;}
+#chatMessages{flex:1;overflow-y:auto;padding:6px 8px;min-height:40px;}
+#chatMessages .cm{font-size:11.5px;margin-bottom:4px;line-height:1.3;color:var(--parchment);}
+#chatMessages .cm b{color:var(--gold-light);}
+#chatInputRow{display:flex;gap:6px;padding:6px;border-top:1px solid rgba(201,162,39,.25);}
+#chatInput{flex:1;border:none;border-radius:8px;padding:8px 10px;font-size:13px;font-family:'Inter',sans-serif;background:var(--parchment);color:var(--ink);}
+#chatInput:focus{outline:none;}
+#chatSendBtn{border:none;border-radius:8px;padding:8px 14px;background:var(--gold);color:#3a2a06;font-weight:800;cursor:pointer;}
+#chatSendBtn:active{transform:scale(.94);}
+
 #actionBar{flex:none;padding:8px 2px 2px;}
 
 /* ---------- MODAL ---------- */
 .modalBg{position:fixed;inset:0;background:rgba(6,20,15,.75);display:flex;align-items:flex-end;justify-content:center;z-index:50;}
 .modalBox{background:var(--parchment);color:var(--ink);width:100%;max-width:480px;border-radius:18px 18px 0 0;
-  padding:20px 18px 26px;box-shadow:0 -8px 24px rgba(0,0,0,.4);}
+  padding:20px 18px 26px;box-shadow:0 -8px 24px rgba(0,0,0,.4);max-height:88vh;overflow-y:auto;}
 .modalBox h3{margin:0 0 6px;font-family:'Bitter',serif;font-size:19px;color:var(--felt);}
 .modalBox p{margin:0 0 16px;font-size:14px;color:#3a3a3a;line-height:1.4;}
 .chip{display:inline-block;padding:2px 10px;border-radius:20px;color:#fff;font-size:11px;font-weight:700;margin-bottom:10px;}
@@ -135,6 +171,25 @@ input.field:focus{outline:none;border-color:var(--gold);}
 .propMini .sw{width:12px;height:12px;border-radius:3px;flex:none;}
 .propMini .nm2{flex:1;}
 .propMini button{font-size:10px;padding:4px 8px;border-radius:6px;border:none;background:var(--maroon);color:#fff;font-weight:700;}
+
+/* ---------- DAILY BONUS ---------- */
+.dailyGrid{display:flex;gap:6px;justify-content:center;margin:14px 0;flex-wrap:wrap;}
+.dailyDay{width:38px;height:44px;border-radius:8px;background:#fff;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--maroon);
+  box-shadow:inset 0 0 0 2px var(--parchment-dark);}
+.dailyDay.done{background:var(--gold);color:#3a2a06;box-shadow:none;}
+.dailyDay.today{box-shadow:inset 0 0 0 2px var(--felt);animation:pulseDay 1.2s infinite;}
+@keyframes pulseDay{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.streakBig{text-align:center;font-family:'Bitter',serif;font-weight:900;font-size:30px;color:var(--felt);margin-bottom:2px;}
+
+/* ---------- SHOP ---------- */
+.shopGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0;}
+.shopSwatch{aspect-ratio:1/1;border-radius:50%;cursor:pointer;position:relative;box-shadow:0 3px 0 rgba(0,0,0,.2);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;}
+.shopSwatch.owned::after{content:'✓';position:absolute;top:-4px;right:-4px;background:var(--felt);color:#fff;
+  width:16px;height:16px;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;}
+.shopSwatch.equipped{box-shadow:0 0 0 3px var(--felt), 0 3px 0 rgba(0,0,0,.2);}
+.shopPrice{text-align:center;font-size:10px;color:var(--maroon);margin-top:3px;font-weight:700;}
 
 #toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:var(--felt);color:var(--gold-light);
   padding:9px 16px;border-radius:30px;font-size:13px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.4);
@@ -158,13 +213,29 @@ input.field:focus{outline:none;border-color:var(--gold);}
       <p>Мультиплеєрна гра для компанії до 8 гравців</p>
     </div>
 
+    <div class="miniBar">
+      <div class="miniAv" id="miniAv">?</div>
+      <div class="miniInfo">
+        <div class="miniName" id="miniName">Гравець</div>
+        <div class="miniGold">🪙 <span id="miniGold">0</span></div>
+      </div>
+      <button class="iconBtn" id="btnOpenDaily" title="Щоденний бонус">📅</button>
+      <button class="iconBtn" id="btnOpenShop" title="Магазин">🛒</button>
+    </div>
+
     <div class="card">
       <h3>➕ Створити кімнату</h3>
       <button class="btn btn-gold" id="btnCreate">Створити нову гру</button>
     </div>
 
     <div class="card">
-      <h3>🔑 Приєднатись до гри</h3>
+      <h3>🎲 Відкриті кімнати</h3>
+      <div id="openRoomsList"><div class="emptyHint">⏳ Завантаження...</div></div>
+      <button class="btn btn-outline" style="margin-top:10px;color:var(--felt);border-color:var(--felt)" id="btnRefreshRooms">↺ Оновити список</button>
+    </div>
+
+    <div class="card">
+      <h3>🔑 Приєднатись за кодом</h3>
       <label class="lbl">Код кімнати</label>
       <input class="field" id="joinCode" maxlength="4" placeholder="ABCD" style="margin-bottom:10px">
       <button class="btn btn-outline" id="btnJoin" style="color:var(--felt);border-color:var(--felt)">Приєднатись</button>
@@ -204,6 +275,13 @@ input.field:focus{outline:none;border-color:var(--gold);}
 
     <div id="logPanel"></div>
     <div id="ledger"><h4>📒 Банківська книга</h4><div id="ledgerBody"></div></div>
+    <div id="chatPanel">
+      <div id="chatMessages"></div>
+      <div id="chatInputRow">
+        <input id="chatInput" placeholder="Написати в чат..." maxlength="200">
+        <button id="chatSendBtn">➤</button>
+      </div>
+    </div>
 
     <div id="actionBar">
       <div class="row">
@@ -223,13 +301,13 @@ input.field:focus{outline:none;border-color:var(--gold);}
    FIREBASE CONFIG — заміни на свій проєкт (Firebase Console)
    ========================================================= */
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
-  authDomain: "monopoly-ukraine.firebaseapp.com",
-  databaseURL: "https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "monopoly-ukraine",
-  storageBucket: "monopoly-ukraine.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef123456"
+  apiKey: "AIzaSyBQNVeXBCqQi5eKhfjAQTJivwKzT9gXT0k",
+  authDomain: "monopoly-fc387.firebaseapp.com",
+  databaseURL: "https://monopoly-fc387-default-rtdb.firebaseio.com",
+  projectId: "monopoly-fc387",
+  storageBucket: "monopoly-fc387.firebasestorage.app",
+  messagingSenderId: "748860996691",
+  appId: "1:748860996691:web:7ae524502e9dc368991aa6"
 };
 
 let db = null;
@@ -245,7 +323,7 @@ try{
 const tg = window.Telegram ? window.Telegram.WebApp : null;
 if(tg){ tg.ready(); tg.expand(); }
 const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
-const MY_ID = tgUser ? String(tgUser.id) : ("guest_" + Math.random().toString(36).slice(2,9));
+const MY_ID = tgUser ? String(tgUser.id) : ("guest_" + (localStorage.getItem('mono_guest_id') || (()=>{const v="guest_"+Math.random().toString(36).slice(2,9);localStorage.setItem('mono_guest_id',v);return v;})()));
 const MY_NAME = tgUser ? (tgUser.first_name + (tgUser.last_name ? " "+tgUser.last_name : "")) : "Гравець";
 const MY_AVATAR = tgUser ? (tgUser.photo_url || null) : null;
 
@@ -318,6 +396,18 @@ const CHEST = [
 ];
 
 const COLORS = ["#E63946","#457B9D","#2A9D8F","#F4A261","#9B5DE5","#F72585","#4CC9F0","#FFD166"];
+// Додаткові кольори доступні лише через магазин
+const SHOP_COLORS = [
+  {id:'c_black',hex:'#1B1F2A',price:15},
+  {id:'c_white',hex:'#F8FAFC',price:15},
+  {id:'c_teal',hex:'#14B8A6',price:15},
+  {id:'c_magenta',hex:'#D6339F',price:15},
+  {id:'c_lime',hex:'#84CC16',price:20},
+  {id:'c_navy',hex:'#1D3E6E',price:20},
+  {id:'c_coral',hex:'#FB7185',price:20},
+  {id:'c_gold',hex:'#C9A227',price:30}
+];
+const DAILY_REWARDS = [5,8,10,15,20,30,50];
 
 /* ---------------- STATE ---------------- */
 let room = null;      // room code
@@ -325,6 +415,15 @@ let game = null;      // latest snapshot from firebase
 let isHost = false;
 let roomRef = null;
 let rollingLock = false;
+let chatRef = null;
+
+// Meta-профіль (окремо від гри): золото, стрік бонусів, куплені кольори
+let myGold = 0;
+let myStreak = 0;
+let myLastDaily = 0;
+let myOwnedColors = [];   // масив id з SHOP_COLORS
+let myColor = null;       // hex обраного кольору (null = автоколір за чергою)
+let winGoldGiven = false;
 
 function toast(msg){
   const el = document.getElementById('toast');
@@ -344,6 +443,145 @@ function show(id){
 
 if(!firebaseReady){ show('configScreen'); }
 
+/* ---------------- META-ПРОФІЛЬ (золото/бонуси/кольори) ---------------- */
+function applyProfileToHeader(){
+  document.getElementById('miniName').textContent = MY_NAME;
+  document.getElementById('miniGold').textContent = myGold;
+  const av = document.getElementById('miniAv');
+  if(MY_AVATAR){ av.innerHTML = `<img src="${MY_AVATAR}" alt="">`; }
+  else{ av.textContent = MY_NAME[0].toUpperCase(); }
+}
+async function loadMetaProfile(){
+  if(!db) return;
+  const snap = await db.ref('players/'+MY_ID).get();
+  const d = snap.exists() ? snap.val() : {};
+  myGold = d.gold || 0;
+  myStreak = d.dailyStreak || 0;
+  myLastDaily = d.lastDaily || 0;
+  myOwnedColors = d.ownedColors || [];
+  myColor = d.selectedColor || null;
+  applyProfileToHeader();
+}
+async function saveMetaProfile(){
+  if(!db) return;
+  await db.ref('players/'+MY_ID).update({
+    name: MY_NAME, photoUrl: MY_AVATAR,
+    gold: myGold, dailyStreak: myStreak, lastDaily: myLastDaily,
+    ownedColors: myOwnedColors, selectedColor: myColor,
+    updatedAt: Date.now()
+  });
+  applyProfileToHeader();
+}
+
+/* ---------------- ЩОДЕННИЙ БОНУС ---------------- */
+document.getElementById('btnOpenDaily').onclick = ()=> openDailyModal();
+function openDailyModal(){
+  const dayMs = 86400000;
+  const elapsed = Date.now() - myLastDaily;
+  const canClaim = myLastDaily===0 || elapsed >= dayMs;
+  const broken = elapsed > dayMs*2;
+  const curStreak = broken ? 0 : myStreak;
+  const todayIdx = Math.min(curStreak, 6);
+  const reward = DAILY_REWARDS[todayIdx];
+
+  let dots = "";
+  for(let i=0;i<7;i++){
+    const done = i < curStreak;
+    const isToday = i===curStreak && canClaim;
+    dots += `<div class="dailyDay ${done?'done':''} ${isToday?'today':''}">${done?'✓':DAILY_REWARDS[i]+'🪙'}</div>`;
+  }
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='dailyModal';
+  bg.innerHTML = `<div class="modalBox" style="text-align:center">
+    <h3>📅 Щоденний бонус</h3>
+    <div class="streakBig">${curStreak} 🔥</div>
+    <p style="margin:0 0 6px">днів поспіль</p>
+    <div class="dailyGrid">${dots}</div>
+    ${canClaim
+      ? `<button class="btn btn-gold" id="claimDailyBtn">🎁 Отримати ${reward} 🪙</button>`
+      : `<p style="font-size:12px;color:#666">Наступний бонус через ${Math.max(1,Math.ceil((dayMs-elapsed)/3600000))} год.</p>`}
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt);margin-top:6px" id="closeDailyBtn">Закрити</button>
+  </div>`;
+  document.body.appendChild(bg);
+  if(canClaim){
+    document.getElementById('claimDailyBtn').onclick = async ()=>{
+      myStreak = curStreak + 1;
+      myLastDaily = Date.now();
+      myGold += reward;
+      await saveMetaProfile();
+      toast(`🎁 +${reward}🪙 Стрік: ${myStreak}`);
+      bg.remove();
+    };
+  }
+  document.getElementById('closeDailyBtn').onclick = ()=> bg.remove();
+}
+
+/* ---------------- МАГАЗИН ---------------- */
+document.getElementById('btnOpenShop').onclick = ()=> openShopModal();
+function openShopModal(){
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='shopModal';
+  bg.innerHTML = `<div class="modalBox">
+    <h3>🛒 Магазин кольорів</h3>
+    <p>Твоє золото: <b style="color:var(--gold)">${myGold} 🪙</b> — купуй унікальні кольори фішки</p>
+    <div class="shopGrid" id="shopGrid"></div>
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt);margin-top:6px" id="closeShopBtn">Закрити</button>
+  </div>`;
+  document.body.appendChild(bg);
+  renderShopGrid();
+  document.getElementById('closeShopBtn').onclick = ()=> bg.remove();
+}
+function renderShopGrid(){
+  const grid = document.getElementById('shopGrid');
+  if(!grid) return;
+  grid.innerHTML = "";
+  // Автоколір (без плати) як перша опція
+  const autoWrap = document.createElement('div');
+  autoWrap.innerHTML = `<div class="shopSwatch ${myColor===null?'equipped':''}" style="background:repeating-conic-gradient(#ccc 0% 25%, #eee 0% 50%) 0/10px 10px">🎨</div><div class="shopPrice">Авто</div>`;
+  autoWrap.querySelector('.shopSwatch').onclick = async ()=>{ myColor=null; await saveMetaProfile(); renderShopGrid(); toast('Обрано авто-колір'); };
+  grid.appendChild(autoWrap);
+  SHOP_COLORS.forEach(c=>{
+    const owned = myOwnedColors.includes(c.id);
+    const equipped = myColor===c.hex;
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<div class="shopSwatch ${owned?'owned':''} ${equipped?'equipped':''}" style="background:${c.hex}"></div><div class="shopPrice">${owned?'Є':c.price+' 🪙'}</div>`;
+    wrap.querySelector('.shopSwatch').onclick = async ()=>{
+      if(owned){
+        myColor = c.hex; await saveMetaProfile(); renderShopGrid(); toast('Колір обрано!');
+      } else {
+        if(myGold < c.price){ toast('❌ Недостатньо золота'); return; }
+        myGold -= c.price; myOwnedColors.push(c.id); myColor = c.hex;
+        await saveMetaProfile(); renderShopGrid(); toast(`✅ Куплено за ${c.price}🪙`);
+      }
+    };
+    grid.appendChild(wrap);
+  });
+}
+
+/* ---------------- СПИСОК ВІДКРИТИХ КІМНАТ ---------------- */
+document.getElementById('btnRefreshRooms').onclick = ()=> loadOpenRooms();
+async function loadOpenRooms(){
+  const el = document.getElementById('openRoomsList');
+  if(!db){ el.innerHTML = '<div class="emptyHint">Firebase не налаштовано</div>'; return; }
+  el.innerHTML = '<div class="emptyHint">⏳ Завантаження...</div>';
+  try{
+    const snap = await db.ref('rooms').orderByChild('status').equalTo('waiting').get();
+    if(!snap.exists()){ el.innerHTML = '<div class="emptyHint">Немає відкритих кімнат — створи свою!</div>'; return; }
+    const rooms = [];
+    snap.forEach(child=>{
+      const r = child.val();
+      const players = Object.values(r.players||{});
+      if(players.length < 8) rooms.push({code: child.key, r, count: players.length, hostName: (players.find(p=>p.order===0)||{}).name || '?'});
+    });
+    if(!rooms.length){ el.innerHTML = '<div class="emptyHint">Немає відкритих кімнат — створи свою!</div>'; return; }
+    rooms.sort((a,b)=> (b.r.createdAt||0)-(a.r.createdAt||0));
+    el.innerHTML = rooms.slice(0,12).map(x=>`
+      <div class="roomRow" onclick="joinRoomByCode('${x.code}')">
+        <div class="tok" style="background:#8FCBEB">${x.hostName[0]?.toUpperCase()||'?'}</div>
+        <div class="rInfo"><div class="rCode">${x.code}</div><div class="rSub">хост: ${x.hostName} · ${x.count}/8 гравців</div></div>
+        <div class="rArrow">›</div>
+      </div>`).join('');
+  }catch(e){ el.innerHTML = '<div class="emptyHint">Помилка завантаження</div>'; }
+}
+
 /* ---------------- CREATE / JOIN ---------------- */
 document.getElementById('btnCreate').onclick = async ()=>{
   if(!checkFb()) return;
@@ -358,7 +596,8 @@ document.getElementById('btnCreate').onclick = async ()=>{
     doublesCount: 0,
     phase: "lobby",
     log: ["Кімнату створено. Очікуємо гравців..."],
-    players: { [MY_ID]: newPlayer(MY_ID, MY_NAME, 0) }
+    players: { [MY_ID]: newPlayer(MY_ID, MY_NAME, 0) },
+    createdAt: Date.now()
   };
   roomRef = db.ref('rooms/'+code);
   await roomRef.set(initial);
@@ -366,9 +605,13 @@ document.getElementById('btnCreate').onclick = async ()=>{
 };
 
 document.getElementById('btnJoin').onclick = async ()=>{
-  if(!checkFb()) return;
   const code = document.getElementById('joinCode').value.trim().toUpperCase();
   if(code.length!==4){ toast("Введи 4-символьний код"); return; }
+  await joinRoomByCode(code);
+};
+
+async function joinRoomByCode(code){
+  if(!checkFb()) return;
   const ref = db.ref('rooms/'+code);
   const snap = await ref.get();
   if(!snap.exists()){ toast("Кімнату не знайдено"); return; }
@@ -382,7 +625,7 @@ document.getElementById('btnJoin').onclick = async ()=>{
     await pushLog(MY_NAME+" приєднався(лась) до гри");
   }
   attachListener();
-};
+}
 
 document.getElementById('btnLeaveWait').onclick = ()=>{
   if(roomRef) roomRef.off();
@@ -395,7 +638,7 @@ function checkFb(){
 }
 function newPlayer(id,name,order){
   return { name, order, pos:0, balance:1500, props:[], inJail:false, jailTurns:0,
-    jailFree:false, bankrupt:false, color: COLORS[order % COLORS.length], avatar: MY_AVATAR };
+    jailFree:false, bankrupt:false, color: myColor || COLORS[order % COLORS.length], avatar: MY_AVATAR };
 }
 
 function attachListener(){
@@ -404,6 +647,7 @@ function attachListener(){
     game = snap.val();
     render();
   });
+  listenChat();
 }
 
 /* ---------------- WAIT ROOM RENDER ---------------- */
@@ -548,16 +792,49 @@ function render(){
   }
   if(game.phase==="game-over"){
     const winner = game.players[game.winner];
+    if(game.winner===MY_ID && !winGoldGiven){
+      winGoldGiven = true;
+      myGold += 10;
+      saveMetaProfile();
+    }
     if(!document.getElementById('winModal')){
       const bg = document.createElement('div'); bg.className='modalBg'; bg.id='winModal';
       bg.innerHTML = `<div class="modalBox" style="text-align:center">
         <h3>🏆 Гру завершено!</h3>
         <p style="font-size:16px;font-weight:700">${winner.name} переміг(ла)!</p>
+        ${game.winner===MY_ID?'<p style="font-size:13px;color:var(--gold)">🪙 +10 золота!</p>':''}
         <button class="btn btn-gold" onclick="location.reload()">На головну</button>
       </div>`;
       document.body.appendChild(bg);
     }
   }
+}
+
+/* ---------------- ЧАТ ---------------- */
+function listenChat(){
+  if(chatRef) chatRef.off();
+  chatRef = roomRef.child('chat').limitToLast(50);
+  chatRef.on('value', snap=>{
+    const box = document.getElementById('chatMessages');
+    if(!box) return;
+    const msgs = [];
+    snap.forEach(child=> msgs.push(child.val()));
+    box.innerHTML = msgs.map(m=>`<div class="cm"><b style="color:${m.color||'var(--gold-light)'}">${m.name}:</b> ${escapeHtml(m.text)}</div>`).join("");
+    box.scrollTop = box.scrollHeight;
+  });
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+document.getElementById('chatSendBtn').onclick = sendChatMsg;
+document.getElementById('chatInput').addEventListener('keydown', e=>{ if(e.key==='Enter') sendChatMsg(); });
+async function sendChatMsg(){
+  const inp = document.getElementById('chatInput');
+  const text = inp.value.trim();
+  if(!text || !roomRef) return;
+  inp.value = "";
+  const myP = game && game.players ? game.players[MY_ID] : null;
+  await roomRef.child('chat').push({ name: MY_NAME, text: text.slice(0,200), color: myP?myP.color:'#E9CE6B', ts: Date.now() });
 }
 
 /* ---------------- ACTIONS ---------------- */
@@ -805,6 +1082,14 @@ document.getElementById('btnMyProps').onclick = ()=>{
   document.body.appendChild(bg);
   document.getElementById('closeProps').onclick = ()=>bg.remove();
 };
+
+/* ---------------- СТАРТ ---------------- */
+async function boot(){
+  if(!firebaseReady) return;
+  await loadMetaProfile();
+  loadOpenRooms();
+}
+boot();
 </script>
 </body>
 </html>
