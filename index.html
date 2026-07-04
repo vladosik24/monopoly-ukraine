@@ -191,6 +191,27 @@ input.field:focus{outline:none;border-color:var(--gold);}
 .shopSwatch.equipped{box-shadow:0 0 0 3px var(--felt), 0 3px 0 rgba(0,0,0,.2);}
 .shopPrice{text-align:center;font-size:10px;color:var(--maroon);margin-top:3px;font-weight:700;}
 
+/* ---------- PROFILE / STATS / CLAN ---------- */
+.miniAv{cursor:pointer;}
+.statGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0;}
+.statBox{background:rgba(0,0,0,.04);border-radius:10px;padding:10px;text-align:center;box-shadow:inset 0 0 0 1px var(--parchment-dark);}
+.statVal{font-family:'Bitter',serif;font-weight:900;font-size:20px;color:var(--felt);}
+.statLbl{font-size:10px;color:var(--maroon);margin-top:2px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.clanSection{margin-top:14px;border-top:2px dashed var(--parchment-dark);padding-top:12px;}
+.clanHeader{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;}
+.clanTag{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--felt);color:var(--gold-light);padding:2px 8px;border-radius:20px;font-weight:700;}
+.clanRow{display:flex;align-items:center;gap:8px;background:var(--parchment-dark);border-radius:8px;padding:8px 10px;margin-bottom:6px;}
+.clanRow .clanRowInfo{flex:1;min-width:0;font-size:12px;line-height:1.4;}
+.clanChatBox{background:var(--felt);border-radius:10px;overflow:hidden;margin-top:8px;box-shadow:inset 0 0 0 1px rgba(201,162,39,.3);}
+.clanChatMsgs{max-height:110px;overflow-y:auto;padding:6px 8px;}
+.clanChatMsgs .cm{font-size:11px;color:var(--parchment);margin-bottom:4px;line-height:1.3;}
+.clanChatMsgs .cm b{color:var(--gold-light);}
+.clanChatInputRow{display:flex;gap:6px;padding:6px;border-top:1px solid rgba(201,162,39,.25);}
+.clanChatInputRow input{flex:1;border:none;border-radius:8px;padding:7px 10px;font-size:12px;font-family:'Inter',sans-serif;background:var(--parchment);color:var(--ink);}
+.clanChatInputRow input:focus{outline:none;}
+.clanChatInputRow button{border:none;border-radius:8px;padding:7px 12px;background:var(--gold);color:#3a2a06;font-weight:800;cursor:pointer;}
+.btn-sm.btn-gold{background:linear-gradient(180deg,var(--gold-light),var(--gold));color:#3a2a06;border-radius:8px;padding:7px 12px;font-weight:800;border:none;cursor:pointer;flex:none;}
+
 #toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:var(--felt);color:var(--gold-light);
   padding:9px 16px;border-radius:30px;font-size:13px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.4);
   z-index:60;box-shadow:inset 0 0 0 1px var(--gold);opacity:0;transition:opacity .25s;pointer-events:none;}
@@ -214,7 +235,7 @@ input.field:focus{outline:none;border-color:var(--gold);}
     </div>
 
     <div class="miniBar">
-      <div class="miniAv" id="miniAv">?</div>
+      <div class="miniAv" id="miniAv" onclick="openProfileModal()" title="Профіль">?</div>
       <div class="miniInfo">
         <div class="miniName" id="miniName">Гравець</div>
         <div class="miniGold">🪙 <span id="miniGold">0</span></div>
@@ -424,6 +445,9 @@ let myLastDaily = 0;
 let myOwnedColors = [];   // масив id з SHOP_COLORS
 let myColor = null;       // hex обраного кольору (null = автоколір за чергою)
 let winGoldGiven = false;
+let myClanId = null;
+let clanChatRef = null;
+let gameCountedForRoom = null;
 
 function toast(msg){
   const el = document.getElementById('toast');
@@ -460,6 +484,7 @@ async function loadMetaProfile(){
   myLastDaily = d.lastDaily || 0;
   myOwnedColors = d.ownedColors || [];
   myColor = d.selectedColor || null;
+  myClanId = d.clanId || null;
   applyProfileToHeader();
 }
 async function saveMetaProfile(){
@@ -554,6 +579,131 @@ function renderShopGrid(){
     };
     grid.appendChild(wrap);
   });
+}
+
+/* ---------------- ПРОФІЛЬ / СТАТИСТИКА / КЛАН ---------------- */
+function incStat(uid, field, amount){
+  if(!db) return;
+  db.ref('players/'+uid+'/stats/'+field).set(firebase.database.ServerValue.increment(amount));
+}
+
+function openProfileModal(){
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='profileModal';
+  bg.innerHTML = `<div class="modalBox">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+      <div class="miniAv" style="width:52px;height:52px;font-size:20px;cursor:default">${MY_AVATAR?`<img src="${MY_AVATAR}" alt="">`:MY_NAME[0].toUpperCase()}</div>
+      <div><h3 style="margin:0">${MY_NAME}</h3><div style="font-size:12px;color:var(--maroon)">🪙 ${myGold} золота</div></div>
+    </div>
+    <div class="statGrid" id="statGrid"><div class="emptyHint">⏳ Завантаження статистики...</div></div>
+    <div class="clanSection" id="clanSection"><div class="emptyHint">⏳ Завантаження клану...</div></div>
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt);margin-top:10px" id="closeProfileBtn">Закрити</button>
+  </div>`;
+  document.body.appendChild(bg);
+  document.getElementById('closeProfileBtn').onclick = ()=>{ if(clanChatRef) clanChatRef.off(); bg.remove(); };
+  loadAndRenderStats();
+  loadAndRenderClan();
+}
+
+async function loadAndRenderStats(){
+  const grid = document.getElementById('statGrid');
+  if(!grid || !db) return;
+  const snap = await db.ref('players/'+MY_ID+'/stats').get();
+  const s = snap.exists() ? snap.val() : {};
+  grid.innerHTML = `
+    <div class="statBox"><div class="statVal">${s.gamesPlayed||0}</div><div class="statLbl">🎮 Ігор</div></div>
+    <div class="statBox"><div class="statVal">${s.wins||0}</div><div class="statLbl">🏆 Перемог</div></div>
+    <div class="statBox"><div class="statVal">${s.propsBought||0}</div><div class="statLbl">🏠 Куплено</div></div>
+    <div class="statBox"><div class="statVal">${s.bankruptcies||0}</div><div class="statLbl">💀 Банкрутств</div></div>`;
+}
+
+async function loadAndRenderClan(){
+  const sec = document.getElementById('clanSection');
+  if(!sec || !db) return;
+  const snap = await db.ref('players/'+MY_ID+'/clanId').get();
+  myClanId = snap.exists() ? snap.val() : null;
+  if(myClanId){
+    const csnap = await db.ref('clans/'+myClanId).get();
+    if(!csnap.exists()){ myClanId=null; await db.ref('players/'+MY_ID+'/clanId').remove(); return loadAndRenderClan(); }
+    const clan = csnap.val();
+    const members = Object.keys(clan.members||{}).length;
+    sec.innerHTML = `
+      <div class="clanHeader"><b>🏰 ${clan.name}</b> <span class="clanTag">${clan.tag}</span></div>
+      <div style="font-size:11px;color:var(--maroon);margin-bottom:6px">👥 ${members} учасників · власник: ${clan.ownerName}</div>
+      <div class="clanChatBox">
+        <div class="clanChatMsgs" id="clanChatMsgs"></div>
+        <div class="clanChatInputRow">
+          <input id="clanChatInput" placeholder="Написати клану..." maxlength="200">
+          <button id="clanChatSendBtn">➤</button>
+        </div>
+      </div>
+      <button class="btn btn-outline" style="color:var(--maroon);border-color:var(--maroon);margin-top:8px" id="leaveClanBtn">Покинути клан</button>`;
+    listenClanChatFn(myClanId);
+    document.getElementById('clanChatSendBtn').onclick = sendClanChatMsg;
+    document.getElementById('clanChatInput').addEventListener('keydown', e=>{ if(e.key==='Enter') sendClanChatMsg(); });
+    document.getElementById('leaveClanBtn').onclick = leaveClanFn;
+  } else {
+    const clansSnap = await db.ref('clans').get();
+    const clans = clansSnap.exists() ? clansSnap.val() : {};
+    let rows = Object.entries(clans).map(([id,c])=>{
+      const members = Object.keys(c.members||{}).length;
+      return `<div class="clanRow"><div class="clanRowInfo"><b>${c.name}</b> <span class="clanTag">${c.tag}</span><br><span style="color:var(--maroon)">👥 ${members}</span></div><button class="btn-sm btn-gold" onclick="joinClanById('${id}')">Вступити</button></div>`;
+    }).join('') || '<div class="emptyHint">Кланів поки немає — створи перший!</div>';
+    sec.innerHTML = `
+      <div class="clanHeader"><b>🏰 Клани</b></div>
+      <button class="btn btn-gold" id="createClanBtn" style="margin-bottom:10px">➕ Створити клан</button>
+      ${rows}`;
+    document.getElementById('createClanBtn').onclick = createClanPrompt;
+  }
+}
+
+async function createClanPrompt(){
+  const name = prompt("Назва клану:");
+  if(!name || !name.trim()) return;
+  const tag = prompt("Короткий тег клану (до 5 символів):", name.slice(0,4).toUpperCase());
+  if(!db) return;
+  const clanRef = db.ref('clans').push();
+  await clanRef.set({
+    name: name.trim().slice(0,30), tag: (tag||name.slice(0,4)).trim().toUpperCase().slice(0,5),
+    ownerId: MY_ID, ownerName: MY_NAME, members: { [MY_ID]: true }, createdAt: Date.now()
+  });
+  await db.ref('players/'+MY_ID+'/clanId').set(clanRef.key);
+  toast("🏰 Клан створено!");
+  loadAndRenderClan();
+}
+async function joinClanById(clanId){
+  if(!db) return;
+  await db.ref('clans/'+clanId+'/members/'+MY_ID).set(true);
+  await db.ref('players/'+MY_ID+'/clanId').set(clanId);
+  toast("🏰 Ти в клані!");
+  loadAndRenderClan();
+}
+async function leaveClanFn(){
+  if(!db || !myClanId) return;
+  await db.ref('clans/'+myClanId+'/members/'+MY_ID).remove();
+  await db.ref('players/'+MY_ID+'/clanId').remove();
+  if(clanChatRef) clanChatRef.off();
+  myClanId = null;
+  toast("Ти покинув(ла) клан");
+  loadAndRenderClan();
+}
+function listenClanChatFn(clanId){
+  if(clanChatRef) clanChatRef.off();
+  clanChatRef = db.ref('clanChat/'+clanId).limitToLast(50);
+  clanChatRef.on('value', snap=>{
+    const box = document.getElementById('clanChatMsgs');
+    if(!box) return;
+    const msgs = [];
+    snap.forEach(child=> msgs.push(child.val()));
+    box.innerHTML = msgs.map(m=>`<div class="cm"><b>${m.name}:</b> ${escapeHtml(m.text)}</div>`).join("");
+    box.scrollTop = box.scrollHeight;
+  });
+}
+async function sendClanChatMsg(){
+  const inp = document.getElementById('clanChatInput');
+  const text = inp.value.trim();
+  if(!text || !myClanId || !db) return;
+  inp.value = "";
+  await db.ref('clanChat/'+myClanId).push({ name: MY_NAME, text: text.slice(0,200), ts: Date.now() });
 }
 
 /* ---------------- СПИСОК ВІДКРИТИХ КІМНАТ ---------------- */
@@ -720,6 +870,11 @@ function render(){
   buildBoardDom();
   document.getElementById('roomTag').textContent = "Кімната "+room;
 
+  if(gameCountedForRoom !== room){
+    gameCountedForRoom = room;
+    incStat(MY_ID, 'gamesPlayed', 1);
+  }
+
   const order = game.turnOrder;
   const curId = order[game.currentTurn];
   const curP = game.players[curId];
@@ -796,6 +951,7 @@ function render(){
       winGoldGiven = true;
       myGold += 10;
       saveMetaProfile();
+      incStat(MY_ID, 'wins', 1);
     }
     if(!document.getElementById('winModal')){
       const bg = document.createElement('div'); bg.className='modalBg'; bg.id='winModal';
@@ -1003,6 +1159,7 @@ async function checkBankrupt(pid, balance){
   if(balance < 0){
     await roomRef.child('players/'+pid).update({bankrupt:true, props:[]});
     await pushLog(`💀 ${game.players[pid].name} збанкрутував(ла) і вибуває з гри!`);
+    incStat(pid, 'bankruptcies', 1);
     const alive = Object.entries(game.players).filter(([id,p])=> id===pid? false : !p.bankrupt);
     if(alive.length===1){
       await roomRef.update({ status:"finished", phase:"game-over", winner: alive[0][0] });
@@ -1051,6 +1208,7 @@ function showBuyModal(pos){
     const props = (p.props||[]).concat(pos);
     await roomRef.child('players/'+pid).update({ balance: p.balance-cell.p, props });
     await pushLog(`${p.name} купує «${cell.n}» за ${cell.p}₴`);
+    incStat(pid, 'propsBought', 1);
     bg.remove();
     await endOrContinue(false);
   };
