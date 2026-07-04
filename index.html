@@ -1,370 +1,1474 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Монополія Україна 🇺🇦 - Онлайн</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #e3f2fd 0%, #fff9c4 100%);
-            min-height: 100vh;
-            padding: 10px;
-        }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1 { text-align: center; color: #1565c0; margin-bottom: 15px; font-size: 1.8rem; }
-        .lobby {
-            max-width: 500px;
-            margin: 50px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        .lobby h2 { color: #1565c0; margin-bottom: 20px; text-align: center; }
-        .status {
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .status-loading { background: #fff3e0; color: #e65100; }
-        .status-success { background: #e8f5e9; color: #2e7d32; }
-        .status-error { background: #ffebee; color: #c62828; }
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #1565c0;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 10px auto;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .lobby input {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        .lobby button {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .btn-create { background: #4caf50; color: white; }
-        .btn-join { background: #2196f3; color: white; }
-        .btn:disabled { background: #ccc; cursor: not-allowed; }
-        .room-code {
-            background: #f5f5f5;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            margin: 20px 0;
-        }
-        .room-code-display {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #1565c0;
-            letter-spacing: 5px;
-            user-select: all;
-            cursor: pointer;
-        }
-        .players-waiting {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-        .player-item {
-            padding: 12px;
-            margin: 8px 0;
-            background: white;
-            border-radius: 6px;
-            border-left: 4px solid #4caf50;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .btn-start { background: #ff9800; color: white; font-size: 18px; }
-        .game-screen { display: none; }
-        .game-screen.active { display: block; }
-        .status-bar {
-            background: #1565c0;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .game-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; }
-        @media (max-width: 768px) { .game-layout { grid-template-columns: 1fr; } }
-        .board-container { background: #c8e6c9; padding: 12px; border-radius: 10px; }
-        .board { display: grid; grid-template-columns: repeat(11, 1fr); gap: 1px; aspect-ratio: 1; }
-        .space { background: white; border: 2px solid #333; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3px; font-size: 9px; position: relative; font-weight: bold; }
-        .space-name { text-align: center; line-height: 1.1; }
-        .space-price { color: #666; font-size: 8px; }
-        .center-space { grid-column: span 9; background: #a5d6a7; display: flex; align-items: center; justify-content: center; }
-        .center-title { font-size: 1.2rem; color: #2e7d32; font-weight: bold; text-align: center; }
-        .dice { display: flex; gap: 8px; margin-top: 8px; font-size: 1.5rem; justify-content: center; }
-        .player-token { width: 10px; height: 10px; border-radius: 50%; border: 2px solid white; position: absolute; top: 2px; }
-        .sidebar { display: flex; flex-direction: column; gap: 12px; }
-        .card { background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .card h2 { font-size: 1.1rem; margin-bottom: 8px; }
-        .player-card { padding: 10px; margin-bottom: 8px; border-radius: 6px; border: 2px solid #ddd; position: relative; }
-        .player-card.active { background: #e3f2fd; border-color: #2196f3; }
-        .player-card.online::after { content: '🟢'; position: absolute; top: 10px; right: 10px; }
-        .player-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-        .player-color { width: 14px; height: 14px; border-radius: 50%; }
-        .player-money { font-size: 1.1rem; color: #2e7d32; font-weight: bold; }
-        .btn { width: 100%; padding: 12px; font-size: 1rem; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; background: #2196f3; color: white; margin-bottom: 8px; }
-        .btn:disabled { background: #ccc; cursor: not-allowed; }
-        .chat { background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .chat-messages { height: 120px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; padding: 10px; margin-bottom: 10px; background: #f9f9f9; }
-        .chat-message { margin: 5px 0; padding: 5px 10px; background: white; border-radius: 4px; font-size: 0.85rem; }
-        .chat-message .author { font-weight: bold; color: #1565c0; }
-        .chat-message.system { background: #fffde7; font-style: italic; color: #666; }
-        .chat-input { display: flex; gap: 8px; }
-        .chat-input input { flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 6px; }
-        .chat-input button { padding: 10px 20px; background: #2196f3; color: white; border: none; border-radius: 6px; cursor: pointer; }
-        .log { max-height: 100px; overflow-y: auto; font-size: 0.85rem; }
-        .log-entry { padding: 6px; border-bottom: 1px solid #f0f0f0; color: #555; }
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
-        .modal.show { display: flex; }
-        .modal-content { background: white; padding: 20px; border-radius: 12px; max-width: 400px; width: 90%; margin: 20px; }
-        .modal-title { font-size: 1.3rem; margin-bottom: 15px; font-weight: bold; }
-        .modal-buttons { display: flex; gap: 10px; margin-top: 15px; }
-        .modal-buttons button { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Монополія UA</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --felt:#0F3D2E; --felt-dark:#0A2B20; --parchment:#F2E8D5; --parchment-dark:#E3D5B8;
+  --ink:#1B1F2A; --gold:#C9A227; --gold-light:#E9CE6B; --maroon:#7A2E2E;
+  --brown:#8B4A2B; --lightblue:#8FCBEB; --pink:#D6539E; --orange:#E8892B;
+  --red:#D6403B; --yellow:#F0D93B; --green:#2E9E5B; --darkblue:#1D3E6E;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;height:100%;background:var(--felt-dark);
+  font-family:'Inter',sans-serif; color:var(--parchment); overflow:hidden;}
+.mono{font-family:'JetBrains Mono',monospace;}
+.disp{font-family:'Bitter',serif;}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;}
+.hidden{display:none !important;}
+
+/* ---------- SCREENS ---------- */
+.screen{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:20px 16px;
+  background:radial-gradient(ellipse at top, #124a37 0%, var(--felt-dark) 70%);}
+.brand{text-align:center;margin-bottom:14px;}
+.brand h1{font-family:'Bitter',serif;font-weight:900;font-size:30px;margin:0;
+  color:var(--gold-light);letter-spacing:.5px;text-shadow:0 2px 0 rgba(0,0,0,.35);}
+.brand p{margin:4px 0 0;font-size:13px;color:var(--parchment-dark);opacity:.8;}
+
+.card{background:var(--parchment);color:var(--ink);border-radius:14px;padding:18px;
+  box-shadow:0 8px 22px rgba(0,0,0,.35), inset 0 0 0 2px var(--gold);margin-bottom:14px;}
+.card h3{margin:0 0 10px;font-family:'Bitter',serif;font-size:16px;color:var(--felt);}
+label.lbl{font-size:12px;font-weight:600;color:var(--maroon);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px;}
+input.field{width:100%;padding:12px 14px;border-radius:9px;border:2px solid var(--parchment-dark);
+  background:#fff;font-size:16px;font-family:'JetBrains Mono',monospace;text-align:center;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--ink);}
+input.field:focus{outline:none;border-color:var(--gold);}
+
+.btn{border:none;border-radius:11px;padding:14px 18px;font-size:15px;font-weight:700;
+  font-family:'Inter',sans-serif;cursor:pointer;width:100%;transition:transform .08s;}
+.btn:active{transform:scale(.97);}
+.btn-gold{background:linear-gradient(180deg,var(--gold-light),var(--gold));color:#3a2a06;
+  box-shadow:0 4px 0 #8a6e17, 0 6px 12px rgba(0,0,0,.3);}
+.btn-outline{background:transparent;color:var(--parchment);border:2px solid var(--parchment-dark);}
+.btn-maroon{background:linear-gradient(180deg,#9a4040,var(--maroon));color:#fff;
+  box-shadow:0 4px 0 #4d1c1c;}
+.btn-sm{padding:9px 12px;font-size:13px;width:auto;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.row{display:flex;gap:10px;}
+.row .btn{flex:1;}
+
+.playerRow{display:flex;align-items:center;gap:10px;padding:9px 10px;background:var(--parchment-dark);
+  border-radius:10px;margin-bottom:7px;}
+.tok{width:30px;height:30px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#fff;font-size:13px;box-shadow:0 0 0 2px rgba(0,0,0,.15) inset;overflow:hidden;}
+.tok img{width:100%;height:100%;object-fit:cover;}
+.playerRow .nm{font-weight:600;font-size:14px;flex:1;}
+.playerRow .tag{font-size:11px;background:var(--gold);color:#3a2a06;padding:2px 7px;border-radius:20px;font-weight:700;}
+
+/* ---------- LOBBY TOP BAR ---------- */
+.miniBar{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.18);border-radius:14px;
+  padding:8px 10px;margin-bottom:14px;box-shadow:inset 0 0 0 1px rgba(201,162,39,.35);}
+.miniAv{width:38px;height:38px;border-radius:50%;flex:none;background:var(--parchment);color:var(--felt);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;overflow:hidden;
+  box-shadow:0 0 0 2px var(--gold);}
+.miniAv img{width:100%;height:100%;object-fit:cover;}
+.miniInfo{flex:1;min-width:0;}
+.miniName{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.miniGold{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold-light);margin-top:1px;}
+.iconBtn{width:38px;height:38px;border-radius:10px;border:none;background:rgba(201,162,39,.18);
+  color:var(--gold-light);font-size:17px;cursor:pointer;flex:none;box-shadow:inset 0 0 0 1px rgba(201,162,39,.4);}
+.iconBtn:active{transform:scale(.92);}
+
+/* ---------- ROOM LIST ---------- */
+.roomRow{display:flex;align-items:center;gap:10px;background:var(--parchment-dark);border-radius:10px;
+  padding:9px 10px;margin-bottom:7px;cursor:pointer;}
+.roomRow:active{opacity:.8;}
+.roomRow .rInfo{flex:1;min-width:0;}
+.roomRow .rCode{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;letter-spacing:.1em;}
+.roomRow .rSub{font-size:11px;color:var(--maroon);margin-top:1px;}
+.roomRow .rArrow{font-size:20px;font-weight:900;color:var(--maroon);}
+.emptyHint{text-align:center;color:var(--maroon);opacity:.7;font-size:12px;padding:14px;}
+
+/* ---------- GAME SCREEN ---------- */
+#gameScreen{padding:8px;gap:8px;}
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:2px 6px 4px;}
+#roomTag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--parchment-dark);}
+#turnBadge{display:flex;align-items:center;gap:8px;background:var(--parchment);color:var(--ink);
+  padding:5px 12px 5px 5px;border-radius:30px;box-shadow:0 3px 0 rgba(0,0,0,.3);}
+#turnBadge .seal{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#fff;font-size:12px;box-shadow:0 0 0 2px var(--gold);overflow:hidden;}
+#turnBadge .seal img{width:100%;height:100%;object-fit:cover;}
+#turnBadge span.tt{font-size:12px;font-weight:700;}
+
+#boardWrap{flex:none;width:100%;aspect-ratio:1/1;max-height:50vh;margin:0 auto;position:relative;}
+#board{position:absolute;inset:0;display:grid;grid-template-columns:repeat(11,1fr);grid-template-rows:repeat(11,1fr);
+  background:var(--felt);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.4), inset 0 0 0 3px var(--gold);gap:1px;padding:4px;}
+.cell{background:var(--parchment);position:relative;display:flex;flex-direction:column;overflow:hidden;
+  border-radius:2px;font-size:6px;}
+.cell .grp{height:22%;flex:none;}
+.cell .cn{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;
+  padding:1px;line-height:1.05;font-size:6.4px;color:var(--ink);font-family:'Inter',sans-serif;}
+.cell .pr{font-size:5.6px;text-align:center;color:var(--maroon);font-weight:700;padding-bottom:1px;font-family:'JetBrains Mono',monospace;}
+.cell.corner{background:var(--felt);align-items:center;justify-content:center;}
+.cell.corner .cn{font-size:8px;color:var(--gold-light);font-weight:900;font-family:'Bitter',serif;}
+.cell.special{background:var(--felt-dark);}
+.cell.special .cn{color:var(--gold-light);font-size:6.6px;}
+.center-area{position:absolute;left:9.1%;top:9.1%;right:9.1%;bottom:9.1%;background:var(--felt);
+  border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  box-shadow:inset 0 0 0 2px rgba(201,162,39,.5);}
+.center-area .glogo{font-family:'Bitter',serif;font-weight:900;color:var(--gold-light);font-size:clamp(12px,3.6vmin,20px);letter-spacing:1px;
+  text-shadow:0 2px 0 rgba(0,0,0,.4);text-align:center;}
+.dice{display:flex;gap:8px;}
+.die{width:clamp(26px,7vmin,38px);height:clamp(26px,7vmin,38px);background:var(--parchment);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--ink);font-size:clamp(14px,4vmin,20px);
+  box-shadow:0 3px 0 var(--parchment-dark);font-family:'JetBrains Mono',monospace;}
+.die.rolling{animation:shake .12s infinite;}
+@keyframes shake{0%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}100%{transform:rotate(-8deg)}}
+.tokLayer{position:absolute;inset:0;pointer-events:none;}
+.tokOnBoard{position:absolute;width:8%;height:8%;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:7px;font-weight:800;color:#fff;box-shadow:0 0 0 1.5px #fff, 0 2px 3px rgba(0,0,0,.4);
+  transition:left .35s ease, top .35s ease;overflow:hidden;}
+.tokOnBoard img{width:100%;height:100%;object-fit:cover;}
+
+#logPanel{flex:none;background:var(--felt);border-radius:10px;padding:6px 10px;margin-top:6px;
+  box-shadow:inset 0 0 0 1px rgba(201,162,39,.3);max-height:44px;overflow-y:auto;}
+#logPanel div{font-size:11px;color:var(--parchment-dark);margin-bottom:2px;}
+#logPanel div:last-child{color:var(--gold-light);font-weight:600;}
+
+#ledger{background:var(--parchment);color:var(--ink);border-radius:12px;padding:8px 12px;margin-top:6px;
+  box-shadow:0 4px 0 rgba(0,0,0,.25), inset 0 0 0 2px var(--gold);flex:none;max-height:28vh;overflow-y:auto;min-height:0;}
+#ledger h4{margin:0 0 6px;font-family:'Bitter',serif;font-size:13px;color:var(--felt);
+  border-bottom:2px dashed var(--parchment-dark);padding-bottom:5px;}
+.ledgerRow{display:flex;align-items:center;gap:8px;padding:6px 2px;border-bottom:1px solid var(--parchment-dark);}
+.ledgerRow:last-child{border-bottom:none;}
+.ledgerRow .tok{width:22px;height:22px;font-size:10px;}
+.ledgerRow .nm{flex:1;font-weight:600;font-size:12.5px;}
+.ledgerRow .bal{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:var(--felt);}
+.ledgerRow.bankrupt{opacity:.4;text-decoration:line-through;}
+.ledgerRow.me{background:var(--parchment-dark);border-radius:8px;}
+
+/* ---------- CHAT ---------- */
+#chatPanel{flex:1;display:flex;flex-direction:column;min-height:0;background:var(--felt);border-radius:10px;
+  margin-top:6px;box-shadow:inset 0 0 0 1px rgba(201,162,39,.3);overflow:hidden;}
+#chatMessages{flex:1;overflow-y:auto;padding:6px 8px;min-height:40px;}
+#chatMessages .cm{font-size:11.5px;margin-bottom:4px;line-height:1.3;color:var(--parchment);}
+#chatMessages .cm b{color:var(--gold-light);}
+#chatInputRow{display:flex;gap:6px;padding:6px;border-top:1px solid rgba(201,162,39,.25);}
+#chatInput{flex:1;border:none;border-radius:8px;padding:8px 10px;font-size:13px;font-family:'Inter',sans-serif;background:var(--parchment);color:var(--ink);}
+#chatInput:focus{outline:none;}
+#chatSendBtn{border:none;border-radius:8px;padding:8px 14px;background:var(--gold);color:#3a2a06;font-weight:800;cursor:pointer;}
+#chatSendBtn:active{transform:scale(.94);}
+
+#actionBar{flex:none;padding:8px 2px 2px;}
+
+/* ---------- MODAL ---------- */
+.modalBg{position:fixed;inset:0;background:rgba(6,20,15,.75);display:flex;align-items:flex-end;justify-content:center;z-index:50;}
+.modalBox{background:var(--parchment);color:var(--ink);width:100%;max-width:480px;border-radius:18px 18px 0 0;
+  padding:20px 18px 26px;box-shadow:0 -8px 24px rgba(0,0,0,.4);max-height:88vh;overflow-y:auto;}
+.modalBox h3{margin:0 0 6px;font-family:'Bitter',serif;font-size:19px;color:var(--felt);}
+.modalBox p{margin:0 0 16px;font-size:14px;color:#3a3a3a;line-height:1.4;}
+.chip{display:inline-block;padding:2px 10px;border-radius:20px;color:#fff;font-size:11px;font-weight:700;margin-bottom:10px;}
+
+.propList{max-height:130px;overflow-y:auto;margin-top:6px;}
+.propMini{display:flex;align-items:center;gap:6px;padding:5px 0;font-size:12px;border-bottom:1px solid var(--parchment-dark);}
+.propMini .sw{width:12px;height:12px;border-radius:3px;flex:none;}
+.propMini .nm2{flex:1;}
+.propMini button{font-size:10px;padding:4px 8px;border-radius:6px;border:none;background:var(--maroon);color:#fff;font-weight:700;}
+
+/* ---------- DAILY BONUS ---------- */
+.dailyGrid{display:flex;gap:6px;justify-content:center;margin:14px 0;flex-wrap:wrap;}
+.dailyDay{width:38px;height:44px;border-radius:8px;background:#fff;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--maroon);
+  box-shadow:inset 0 0 0 2px var(--parchment-dark);}
+.dailyDay.done{background:var(--gold);color:#3a2a06;box-shadow:none;}
+.dailyDay.today{box-shadow:inset 0 0 0 2px var(--felt);animation:pulseDay 1.2s infinite;}
+@keyframes pulseDay{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.streakBig{text-align:center;font-family:'Bitter',serif;font-weight:900;font-size:30px;color:var(--felt);margin-bottom:2px;}
+
+/* ---------- SHOP ---------- */
+.shopGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0;}
+.shopSwatch{aspect-ratio:1/1;border-radius:50%;cursor:pointer;position:relative;box-shadow:0 3px 0 rgba(0,0,0,.2);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;}
+.shopSwatch.owned::after{content:'✓';position:absolute;top:-4px;right:-4px;background:var(--felt);color:#fff;
+  width:16px;height:16px;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;}
+.shopSwatch.equipped{box-shadow:0 0 0 3px var(--felt), 0 3px 0 rgba(0,0,0,.2);}
+.shopPrice{text-align:center;font-size:10px;color:var(--maroon);margin-top:3px;font-weight:700;}
+
+/* ---------- PROFILE / STATS / CLAN ---------- */
+.miniAv{cursor:pointer;}
+.statGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0;}
+.statBox{background:rgba(0,0,0,.04);border-radius:10px;padding:10px;text-align:center;box-shadow:inset 0 0 0 1px var(--parchment-dark);}
+.statVal{font-family:'Bitter',serif;font-weight:900;font-size:20px;color:var(--felt);}
+.statLbl{font-size:10px;color:var(--maroon);margin-top:2px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.clanSection{margin-top:14px;border-top:2px dashed var(--parchment-dark);padding-top:12px;}
+.clanHeader{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;}
+.clanTag{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--felt);color:var(--gold-light);padding:2px 8px;border-radius:20px;font-weight:700;}
+.clanRow{display:flex;align-items:center;gap:8px;background:var(--parchment-dark);border-radius:8px;padding:8px 10px;margin-bottom:6px;}
+.clanRow .clanRowInfo{flex:1;min-width:0;font-size:12px;line-height:1.4;}
+.clanChatBox{background:var(--felt);border-radius:10px;overflow:hidden;margin-top:8px;box-shadow:inset 0 0 0 1px rgba(201,162,39,.3);}
+.clanChatMsgs{max-height:110px;overflow-y:auto;padding:6px 8px;}
+.clanChatMsgs .cm{font-size:11px;color:var(--parchment);margin-bottom:4px;line-height:1.3;}
+.clanChatMsgs .cm b{color:var(--gold-light);}
+.clanChatInputRow{display:flex;gap:6px;padding:6px;border-top:1px solid rgba(201,162,39,.25);}
+.clanChatInputRow input{flex:1;border:none;border-radius:8px;padding:7px 10px;font-size:12px;font-family:'Inter',sans-serif;background:var(--parchment);color:var(--ink);}
+.clanChatInputRow input:focus{outline:none;}
+.clanChatInputRow button{border:none;border-radius:8px;padding:7px 12px;background:var(--gold);color:#3a2a06;font-weight:800;cursor:pointer;}
+.btn-sm.btn-gold{background:linear-gradient(180deg,var(--gold-light),var(--gold));color:#3a2a06;border-radius:8px;padding:7px 12px;font-weight:800;border:none;cursor:pointer;flex:none;}
+
+/* ---------- BUILD / MORTGAGE / TRADE / RATING ---------- */
+.actionList{max-height:260px;overflow-y:auto;margin:8px 0;}
+.actionRow{display:flex;align-items:center;gap:10px;background:var(--parchment-dark);border-radius:10px;padding:9px 10px;margin-bottom:7px;}
+.actionRow .sw{width:14px;height:14px;border-radius:4px;flex:none;}
+.actionRow .info{flex:1;min-width:0;font-size:12px;}
+.actionRow .info b{display:block;font-size:13px;}
+.actionRow button{border:none;border-radius:8px;padding:7px 12px;font-weight:800;font-size:12px;cursor:pointer;flex:none;}
+.tradeStep{margin-bottom:10px;}
+.tradePlayerRow{display:flex;align-items:center;gap:10px;background:var(--parchment-dark);border-radius:10px;padding:9px 10px;margin-bottom:7px;cursor:pointer;}
+.tradePlayerRow.sel{box-shadow:0 0 0 2px var(--felt) inset;}
+.tradeCash{width:100%;padding:10px 12px;border-radius:9px;border:2px solid var(--parchment-dark);background:#fff;font-size:14px;font-family:'JetBrains Mono',monospace;color:var(--ink);margin-top:4px;}
+.leagueBadgeBig{text-align:center;font-family:'Bitter',serif;font-weight:900;font-size:22px;color:var(--felt);margin:8px 0 2px;}
+.ratingRow{display:flex;align-items:center;gap:8px;background:var(--parchment-dark);border-radius:8px;padding:7px 10px;margin-bottom:6px;}
+.ratingRow.me{box-shadow:0 0 0 2px var(--felt) inset;}
+.ratingRow .rank{width:22px;text-align:center;font-weight:900;color:var(--maroon);font-size:13px;}
+.ratingRow .rname{flex:1;font-size:12px;font-weight:700;}
+.ratingRow .rpts{font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--felt);font-size:12px;}
+
+#toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:var(--felt);color:var(--gold-light);
+  padding:9px 16px;border-radius:30px;font-size:13px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.4);
+  z-index:60;box-shadow:inset 0 0 0 1px var(--gold);opacity:0;transition:opacity .25s;pointer-events:none;}
+#toast.show{opacity:1;}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>🇺🇦 Монополія Україна - Онлайн</h1>
-        
-        <div class="lobby" id="lobbyScreen">
-            <h2>🎮 Онлайн мультиплеєр</h2>
-            
-            <div id="firebaseStatus" class="status status-loading">
-                <div class="spinner"></div>
-                <div>Підключення до Firebase...</div>
-                <small style="display:block;margin-top:10px;font-size:0.85rem;">Перевірка з'єднання...</small>
-            </div>
-            
-            <div id="lobbyContent" style="display:none;">
-                <input type="text" id="playerName" placeholder="Ваше ім'я" maxlength="20" value="Гравець">
-                
-                <button class="btn-create" onclick="createRoom()">
-                    🎯 Створити нову гру
-                </button>
-                
-                <div style="text-align: center; margin: 20px 0; color: #666; font-weight: bold;">— АБО —</div>
-                
-                <input type="text" id="roomCodeInput" placeholder="Введіть код кімнати" maxlength="10" style="text-transform: uppercase;">
-                <button class="btn-join" onclick="joinRoom()">
-                    🚪 Приєднатися до гри
-                </button>
-                
-                <div id="waitingRoom" style="display: none;">
-                    <div class="room-code">
-                        <div style="font-size:0.9rem;margin-bottom:10px;color:#666;">📋 Код для друзів:</div>
-                        <div class="room-code-display" id="roomCodeDisplay" onclick="copyRoomCode()" title="Натисніть щоб скопіювати"></div>
-                        <small style="color: #666;">👆 Натисніть щоб скопіювати</small>
-                    </div>
-                    
-                    <div class="players-waiting">
-                        <h3 style="margin-bottom: 10px;">👥 Гравці в лобі:</h3>
-                        <div id="playersList"></div>
-                    </div>
-                    
-                    <button class="btn btn-start" id="startGameBtn" onclick="startGame()" disabled>
-                        ▶️ Очікування гравців...
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="game-screen" id="gameScreen">
-            <div class="status-bar">
-                <div>🎮 Кімната: <span id="gameRoomCode"></span></div>
-                <div id="onlineCount">🟢 0 онлайн</div>
-            </div>
-            <div class="game-layout">
-                <div class="board-container">
-                    <div class="board" id="board"></div>
-                </div>
-                <div class="sidebar">
-                    <div class="card">
-                        <h2>🏆 Гравці</h2>
-                        <div id="players"></div>
-                    </div>
-                    <div class="card">
-                        <button class="btn" id="rollBtn" onclick="rollDice()">🎲 Кинути кубики</button>
-                        <button class="btn" style="background:#f44336" onclick="leaveGame()">🚪 Вийти з гри</button>
-                    </div>
-                    <div class="card">
-                        <h2>📋 Журнал</h2>
-                        <div class="log" id="log"></div>
-                    </div>
-                    <div class="chat">
-                        <h3 style="margin-bottom: 10px;">💬 Чат</h3>
-                        <div class="chat-messages" id="chatMessages"></div>
-                        <div class="chat-input">
-                            <input type="text" id="chatInput" placeholder="Повідомлення..." maxlength="100" onkeypress="if(event.key==='Enter')sendMessage()">
-                            <button onclick="sendMessage()">📤</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div id="app">
+
+  <!-- ===== SETUP CONFIG SCREEN (Firebase не налаштовано) ===== -->
+  <div id="configScreen" class="screen hidden">
+    <div class="brand"><h1>⚠ Налаштування</h1><p>Потрібно вписати Firebase конфіг у код файлу</p></div>
+    <div class="card"><p style="font-size:13px;line-height:1.5">Відкрий файл, знайди <b>FIREBASE_CONFIG</b> на початку тега &lt;script&gt; і встав дані свого проєкту з Firebase Console → Project settings → Web app. Realtime Database має бути увімкнена, правила читання/запису відкриті (для тесту: <span class="mono">".read": true, ".write": true</span>).</p></div>
+  </div>
+
+  <!-- ===== LOBBY: створити/приєднатись ===== -->
+  <div id="lobbyScreen" class="screen">
+    <div class="brand">
+      <h1>МОНОПОЛІЯ UA</h1>
+      <p>Мультиплеєрна гра для компанії до 8 гравців</p>
     </div>
 
-    <div class="modal" id="propertyModal">
-        <div class="modal-content">
-            <div class="modal-title" id="propModalTitle"></div>
-            <div id="propModalBody"></div>
-            <div class="modal-buttons">
-                <button style="background:#4caf50;color:white" onclick="buyProperty()">💰 Купити</button>
-                <button style="background:#757575;color:white" onclick="skipProperty()">⏭️ Пропустити</button>
-            </div>
-        </div>
+    <div class="miniBar">
+      <div class="miniAv" id="miniAv" onclick="openProfileModal()" title="Профіль">?</div>
+      <div class="miniInfo">
+        <div class="miniName" id="miniName">Гравець</div>
+        <div class="miniGold">🪙 <span id="miniGold">0</span></div>
+      </div>
+      <button class="iconBtn" id="btnOpenDaily" title="Щоденний бонус">📅</button>
+      <button class="iconBtn" id="btnOpenShop" title="Магазин">🛒</button>
+      <button class="iconBtn" id="btnOpenRating" title="Рейтинг">🏆</button>
     </div>
 
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, set, onValue, push, update, remove, onDisconnect, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+    <div class="card">
+      <h3>➕ Створити кімнату</h3>
+      <button class="btn btn-gold" id="btnCreate">Створити нову гру</button>
+    </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
-            authDomain: "monopoly-ukraine.firebaseapp.com",
-            databaseURL: "https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "monopoly-ukraine",
-            storageBucket: "monopoly-ukraine.firebasestorage.app",
-            messagingSenderId: "1046709502750",
-            appId: "1:1046709502750:web:ba8ad3c1f11780d1a6bf0f"
-        };
+    <div class="card">
+      <h3>🎲 Відкриті кімнати</h3>
+      <div id="openRoomsList"><div class="emptyHint">⏳ Завантаження...</div></div>
+      <button class="btn btn-outline" style="margin-top:10px;color:var(--felt);border-color:var(--felt)" id="btnRefreshRooms">↺ Оновити список</button>
+    </div>
 
-        const statusDiv = document.getElementById('firebaseStatus');
-        
-        try {
-            console.log('🔥 Ініціалізація Firebase...');
-            const app = initializeApp(firebaseConfig);
-            const db = getDatabase(app);
-            
-            window.firebase = { db, ref, set, onValue, push, update, remove, onDisconnect, get };
-            
-            // Тест підключення
-            const connectedRef = ref(db, '.info/connected');
-            onValue(connectedRef, (snap) => {
-                if (snap.val() === true) {
-                    console.log('✅ Firebase підключено успішно!');
-                    statusDiv.className = 'status status-success';
-                    statusDiv.innerHTML = '<div style="font-size:1.2rem;">✅ Підключено!</div><small>Сервер онлайн та готовий</small>';
-                    
-                    setTimeout(() => {
-                        statusDiv.style.display = 'none';
-                        document.getElementById('lobbyContent').style.display = 'block';
-                    }, 2000);
-                } else {
-                    console.warn('⚠️ Firebase відключено');
-                    statusDiv.className = 'status status-error';
-                    statusDiv.innerHTML = '<div>⚠️ Втрачено з\'єднання</div><small>Перевірте інтернет</small>';
-                }
-            }, (error) => {
-                console.error('❌ Firebase помилка:', error);
-                statusDiv.className = 'status status-error';
-                statusDiv.innerHTML = `
-                    <div>❌ Помилка підключення</div>
-                    <small style="display:block;margin-top:10px;">${error.message}</small>
-                    <small style="display:block;margin-top:5px;">Перевірте Firebase Rules та Database</small>
-                `;
-            });
-            
-        } catch (error) {
-            console.error('❌ Критична помилка:', error);
-            statusDiv.className = 'status status-error';
-            statusDiv.innerHTML = `
-                <div>❌ Помилка ініціалізації</div>
-                <small style="display:block;margin-top:10px;">${error.message}</small>
-                <details style="margin-top:10px;text-align:left;font-size:0.8rem;">
-                    <summary style="cursor:pointer;">Технічні деталі</summary>
-                    <pre style="white-space:pre-wrap;margin-top:5px;">${error.stack}</pre>
-                </details>
-            `;
-        }
-    </script>
+    <div class="card">
+      <h3>🔑 Приєднатись за кодом</h3>
+      <label class="lbl">Код кімнати</label>
+      <input class="field" id="joinCode" maxlength="4" placeholder="ABCD" style="margin-bottom:10px">
+      <button class="btn btn-outline" id="btnJoin" style="color:var(--felt);border-color:var(--felt)">Приєднатись</button>
+    </div>
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.1/firebase-database.min.js"></script>
+  <!-- ===== WAITING ROOM ===== -->
+  <div id="waitScreen" class="screen hidden">
+    <div class="brand">
+      <h1 style="font-size:22px">Кімната <span id="roomCodeLabel" class="mono" style="color:var(--gold)"></span></h1>
+      <p>Поділись кодом з друзями в чаті</p>
+    </div>
+    <div class="card">
+      <h3>Гравці (<span id="playerCount">0</span>/8)</h3>
+      <div id="playerListWait"></div>
+    </div>
+    <button class="btn btn-gold hidden" id="btnStartGame">Почати гру</button>
+    <p id="waitHint" style="text-align:center;font-size:12px;color:var(--parchment-dark);margin-top:10px">Очікуємо, поки хост розпочне гру...</p>
+    <button class="btn btn-outline" id="btnLeaveWait" style="margin-top:14px">Вийти з кімнати</button>
+  </div>
 
-    <script>
-        const SPACES = [
-            {id:0,name:'Старт',type:'start'},{id:1,name:'Луцьк',type:'property',color:'#8B4513',price:600,rent:20},
-            {id:2,name:'Скарбниця',type:'chest'},{id:3,name:'Тернопіль',type:'property',color:'#8B4513',price:600,rent:40},
-            {id:4,name:'Податок',type:'tax',price:2000},{id:5,name:'Залізниця',type:'railroad',price:2000,rent:250},
-            {id:6,name:'Чернігів',type:'property',color:'#87CEEB',price:1000,rent:60},{id:7,name:'Шанс',type:'chance'},
-            {id:8,name:'Суми',type:'property',color:'#87CEEB',price:1000,rent:60},{id:9,name:'Полтава',type:'property',color:'#87CEEB',price:1200,rent:80},
-            {id:10,name:'В\'язниця',type:'jail'},{id:11,name:'Житомир',type:'property',color:'#FF1493',price:1400,rent:100},
-            {id:12,name:'Електро',type:'utility',price:1500},{id:13,name:'Вінниця',type:'property',color:'#FF1493',price:1400,rent:100},
-            {id:14,name:'Черкаси',type:'property',color:'#FF1493',price:1600,rent:120},{id:15,name:'Залізниця',type:'railroad',price:2000,rent:250},
-            {id:16,name:'Рівне',type:'property',color:'#FFA500',price:1800,rent:140},{id:17,name:'Скарбниця',type:'chest'},
-            {id:18,name:'Хмельницький',type:'property',color:'#FFA500',price:1800,rent:140},{id:19,name:'Франківськ',type:'property',color:'#FFA500',price:2000,rent:160},
-            {id:20,name:'Відпочинок',type:'parking'},{id:21,name:'Запоріжжя',type:'property',color:'#DC143C',price:2200,rent:180},
-            {id:22,name:'Шанс',type:'chance'},{id:23,name:'Дніпро',type:'property',color:'#DC143C',price:2200,rent:180},
-            {id:24,name:'Харків',type:'property',color:'#DC143C',price:2400,rent:200},{id:25,name:'Залізниця',type:'railroad',price:2000,rent:250},
-            {id:26,name:'Миколаїв',type:'property',color:'#FFD700',price:2600,rent:220},{id:27,name:'Херсон',type:'property',color:'#FFD700',price:2600,rent:220},
-            {id:28,name:'Водоканал',type:'utility',price:1500},{id:29,name:'Одеса',type:'property',color:'#FFD700',price:2800,rent:240},
-            {id:30,name:'→В\'язниця',type:'gotojail'},{id:31,name:'Ужгород',type:'property',color:'#228B22',price:3000,rent:260},
-            {id:32,name:'Чернівці',type:'property',color:'#228B22',price:3000,rent:260},{id:33,name:'Скарбниця',type:'chest'},
-            {id:34,name:'Льв
+  <!-- ===== GAME SCREEN ===== -->
+  <div id="gameScreen" class="screen hidden">
+    <div id="topbar">
+      <span id="roomTag" class="mono"></span>
+      <div id="turnBadge"><div class="seal" id="sealTok">?</div><span class="tt" id="turnText">Хід гравця</span></div>
+    </div>
 
-ів',type:'property',color:'#228B22',price:3200,rent:280},{id:35,name:'Залізниця',type:'railroad',price:2000,rent:250},
-            {id:36,name:'Шанс',type:'chance'},{id:37,name:'Маріуполь',type:'property',color:'#0000CD',price:3500,rent:350},
-            {id:38,name:'Податок',type:'tax',price:1000},{id:39,name:'Київ',type:'property',color:'#0000CD',price:4000,rent:500}
-        ];
-        const COLORS = ['#FF6B6B','#4ECDC4','#FFE66D','#A8E6CF'];
+    <div id="boardWrap">
+      <div id="board"></div>
+      <div class="center-area">
+        <div class="glogo">МОНОПОЛІЯ<br>UA</div>
+        <div class="dice"><div class="die" id="die1">1</div><div class="die" id="die2">1</div></div>
+      </div>
+      <div class="tokLayer" id="tokLayer"></div>
+    </div>
 
-        let myPlayerId = 'player_' + Date.now();
-        let myPlayerName = null;
-        let currentRoomCode = null;
-        let gameState = null;
+    <div id="logPanel"></div>
+    <div id="ledger"><h4>📒 Банківська книга</h4><div id="ledgerBody"></div></div>
+    <div id="chatPanel">
+      <div id="chatMessages"></div>
+      <div id="chatInputRow">
+        <input id="chatInput" placeholder="Написати в чат..." maxlength="200">
+        <button id="chatSendBtn">➤</button>
+      </div>
+    </div>
 
-        window.createRoom = async function() {
-            console.log('Creating room...');
-            alert('Функція створення кімнати активована! (Повний код у наступному повідомленні)');
-        };
+    <div id="actionBar">
+      <div class="row">
+        <button class="btn btn-gold" id="btnRoll" disabled>🎲 Кинути кубики</button>
+        <button class="btn btn-maroon hidden" id="btnEndTurn">Завершити хід</button>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn btn-outline" id="btnBuild" style="color:var(--felt);border-color:var(--felt);font-size:12px">🏗 Будувати</button>
+        <button class="btn btn-outline" id="btnMortgage" style="color:var(--felt);border-color:var(--felt);font-size:12px">🏦 Застава</button>
+        <button class="btn btn-outline" id="btnTrade" style="color:var(--felt);border-color:var(--felt);font-size:12px">🤝 Торгівля</button>
+      </div>
+      <button class="btn btn-outline" id="btnMyProps" style="margin-top:8px">🏠 Мої власності</button>
+    </div>
+  </div>
 
-        window.joinRoom = function() {
-            alert('Функція приєднання активована!');
-        };
+</div>
 
-        window.startGame = function() {
-            alert('Гра починається!');
-        };
+<div id="toast"></div>
 
-        window.rollDice = function() {
-            alert('Кубики кинуто!');
-        };
+<script>
+/* =========================================================
+   FIREBASE CONFIG — заміни на свій проєкт (Firebase Console)
+   ========================================================= */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBQNVeXBCqQi5eKhfjAQTJivwKzT9gXT0k",
+  authDomain: "monopoly-fc387.firebaseapp.com",
+  databaseURL: "https://monopoly-fc387-default-rtdb.firebaseio.com",
+  projectId: "monopoly-fc387",
+  storageBucket: "monopoly-fc387.firebasestorage.app",
+  messagingSenderId: "748860996691",
+  appId: "1:748860996691:web:7ae524502e9dc368991aa6"
+};
 
-        window.buyProperty = function() {};
-        window.skipProperty = function() {};
-        window.sendMessage = function() {};
-        window.leaveGame = function() { location.reload(); };
-        window.copyRoomCode = function() {
-            const code = document.getElementById('roomCodeDisplay').textContent;
-            navigator.clipboard.writeText(code);
-            alert('Код скопійовано: ' + code);
-        };
+let db = null;
+let firebaseReady = false;
+try{
+  if(FIREBASE_CONFIG.apiKey !== "REPLACE_ME"){
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
+    firebaseReady = true;
+  }
+}catch(e){ console.error(e); }
 
-        console.log('✅ Скрипт завантажено!');
-    </script>
+const tg = window.Telegram ? window.Telegram.WebApp : null;
+if(tg){ tg.ready(); tg.expand(); }
+const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+const MY_ID = tgUser ? String(tgUser.id) : ("guest_" + (localStorage.getItem('mono_guest_id') || (()=>{const v="guest_"+Math.random().toString(36).slice(2,9);localStorage.setItem('mono_guest_id',v);return v;})()));
+const MY_NAME = tgUser ? (tgUser.first_name + (tgUser.last_name ? " "+tgUser.last_name : "")) : "Гравець";
+const MY_AVATAR = tgUser ? (tgUser.photo_url || null) : null;
+
+/* ---------------- BOARD DATA ---------------- */
+const GC = {brown:"#8B4A2B",lightblue:"#8FCBEB",pink:"#D6539E",orange:"#E8892B",
+  red:"#D6403B",yellow:"#F0D93B",green:"#2E9E5B",darkblue:"#1D3E6E"};
+
+const BOARD = [
+  {t:"go",n:"СТАРТ"},
+  {t:"prop",n:"Бердичів",p:60,r:4,g:"brown"},
+  {t:"chest",n:"Казна громади"},
+  {t:"prop",n:"Ізмаїл",p:60,r:4,g:"brown"},
+  {t:"tax",n:"Податок на прибуток",amt:200},
+  {t:"rail",n:"Вокзал Північ",p:200},
+  {t:"prop",n:"Тернопіль",p:100,r:6,g:"lightblue"},
+  {t:"chance",n:"Шанс"},
+  {t:"prop",n:"Рівне",p:100,r:6,g:"lightblue"},
+  {t:"prop",n:"Луцьк",p:120,r:8,g:"lightblue"},
+  {t:"jail",n:"В'язниця"},
+  {t:"prop",n:"Хмельницький",p:140,r:10,g:"pink"},
+  {t:"util",n:"Водоканал",p:150},
+  {t:"prop",n:"Вінниця",p:140,r:10,g:"pink"},
+  {t:"prop",n:"Житомир",p:160,r:12,g:"pink"},
+  {t:"rail",n:"Вокзал Схід",p:200},
+  {t:"prop",n:"Черкаси",p:180,r:14,g:"orange"},
+  {t:"chest",n:"Казна громади"},
+  {t:"prop",n:"Кропивницький",p:180,r:14,g:"orange"},
+  {t:"prop",n:"Суми",p:200,r:16,g:"orange"},
+  {t:"parking",n:"Вільна парковка"},
+  {t:"prop",n:"Чернігів",p:220,r:18,g:"red"},
+  {t:"chance",n:"Шанс"},
+  {t:"prop",n:"Полтава",p:220,r:18,g:"red"},
+  {t:"prop",n:"Кременчук",p:240,r:20,g:"red"},
+  {t:"rail",n:"Вокзал Південь",p:200},
+  {t:"prop",n:"Запоріжжя",p:260,r:22,g:"yellow"},
+  {t:"prop",n:"Миколаїв",p:260,r:22,g:"yellow"},
+  {t:"util",n:"Енергозбут",p:150},
+  {t:"prop",n:"Херсон",p:280,r:24,g:"yellow"},
+  {t:"gotojail",n:"До в'язниці"},
+  {t:"prop",n:"Івано-Франківськ",p:300,r:26,g:"green"},
+  {t:"prop",n:"Чернівці",p:300,r:26,g:"green"},
+  {t:"chest",n:"Казна громади"},
+  {t:"prop",n:"Ужгород",p:320,r:28,g:"green"},
+  {t:"rail",n:"Вокзал Захід",p:200},
+  {t:"chance",n:"Шанс"},
+  {t:"prop",n:"Львів",p:350,r:35,g:"darkblue"},
+  {t:"tax",n:"Податок на розкіш",amt:100},
+  {t:"prop",n:"Київ",p:400,r:50,g:"darkblue"}
+];
+
+const CHANCE = [
+  {tx:"Банк помилково нарахував вам 200₴",amt:200},
+  {tx:"Штраф за перевищення швидкості: 50₴",amt:-50},
+  {tx:"Пройдіть на СТАРТ, отримайте 200₴",move:0,collect:true},
+  {tx:"Вирушайте до в'язниці!",jail:true},
+  {tx:"Отримайте карту «Звільнення з в'язниці»",jailfree:true},
+  {tx:"Ремонт доріг обійшовся у 100₴",amt:-100},
+  {tx:"Перемога в конкурсі, отримайте 100₴",amt:100},
+  {tx:"Переїзд до вокзалу Схід",move:15,collect:false}
+];
+const CHEST = [
+  {tx:"Повернення податків: отримайте 20₴",amt:20},
+  {tx:"Лікарняні рахунки: заплатіть 100₴",amt:-100},
+  {tx:"Продаж акцій: отримайте 50₴",amt:50},
+  {tx:"Отримайте спадщину 100₴",amt:100},
+  {tx:"Оплата навчання: заплатіть 150₴",amt:-150},
+  {tx:"Отримайте карту «Звільнення з в'язниці»",jailfree:true},
+  {tx:"День народження! Кожен дає вам 10₴",fromAll:10},
+  {tx:"Вирушайте до в'язниці!",jail:true}
+];
+
+const COLORS = ["#E63946","#457B9D","#2A9D8F","#F4A261","#9B5DE5","#F72585","#4CC9F0","#FFD166"];
+// Додаткові кольори доступні лише через магазин
+const SHOP_COLORS = [
+  {id:'c_black',hex:'#1B1F2A',price:15},
+  {id:'c_white',hex:'#F8FAFC',price:15},
+  {id:'c_teal',hex:'#14B8A6',price:15},
+  {id:'c_magenta',hex:'#D6339F',price:15},
+  {id:'c_lime',hex:'#84CC16',price:20},
+  {id:'c_navy',hex:'#1D3E6E',price:20},
+  {id:'c_coral',hex:'#FB7185',price:20},
+  {id:'c_gold',hex:'#C9A227',price:30}
+];
+const DAILY_REWARDS = [5,8,10,15,20,30,50];
+
+/* ---------------- STATE ---------------- */
+let room = null;      // room code
+let game = null;      // latest snapshot from firebase
+let isHost = false;
+let roomRef = null;
+let rollingLock = false;
+let chatRef = null;
+
+// Meta-профіль (окремо від гри): золото, стрік бонусів, куплені кольори
+let myGold = 0;
+let myStreak = 0;
+let myLastDaily = 0;
+let myOwnedColors = [];   // масив id з SHOP_COLORS
+let myColor = null;       // hex обраного кольору (null = автоколір за чергою)
+let winGoldGiven = false;
+let myClanId = null;
+let clanChatRef = null;
+let gameCountedForRoom = null;
+
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove('show'), 2200);
+}
+function genCode(){
+  const L = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  let s=""; for(let i=0;i<4;i++) s+=L[Math.floor(Math.random()*L.length)];
+  return s;
+}
+function show(id){
+  ["configScreen","lobbyScreen","waitScreen","gameScreen"].forEach(s=>{
+    document.getElementById(s).classList.toggle('hidden', s!==id);
+  });
+}
+
+if(!firebaseReady){ show('configScreen'); }
+
+/* ---------------- META-ПРОФІЛЬ (золото/бонуси/кольори) ---------------- */
+function applyProfileToHeader(){
+  document.getElementById('miniName').textContent = MY_NAME;
+  document.getElementById('miniGold').textContent = myGold;
+  const av = document.getElementById('miniAv');
+  if(MY_AVATAR){ av.innerHTML = `<img src="${MY_AVATAR}" alt="">`; }
+  else{ av.textContent = MY_NAME[0].toUpperCase(); }
+}
+async function loadMetaProfile(){
+  if(!db) return;
+  const snap = await db.ref('players/'+MY_ID).get();
+  const d = snap.exists() ? snap.val() : {};
+  myGold = d.gold || 0;
+  myStreak = d.dailyStreak || 0;
+  myLastDaily = d.lastDaily || 0;
+  myOwnedColors = d.ownedColors || [];
+  myColor = d.selectedColor || null;
+  myClanId = d.clanId || null;
+  applyProfileToHeader();
+}
+async function saveMetaProfile(){
+  if(!db) return;
+  await db.ref('players/'+MY_ID).update({
+    name: MY_NAME, photoUrl: MY_AVATAR,
+    gold: myGold, dailyStreak: myStreak, lastDaily: myLastDaily,
+    ownedColors: myOwnedColors, selectedColor: myColor,
+    updatedAt: Date.now()
+  });
+  applyProfileToHeader();
+}
+
+/* ---------------- ЩОДЕННИЙ БОНУС ---------------- */
+document.getElementById('btnOpenDaily').onclick = ()=> openDailyModal();
+function openDailyModal(){
+  const dayMs = 86400000;
+  const elapsed = Date.now() - myLastDaily;
+  const canClaim = myLastDaily===0 || elapsed >= dayMs;
+  const broken = elapsed > dayMs*2;
+  const curStreak = broken ? 0 : myStreak;
+  const todayIdx = Math.min(curStreak, 6);
+  const reward = DAILY_REWARDS[todayIdx];
+
+  let dots = "";
+  for(let i=0;i<7;i++){
+    const done = i < curStreak;
+    const isToday = i===curStreak && canClaim;
+    dots += `<div class="dailyDay ${done?'done':''} ${isToday?'today':''}">${done?'✓':DAILY_REWARDS[i]+'🪙'}</div>`;
+  }
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='dailyModal';
+  bg.innerHTML = `<div class="modalBox" style="text-align:center">
+    <h3>📅 Щоденний бонус</h3>
+    <div class="streakBig">${curStreak} 🔥</div>
+    <p style="margin:0 0 6px">днів поспіль</p>
+    <div class="dailyGrid">${dots}</div>
+    ${canClaim
+      ? `<button class="btn btn-gold" id="claimDailyBtn">🎁 Отримати ${reward} 🪙</button>`
+      : `<p style="font-size:12px;color:#666">Наступний бонус через ${Math.max(1,Math.ceil((dayMs-elapsed)/3600000))} год.</p>`}
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt);margin-top:6px" id="closeDailyBtn">Закрити</button>
+  </div>`;
+  document.body.appendChild(bg);
+  if(canClaim){
+    document.getElementById('claimDailyBtn').onclick = async ()=>{
+      myStreak = curStreak + 1;
+      myLastDaily = Date.now();
+      myGold += reward;
+      await saveMetaProfile();
+      toast(`🎁 +${reward}🪙 Стрік: ${myStreak}`);
+      bg.remove();
+    };
+  }
+  document.getElementById('closeDailyBtn').onclick = ()=> bg.remove();
+}
+
+/* ---------------- МАГАЗИН ---------------- */
+document.getElementById('btnOpenShop').onclick = ()=> openShopModal();
+function openShopModal(){
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='shopModal';
+  bg.innerHTML = `<div class="modalBox">
+    <h3>🛒 Магазин кольорів</h3>
+    <p>Твоє золото: <b style="color:var(--gold)">${myGold} 🪙</b> — купуй унікальні кольори фішки</p>
+    <div class="shopGrid" id="shopGrid"></div>
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt);margin-top:6px" id="closeShopBtn">Закрити</button>
+  </div>`;
+  document.body.appendChild(bg);
+  renderShopGrid();
+  document.getElementById('closeShopBtn').onclick = ()=> bg.remove();
+}
+function renderShopGrid(){
+  const grid = document.getElementById('shopGrid');
+  if(!grid) return;
+  grid.innerHTML = "";
+  // Автоколір (без плати) як перша опція
+  const autoWrap = document.createElement('div');
+  autoWrap.innerHTML = `<div class="shopSwatch ${myColor===null?'equipped':''}" style="background:repeating-conic-gradient(#ccc 0% 25%, #eee 0% 50%) 0/10px 10px">🎨</div><div class="shopPrice">Авто</div>`;
+  autoWrap.querySelector('.shopSwatch').onclick = async ()=>{ myColor=null; await saveMetaProfile(); renderShopGrid(); toast('Обрано авто-колір'); };
+  grid.appendChild(autoWrap);
+  SHOP_COLORS.forEach(c=>{
+    const owned = myOwnedColors.includes(c.id);
+    const equipped = myColor===c.hex;
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<div class="shopSwatch ${owned?'owned':''} ${equipped?'equipped':''}" style="background:${c.hex}"></div><div class="shopPrice">${owned?'Є':c.price+' 🪙'}</div>`;
+    wrap.querySelector('.shopSwatch').onclick = async ()=>{
+      if(owned){
+        myColor = c.hex; await saveMetaProfile(); renderShopGrid(); toast('Колір обрано!');
+      } else {
+        if(myGold < c.price){ toast('❌ Недостатньо золота'); return; }
+        myGold -= c.price; myOwnedColors.push(c.id); myColor = c.hex;
+        await saveMetaProfile(); renderShopGrid(); toast(`✅ Куплено за ${c.price}🪙`);
+      }
+    };
+    grid.appendChild(wrap);
+  });
+}
+
+/* ---------------- ПРОФІЛЬ / СТАТИСТИКА / КЛАН ---------------- */
+function incStat(uid, field, amount){
+  if(!db) return;
+  db.ref('players/'+uid+'/stats/'+field).set(firebase.database.ServerValue.increment(amount));
+}
+
+function openProfileModal(){
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='profileModal';
+  bg.innerHTML = `<div class="modalBox">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+      <div class="miniAv" style="width:52px;height:52px;font-size:20px;cursor:default">${MY_AVATAR?`<img src="${MY_AVATAR}" alt="">`:MY_NAME[0].toUpperCase()}</div>
+      <div><h3 style="margin:0">${MY_NAME}</h3><div style="font-size:12px;color:var(--maroon)">🪙 ${myGold} золота</div></div>
+    </div>
+    <div class="statGrid" id="statGrid"><div class="emptyHint">⏳ Завантаження статистики...</div></div>
+    <div class="clanSection" id="clanSection"><div class="emptyHint">⏳ Завантаження клану...</div></div>
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt);margin-top:10px" id="closeProfileBtn">Закрити</button>
+  </div>`;
+  document.body.appendChild(bg);
+  document.getElementById('closeProfileBtn').onclick = ()=>{ if(clanChatRef) clanChatRef.off(); bg.remove(); };
+  loadAndRenderStats();
+  loadAndRenderClan();
+}
+
+async function loadAndRenderStats(){
+  const grid = document.getElementById('statGrid');
+  if(!grid || !db) return;
+  const snap = await db.ref('players/'+MY_ID+'/stats').get();
+  const s = snap.exists() ? snap.val() : {};
+  grid.innerHTML = `
+    <div class="statBox"><div class="statVal">${s.gamesPlayed||0}</div><div class="statLbl">🎮 Ігор</div></div>
+    <div class="statBox"><div class="statVal">${s.wins||0}</div><div class="statLbl">🏆 Перемог</div></div>
+    <div class="statBox"><div class="statVal">${s.propsBought||0}</div><div class="statLbl">🏠 Куплено</div></div>
+    <div class="statBox"><div class="statVal">${s.bankruptcies||0}</div><div class="statLbl">💀 Банкрутств</div></div>`;
+}
+
+async function loadAndRenderClan(){
+  const sec = document.getElementById('clanSection');
+  if(!sec || !db) return;
+  const snap = await db.ref('players/'+MY_ID+'/clanId').get();
+  myClanId = snap.exists() ? snap.val() : null;
+  if(myClanId){
+    const csnap = await db.ref('clans/'+myClanId).get();
+    if(!csnap.exists()){ myClanId=null; await db.ref('players/'+MY_ID+'/clanId').remove(); return loadAndRenderClan(); }
+    const clan = csnap.val();
+    const members = Object.keys(clan.members||{}).length;
+    sec.innerHTML = `
+      <div class="clanHeader"><b>🏰 ${clan.name}</b> <span class="clanTag">${clan.tag}</span></div>
+      <div style="font-size:11px;color:var(--maroon);margin-bottom:6px">👥 ${members} учасників · власник: ${clan.ownerName}</div>
+      <div class="clanChatBox">
+        <div class="clanChatMsgs" id="clanChatMsgs"></div>
+        <div class="clanChatInputRow">
+          <input id="clanChatInput" placeholder="Написати клану..." maxlength="200">
+          <button id="clanChatSendBtn">➤</button>
+        </div>
+      </div>
+      <button class="btn btn-outline" style="color:var(--maroon);border-color:var(--maroon);margin-top:8px" id="leaveClanBtn">Покинути клан</button>`;
+    listenClanChatFn(myClanId);
+    document.getElementById('clanChatSendBtn').onclick = sendClanChatMsg;
+    document.getElementById('clanChatInput').addEventListener('keydown', e=>{ if(e.key==='Enter') sendClanChatMsg(); });
+    document.getElementById('leaveClanBtn').onclick = leaveClanFn;
+  } else {
+    const clansSnap = await db.ref('clans').get();
+    const clans = clansSnap.exists() ? clansSnap.val() : {};
+    let rows = Object.entries(clans).map(([id,c])=>{
+      const members = Object.keys(c.members||{}).length;
+      return `<div class="clanRow"><div class="clanRowInfo"><b>${c.name}</b> <span class="clanTag">${c.tag}</span><br><span style="color:var(--maroon)">👥 ${members}</span></div><button class="btn-sm btn-gold" onclick="joinClanById('${id}')">Вступити</button></div>`;
+    }).join('') || '<div class="emptyHint">Кланів поки немає — створи перший!</div>';
+    sec.innerHTML = `
+      <div class="clanHeader"><b>🏰 Клани</b></div>
+      <button class="btn btn-gold" id="createClanBtn" style="margin-bottom:10px">➕ Створити клан</button>
+      ${rows}`;
+    document.getElementById('createClanBtn').onclick = createClanPrompt;
+  }
+}
+
+async function createClanPrompt(){
+  const name = prompt("Назва клану:");
+  if(!name || !name.trim()) return;
+  const tag = prompt("Короткий тег клану (до 5 символів):", name.slice(0,4).toUpperCase());
+  if(!db) return;
+  const clanRef = db.ref('clans').push();
+  await clanRef.set({
+    name: name.trim().slice(0,30), tag: (tag||name.slice(0,4)).trim().toUpperCase().slice(0,5),
+    ownerId: MY_ID, ownerName: MY_NAME, members: { [MY_ID]: true }, createdAt: Date.now()
+  });
+  await db.ref('players/'+MY_ID+'/clanId').set(clanRef.key);
+  toast("🏰 Клан створено!");
+  loadAndRenderClan();
+}
+async function joinClanById(clanId){
+  if(!db) return;
+  await db.ref('clans/'+clanId+'/members/'+MY_ID).set(true);
+  await db.ref('players/'+MY_ID+'/clanId').set(clanId);
+  toast("🏰 Ти в клані!");
+  loadAndRenderClan();
+}
+async function leaveClanFn(){
+  if(!db || !myClanId) return;
+  await db.ref('clans/'+myClanId+'/members/'+MY_ID).remove();
+  await db.ref('players/'+MY_ID+'/clanId').remove();
+  if(clanChatRef) clanChatRef.off();
+  myClanId = null;
+  toast("Ти покинув(ла) клан");
+  loadAndRenderClan();
+}
+function listenClanChatFn(clanId){
+  if(clanChatRef) clanChatRef.off();
+  clanChatRef = db.ref('clanChat/'+clanId).limitToLast(50);
+  clanChatRef.on('value', snap=>{
+    const box = document.getElementById('clanChatMsgs');
+    if(!box) return;
+    const msgs = [];
+    snap.forEach(child=> msgs.push(child.val()));
+    box.innerHTML = msgs.map(m=>`<div class="cm"><b>${m.name}:</b> ${escapeHtml(m.text)}</div>`).join("");
+    box.scrollTop = box.scrollHeight;
+  });
+}
+async function sendClanChatMsg(){
+  const inp = document.getElementById('clanChatInput');
+  const text = inp.value.trim();
+  if(!text || !myClanId || !db) return;
+  inp.value = "";
+  await db.ref('clanChat/'+myClanId).push({ name: MY_NAME, text: text.slice(0,200), ts: Date.now() });
+}
+
+/* ---------------- БУДІВНИЦТВО ---------------- */
+document.getElementById('btnBuild').onclick = openBuildModal;
+function openBuildModal(){
+  if(!game || !roomRef) return;
+  const me = game.players[MY_ID];
+  if(!me){ toast('Зачекай початку гри'); return; }
+  const buildable = (me.props||[]).filter(pos=>{
+    const cell = BOARD[pos];
+    if(cell.t!=="prop") return false;
+    if((me.mortgaged||[]).includes(pos)) return false;
+    const h = (me.houses||{})[pos]||0;
+    return h<5 && hasMonopoly(pos);
+  });
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='buildModal';
+  let rows = buildable.map(pos=>{
+    const cell = BOARD[pos]; const h=(me.houses||{})[pos]||0; const cost = houseCost(cell);
+    const label = h===5?'🏨 Готель':h>0?'🏠'.repeat(h):'без будинків';
+    return `<div class="actionRow"><div class="sw" style="background:${GC[cell.g]}"></div>
+      <div class="info"><b>${cell.n}</b>${label} · +🏠 ${cost}₴</div>
+      <button style="background:var(--felt);color:#fff" onclick="buildHouse(${pos},${cost})">Будувати</button></div>`;
+  }).join('');
+  if(!buildable.length) rows = '<p style="text-align:center;color:#666;font-size:13px">Немає власностей з повним набором кольору — спершу зберіть монополію.</p>';
+  bg.innerHTML = `<div class="modalBox"><h3>🏗 Будівництво</h3><div class="actionList">${rows}</div>
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt)" id="closeBuildBtn">Закрити</button></div>`;
+  document.body.appendChild(bg);
+  document.getElementById('closeBuildBtn').onclick = ()=>bg.remove();
+}
+async function buildHouse(pos, cost){
+  const me = game.players[MY_ID];
+  if(!me || me.balance<cost){ toast('❌ Недостатньо грошей!'); return; }
+  const houses = {...(me.houses||{})};
+  houses[pos] = (houses[pos]||0)+1;
+  await roomRef.child('players/'+MY_ID).update({ houses, balance: me.balance-cost });
+  await pushLog(`🏗 ${me.name} будує на «${BOARD[pos].n}» (${houses[pos]}/5)`);
+  toast('🏗 Побудовано!');
+  document.getElementById('buildModal')?.remove();
+  openBuildModal();
+}
+
+/* ---------------- ЗАСТАВА ---------------- */
+document.getElementById('btnMortgage').onclick = openMortgageModal;
+function openMortgageModal(){
+  if(!game || !roomRef) return;
+  const me = game.players[MY_ID];
+  if(!me || !(me.props||[]).length){ toast('Немає власності'); return; }
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='mortgageModal';
+  let rows = (me.props||[]).map(pos=>{
+    const cell = BOARD[pos]; const isM = (me.mortgaged||[]).includes(pos);
+    const val = Math.floor(cell.p*(isM?0.55:0.5));
+    return `<div class="actionRow">${cell.g?`<div class="sw" style="background:${GC[cell.g]}"></div>`:''}
+      <div class="info"><b>${cell.n}</b>${isM?'застава активна':'вільна'}</div>
+      <button style="background:${isM?'var(--gold)':'var(--maroon)'};color:${isM?'#3a2a06':'#fff'}" onclick="toggleMortgage(${pos},${val},${isM})">${isM?`Викупити ${val}₴`:`Закласти +${val}₴`}</button></div>`;
+  }).join('');
+  bg.innerHTML = `<div class="modalBox"><h3>🏦 Застава</h3><p style="font-size:12px">Закласти = отримати 50% ціни, рента не стягується. Викупити = 55% ціни.</p><div class="actionList">${rows}</div>
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt)" id="closeMortBtn">Закрити</button></div>`;
+  document.body.appendChild(bg);
+  document.getElementById('closeMortBtn').onclick = ()=>bg.remove();
+}
+async function toggleMortgage(pos, val, isM){
+  const me = game.players[MY_ID];
+  if(isM && me.balance<val){ toast('❌ Недостатньо для викупу!'); return; }
+  let mortgaged = [...(me.mortgaged||[])];
+  const balance = isM ? me.balance-val : me.balance+val;
+  if(isM) mortgaged = mortgaged.filter(p=>p!==pos); else mortgaged.push(pos);
+  await roomRef.child('players/'+MY_ID).update({ mortgaged, balance });
+  await pushLog(`🏦 ${me.name} ${isM?'викупив':'заклав'} «${BOARD[pos].n}»`);
+  toast(isM?`🏦 Викуплено -${val}₴`:`🏦 Закладено +${val}₴`);
+  document.getElementById('mortgageModal')?.remove();
+  openMortgageModal();
+}
+
+/* ---------------- ТОРГІВЛЯ ---------------- */
+let tradeTargetId=null, tradeMyPos=null, tradeTheirPos=null;
+document.getElementById('btnTrade').onclick = openTradeModal;
+function openTradeModal(){
+  if(!game || !roomRef) return;
+  tradeTargetId=null; tradeMyPos=null; tradeTheirPos=null;
+  const others = Object.entries(game.players).filter(([pid])=>pid!==MY_ID);
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='tradeModal';
+  const rows = others.map(([pid,p])=>{
+    const avatarHtml = p.avatar ? `<img src="${p.avatar}" alt="" style="width:26px;height:26px;border-radius:50%;object-fit:cover">` : `<div class="tok" style="width:26px;height:26px;background:${p.color}">${p.name[0].toUpperCase()}</div>`;
+    return `<div class="tradePlayerRow" onclick="selectTradeTarget('${pid}')">${avatarHtml}<div style="flex:1">${p.name}</div></div>`;
+  }).join('') || '<p style="font-size:13px;color:#666">Немає інших гравців</p>';
+  bg.innerHTML = `<div class="modalBox"><h3>🤝 Торгівля</h3><div class="tradeStep"><div style="font-size:12px;color:#666;margin-bottom:6px">Крок 1: оберіть гравця</div>${rows}</div>
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt)" id="closeTradeBtn">Скасувати</button></div>`;
+  document.body.appendChild(bg);
+  document.getElementById('closeTradeBtn').onclick = ()=>bg.remove();
+}
+function selectTradeTarget(pid){
+  tradeTargetId = pid;
+  const me = game.players[MY_ID], them = game.players[pid];
+  const myRows = (me.props||[]).map(pos=>`<div class="tradePlayerRow ${tradeMyPos===pos?'sel':''}" onclick="pickMyProp(${pos})">${BOARD[pos].g?`<div class="sw" style="width:12px;height:12px;border-radius:3px;background:${GC[BOARD[pos].g]}"></div>`:''}<div style="flex:1">${BOARD[pos].n}</div></div>`).join('') || '<p style="font-size:12px;color:#666">У вас немає власності</p>';
+  const theirRows = (them.props||[]).map(pos=>`<div class="tradePlayerRow ${tradeTheirPos===pos?'sel':''}" onclick="pickTheirProp(${pos})">${BOARD[pos].g?`<div class="sw" style="width:12px;height:12px;border-radius:3px;background:${GC[BOARD[pos].g]}"></div>`:''}<div style="flex:1">${BOARD[pos].n}</div></div>`).join('') || '<p style="font-size:12px;color:#666">У гравця немає власності</p>';
+  document.getElementById('tradeModal').querySelector('.modalBox').innerHTML = `<h3>🤝 Торгівля з ${them.name}</h3>
+    <div class="tradeStep"><div style="font-size:12px;color:#666;margin-bottom:6px">Ваша власність (необов'язково)</div>${myRows}</div>
+    <div class="tradeStep"><div style="font-size:12px;color:#666;margin-bottom:6px">Власність ${them.name} (необов'язково)</div>${theirRows}</div>
+    <label class="lbl">Ваша доплата грошима</label>
+    <input type="number" class="tradeCash" id="tradeCashInput" placeholder="0" min="0">
+    <button class="btn btn-gold" style="margin-top:10px" onclick="sendTradeOffer()">Надіслати пропозицію</button>
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt);margin-top:6px" onclick="document.getElementById('tradeModal').remove()">Скасувати</button>`;
+}
+function pickMyProp(pos){ tradeMyPos = tradeMyPos===pos?null:pos; selectTradeTarget(tradeTargetId); }
+function pickTheirProp(pos){ tradeTheirPos = tradeTheirPos===pos?null:pos; selectTradeTarget(tradeTargetId); }
+async function sendTradeOffer(){
+  const cash = parseInt(document.getElementById('tradeCashInput').value)||0;
+  if(tradeMyPos===null && tradeTheirPos===null && cash<=0){ toast('Додайте щось до угоди'); return; }
+  await roomRef.child('trade').set({
+    fromId: MY_ID, toId: tradeTargetId,
+    fromPos: tradeMyPos, toPos: tradeTheirPos, cash,
+    status: 'pending', ts: Date.now()
+  });
+  toast('🤝 Пропозицію надіслано!');
+  document.getElementById('tradeModal')?.remove();
+}
+function renderTradeOffer(){
+  const t = game.trade;
+  const existing = document.getElementById('tradeIncomingModal');
+  if(!t || t.status!=='pending' || t.toId!==MY_ID){ if(existing) existing.remove(); return; }
+  if(existing) return;
+  const from = game.players[t.fromId];
+  const myItem = t.toPos!==null&&t.toPos!==undefined ? BOARD[t.toPos].n : (t.cash>0?`${t.cash}₴ від вас`:'—');
+  const theirItem = t.fromPos!==null&&t.fromPos!==undefined ? BOARD[t.fromPos].n : (t.cash>0?`${t.cash}₴ вам`:'—');
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='tradeIncomingModal';
+  bg.innerHTML = `<div class="modalBox"><h3>🤝 Пропозиція від ${from.name}</h3>
+    <p>Ви віддаєте: <b>${myItem}</b><br>Ви отримуєте: <b>${theirItem}</b>${t.cash>0?`<br>Доплата: <b>${t.cash}₴</b> від ${from.name}`:''}</p>
+    <div class="row"><button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt)" onclick="respondTrade(false)">Відхилити</button>
+    <button class="btn btn-gold" onclick="respondTrade(true)">Прийняти</button></div></div>`;
+  document.body.appendChild(bg);
+}
+async function respondTrade(accept){
+  const t = game.trade;
+  document.getElementById('tradeIncomingModal')?.remove();
+  if(!t){ return; }
+  if(accept){
+    const from = game.players[t.fromId], to = game.players[t.toId];
+    let fromProps = (from.props||[]).filter(p=>p!==t.fromPos);
+    let toProps = (to.props||[]).filter(p=>p!==t.toPos);
+    if(t.toPos!==null && t.toPos!==undefined) fromProps.push(t.toPos);
+    if(t.fromPos!==null && t.fromPos!==undefined) toProps.push(t.fromPos);
+    await roomRef.child('players/'+t.fromId).update({ props: fromProps, balance: from.balance - (t.cash||0) });
+    await roomRef.child('players/'+t.toId).update({ props: toProps, balance: to.balance + (t.cash||0) });
+    await pushLog(`🤝 ${from.name} ⇄ ${to.name}: угода укладена`);
+    toast('🤝 Угоду укладено!');
+  } else {
+    toast('Угоду відхилено');
+  }
+  await roomRef.child('trade').update({ status: accept?'accepted':'declined' });
+}
+
+/* ---------------- РЕЙТИНГ / ЛІГИ ---------------- */
+const LEAGUES = [
+  {name:'Бронза', icon:'🥉', min:0},
+  {name:'Срібло', icon:'🥈', min:50},
+  {name:'Золото', icon:'🥇', min:150},
+  {name:'Платина', icon:'💎', min:300},
+  {name:'Легенда', icon:'👑', min:600}
+];
+function pointsFor(stats){ return (stats?.wins||0)*30 + (stats?.propsBought||0)*5; }
+function leagueFor(points){ let l=LEAGUES[0]; for(const lg of LEAGUES){ if(points>=lg.min) l=lg; } return l; }
+document.getElementById('btnOpenRating').onclick = openRatingModal;
+async function openRatingModal(){
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='ratingModal';
+  bg.innerHTML = `<div class="modalBox"><h3>🏆 Рейтинг гравців</h3><div id="ratingContent"><div class="emptyHint">⏳ Завантаження...</div></div>
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt);margin-top:6px" id="closeRatingBtn">Закрити</button></div>`;
+  document.body.appendChild(bg);
+  document.getElementById('closeRatingBtn').onclick = ()=>bg.remove();
+  if(!db) return;
+  const snap = await db.ref('players').get();
+  const content = document.getElementById('ratingContent');
+  if(!snap.exists()){ content.innerHTML = '<div class="emptyHint">Ще немає даних</div>'; return; }
+  const all = snap.val();
+  const myPts = pointsFor(all[MY_ID]?.stats);
+  const myLeague = leagueFor(myPts);
+  const list = Object.entries(all).map(([uid,p])=>({ uid, name: p.name||'?', pts: pointsFor(p.stats) }))
+    .sort((a,b)=>b.pts-a.pts).slice(0,20);
+  content.innerHTML = `<div class="leagueBadgeBig">${myLeague.icon} ${myLeague.name}</div>
+    <p style="text-align:center;font-size:12px;color:#666;margin-bottom:10px">У тебе ${myPts} очок</p>
+    ${list.map((x,i)=>`<div class="ratingRow ${x.uid===MY_ID?'me':''}"><div class="rank">${i+1}</div><div class="rname">${x.name}${x.uid===MY_ID?' (ти)':''}</div><div class="rpts">${x.pts}</div></div>`).join('') || '<div class="emptyHint">Немає гравців</div>'}`;
+}
+
+/* ---------------- СПИСОК ВІДКРИТИХ КІМНАТ ---------------- */
+document.getElementById('btnRefreshRooms').onclick = ()=> loadOpenRooms();
+async function loadOpenRooms(){
+  const el = document.getElementById('openRoomsList');
+  if(!db){ el.innerHTML = '<div class="emptyHint">Firebase не налаштовано</div>'; return; }
+  el.innerHTML = '<div class="emptyHint">⏳ Завантаження...</div>';
+  try{
+    const snap = await db.ref('rooms').orderByChild('status').equalTo('waiting').get();
+    if(!snap.exists()){ el.innerHTML = '<div class="emptyHint">Немає відкритих кімнат — створи свою!</div>'; return; }
+    const rooms = [];
+    snap.forEach(child=>{
+      const r = child.val();
+      const players = Object.values(r.players||{});
+      if(players.length < 8) rooms.push({code: child.key, r, count: players.length, hostName: (players.find(p=>p.order===0)||{}).name || '?'});
+    });
+    if(!rooms.length){ el.innerHTML = '<div class="emptyHint">Немає відкритих кімнат — створи свою!</div>'; return; }
+    rooms.sort((a,b)=> (b.r.createdAt||0)-(a.r.createdAt||0));
+    el.innerHTML = rooms.slice(0,12).map(x=>`
+      <div class="roomRow" onclick="joinRoomByCode('${x.code}')">
+        <div class="tok" style="background:#8FCBEB">${x.hostName[0]?.toUpperCase()||'?'}</div>
+        <div class="rInfo"><div class="rCode">${x.code}</div><div class="rSub">хост: ${x.hostName} · ${x.count}/8 гравців</div></div>
+        <div class="rArrow">›</div>
+      </div>`).join('');
+  }catch(e){ el.innerHTML = '<div class="emptyHint">Помилка завантаження</div>'; }
+}
+
+/* ---------------- CREATE / JOIN ---------------- */
+document.getElementById('btnCreate').onclick = async ()=>{
+  if(!checkFb()) return;
+  const code = genCode();
+  room = code;
+  isHost = true;
+  const initial = {
+    status:"waiting",
+    hostId: MY_ID,
+    turnOrder: [],
+    currentTurn: 0,
+    doublesCount: 0,
+    phase: "lobby",
+    log: ["Кімнату створено. Очікуємо гравців..."],
+    players: { [MY_ID]: newPlayer(MY_ID, MY_NAME, 0) },
+    createdAt: Date.now()
+  };
+  roomRef = db.ref('rooms/'+code);
+  await roomRef.set(initial);
+  attachListener();
+};
+
+document.getElementById('btnJoin').onclick = async ()=>{
+  const code = document.getElementById('joinCode').value.trim().toUpperCase();
+  if(code.length!==4){ toast("Введи 4-символьний код"); return; }
+  await joinRoomByCode(code);
+};
+
+async function joinRoomByCode(code){
+  if(!checkFb()) return;
+  const ref = db.ref('rooms/'+code);
+  const snap = await ref.get();
+  if(!snap.exists()){ toast("Кімнату не знайдено"); return; }
+  const data = snap.val();
+  if(data.status!=="waiting"){ toast("Гра вже почалась"); return; }
+  const count = Object.keys(data.players||{}).length;
+  if(count>=8){ toast("Кімната заповнена"); return; }
+  room = code; isHost = (data.hostId===MY_ID); roomRef = ref;
+  if(!data.players[MY_ID]){
+    await ref.child('players/'+MY_ID).set(newPlayer(MY_ID, MY_NAME, count));
+    await pushLog(MY_NAME+" приєднався(лась) до гри");
+  }
+  attachListener();
+}
+
+document.getElementById('btnLeaveWait').onclick = ()=>{
+  if(roomRef) roomRef.off();
+  location.reload();
+};
+
+function checkFb(){
+  if(!firebaseReady){ toast("Спочатку налаштуй Firebase у файлі"); return false; }
+  return true;
+}
+function newPlayer(id,name,order){
+  return { name, order, pos:0, balance:1500, props:[], houses:{}, mortgaged:[], inJail:false, jailTurns:0,
+    jailFree:false, bankrupt:false, color: myColor || COLORS[order % COLORS.length], avatar: MY_AVATAR };
+}
+
+function attachListener(){
+  roomRef.on('value', snap=>{
+    if(!snap.exists()) return;
+    game = snap.val();
+    render();
+  });
+  listenChat();
+}
+
+/* ---------------- WAIT ROOM RENDER ---------------- */
+function renderWait(){
+  show('waitScreen');
+  document.getElementById('roomCodeLabel').textContent = room;
+  const players = Object.entries(game.players||{}).sort((a,b)=>a[1].order-b[1].order);
+  document.getElementById('playerCount').textContent = players.length;
+  const wrap = document.getElementById('playerListWait');
+  wrap.innerHTML = "";
+  players.forEach(([pid,p])=>{
+    const row = document.createElement('div'); row.className='playerRow';
+    const avatarHtml = p.avatar ? `<img src="${p.avatar}" alt="">` : p.name[0].toUpperCase();
+    row.innerHTML = `<div class="tok" style="background:${p.color}">${avatarHtml}</div>
+      <div class="nm">${p.name}</div>${pid===game.hostId?'<div class="tag">ХОСТ</div>':''}`;
+    wrap.appendChild(row);
+  });
+  const startBtn = document.getElementById('btnStartGame');
+  const canStart = isHost && players.length>=2;
+  startBtn.classList.toggle('hidden', !canStart);
+  document.getElementById('waitHint').classList.toggle('hidden', canStart);
+}
+document.getElementById('btnStartGame').onclick = async ()=>{
+  const players = Object.entries(game.players).sort((a,b)=>a[1].order-b[1].order);
+  const order = players.map(p=>p[0]);
+  // shuffle turn order
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  await roomRef.update({ status:"playing", phase:"await-roll", turnOrder: order, currentTurn: 0 });
+  await pushLog("Гру розпочато! Хід визначено випадково.");
+};
+
+/* ---------------- GAME RENDER ---------------- */
+function buildBoardDom(){
+  const board = document.getElementById('board');
+  if(board.children.length) return;
+  for(let i=0;i<40;i++){
+    const c = BOARD[i];
+    const div = document.createElement('div');
+    div.className = 'cell';
+    div.dataset.i = i;
+    const pos = cellPos(i);
+    div.style.gridColumn = pos.col; div.style.gridRow = pos.row;
+    if(i%10===0){ div.classList.add('corner'); div.innerHTML = `<div class="cn">${c.n}</div>`; }
+    else if(["chance","chest","tax","rail","util"].includes(c.t)){
+      div.classList.add('special');
+      div.innerHTML = `<div class="cn">${iconFor(c.t)}<br>${c.n}</div>`;
+    } else {
+      div.innerHTML = `<div class="grp" style="background:${GC[c.g]}"></div><div class="cn">${c.n}</div><div class="pr">${c.p}₴</div>`;
+    }
+    div.onclick = ()=> openCellInfo(i);
+    board.appendChild(div);
+  }
+}
+function iconFor(t){ return {chance:"❓",chest:"📦",tax:"💸",rail:"🚂",util:"🔧"}[t]||""; }
+function cellPos(i){
+  if(i===0) return {row:11,col:11};
+  if(i>=1&&i<=9) return {row:11, col:11-i};
+  if(i===10) return {row:11,col:1};
+  if(i>=11&&i<=19) return {row:11-(i-10), col:1};
+  if(i===20) return {row:1,col:1};
+  if(i>=21&&i<=29) return {row:1, col:1+(i-20)};
+  if(i===30) return {row:1,col:11};
+  return {row:1+(i-30), col:11};
+}
+
+function render(){
+  if(!game) return;
+  if(game.status==="waiting"){ renderWait(); return; }
+  show('gameScreen');
+  buildBoardDom();
+  document.getElementById('roomTag').textContent = "Кімната "+room;
+
+  if(gameCountedForRoom !== room){
+    gameCountedForRoom = room;
+    incStat(MY_ID, 'gamesPlayed', 1);
+  }
+
+  const order = game.turnOrder;
+  const curId = order[game.currentTurn];
+  const curP = game.players[curId];
+  const sealTok = document.getElementById('sealTok');
+  if(curP.avatar){
+    sealTok.innerHTML = `<img src="${curP.avatar}" alt="">`;
+  } else {
+    sealTok.textContent = curP.name[0].toUpperCase();
+  }
+  sealTok.style.background = curP.color;
+  document.getElementById('turnText').textContent = (curId===MY_ID ? "Твій хід!" : "Хід: "+curP.name);
+
+  // tokens
+  const layer = document.getElementById('tokLayer');
+  layer.innerHTML = "";
+  let idx=0;
+  Object.entries(game.players).forEach(([pid,p])=>{
+    if(p.bankrupt) return;
+    const pos = cellPos(p.pos);
+    const el = document.createElement('div');
+    el.className='tokOnBoard';
+    el.style.background = p.color;
+    if(p.avatar){
+      el.innerHTML = `<img src="${p.avatar}" alt="">`;
+    } else {
+      el.textContent = p.name[0].toUpperCase();
+    }
+    const cellPct = 100/11;
+    const offset = (idx%4)* (cellPct*0.16);
+    el.style.left = ( (pos.col-1)*cellPct + cellPct*0.22 + offset ) + "%";
+    el.style.top = ( (pos.row-1)*cellPct + cellPct*0.22 + offset ) + "%";
+    layer.appendChild(el);
+    idx++;
+  });
+
+  // dice
+  if(game.lastDice){
+    document.getElementById('die1').textContent = game.lastDice[0];
+    document.getElementById('die2').textContent = game.lastDice[1];
+  }
+
+  // log
+  const logP = document.getElementById('logPanel');
+  const logs = (game.log||[]).slice(-6);
+  logP.innerHTML = logs.map(l=>`<div>${l}</div>`).join("");
+  logP.scrollTop = logP.scrollHeight;
+
+  // ledger
+  const lb = document.getElementById('ledgerBody');
+  lb.innerHTML = "";
+  Object.entries(game.players).sort((a,b)=>a[1].order-b[1].order).forEach(([pid,p])=>{
+    const row = document.createElement('div');
+    row.className = 'ledgerRow'+(p.bankrupt?' bankrupt':'')+(pid===MY_ID?' me':'');
+    const avatarHtml = p.avatar ? `<img src="${p.avatar}" alt="">` : p.name[0].toUpperCase();
+    row.innerHTML = `<div class="tok" style="background:${p.color}">${avatarHtml}</div>
+      <div class="nm">${p.name}${pid===curId?' 🎲':''}</div><div class="bal mono">${p.balance}₴</div>`;
+    lb.appendChild(row);
+  });
+
+  // action bar
+  const isMyTurn = curId===MY_ID && !curP.bankrupt;
+  const rollBtn = document.getElementById('btnRoll');
+  const endBtn = document.getElementById('btnEndTurn');
+  rollBtn.disabled = !(isMyTurn && (game.phase==="await-roll"));
+  rollBtn.classList.toggle('hidden', game.phase==="await-end");
+  endBtn.classList.toggle('hidden', !(isMyTurn && game.phase==="await-end"));
+
+  if(game.phase==="buy-decision" && curId===MY_ID){
+    showBuyModal(curP.pos);
+  }
+  if(game.phase==="game-over"){
+    const winner = game.players[game.winner];
+    if(game.winner===MY_ID && !winGoldGiven){
+      winGoldGiven = true;
+      myGold += 10;
+      saveMetaProfile();
+      incStat(MY_ID, 'wins', 1);
+    }
+    if(!document.getElementById('winModal')){
+      const bg = document.createElement('div'); bg.className='modalBg'; bg.id='winModal';
+      bg.innerHTML = `<div class="modalBox" style="text-align:center">
+        <h3>🏆 Гру завершено!</h3>
+        <p style="font-size:16px;font-weight:700">${winner.name} переміг(ла)!</p>
+        ${game.winner===MY_ID?'<p style="font-size:13px;color:var(--gold)">🪙 +10 золота!</p>':''}
+        <button class="btn btn-gold" onclick="location.reload()">На головну</button>
+      </div>`;
+      document.body.appendChild(bg);
+    }
+  }
+  renderTradeOffer();
+}
+
+/* ---------------- ЧАТ ---------------- */
+function listenChat(){
+  if(chatRef) chatRef.off();
+  chatRef = roomRef.child('chat').limitToLast(50);
+  chatRef.on('value', snap=>{
+    const box = document.getElementById('chatMessages');
+    if(!box) return;
+    const msgs = [];
+    snap.forEach(child=> msgs.push(child.val()));
+    box.innerHTML = msgs.map(m=>`<div class="cm"><b style="color:${m.color||'var(--gold-light)'}">${m.name}:</b> ${escapeHtml(m.text)}</div>`).join("");
+    box.scrollTop = box.scrollHeight;
+  });
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+document.getElementById('chatSendBtn').onclick = sendChatMsg;
+document.getElementById('chatInput').addEventListener('keydown', e=>{ if(e.key==='Enter') sendChatMsg(); });
+async function sendChatMsg(){
+  const inp = document.getElementById('chatInput');
+  const text = inp.value.trim();
+  if(!text || !roomRef) return;
+  inp.value = "";
+  const myP = game && game.players ? game.players[MY_ID] : null;
+  await roomRef.child('chat').push({ name: MY_NAME, text: text.slice(0,200), color: myP?myP.color:'#E9CE6B', ts: Date.now() });
+}
+
+/* ---------------- ACTIONS ---------------- */
+document.getElementById('btnRoll').onclick = async ()=>{
+  if(rollingLock) return;
+  rollingLock = true;
+  const d1el=document.getElementById('die1'), d2el=document.getElementById('die2');
+  d1el.classList.add('rolling'); d2el.classList.add('rolling');
+  await new Promise(r=>setTimeout(r,450));
+  d1el.classList.remove('rolling'); d2el.classList.remove('rolling');
+
+  const d1 = 1+Math.floor(Math.random()*6), d2 = 1+Math.floor(Math.random()*6);
+  const isDouble = d1===d2;
+  const order = game.turnOrder;
+  const curId = order[game.currentTurn];
+  let p = {...game.players[curId]};
+  let doublesCount = (game.doublesCount||0) + (isDouble?1:0);
+
+  await roomRef.update({ lastDice:[d1,d2] });
+  await pushLog(`${p.name} кидає кубики: ${d1} + ${d2}`);
+
+  if(p.inJail){
+    if(isDouble){
+      p.inJail = false; p.jailTurns = 0;
+      await pushLog(`${p.name} викинув(ла) дублі та виходить з в'язниці!`);
+    } else {
+      p.jailTurns = (p.jailTurns||0)+1;
+      if(p.jailTurns>=3){
+        p.inJail=false; p.jailTurns=0; p.balance-=50;
+        await pushLog(`${p.name} платить 50₴ і виходить з в'язниці`);
+      } else {
+        await roomRef.child('players/'+curId).update(p);
+        await roomRef.update({ phase:"await-end", doublesCount:0 });
+        rollingLock=false; return;
+      }
+    }
+  }
+
+  if(isDouble && doublesCount>=3){
+    p.pos = 10; p.inJail = true; p.jailTurns=0;
+    await roomRef.child('players/'+curId).update(p);
+    await pushLog(`${p.name} тричі поспіль викинув(ла) дублі — прямо до в'язниці!`);
+    await roomRef.update({ phase:"await-end", doublesCount:0 });
+    rollingLock=false; return;
+  }
+
+  const oldPos = p.pos;
+  let newPos = (oldPos + d1 + d2) % 40;
+  if(newPos < oldPos){
+    p.balance += 200;
+    await pushLog(`${p.name} проходить через СТАРТ, отримує 200₴`);
+  }
+  p.pos = newPos;
+  await roomRef.child('players/'+curId).update({pos:p.pos, balance:p.balance});
+  await roomRef.update({ doublesCount });
+
+  await resolveLanding(curId, newPos, isDouble);
+  rollingLock=false;
+};
+
+async function resolveLanding(pid, pos, isDouble){
+  const cell = BOARD[pos];
+  let p = {...game.players[pid]};
+  await pushLog(`${p.name} потрапляє на «${cell.n}»`);
+
+  if(cell.t==="go"){ await endOrContinue(isDouble); return; }
+  if(cell.t==="jail"||cell.t==="parking"){ await endOrContinue(isDouble); return; }
+  if(cell.t==="gotojail"){
+    p.pos=10; p.inJail=true; p.jailTurns=0;
+    await roomRef.child('players/'+pid).update(p);
+    await pushLog(`${p.name} відправляється до в'язниці!`);
+    await roomRef.update({ phase:"await-end" });
+    return;
+  }
+  if(cell.t==="tax"){
+    await applyMoney(pid, -cell.amt, `${p.name} сплачує податок ${cell.amt}₴`);
+    await endOrContinue(isDouble); return;
+  }
+  if(cell.t==="chance"||cell.t==="chest"){
+    const deck = cell.t==="chance"?CHANCE:CHEST;
+    const card = deck[Math.floor(Math.random()*deck.length)];
+    await pushLog("Картка: "+card.tx);
+    if(card.jailfree){
+      await roomRef.child('players/'+pid).update({jailFree:true});
+    } else if(card.jail){
+      await roomRef.child('players/'+pid).update({pos:10, inJail:true, jailTurns:0});
+      await roomRef.update({ phase:"await-end" });
+      return;
+    } else if(card.move!==undefined){
+      let np=card.move;
+      let bonus=0;
+      if(card.collect && np<pos) bonus=200;
+      await roomRef.child('players/'+pid).update({pos:np, balance: p.balance+bonus});
+      await resolveLanding(pid, np, false);
+      return;
+    } else if(card.fromAll!==undefined){
+      const others = Object.entries(game.players).filter(([id,pl])=>id!==pid && !pl.bankrupt);
+      let gain=0;
+      for(const [oid,op] of others){
+        await roomRef.child('players/'+oid).update({balance: op.balance-card.fromAll});
+        gain += card.fromAll;
+      }
+      await roomRef.child('players/'+pid).update({balance: p.balance+gain});
+    } else if(card.amt!==undefined){
+      await applyMoney(pid, card.amt, null);
+    }
+    await endOrContinue(isDouble); return;
+  }
+
+  if(cell.t==="prop"||cell.t==="rail"||cell.t==="util"){
+    const owner = findOwner(pos);
+    if(!owner){
+      await roomRef.update({ phase:"buy-decision" });
+      return;
+    } else if(owner!==pid){
+      const rent = computeRent(pos, owner);
+      await payRent(pid, owner, rent, cell.n);
+      await endOrContinue(isDouble); return;
+    } else {
+      await endOrContinue(isDouble); return;
+    }
+  }
+  await endOrContinue(isDouble);
+}
+
+function findOwner(pos){
+  for(const [pid,p] of Object.entries(game.players)){
+    if((p.props||[]).includes(pos)) return pid;
+  }
+  return null;
+}
+const HOUSE_RENT_MULT = [1,5,15,45,80,110]; // 0..4 будинки, 5=готель
+function houseCost(cell){
+  const t = {brown:50, lightblue:50, pink:100, orange:100, red:150, yellow:150, green:200, darkblue:200};
+  return t[cell.g] || 100;
+}
+function hasMonopoly(pos){
+  const cell = BOARD[pos];
+  const groupIdxs = BOARD.map((c,i)=>c.g===cell.g?i:-1).filter(i=>i>=0);
+  const owner = findOwner(pos);
+  if(!owner) return false;
+  const op = game.players[owner];
+  return groupIdxs.every(i=>(op.props||[]).includes(i));
+}
+function computeRent(pos, ownerId){
+  const cell = BOARD[pos];
+  const owner = game.players[ownerId];
+  if((owner.mortgaged||[]).includes(pos)) return 0;
+  if(cell.t==="prop"){
+    const h = (owner.houses||{})[pos]||0;
+    if(h>0) return cell.r * HOUSE_RENT_MULT[h];
+    const groupIdxs = BOARD.map((c,i)=>c.g===cell.g?i:-1).filter(i=>i>=0);
+    const ownsAll = groupIdxs.every(i=>(owner.props||[]).includes(i));
+    return ownsAll ? cell.r*2 : cell.r;
+  }
+  if(cell.t==="rail"){
+    const count = BOARD.map((c,i)=>c.t==="rail"?i:-1).filter(i=>i>=0).filter(i=>(owner.props||[]).includes(i)).length;
+    return [0,25,50,100,200][count]||25;
+  }
+  if(cell.t==="util"){
+    const count = BOARD.map((c,i)=>c.t==="util"?i:-1).filter(i=>i>=0).filter(i=>(owner.props||[]).includes(i)).length;
+    const diceSum = (game.lastDice||[1,1]).reduce((a,b)=>a+b,0);
+    return diceSum * (count>=2?10:4);
+  }
+  return 0;
+}
+async function payRent(payerId, ownerId, amount, name){
+  let payer = game.players[payerId], owner = game.players[ownerId];
+  await roomRef.child('players/'+payerId).update({balance: payer.balance - amount});
+  await roomRef.child('players/'+ownerId).update({balance: owner.balance + amount});
+  await pushLog(`${payer.name} платить ${amount}₴ гравцю ${owner.name} за «${name}»`);
+  await checkBankrupt(payerId, payer.balance - amount);
+}
+async function applyMoney(pid, amount, logmsg){
+  let p = game.players[pid];
+  const nb = p.balance + amount;
+  await roomRef.child('players/'+pid).update({balance: nb});
+  if(logmsg) await pushLog(logmsg);
+  await checkBankrupt(pid, nb);
+}
+async function checkBankrupt(pid, balance){
+  if(balance < 0){
+    await roomRef.child('players/'+pid).update({bankrupt:true, props:[], houses:{}, mortgaged:[]});
+    await pushLog(`💀 ${game.players[pid].name} збанкрутував(ла) і вибуває з гри!`);
+    incStat(pid, 'bankruptcies', 1);
+    const alive = Object.entries(game.players).filter(([id,p])=> id===pid? false : !p.bankrupt);
+    if(alive.length===1){
+      await roomRef.update({ status:"finished", phase:"game-over", winner: alive[0][0] });
+    }
+  }
+}
+async function endOrContinue(isDouble){
+  if(isDouble){
+    await roomRef.update({ phase:"await-roll" });
+    await pushLog("Дублі! Ще один кидок.");
+  } else {
+    await roomRef.update({ phase:"await-end" });
+  }
+}
+document.getElementById('btnEndTurn').onclick = async ()=>{
+  const order = game.turnOrder;
+  let next = game.currentTurn;
+  for(let i=0;i<order.length;i++){
+    next = (next+1)%order.length;
+    if(!game.players[order[next]].bankrupt) break;
+  }
+  await roomRef.update({ currentTurn: next, phase:"await-roll", doublesCount:0 });
+};
+async function pushLog(msg){
+  const log = (game.log||[]).concat(msg).slice(-30);
+  await roomRef.update({ log });
+}
+
+/* ---------------- BUY MODAL ---------------- */
+function showBuyModal(pos){
+  if(document.getElementById('buyModal')) return;
+  const cell = BOARD[pos];
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='buyModal';
+  bg.innerHTML = `<div class="modalBox">
+    ${cell.g?`<span class="chip" style="background:${GC[cell.g]}">${cell.g}</span>`:''}
+    <h3>${cell.n}</h3>
+    <p>Ця власність вільна. Купити за <b>${cell.p}₴</b>?</p>
+    <div class="row"><button class="btn btn-outline" id="declineBuy" style="color:var(--felt);border-color:var(--felt)">Відмовитись</button>
+    <button class="btn btn-gold" id="confirmBuy">Купити за ${cell.p}₴</button></div>
+  </div>`;
+  document.body.appendChild(bg);
+  document.getElementById('confirmBuy').onclick = async ()=>{
+    const order = game.turnOrder; const pid = order[game.currentTurn];
+    const p = game.players[pid];
+    if(p.balance < cell.p){ toast("Недостатньо грошей!"); return; }
+    const props = (p.props||[]).concat(pos);
+    await roomRef.child('players/'+pid).update({ balance: p.balance-cell.p, props });
+    await pushLog(`${p.name} купує «${cell.n}» за ${cell.p}₴`);
+    incStat(pid, 'propsBought', 1);
+    bg.remove();
+    await endOrContinue(false);
+  };
+  document.getElementById('declineBuy').onclick = async ()=>{
+    bg.remove();
+    await pushLog(`Ніхто не купив «${cell.n}»`);
+    await endOrContinue(false);
+  };
+}
+
+/* ---------------- CELL INFO / MY PROPS ---------------- */
+function openCellInfo(i){
+  const cell = BOARD[i];
+  if(!["prop","rail","util"].includes(cell.t)) return;
+  const owner = findOwner(i);
+  const ownerName = owner ? game.players[owner].name : "вільна";
+  toast(`${cell.n} — ${cell.p}₴ · власник: ${ownerName}`);
+}
+document.getElementById('btnMyProps').onclick = ()=>{
+  const p = game.players[MY_ID];
+  if(!p) return;
+  const props = (p.props||[]).map(i=>BOARD[i]);
+  const bg = document.createElement('div'); bg.className='modalBg';
+  bg.innerHTML = `<div class="modalBox">
+    <h3>🏠 Мої власності</h3>
+    <div class="propList">${ props.length? props.map(c=>`<div class="propMini"><div class="sw" style="background:${GC[c.g]||'#888'}"></div><div class="nm2">${c.n}</div><div class="mono">${c.p}₴</div></div>`).join("") : '<p>У тебе поки немає власностей</p>'}</div>
+    <button class="btn btn-outline" style="margin-top:12px;color:var(--felt);border-color:var(--felt)" id="closeProps">Закрити</button>
+  </div>`;
+  document.body.appendChild(bg);
+  document.getElementById('closeProps').onclick = ()=>bg.remove();
+};
+
+/* ---------------- СТАРТ ---------------- */
+async function boot(){
+  if(!firebaseReady) return;
+  await loadMetaProfile();
+  loadOpenRooms();
+}
+boot();
+</script>
 </body>
 </html>
