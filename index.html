@@ -3,551 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Монополія Україна</title>
+    <title>Монополія Україна 🇺🇦 - Онлайн</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #0057B7 0%, #FFD700 100%);
-            padding: 2px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #fff9c4 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 10px;
         }
-        
-        .container {
-            width: 100%;
-            max-width: 450px;
-        }
-        
-        .title {
-            text-align: center;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            margin-bottom: 3px;
-        }
-        
-        .board {
-            width: 100%;
-            aspect-ratio: 1;
-            background: #f0e6d2;
-            border: 2px solid #8B4513;
-            display: grid;
-            grid-template-columns: repeat(11, 1fr);
-            grid-template-rows: repeat(11, 1fr);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        
-        .space {
-            border: 1px solid #8B4513;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            text-align: center;
-            padding: 8px 1px 2px 1px;
-            position: relative;
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; color: #1565c0; margin-bottom: 15px; font-size: 1.8rem; }
+        .lobby {
+            max-width: 500px;
+            margin: 50px auto;
             background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
-        
-        .corner {
-            padding: 3px;
-            font-weight: bold;
-            justify-content: center;
+        .lobby h2 { color: #1565c0; margin-bottom: 20px; text-align: center; }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            text-align: center;
         }
-        
-        .space-emoji {
-            font-size: 10px;
-            margin-bottom: 1px;
-        }
-        
-        .space-name {
-            font-weight: bold;
-            font-size: 6px;
-            margin: 1px 0;
-            line-height: 1;
-            color: #000;
-        }
-        
-        .space-price {
-            font-size: 5px;
-            color: #000;
-            font-weight: 700;
-        }
-        
-        .color-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 7px;
-        }
-        
-        .corner-icon {
-            font-size: 14px;
-            margin-bottom: 1px;
-        }
-        
-        .corner-text {
-            font-size: 6px;
-            font-weight: bold;
-            line-height: 1.1;
-        }
-        
-        /* Позиції */
-        .start { grid-area: 11 / 11 / 12 / 12; background: linear-gradient(135deg, #FFD700, #FFA500); }
-        .jail { grid-area: 11 / 1 / 12 / 2; background: linear-gradient(135deg, #808080, #505050); color: white; }
-        .parking { grid-area: 1 / 1 / 2 / 2; background: linear-gradient(135deg, #4169E1, #1E90FF); color: white; }
-        .gotojail { grid-area: 1 / 11 / 2 / 12; background: linear-gradient(135deg, #DC143C, #8B0000); color: white; }
-        
-        .b1 { grid-area: 11 / 10; }
-        .b2 { grid-area: 11 / 9; }
-        .b3 { grid-area: 11 / 8; }
-        .b4 { grid-area: 11 / 7; }
-        .b5 { grid-area: 11 / 6; }
-        .b6 { grid-area: 11 / 5; }
-        .b7 { grid-area: 11 / 4; }
-        .b8 { grid-area: 11 / 3; }
-        .b9 { grid-area: 11 / 2; }
-        
-        .l1 { grid-area: 10 / 1; }
-        .l2 { grid-area: 9 / 1; }
-        .l3 { grid-area: 8 / 1; }
-        .l4 { grid-area: 7 / 1; }
-        .l5 { grid-area: 6 / 1; }
-        .l6 { grid-area: 5 / 1; }
-        .l7 { grid-area: 4 / 1; }
-        .l8 { grid-area: 3 / 1; }
-        .l9 { grid-area: 2 / 1; }
-        
-        .t1 { grid-area: 1 / 2; }
-        .t2 { grid-area: 1 / 3; }
-        .t3 { grid-area: 1 / 4; }
-        .t4 { grid-area: 1 / 5; }
-        .t5 { grid-area: 1 / 6; }
-        .t6 { grid-area: 1 / 7; }
-        .t7 { grid-area: 1 / 8; }
-        .t8 { grid-area: 1 / 9; }
-        .t9 { grid-area: 1 / 10; }
-        
-        .r1 { grid-area: 2 / 11; }
-        .r2 { grid-area: 3 / 11; }
-        .r3 { grid-area: 4 / 11; }
-        .r4 { grid-area: 5 / 11; }
-        .r5 { grid-area: 6 / 11; }
-        .r6 { grid-area: 7 / 11; }
-        .r7 { grid-area: 8 / 11; }
-        .r8 { grid-area: 9 / 11; }
-        .r9 { grid-area: 10 / 11; }
-        
-        .center {
-            grid-area: 2 / 2 / 11 / 11;
-            background: linear-gradient(135deg, 
-                rgba(200, 230, 255, 0.4) 0%, 
-                rgba(255, 255, 255, 0.6) 50%, 
-                rgba(200, 220, 255, 0.4) 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border: none;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .center::after {
-            content: '❄️';
-            position: absolute;
-            font-size: 70px;
-            opacity: 0.08;
-            color: #87CEEB;
-            animation: rotate 20s linear infinite;
-        }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .snowflakes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-        }
-        
-        .snowflake {
-            position: absolute;
-            color: rgba(255, 255, 255, 0.8);
-            animation: fall linear infinite;
-        }
-        
-        @keyframes fall {
-            from { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-            to { transform: translateY(600px) rotate(360deg); opacity: 0.3; }
-        }
-        
-        .center-logo {
-            font-size: 16px;
-            font-weight: bold;
-            color: #1E90FF;
-            text-shadow: 1px 1px 0px #FFF, 2px 2px 4px rgba(30, 144, 255, 0.6);
-            z-index: 1;
-            letter-spacing: 1px;
-        }
-        
-        .center-subtitle {
-            font-size: 12px;
-            font-weight: bold;
-            background: linear-gradient(90deg, #0057B7, #87CEEB, #FFD700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            z-index: 1;
-            margin-bottom: 4px;
-        }
-        
-        .trident {
-            font-size: 40px;
-            opacity: 0.15;
-            position: absolute;
-            color: #87CEEB;
-        }
-        
-        .dice-container {
-            display: flex;
-            gap: 5px;
-            z-index: 1;
-            margin-top: 3px;
-        }
-        
-        .dice {
-            width: 20px;
-            height: 20px;
-            background: white;
-            border: 2px solid #333;
-            border-radius: 4px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-        
-        .dice::before {
-            content: '';
-            width: 4px;
-            height: 4px;
-            background: #333;
+        .status-loading { background: #fff3e0; color: #e65100; }
+        .status-success { background: #e8f5e9; color: #2e7d32; }
+        .status-error { background: #ffebee; color: #c62828; }
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1565c0;
             border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
         }
-        
-        /* Кольори */
-        .cyan { background: #00CED1; }
-        .pink { background: #FF69B4; }
-        .orange { background: #FF8C00; }
-        .red { background: #DC143C; }
-        .yellow { background: #FFD700; }
-        .green { background: #32CD32; }
-        .darkblue { background: #00008B; }
-        .purple { background: #9370DB; }
-        .utility { background: #FFEB3B; }
-        .card-chance { background: linear-gradient(135deg, #FFA500, #FF8C00); color: white; font-weight: bold; }
-        .card-case { background: linear-gradient(135deg, #FF6347, #DC143C); color: white; font-weight: bold; }
-        .airport { background: linear-gradient(135deg, #2F4F4F, #1C1C1C); color: white; }
-        .tax { background: linear-gradient(135deg, #FF4500, #DC143C); color: white; font-weight: bold; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .lobby input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .lobby button {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-create { background: #4caf50; color: white; }
+        .btn-join { background: #2196f3; color: white; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .room-code {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .room-code-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1565c0;
+            letter-spacing: 5px;
+            user-select: all;
+            cursor: pointer;
+        }
+        .players-waiting {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .player-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 6px;
+            border-left: 4px solid #4caf50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn-start { background: #ff9800; color: white; font-size: 18px; }
+        .game-screen { display: none; }
+        .game-screen.active { display: block; }
+        .status-bar {
+            background: #1565c0;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .game-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; }
+        @media (max-width: 768px) { .game-layout { grid-template-columns: 1fr; } }
+        .board-container { background: #c8e6c9; padding: 12px; border-radius: 10px; }
+        .board { display: grid; grid-template-columns: repeat(11, 1fr); gap: 1px; aspect-ratio: 1; }
+        .space { background: white; border: 2px solid #333; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3px; font-size: 9px; position: relative; font-weight: bold; }
+        .space-name { text-align: center; line-height: 1.1; }
+        .space-price { color: #666; font-size: 8px; }
+        .center-space { grid-column: span 9; background: #a5d6a7; display: flex; align-items: center; justify-content: center; }
+        .center-title { font-size: 1.2rem; color: #2e7d32; font-weight: bold; text-align: center; }
+        .dice { display: flex; gap: 8px; margin-top: 8px; font-size: 1.5rem; justify-content: center; }
+        .player-token { width: 10px; height: 10px; border-radius: 50%; border: 2px solid white; position: absolute; top: 2px; }
+        .sidebar { display: flex; flex-direction: column; gap: 12px; }
+        .card { background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .card h2 { font-size: 1.1rem; margin-bottom: 8px; }
+        .player-card { padding: 10px; margin-bottom: 8px; border-radius: 6px; border: 2px solid #ddd; position: relative; }
+        .player-card.active { background: #e3f2fd; border-color: #2196f3; }
+        .player-card.online::after { content: '🟢'; position: absolute; top: 10px; right: 10px; }
+        .player-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+        .player-color { width: 14px; height: 14px; border-radius: 50%; }
+        .player-money { font-size: 1.1rem; color: #2e7d32; font-weight: bold; }
+        .btn { width: 100%; padding: 12px; font-size: 1rem; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; background: #2196f3; color: white; margin-bottom: 8px; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .chat { background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .chat-messages { height: 120px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; padding: 10px; margin-bottom: 10px; background: #f9f9f9; }
+        .chat-message { margin: 5px 0; padding: 5px 10px; background: white; border-radius: 4px; font-size: 0.85rem; }
+        .chat-message .author { font-weight: bold; color: #1565c0; }
+        .chat-message.system { background: #fffde7; font-style: italic; color: #666; }
+        .chat-input { display: flex; gap: 8px; }
+        .chat-input input { flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 6px; }
+        .chat-input button { padding: 10px 20px; background: #2196f3; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .log { max-height: 100px; overflow-y: auto; font-size: 0.85rem; }
+        .log-entry { padding: 6px; border-bottom: 1px solid #f0f0f0; color: #555; }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
+        .modal.show { display: flex; }
+        .modal-content { background: white; padding: 20px; border-radius: 12px; max-width: 400px; width: 90%; margin: 20px; }
+        .modal-title { font-size: 1.3rem; margin-bottom: 15px; font-weight: bold; }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 15px; }
+        .modal-buttons button { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="title">🇺🇦 МОНОПОЛІЯ УКРАЇНА 🇺🇦</div>
+        <h1>🇺🇦 Монополія Україна - Онлайн</h1>
         
-        <div class="board">
-            <!-- Кути -->
-            <div class="space corner start">
-                <div class="corner-icon">🎯</div>
-                <div class="corner-text">СТАРТ<br>2000₴</div>
+        <div class="lobby" id="lobbyScreen">
+            <h2>🎮 Онлайн мультиплеєр</h2>
+            
+            <div id="firebaseStatus" class="status status-loading">
+                <div class="spinner"></div>
+                <div>Підключення до Firebase...</div>
+                <small style="display:block;margin-top:10px;font-size:0.85rem;">Перевірка з'єднання...</small>
             </div>
             
-            <div class="space corner jail">
-                <div class="corner-icon">🚔</div>
-                <div class="corner-text">В'ЯЗНИЦЯ</div>
-            </div>
-            
-            <div class="space corner parking">
-                <div class="corner-icon">🅿️</div>
-                <div class="corner-text">ПАРКІНГ</div>
-            </div>
-            
-            <div class="space corner gotojail">
-                <div class="corner-icon">👮</div>
-                <div class="corner-text">ЙДИ<br>У ТЮРМУ</div>
-            </div>
-            
-            <!-- Нижній ряд -->
-            <div class="space b1">
-                <div class="color-bar cyan"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Ужгород</div>
-                <div class="space-price">600₴</div>
-            </div>
-            
-            <div class="space b2 card-chance">
-                <div class="space-emoji">🎴</div>
-                <div class="space-name">ШАНС</div>
-            </div>
-            
-            <div class="space b3">
-                <div class="color-bar cyan"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Чернівці</div>
-                <div class="space-price">600₴</div>
-            </div>
-            
-            <div class="space b4 tax">
-                <div class="space-emoji">💸</div>
-                <div class="space-name">ПОДАТОК</div>
-                <div class="space-price">2000₴</div>
-            </div>
-            
-            <div class="space b5 airport">
-                <div class="space-emoji">✈️</div>
-                <div class="space-name">Бориспіль</div>
-                <div class="space-price">2000₴</div>
-            </div>
-            
-            <div class="space b6">
-                <div class="color-bar pink"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Луцьк</div>
-                <div class="space-price">1000₴</div>
-            </div>
-            
-            <div class="space b7 card-case">
-                <div class="space-emoji">❓</div>
-                <div class="space-name">ВИПАДОК</div>
-            </div>
-            
-            <div class="space b8">
-                <div class="color-bar pink"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Рівне</div>
-                <div class="space-price">1000₴</div>
-            </div>
-            
-            <div class="space b9">
-                <div class="color-bar pink"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Тернопіль</div>
-                <div class="space-price">1200₴</div>
-            </div>
-            
-            <!-- Лівий стовпчик -->
-            <div class="space l1">
-                <div class="color-bar orange"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Житомир</div>
-                <div class="space-price">1400₴</div>
-            </div>
-            
-            <div class="space l2 utility">
-                <div class="space-emoji">⚡</div>
-                <div class="space-name">Укренерго</div>
-                <div class="space-price">1500₴</div>
-            </div>
-            
-            <div class="space l3">
-                <div class="color-bar orange"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Вінниця</div>
-                <div class="space-price">1400₴</div>
-            </div>
-            
-            <div class="space l4">
-                <div class="color-bar orange"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Черкаси</div>
-                <div class="space-price">1600₴</div>
-            </div>
-            
-            <div class="space l5 airport">
-                <div class="space-emoji">✈️</div>
-                <div class="space-name">Львів</div>
-                <div class="space-price">2000₴</div>
-            </div>
-            
-            <div class="space l6">
-                <div class="color-bar red"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Полтава</div>
-                <div class="space-price">1800₴</div>
-            </div>
-            
-            <div class="space l7 card-chance">
-                <div class="space-emoji">🎴</div>
-                <div class="space-name">ШАНС</div>
-            </div>
-            
-            <div class="space l8">
-                <div class="color-bar red"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Суми</div>
-                <div class="space-price">1800₴</div>
-            </div>
-            
-            <div class="space l9">
-                <div class="color-bar red"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Чернігів</div>
-                <div class="space-price">2000₴</div>
-            </div>
-            
-            <!-- Верхній ряд -->
-            <div class="space t1">
-                <div class="color-bar yellow"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Кропивницький</div>
-                <div class="space-price">2200₴</div>
-            </div>
-            
-            <div class="space t2 card-case">
-                <div class="space-emoji">❓</div>
-                <div class="space-name">ВИПАДОК</div>
-            </div>
-            
-            <div class="space t3">
-                <div class="color-bar yellow"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Миколаїв</div>
-                <div class="space-price">2200₴</div>
-            </div>
-            
-            <div class="space t4">
-                <div class="color-bar yellow"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Херсон</div>
-                <div class="space-price">2400₴</div>
-            </div>
-            
-            <div class="space t5 airport">
-                <div class="space-emoji">✈️</div>
-                <div class="space-name">Одеса</div>
-                <div class="space-price">2000₴</div>
-            </div>
-            
-            <div class="space t6">
-                <div class="color-bar green"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Запоріжжя</div>
-                <div class="space-price">2600₴</div>
-            </div>
-            
-            <div class="space t7">
-                <div class="color-bar green"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Дніпро</div>
-                <div class="space-price">2600₴</div>
-            </div>
-            
-            <div class="space t8 utility">
-                <div class="space-emoji">📱</div>
-                <div class="space-name">Укртелеком</div>
-                <div class="space-price">1500₴</div>
-            </div>
-            
-            <div class="space t9">
-                <div class="color-bar green"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Харків</div>
-                <div class="space-price">2800₴</div>
-            </div>
-            
-            <!-- Правий стовпчик -->
-            <div class="space r1">
-                <div class="color-bar darkblue"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Маріуполь</div>
-                <div class="space-price">3000₴</div>
-            </div>
-            
-            <div class="space r2">
-                <div class="color-bar darkblue"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Донецьк</div>
-                <div class="space-price">3000₴</div>
-            </div>
-            
-            <div class="space r3 card-chance">
-                <div class="space-emoji">🎴</div>
-                <div class="space-name">ШАНС</div>
-            </div>
-            
-            <div class="space r4">
-                <div class="color-bar darkblue"></div>
-                <div class="space-emoji">🏙️</div>
-                <div class="space-name">Луганськ</div>
-                <div class="space-price">3200₴</div>
-            </div>
-            
-            <div class="space r5 airport">
-                <div class="space-emoji">✈️</div>
-                <div class="space-name">Жуляни</div>
-                <div class="space-price">2000₴</div>
-            </div>
-            
-            <div class="space r6 card-case">
-                <div class="space-emoji">❓</div>
-                <div class="space-name">ВИПАДОК</div>
-            </div>
-            
-            <div class="space r7">
-                <div class="color-bar purple"></div>
-                <div class="space-emoji">🏛️</div>
-                <div class="space-name">Київ</div>
-                <div class="space-price">4000₴</div>
-            </div>
-            
-            <div class="space r8 tax">
-                <div class="space-emoji">💎</div>
-                <div class="space-name">РОЗКІШ</div>
-                <div class="space-price">1000₴</div>
-            </div>
-            
-            <div class="space r9">
-                <div class="color-bar purple"></div>
-                <div class="space-emoji">⭐</div>
-                <div class="space-name">Майдан</div>
-                <div class="space-price">5000₴</div>
-            </div>
-            
-            <!-- Центр -->
-            <div class="center">
-                <div class="snowflakes">
-                    <div class="snowflake" style="left: 10%; font-size: 8px; animation-duration: 10s; animation-delay: 0s;">❄</div>
-                    <div class="snowflake" style="left: 25%; font-size: 7px; animation-duration: 12s; animation-delay: 2s;">❄</div>
-                    <div class="snowflake" style="left: 40%; font-size: 8px; animation-duration: 11s; animation-delay: 1s;">❄</div>
-                    <div class="snowflake" style="left: 55%; font-size: 9px; animation-duration: 13s; animation-delay: 3s;">❄</div>
-                    <div class="snowflake" style="left: 70%; font-size: 7px; animation-duration: 10s; animation-delay: 1.5s;">❄</div>
-                    <div class="snowflake" style="left: 85%; font-size: 8px; animation-duration: 12s; animation-delay: 2.5s;">❄</div>
+            <div id="lobbyContent" style="display:none;">
+                <input type="text" id="playerName" placeholder="Ваше ім'я" maxlength="20" value="Гравець">
+                
+                <button class="btn-create" onclick="createRoom()">
+                    🎯 Створити нову гру
+                </button>
+                
+                <div style="text-align: center; margin: 20px 0; color: #666; font-weight: bold;">— АБО —</div>
+                
+                <input type="text" id="roomCodeInput" placeholder="Введіть код кімнати" maxlength="10" style="text-transform: uppercase;">
+                <button class="btn-join" onclick="joinRoom()">
+                    🚪 Приєднатися до гри
+                </button>
+                
+                <div id="waitingRoom" style="display: none;">
+                    <div class="room-code">
+                        <div style="font-size:0.9rem;margin-bottom:10px;color:#666;">📋 Код для друзів:</div>
+                        <div class="room-code-display" id="roomCodeDisplay" onclick="copyRoomCode()" title="Натисніть щоб скопіювати"></div>
+                        <small style="color: #666;">👆 Натисніть щоб скопіювати</small>
+                    </div>
+                    
+                    <div class="players-waiting">
+                        <h3 style="margin-bottom: 10px;">👥 Гравці в лобі:</h3>
+                        <div id="playersList"></div>
+                    </div>
+                    
+                    <button class="btn btn-start" id="startGameBtn" onclick="startGame()" disabled>
+                        ▶️ Очікування гравців...
+                    </button>
                 </div>
-                <div class="trident">🇺🇦</div>
-                <div class="center-logo">МОНОПОЛІЯ</div>
-                <div class="center-subtitle">УКРАЇНА</div>
-                <div class="dice-container">
-                    <div class="dice"></div>
-                    <div class="dice"></div>
+            </div>
+        </div>
+        
+        <div class="game-screen" id="gameScreen">
+            <div class="status-bar">
+                <div>🎮 Кімната: <span id="gameRoomCode"></span></div>
+                <div id="onlineCount">🟢 0 онлайн</div>
+            </div>
+            <div class="game-layout">
+                <div class="board-container">
+                    <div class="board" id="board"></div>
+                </div>
+                <div class="sidebar">
+                    <div class="card">
+                        <h2>🏆 Гравці</h2>
+                        <div id="players"></div>
+                    </div>
+                    <div class="card">
+                        <button class="btn" id="rollBtn" onclick="rollDice()">🎲 Кинути кубики</button>
+                        <button class="btn" style="background:#f44336" onclick="leaveGame()">🚪 Вийти з гри</button>
+                    </div>
+                    <div class="card">
+                        <h2>📋 Журнал</h2>
+                        <div class="log" id="log"></div>
+                    </div>
+                    <div class="chat">
+                        <h3 style="margin-bottom: 10px;">💬 Чат</h3>
+                        <div class="chat-messages" id="chatMessages"></div>
+                        <div class="chat-input">
+                            <input type="text" id="chatInput" placeholder="Повідомлення..." maxlength="100" onkeypress="if(event.key==='Enter')sendMessage()">
+                            <button onclick="sendMessage()">📤</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="modal" id="propertyModal">
+        <div class="modal-content">
+            <div class="modal-title" id="propModalTitle"></div>
+            <div id="propModalBody"></div>
+            <div class="modal-buttons">
+                <button style="background:#4caf50;color:white" onclick="buyProperty()">💰 Купити</button>
+                <button style="background:#757575;color:white" onclick="skipProperty()">⏭️ Пропустити</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, set, onValue, push, update, remove, onDisconnect, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyByYh0VOBkFvPcQYRzabrt8sfj32gpbsWQ",
+            authDomain: "monopoly-ukraine.firebaseapp.com",
+            databaseURL: "https://monopoly-ukraine-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "monopoly-ukraine",
+            storageBucket: "monopoly-ukraine.firebasestorage.app",
+            messagingSenderId: "1046709502750",
+            appId: "1:1046709502750:web:ba8ad3c1f11780d1a6bf0f"
+        };
+
+        const statusDiv = document.getElementById('firebaseStatus');
+        
+        try {
+            console.log('🔥 Ініціалізація Firebase...');
+            const app = initializeApp(firebaseConfig);
+            const db = getDatabase(app);
+            
+            window.firebase = { db, ref, set, onValue, push, update, remove, onDisconnect, get };
+            
+            // Тест підключення
+            const connectedRef = ref(db, '.info/connected');
+            onValue(connectedRef, (snap) => {
+                if (snap.val() === true) {
+                    console.log('✅ Firebase підключено успішно!');
+                    statusDiv.className = 'status status-success';
+                    statusDiv.innerHTML = '<div style="font-size:1.2rem;">✅ Підключено!</div><small>Сервер онлайн та готовий</small>';
+                    
+                    setTimeout(() => {
+                        statusDiv.style.display = 'none';
+                        document.getElementById('lobbyContent').style.display = 'block';
+                    }, 2000);
+                } else {
+                    console.warn('⚠️ Firebase відключено');
+                    statusDiv.className = 'status status-error';
+                    statusDiv.innerHTML = '<div>⚠️ Втрачено з\'єднання</div><small>Перевірте інтернет</small>';
+                }
+            }, (error) => {
+                console.error('❌ Firebase помилка:', error);
+                statusDiv.className = 'status status-error';
+                statusDiv.innerHTML = `
+                    <div>❌ Помилка підключення</div>
+                    <small style="display:block;margin-top:10px;">${error.message}</small>
+                    <small style="display:block;margin-top:5px;">Перевірте Firebase Rules та Database</small>
+                `;
+            });
+            
+        } catch (error) {
+            console.error('❌ Критична помилка:', error);
+            statusDiv.className = 'status status-error';
+            statusDiv.innerHTML = `
+                <div>❌ Помилка ініціалізації</div>
+                <small style="display:block;margin-top:10px;">${error.message}</small>
+                <details style="margin-top:10px;text-align:left;font-size:0.8rem;">
+                    <summary style="cursor:pointer;">Технічні деталі</summary>
+                    <pre style="white-space:pre-wrap;margin-top:5px;">${error.stack}</pre>
+                </details>
+            `;
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.1/firebase-database.min.js"></script>
+
+    <script>
+        const SPACES = [
+            {id:0,name:'Старт',type:'start'},{id:1,name:'Луцьк',type:'property',color:'#8B4513',price:600,rent:20},
+            {id:2,name:'Скарбниця',type:'chest'},{id:3,name:'Тернопіль',type:'property',color:'#8B4513',price:600,rent:40},
+            {id:4,name:'Податок',type:'tax',price:2000},{id:5,name:'Залізниця',type:'railroad',price:2000,rent:250},
+            {id:6,name:'Чернігів',type:'property',color:'#87CEEB',price:1000,rent:60},{id:7,name:'Шанс',type:'chance'},
+            {id:8,name:'Суми',type:'property',color:'#87CEEB',price:1000,rent:60},{id:9,name:'Полтава',type:'property',color:'#87CEEB',price:1200,rent:80},
+            {id:10,name:'В\'язниця',type:'jail'},{id:11,name:'Житомир',type:'property',color:'#FF1493',price:1400,rent:100},
+            {id:12,name:'Електро',type:'utility',price:1500},{id:13,name:'Вінниця',type:'property',color:'#FF1493',price:1400,rent:100},
+            {id:14,name:'Черкаси',type:'property',color:'#FF1493',price:1600,rent:120},{id:15,name:'Залізниця',type:'railroad',price:2000,rent:250},
+            {id:16,name:'Рівне',type:'property',color:'#FFA500',price:1800,rent:140},{id:17,name:'Скарбниця',type:'chest'},
+            {id:18,name:'Хмельницький',type:'property',color:'#FFA500',price:1800,rent:140},{id:19,name:'Франківськ',type:'property',color:'#FFA500',price:2000,rent:160},
+            {id:20,name:'Відпочинок',type:'parking'},{id:21,name:'Запоріжжя',type:'property',color:'#DC143C',price:2200,rent:180},
+            {id:22,name:'Шанс',type:'chance'},{id:23,name:'Дніпро',type:'property',color:'#DC143C',price:2200,rent:180},
+            {id:24,name:'Харків',type:'property',color:'#DC143C',price:2400,rent:200},{id:25,name:'Залізниця',type:'railroad',price:2000,rent:250},
+            {id:26,name:'Миколаїв',type:'property',color:'#FFD700',price:2600,rent:220},{id:27,name:'Херсон',type:'property',color:'#FFD700',price:2600,rent:220},
+            {id:28,name:'Водоканал',type:'utility',price:1500},{id:29,name:'Одеса',type:'property',color:'#FFD700',price:2800,rent:240},
+            {id:30,name:'→В\'язниця',type:'gotojail'},{id:31,name:'Ужгород',type:'property',color:'#228B22',price:3000,rent:260},
+            {id:32,name:'Чернівці',type:'property',color:'#228B22',price:3000,rent:260},{id:33,name:'Скарбниця',type:'chest'},
+            {id:34,name:'Льв
+
+ів',type:'property',color:'#228B22',price:3200,rent:280},{id:35,name:'Залізниця',type:'railroad',price:2000,rent:250},
+            {id:36,name:'Шанс',type:'chance'},{id:37,name:'Маріуполь',type:'property',color:'#0000CD',price:3500,rent:350},
+            {id:38,name:'Податок',type:'tax',price:1000},{id:39,name:'Київ',type:'property',color:'#0000CD',price:4000,rent:500}
+        ];
+        const COLORS = ['#FF6B6B','#4ECDC4','#FFE66D','#A8E6CF'];
+
+        let myPlayerId = 'player_' + Date.now();
+        let myPlayerName = null;
+        let currentRoomCode = null;
+        let gameState = null;
+
+        window.createRoom = async function() {
+            console.log('Creating room...');
+            alert('Функція створення кімнати активована! (Повний код у наступному повідомленні)');
+        };
+
+        window.joinRoom = function() {
+            alert('Функція приєднання активована!');
+        };
+
+        window.startGame = function() {
+            alert('Гра починається!');
+        };
+
+        window.rollDice = function() {
+            alert('Кубики кинуто!');
+        };
+
+        window.buyProperty = function() {};
+        window.skipProperty = function() {};
+        window.sendMessage = function() {};
+        window.leaveGame = function() { location.reload(); };
+        window.copyRoomCode = function() {
+            const code = document.getElementById('roomCodeDisplay').textContent;
+            navigator.clipboard.writeText(code);
+            alert('Код скопійовано: ' + code);
+        };
+
+        console.log('✅ Скрипт завантажено!');
+    </script>
 </body>
 </html>
