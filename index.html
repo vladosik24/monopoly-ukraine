@@ -115,11 +115,11 @@ input.field:focus{outline:none;border-color:var(--gold);}
   background:var(--felt);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.4), inset 0 0 0 3px var(--gold);gap:1px;padding:4px;}
 .cell{background:var(--parchment);position:relative;display:flex;flex-direction:column;overflow:hidden;
   border-radius:2px;font-size:6px;}
-.cell .grp{height:22%;flex:none;}
+.cell .grp{height:16%;flex:none;}
 .cell .cn{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;
   padding:1px;line-height:1.05;font-size:6.4px;color:var(--ink);font-family:'Inter',sans-serif;
-  word-break:break-word;overflow-wrap:break-word;hyphens:auto;}
-.cell .pr{font-size:5.6px;text-align:center;color:var(--maroon);font-weight:700;padding-bottom:1px;font-family:'JetBrains Mono',monospace;}
+  word-break:break-word;overflow-wrap:break-word;hyphens:auto;overflow:hidden;min-height:0;}
+.cell .pr{font-size:5.6px;text-align:center;color:var(--maroon);font-weight:700;padding-bottom:1px;font-family:'JetBrains Mono',monospace;flex:none;}
 .cell.corner{background:var(--felt);align-items:center;justify-content:center;}
 .cell.corner .cn{font-size:8px;color:var(--gold-light);font-weight:900;font-family:'Bitter',serif;}
 .cell.special{background:var(--felt-dark);}
@@ -921,27 +921,39 @@ async function openRatingModal(){
 
 /* ---------------- СПИСОК ВІДКРИТИХ КІМНАТ ---------------- */
 document.getElementById('btnRefreshRooms').onclick = ()=> loadOpenRooms();
+let openRoomsRef = null;
+function renderOpenRoomsSnap(snap){
+  const el = document.getElementById('openRoomsList');
+  if(!el) return;
+  if(!snap.exists()){ el.innerHTML = '<div class="emptyHint">Немає відкритих кімнат — створи свою!</div>'; return; }
+  const rooms = [];
+  snap.forEach(child=>{
+    const r = child.val();
+    const players = Object.values(r.players||{});
+    if(players.length < 8) rooms.push({code: child.key, r, count: players.length, hostName: (players.find(p=>p.order===0)||{}).name || '?'});
+  });
+  if(!rooms.length){ el.innerHTML = '<div class="emptyHint">Немає відкритих кімнат — створи свою!</div>'; return; }
+  rooms.sort((a,b)=> (b.r.createdAt||0)-(a.r.createdAt||0));
+  el.innerHTML = rooms.slice(0,12).map(x=>`
+    <div class="roomRow" onclick="joinRoomByCode('${x.code}')">
+      <div class="tok" style="background:#8FCBEB">${x.hostName[0]?.toUpperCase()||'?'}</div>
+      <div class="rInfo"><div class="rCode">${x.code}</div><div class="rSub">хост: ${x.hostName} · ${x.count}/8 гравців</div></div>
+      <div class="rArrow">›</div>
+    </div>`).join('');
+}
+function attachOpenRoomsListener(){
+  if(!db) return;
+  if(openRoomsRef) openRoomsRef.off();
+  openRoomsRef = db.ref('rooms').orderByChild('status').equalTo('waiting');
+  openRoomsRef.on('value', renderOpenRoomsSnap);
+}
 async function loadOpenRooms(){
   const el = document.getElementById('openRoomsList');
   if(!db){ el.innerHTML = '<div class="emptyHint">Firebase не налаштовано</div>'; return; }
   el.innerHTML = '<div class="emptyHint">⏳ Завантаження...</div>';
   try{
     const snap = await db.ref('rooms').orderByChild('status').equalTo('waiting').get();
-    if(!snap.exists()){ el.innerHTML = '<div class="emptyHint">Немає відкритих кімнат — створи свою!</div>'; return; }
-    const rooms = [];
-    snap.forEach(child=>{
-      const r = child.val();
-      const players = Object.values(r.players||{});
-      if(players.length < 8) rooms.push({code: child.key, r, count: players.length, hostName: (players.find(p=>p.order===0)||{}).name || '?'});
-    });
-    if(!rooms.length){ el.innerHTML = '<div class="emptyHint">Немає відкритих кімнат — створи свою!</div>'; return; }
-    rooms.sort((a,b)=> (b.r.createdAt||0)-(a.r.createdAt||0));
-    el.innerHTML = rooms.slice(0,12).map(x=>`
-      <div class="roomRow" onclick="joinRoomByCode('${x.code}')">
-        <div class="tok" style="background:#8FCBEB">${x.hostName[0]?.toUpperCase()||'?'}</div>
-        <div class="rInfo"><div class="rCode">${x.code}</div><div class="rSub">хост: ${x.hostName} · ${x.count}/8 гравців</div></div>
-        <div class="rArrow">›</div>
-      </div>`).join('');
+    renderOpenRoomsSnap(snap);
   }catch(e){ el.innerHTML = '<div class="emptyHint">Помилка завантаження</div>'; }
 }
 
@@ -1567,7 +1579,7 @@ document.getElementById('btnMyProps').onclick = ()=>{
 async function boot(){
   if(!firebaseReady) return;
   await loadMetaProfile();
-  loadOpenRooms();
+  attachOpenRoomsListener();
 }
 boot();
 </script>
