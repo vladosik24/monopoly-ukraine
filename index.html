@@ -1021,7 +1021,6 @@ function attachListener(){
     game = snap.val();
     render();
   });
-  listenFeed();
 }
 
 /* ---------------- WAIT ROOM RENDER ---------------- */
@@ -1106,6 +1105,7 @@ function render(){
   document.getElementById('turnCountVal').textContent = game.turnCount || 1;
   renderPlayerStrip(order, curId);
   handleTurnTimer(curId);
+  renderFeed();
 
   // tokens
   const layer = document.getElementById('tokLayer');
@@ -1278,21 +1278,16 @@ document.getElementById('btnSurrender').onclick = async ()=>{
 };
 
 /* ---------------- СТРІЧКА ПОДІЙ + ЧАТ ---------------- */
-let feedRef = null;
-function listenFeed(){
-  if(feedRef) feedRef.off();
-  feedRef = roomRef.child('feed').limitToLast(60);
-  feedRef.on('value', snap=>{
-    const box = document.getElementById('feedMessages');
-    if(!box) return;
-    const msgs = [];
-    snap.forEach(child=> msgs.push(child.val()));
-    box.innerHTML = msgs.map(m=>{
-      if(m.type==='chat') return `<div class="fm chat"><b style="color:${m.color||'var(--gold-light)'}">${escapeHtml(m.name)}:</b> ${escapeHtml(m.text)}</div>`;
-      return `<div class="fm">${m.text}</div>`;
-    }).join("");
-    box.scrollTop = box.scrollHeight;
-  });
+function renderFeed(){
+  const box = document.getElementById('feedMessages');
+  if(!box || !game) return;
+  const entries = Object.entries(game.feed || {}).sort((a,b)=> (a[1].ts||0)-(b[1].ts||0)).slice(-60);
+  const wasAtBottom = box.scrollTop + box.clientHeight >= box.scrollHeight - 20;
+  box.innerHTML = entries.map(([key,m])=>{
+    if(m.type==='chat') return `<div class="fm chat"><b style="color:${m.color||'var(--gold-light)'}">${escapeHtml(m.name)}:</b> ${escapeHtml(m.text)}</div>`;
+    return `<div class="fm">${m.text}</div>`;
+  }).join("");
+  if(wasAtBottom) box.scrollTop = box.scrollHeight;
 }
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
