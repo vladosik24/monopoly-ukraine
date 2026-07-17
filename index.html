@@ -15,8 +15,6 @@
   --ink:#1B1F2A; --gold:#C9A227; --gold-light:#E9CE6B; --maroon:#7A2E2E;
   --brown:#8B4A2B; --lightblue:#8FCBEB; --pink:#D6539E; --orange:#E8892B;
   --red:#D6403B; --yellow:#F0D93B; --green:#2E9E5B; --darkblue:#1D3E6E;
-  --accGold:#F4C542; --accPurple:#9B5DE5; --accGreen:#2ECC71; --accTeal:#14C4B4;
-  --accBlue:#3B82F6; --accRed:#F72585;
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;height:100%;background:var(--felt-dark);
@@ -28,11 +26,7 @@ html,body{margin:0;padding:0;height:100%;background:var(--felt-dark);
 
 /* ---------- SCREENS ---------- */
 .screen{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:20px 16px;
-  background:
-    radial-gradient(ellipse at 15% 10%, rgba(155,93,229,.25) 0%, transparent 45%),
-    radial-gradient(ellipse at 85% 15%, rgba(244,197,66,.18) 0%, transparent 45%),
-    radial-gradient(ellipse at 20% 90%, rgba(20,196,180,.18) 0%, transparent 50%),
-    radial-gradient(ellipse at top, #124a37 0%, var(--felt-dark) 70%);}
+  background:radial-gradient(ellipse at top, #124a37 0%, var(--felt-dark) 70%);}
 .brand{text-align:center;margin-bottom:14px;}
 .brand h1{font-family:'Bitter',serif;font-weight:900;font-size:30px;margin:0;
   color:var(--gold-light);letter-spacing:.5px;text-shadow:0 2px 0 rgba(0,0,0,.35);}
@@ -46,9 +40,6 @@ input.field{width:100%;padding:12px 14px;border-radius:9px;border:2px solid var(
   background:#fff;font-size:16px;font-family:'JetBrains Mono',monospace;text-align:center;
   letter-spacing:.15em;text-transform:uppercase;color:var(--ink);}
 input.field:focus{outline:none;border-color:var(--gold);}
-select{width:100%;padding:12px 14px;border-radius:9px;border:2px solid var(--parchment-dark);
-  background:#fff;font-size:15px;font-family:'Inter',sans-serif;color:var(--ink);}
-select:focus{outline:none;border-color:var(--gold);}
 
 .btn{border:none;border-radius:11px;padding:14px 18px;font-size:15px;font-weight:700;
   font-family:'Inter',sans-serif;cursor:pointer;width:100%;transition:transform .08s;}
@@ -94,26 +85,6 @@ select:focus{outline:none;border-color:var(--gold);}
 .roomRow .rSub{font-size:11px;color:var(--maroon);margin-top:1px;}
 .roomRow .rArrow{font-size:20px;font-weight:900;color:var(--maroon);}
 .emptyHint{text-align:center;color:var(--maroon);opacity:.7;font-size:12px;padding:14px;}
-
-/* ---------- LOBBY TABS ---------- */
-.tabBar{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;-webkit-overflow-scrolling:touch;}
-.tabBtn{flex:none;border:none;border-radius:20px;padding:9px 14px;font-size:12.5px;font-weight:800;
-  background:rgba(255,255,255,.08);color:var(--parchment-dark);cursor:pointer;transition:.18s;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);white-space:nowrap;}
-.tabBtn:active{transform:scale(.95);}
-.tabBtn[data-c="gold"].active{background:linear-gradient(135deg,var(--accGold),#c98f0e);color:#3a2a06;box-shadow:0 3px 10px rgba(244,197,66,.4);}
-.tabBtn[data-c="purple"].active{background:linear-gradient(135deg,var(--accPurple),#6a2fc7);color:#fff;box-shadow:0 3px 10px rgba(155,93,229,.4);}
-.tabBtn[data-c="green"].active{background:linear-gradient(135deg,var(--accGreen),#1e9e57);color:#fff;box-shadow:0 3px 10px rgba(46,204,113,.4);}
-.tabBtn[data-c="teal"].active{background:linear-gradient(135deg,var(--accTeal),#0d8f83);color:#fff;box-shadow:0 3px 10px rgba(20,196,180,.4);}
-.tabBtn[data-c="blue"].active{background:linear-gradient(135deg,var(--accBlue),#1d4fd1);color:#fff;box-shadow:0 3px 10px rgba(59,130,246,.4);}
-.tabBtn[data-c="red"].active{background:linear-gradient(135deg,var(--accRed),#c11c6c);color:#fff;box-shadow:0 3px 10px rgba(247,37,133,.4);}
-.tabPane.hidden{display:none;}
-.card.cardGold{box-shadow:0 8px 22px rgba(0,0,0,.35), inset 4px 0 0 var(--accGold), inset 0 0 0 2px var(--gold);}
-.card.cardPurple{box-shadow:0 8px 22px rgba(0,0,0,.35), inset 4px 0 0 var(--accPurple), inset 0 0 0 2px var(--gold);}
-.card.cardGreen{box-shadow:0 8px 22px rgba(0,0,0,.35), inset 4px 0 0 var(--accGreen), inset 0 0 0 2px var(--gold);}
-.card.cardTeal{box-shadow:0 8px 22px rgba(0,0,0,.35), inset 4px 0 0 var(--accTeal), inset 0 0 0 2px var(--gold);}
-.card.cardBlue{box-shadow:0 8px 22px rgba(0,0,0,.35), inset 4px 0 0 var(--accBlue), inset 0 0 0 2px var(--gold);}
-.card.cardRed{box-shadow:0 8px 22px rgba(0,0,0,.35), inset 4px 0 0 var(--accRed), inset 0 0 0 2px var(--gold);}
 
 /* ---------- GAME SCREEN ---------- */
 #gameScreen{padding:8px;gap:8px;}
@@ -287,73 +258,32 @@ select:focus{outline:none;border-color:var(--gold);}
     </div>
 
     <div class="miniBar">
-      <div class="miniAv" id="miniAv" onclick="switchLobbyTab('profile')" title="Профіль">?</div>
+      <div class="miniAv" id="miniAv" onclick="openProfileModal()" title="Профіль">?</div>
       <div class="miniInfo">
         <div class="miniName" id="miniName">Гравець</div>
         <div class="miniGold">🪙 <span id="miniGold">0</span></div>
       </div>
+      <button class="iconBtn" id="btnOpenDaily" title="Щоденний бонус">📅</button>
+      <button class="iconBtn" id="btnOpenShop" title="Магазин">🛒</button>
+      <button class="iconBtn" id="btnOpenRating" title="Рейтинг">🏆</button>
     </div>
 
-    <div class="tabBar">
-      <button class="tabBtn active" data-tab="rooms" data-c="gold" onclick="switchLobbyTab('rooms')">🎮 Кімнати</button>
-      <button class="tabBtn" data-tab="clan" data-c="purple" onclick="switchLobbyTab('clan')">🏰 Клан</button>
-      <button class="tabBtn" data-tab="bonus" data-c="green" onclick="switchLobbyTab('bonus')">🎁 Бонус</button>
-      <button class="tabBtn" data-tab="shop" data-c="teal" onclick="switchLobbyTab('shop')">🛒 Магазин</button>
-      <button class="tabBtn" data-tab="rating" data-c="blue" onclick="switchLobbyTab('rating')">🏆 Рейтинг</button>
-      <button class="tabBtn" data-tab="profile" data-c="red" onclick="switchLobbyTab('profile')">👤 Профіль</button>
+    <div class="card">
+      <h3>➕ Створити кімнату</h3>
+      <button class="btn btn-gold" id="btnCreate">Створити нову гру</button>
     </div>
 
-    <div class="tabPane" id="tabpane-rooms">
-      <div class="card cardGold">
-        <h3>➕ Створити кімнату</h3>
-        <label class="lbl">Карта</label>
-        <select id="mapSelect" style="margin-bottom:10px">
-          <option value="ua">🏙️ Українська</option>
-          <option value="fruit">🍉 Фруктова</option>
-        </select>
-        <button class="btn btn-gold" id="btnCreate">Створити нову гру</button>
-      </div>
-      <div class="card cardGold">
-        <h3>🎲 Відкриті кімнати</h3>
-        <div id="openRoomsList"><div class="emptyHint">⏳ Завантаження...</div></div>
-        <button class="btn btn-outline" style="margin-top:10px;color:var(--felt);border-color:var(--felt)" id="btnRefreshRooms">↺ Оновити список</button>
-      </div>
-      <div class="card cardGold">
-        <h3>🔑 Приєднатись за кодом</h3>
-        <label class="lbl">Код кімнати</label>
-        <input class="field" id="joinCode" maxlength="4" placeholder="ABCD" style="margin-bottom:10px">
-        <button class="btn btn-outline" id="btnJoin" style="color:var(--felt);border-color:var(--felt)">Приєднатись</button>
-      </div>
+    <div class="card">
+      <h3>🎲 Відкриті кімнати</h3>
+      <div id="openRoomsList"><div class="emptyHint">⏳ Завантаження...</div></div>
+      <button class="btn btn-outline" style="margin-top:10px;color:var(--felt);border-color:var(--felt)" id="btnRefreshRooms">↺ Оновити список</button>
     </div>
 
-    <div class="tabPane hidden" id="tabpane-clan">
-      <div class="card cardPurple" id="clanSection"><div class="emptyHint">⏳ Завантаження клану...</div></div>
-    </div>
-
-    <div class="tabPane hidden" id="tabpane-bonus">
-      <div class="card cardGreen" id="dailyContent"><div class="emptyHint">⏳ Завантаження...</div></div>
-    </div>
-
-    <div class="tabPane hidden" id="tabpane-shop">
-      <div class="card cardTeal">
-        <h3>🛒 Магазин кольорів</h3>
-        <p style="font-size:13px" id="shopGoldLine">Твоє золото: <b style="color:var(--gold)">0 🪙</b></p>
-        <div class="shopGrid" id="shopGrid"></div>
-      </div>
-    </div>
-
-    <div class="tabPane hidden" id="tabpane-rating">
-      <div class="card cardBlue" id="ratingContent"><div class="emptyHint">⏳ Завантаження...</div></div>
-    </div>
-
-    <div class="tabPane hidden" id="tabpane-profile">
-      <div class="card cardRed">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
-          <div class="miniAv" id="profBigAv" style="width:52px;height:52px;font-size:20px;cursor:default">?</div>
-          <div><h3 style="margin:0" id="profBigName">Гравець</h3><div style="font-size:12px;color:var(--maroon)">🪙 <span id="profGoldLine">0</span> золота</div></div>
-        </div>
-        <div class="statGrid" id="statGrid"><div class="emptyHint">⏳ Завантаження статистики...</div></div>
-      </div>
+    <div class="card">
+      <h3>🔑 Приєднатись за кодом</h3>
+      <label class="lbl">Код кімнати</label>
+      <input class="field" id="joinCode" maxlength="4" placeholder="ABCD" style="margin-bottom:10px">
+      <button class="btn btn-outline" id="btnJoin" style="color:var(--felt);border-color:var(--felt)">Приєднатись</button>
     </div>
   </div>
 
@@ -362,7 +292,6 @@ select:focus{outline:none;border-color:var(--gold);}
     <div class="brand">
       <h1 style="font-size:22px">Кімната <span id="roomCodeLabel" class="mono" style="color:var(--gold)"></span></h1>
       <p>Поділись кодом з друзями в чаті</p>
-      <p id="waitMapLabel" style="font-weight:700;color:var(--gold-light)"></p>
     </div>
     <div class="card">
       <h3>Гравці (<span id="playerCount">0</span>/8)</h3>
@@ -454,7 +383,7 @@ const MY_AVATAR = tgUser ? (tgUser.photo_url || null) : null;
 const GC = {brown:"#8B4A2B",lightblue:"#8FCBEB",pink:"#D6539E",orange:"#E8892B",
   red:"#D6403B",yellow:"#F0D93B",green:"#2E9E5B",darkblue:"#1D3E6E"};
 
-const MAP_UA = [
+const BOARD = [
   {t:"go",n:"СТАРТ"},
   {t:"prop",n:"Бердичів",s:"Бердич.",p:60,r:4,g:"brown"},
   {t:"chest",n:"Казна громади"},
@@ -496,53 +425,6 @@ const MAP_UA = [
   {t:"tax",n:"Податок на розкіш",s:"Розкіш",amt:100},
   {t:"prop",n:"Київ",s:"Київ",p:400,r:50,g:"darkblue"}
 ];
-
-const MAP_FRUIT = [
-  {t:"go",n:"СТАРТ"},
-  {t:"prop",n:"Лимон",s:"Лимон",p:60,r:4,g:"brown"},
-  {t:"chest",n:"Фруктовий кошик"},
-  {t:"prop",n:"Лайм",s:"Лайм",p:60,r:4,g:"brown"},
-  {t:"tax",n:"Мито на ринку",s:"Мито",amt:200},
-  {t:"rail",n:"Візок Північ",s:"Візок Пн",p:200},
-  {t:"prop",n:"Полуниця",s:"Полун.",p:100,r:6,g:"lightblue"},
-  {t:"chance",n:"Шанс"},
-  {t:"prop",n:"Малина",s:"Малина",p:100,r:6,g:"lightblue"},
-  {t:"prop",n:"Ожина",s:"Ожина",p:120,r:8,g:"lightblue"},
-  {t:"jail",n:"Черга на ринку"},
-  {t:"prop",n:"Ківі",s:"Ківі",p:140,r:10,g:"pink"},
-  {t:"util",n:"Сік-бар",s:"Сік-бар",p:150},
-  {t:"prop",n:"Манго",s:"Манго",p:140,r:10,g:"pink"},
-  {t:"prop",n:"Папая",s:"Папая",p:160,r:12,g:"pink"},
-  {t:"rail",n:"Візок Схід",s:"Візок Сх",p:200},
-  {t:"prop",n:"Диня",s:"Диня",p:180,r:14,g:"orange"},
-  {t:"chest",n:"Фруктовий кошик"},
-  {t:"prop",n:"Гарбуз",s:"Гарбуз",p:180,r:14,g:"orange"},
-  {t:"prop",n:"Кавун",s:"Кавун",p:200,r:16,g:"orange"},
-  {t:"parking",n:"Пікнік"},
-  {t:"prop",n:"Вишня",s:"Вишня",p:220,r:18,g:"red"},
-  {t:"chance",n:"Шанс"},
-  {t:"prop",n:"Черешня",s:"Череш.",p:220,r:18,g:"red"},
-  {t:"prop",n:"Слива",s:"Слива",p:240,r:20,g:"red"},
-  {t:"rail",n:"Візок Південь",s:"Візок Пд",p:200},
-  {t:"prop",n:"Банан",s:"Банан",p:260,r:22,g:"yellow"},
-  {t:"prop",n:"Ананас",s:"Ананас",p:260,r:22,g:"yellow"},
-  {t:"util",n:"Смузі-станція",s:"Смузі",p:150},
-  {t:"prop",n:"Кокос",s:"Кокос",p:280,r:24,g:"yellow"},
-  {t:"gotojail",n:"На ринок"},
-  {t:"prop",n:"Виноград",s:"Виногр.",p:300,r:26,g:"green"},
-  {t:"prop",n:"Гранат",s:"Гранат",p:300,r:26,g:"green"},
-  {t:"chest",n:"Фруктовий кошик"},
-  {t:"prop",n:"Інжир",s:"Інжир",p:320,r:28,g:"green"},
-  {t:"rail",n:"Візок Захід",s:"Візок Зх",p:200},
-  {t:"chance",n:"Шанс"},
-  {t:"prop",n:"Персик",s:"Персик",p:350,r:35,g:"darkblue"},
-  {t:"tax",n:"Податок делікатес",s:"Делікат.",amt:100},
-  {t:"prop",n:"Золотий ананас",s:"Зол.анан.",p:400,r:50,g:"darkblue"}
-];
-
-const MAPS = { ua: MAP_UA, fruit: MAP_FRUIT };
-const MAP_NAMES = { ua: "🏙️ Українська", fruit: "🍉 Фруктова" };
-let BOARD = MAP_UA; // активна карта поточної кімнати
 
 const CHANCE = [
   {tx:"Банк помилково нарахував вам 200₴",amt:200},
@@ -647,27 +529,9 @@ async function saveMetaProfile(){
   applyProfileToHeader();
 }
 
-/* ---------------- ВКЛАДКИ ЛОББІ ---------------- */
-function switchLobbyTab(name){
-  document.querySelectorAll('.tabBtn').forEach(b=> b.classList.toggle('active', b.dataset.tab===name));
-  document.querySelectorAll('.tabPane').forEach(p=> p.classList.toggle('hidden', p.id!=='tabpane-'+name));
-  if(name==='clan') loadAndRenderClan();
-  if(name==='bonus') renderDailyInline();
-  if(name==='shop') renderShopGrid();
-  if(name==='rating') renderRatingInline();
-  if(name==='profile') { renderProfileHeader(); loadAndRenderStats(); }
-}
-function renderProfileHeader(){
-  const av = document.getElementById('profBigAv');
-  if(av) av.innerHTML = MY_AVATAR ? `<img src="${MY_AVATAR}" alt="">` : (MY_NAME[0]||'?').toUpperCase();
-  const nm = document.getElementById('profBigName'); if(nm) nm.textContent = MY_NAME;
-  const gl = document.getElementById('profGoldLine'); if(gl) gl.textContent = myGold;
-}
-
 /* ---------------- ЩОДЕННИЙ БОНУС ---------------- */
-function renderDailyInline(){
-  const box = document.getElementById('dailyContent');
-  if(!box) return;
+document.getElementById('btnOpenDaily').onclick = ()=> openDailyModal();
+function openDailyModal(){
   const dayMs = 86400000;
   const elapsed = Date.now() - myLastDaily;
   const canClaim = myLastDaily===0 || elapsed >= dayMs;
@@ -682,13 +546,18 @@ function renderDailyInline(){
     const isToday = i===curStreak && canClaim;
     dots += `<div class="dailyDay ${done?'done':''} ${isToday?'today':''}">${done?'✓':DAILY_REWARDS[i]+'🪙'}</div>`;
   }
-  box.innerHTML = `<h3>📅 Щоденний бонус</h3>
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='dailyModal';
+  bg.innerHTML = `<div class="modalBox" style="text-align:center">
+    <h3>📅 Щоденний бонус</h3>
     <div class="streakBig">${curStreak} 🔥</div>
-    <p style="margin:0 0 6px;text-align:center">днів поспіль</p>
+    <p style="margin:0 0 6px">днів поспіль</p>
     <div class="dailyGrid">${dots}</div>
     ${canClaim
       ? `<button class="btn btn-gold" id="claimDailyBtn">🎁 Отримати ${reward} 🪙</button>`
-      : `<p style="font-size:12px;color:#666;text-align:center">Наступний бонус через ${Math.max(1,Math.ceil((dayMs-elapsed)/3600000))} год.</p>`}`;
+      : `<p style="font-size:12px;color:#666">Наступний бонус через ${Math.max(1,Math.ceil((dayMs-elapsed)/3600000))} год.</p>`}
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt);margin-top:6px" id="closeDailyBtn">Закрити</button>
+  </div>`;
+  document.body.appendChild(bg);
   if(canClaim){
     document.getElementById('claimDailyBtn').onclick = async ()=>{
       myStreak = curStreak + 1;
@@ -696,15 +565,27 @@ function renderDailyInline(){
       myGold += reward;
       await saveMetaProfile();
       toast(`🎁 +${reward}🪙 Стрік: ${myStreak}`);
-      renderDailyInline();
+      bg.remove();
     };
   }
+  document.getElementById('closeDailyBtn').onclick = ()=> bg.remove();
 }
 
 /* ---------------- МАГАЗИН ---------------- */
+document.getElementById('btnOpenShop').onclick = ()=> openShopModal();
+function openShopModal(){
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='shopModal';
+  bg.innerHTML = `<div class="modalBox">
+    <h3>🛒 Магазин кольорів</h3>
+    <p>Твоє золото: <b style="color:var(--gold)">${myGold} 🪙</b> — купуй унікальні кольори фішки</p>
+    <div class="shopGrid" id="shopGrid"></div>
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt);margin-top:6px" id="closeShopBtn">Закрити</button>
+  </div>`;
+  document.body.appendChild(bg);
+  renderShopGrid();
+  document.getElementById('closeShopBtn').onclick = ()=> bg.remove();
+}
 function renderShopGrid(){
-  const goldLine = document.getElementById('shopGoldLine');
-  if(goldLine) goldLine.innerHTML = `Твоє золото: <b style="color:var(--gold)">${myGold} 🪙</b> — купуй унікальні кольори фішки`;
   const grid = document.getElementById('shopGrid');
   if(!grid) return;
   grid.innerHTML = "";
@@ -735,6 +616,23 @@ function renderShopGrid(){
 function incStat(uid, field, amount){
   if(!db) return;
   db.ref('players/'+uid+'/stats/'+field).set(firebase.database.ServerValue.increment(amount));
+}
+
+function openProfileModal(){
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='profileModal';
+  bg.innerHTML = `<div class="modalBox">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+      <div class="miniAv" style="width:52px;height:52px;font-size:20px;cursor:default">${MY_AVATAR?`<img src="${MY_AVATAR}" alt="">`:MY_NAME[0].toUpperCase()}</div>
+      <div><h3 style="margin:0">${MY_NAME}</h3><div style="font-size:12px;color:var(--maroon)">🪙 ${myGold} золота</div></div>
+    </div>
+    <div class="statGrid" id="statGrid"><div class="emptyHint">⏳ Завантаження статистики...</div></div>
+    <div class="clanSection" id="clanSection"><div class="emptyHint">⏳ Завантаження клану...</div></div>
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt);margin-top:10px" id="closeProfileBtn">Закрити</button>
+  </div>`;
+  document.body.appendChild(bg);
+  document.getElementById('closeProfileBtn').onclick = ()=>{ if(clanChatRef) clanChatRef.off(); bg.remove(); };
+  loadAndRenderStats();
+  loadAndRenderClan();
 }
 
 async function loadAndRenderStats(){
@@ -998,19 +896,23 @@ const LEAGUES = [
 ];
 function pointsFor(stats){ return (stats?.wins||0)*30 + (stats?.propsBought||0)*5; }
 function leagueFor(points){ let l=LEAGUES[0]; for(const lg of LEAGUES){ if(points>=lg.min) l=lg; } return l; }
-async function renderRatingInline(){
-  const content = document.getElementById('ratingContent');
-  if(!content) return;
-  content.innerHTML = '<h3>🏆 Рейтинг гравців</h3><div class="emptyHint">⏳ Завантаження...</div>';
+document.getElementById('btnOpenRating').onclick = openRatingModal;
+async function openRatingModal(){
+  const bg = document.createElement('div'); bg.className='modalBg'; bg.id='ratingModal';
+  bg.innerHTML = `<div class="modalBox"><h3>🏆 Рейтинг гравців</h3><div id="ratingContent"><div class="emptyHint">⏳ Завантаження...</div></div>
+    <button class="btn btn-outline" style="color:var(--felt);border-color:var(--felt);margin-top:6px" id="closeRatingBtn">Закрити</button></div>`;
+  document.body.appendChild(bg);
+  document.getElementById('closeRatingBtn').onclick = ()=>bg.remove();
   if(!db) return;
   const snap = await db.ref('players').get();
-  if(!snap.exists()){ content.innerHTML = '<h3>🏆 Рейтинг гравців</h3><div class="emptyHint">Ще немає даних</div>'; return; }
+  const content = document.getElementById('ratingContent');
+  if(!snap.exists()){ content.innerHTML = '<div class="emptyHint">Ще немає даних</div>'; return; }
   const all = snap.val();
   const myPts = pointsFor(all[MY_ID]?.stats);
   const myLeague = leagueFor(myPts);
-  const list = Object.entries(all).map(([uid,p])=>({ uid, name: p.name||'Гравець', pts: pointsFor(p.stats) }))
+  const list = Object.entries(all).map(([uid,p])=>({ uid, name: p.name||'?', pts: pointsFor(p.stats) }))
     .sort((a,b)=>b.pts-a.pts).slice(0,20);
-  content.innerHTML = `<h3>🏆 Рейтинг гравців</h3><div class="leagueBadgeBig">${myLeague.icon} ${myLeague.name}</div>
+  content.innerHTML = `<div class="leagueBadgeBig">${myLeague.icon} ${myLeague.name}</div>
     <p style="text-align:center;font-size:12px;color:#666;margin-bottom:10px">У тебе ${myPts} очок</p>
     ${list.map((x,i)=>`<div class="ratingRow ${x.uid===MY_ID?'me':''}"><div class="rank">${i+1}</div><div class="rname">${x.name}${x.uid===MY_ID?' (ти)':''}</div><div class="rpts">${x.pts}</div></div>`).join('') || '<div class="emptyHint">Немає гравців</div>'}`;
 }
@@ -1026,15 +928,14 @@ function renderOpenRoomsSnap(snap){
   snap.forEach(child=>{
     const r = child.val();
     const players = Object.values(r.players||{});
-    const hostP = players.find(p=>p.order===0) || players[0] || {};
-    if(players.length < 8) rooms.push({code: child.key, r, count: players.length, hostName: hostP.name || 'Гравець'});
+    if(players.length < 8) rooms.push({code: child.key, r, count: players.length, hostName: (players.find(p=>p.order===0)||{}).name || '?'});
   });
   if(!rooms.length){ el.innerHTML = '<div class="emptyHint">Немає відкритих кімнат — створи свою!</div>'; return; }
   rooms.sort((a,b)=> (b.r.createdAt||0)-(a.r.createdAt||0));
   el.innerHTML = rooms.slice(0,12).map(x=>`
     <div class="roomRow" onclick="joinRoomByCode('${x.code}')">
-      <div class="tok" style="background:#8FCBEB">${(x.hostName[0]||'Г').toUpperCase()}</div>
-      <div class="rInfo"><div class="rCode">${x.code}</div><div class="rSub">${MAP_NAMES[x.r.map]||'🏙️ Українська'} · хост: ${x.hostName} · ${x.count}/8 гравців</div></div>
+      <div class="tok" style="background:#8FCBEB">${x.hostName[0]?.toUpperCase()||'?'}</div>
+      <div class="rInfo"><div class="rCode">${x.code}</div><div class="rSub">хост: ${x.hostName} · ${x.count}/8 гравців</div></div>
       <div class="rArrow">›</div>
     </div>`).join('');
 }
@@ -1060,12 +961,9 @@ document.getElementById('btnCreate').onclick = async ()=>{
   const code = genCode();
   room = code;
   isHost = true;
-  const mapId = document.getElementById('mapSelect').value || 'ua';
-  BOARD = MAPS[mapId] || MAP_UA;
   const initial = {
     status:"waiting",
     hostId: MY_ID,
-    map: mapId,
     turnOrder: [],
     currentTurn: 0,
     doublesCount: 0,
@@ -1095,7 +993,6 @@ async function joinRoomByCode(code){
   if(data.status!=="waiting"){ toast("Гра вже почалась"); return; }
   const count = Object.keys(data.players||{}).length;
   if(count>=8){ toast("Кімната заповнена"); return; }
-  BOARD = MAPS[data.map] || MAP_UA;
   room = code; isHost = (data.hostId===MY_ID); roomRef = ref;
   if(!data.players[MY_ID]){
     await ref.child('players/'+MY_ID).set(newPlayer(MY_ID, MY_NAME, count));
@@ -1130,7 +1027,6 @@ function attachListener(){
 function renderWait(){
   show('waitScreen');
   document.getElementById('roomCodeLabel').textContent = room;
-  document.getElementById('waitMapLabel').textContent = MAP_NAMES[game.map] || '🏙️ Українська';
   const players = Object.entries(game.players||{}).sort((a,b)=>a[1].order-b[1].order);
   document.getElementById('playerCount').textContent = players.length;
   const wrap = document.getElementById('playerListWait');
