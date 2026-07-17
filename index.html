@@ -951,6 +951,8 @@ async function sendTradeOffer(){
     fromPos: tradeMyPos, toPos: tradeTheirPos, cash,
     status: 'pending', ts: Date.now()
   });
+  const them = game.players[tradeTargetId];
+  await pushLog(`🤝 ${MY_NAME} пропонує угоду гравцю ${them?.name||''}`);
   toast('🤝 Пропозицію надіслано!');
   document.getElementById('tradeModal')?.remove();
 }
@@ -973,8 +975,8 @@ async function respondTrade(accept){
   const t = game.trade;
   document.getElementById('tradeIncomingModal')?.remove();
   if(!t){ return; }
+  const from = game.players[t.fromId], to = game.players[t.toId];
   if(accept){
-    const from = game.players[t.fromId], to = game.players[t.toId];
     let fromProps = (from.props||[]).filter(p=>p!==t.fromPos);
     let toProps = (to.props||[]).filter(p=>p!==t.toPos);
     if(t.toPos!==null && t.toPos!==undefined) fromProps.push(t.toPos);
@@ -984,6 +986,7 @@ async function respondTrade(accept){
     await pushLog(`🤝 ${from.name} ⇄ ${to.name}: угода укладена`);
     toast('🤝 Угоду укладено!');
   } else {
+    await pushLog(`🚫 ${to.name} відхилив(ла) угоду від ${from.name}`);
     toast('Угоду відхилено');
   }
   await roomRef.child('trade').update({ status: accept?'accepted':'declined' });
@@ -1139,7 +1142,7 @@ function renderWait(){
   players.forEach(([pid,p])=>{
     const row = document.createElement('div'); row.className='playerRow';
     const avatarHtml = p.avatar ? `<img src="${p.avatar}" alt="">` : p.name[0].toUpperCase();
-    row.innerHTML = `<div class="tok" style="background:${p.color}">${avatarHtml}</div>
+    row.innerHTML = `<div class="tok" style="background:${p.color};box-shadow:0 0 0 3px ${p.color}, 0 0 0 1px rgba(0,0,0,.15) inset">${avatarHtml}</div>
       <div class="nm">${p.name}</div>${pid===game.hostId?'<div class="tag">ХОСТ</div>':''}`;
     wrap.appendChild(row);
   });
@@ -1222,6 +1225,7 @@ function render(){
     const el = document.createElement('div');
     el.className='tokOnBoard';
     el.style.background = p.color;
+    el.style.boxShadow = `0 0 0 1px #fff, 0 0 0 2.5px ${p.color}, 0 1px 3px rgba(0,0,0,.6)`;
     if(p.avatar){
       el.innerHTML = `<img src="${p.avatar}" alt="">`;
     } else {
@@ -1337,7 +1341,7 @@ async function renderPlayerStrip(order, curId){
       extra = `<div class="pMeta"><div class="pRank">${rk.icon} ${rk.name}</div><div class="pAsset">🏠 ${assetValue(p).toLocaleString()}₴</div></div>`;
     }
     html += `<div class="pChip ${active?'active':''} ${p.bankrupt?'bankrupt':''}">
-      <div class="tok" style="background:${p.color}">${avatarHtml}</div>
+      <div class="tok" style="background:${p.color};border:2.5px solid ${p.color};box-shadow:0 0 0 1.5px #fff inset">${avatarHtml}</div>
       <div><div class="pName">${p.name}</div><div class="pMoney">${p.balance.toLocaleString()}₴</div>${extra}</div>
     </div>`;
   }
