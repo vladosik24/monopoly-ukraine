@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-<title>KVS Monopoly</title>
+<title>МоноПоля Україна</title>
 
 <style>
+
 * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
@@ -17,25 +18,20 @@ html,
 body {
     margin: 0;
     padding: 0;
-    width: 100%;
-    min-height: 100%;
+
     background: #050914;
-    color: #fff;
+    color: #ffffff;
+
     font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
+        Arial,
+        Helvetica,
         sans-serif;
 }
 
 body {
-    overflow-x: hidden;
+    min-height: 100vh;
 }
 
-button {
-    font-family: inherit;
-}
 
 /* =========================================================
    APP
@@ -44,64 +40,74 @@ button {
 .app {
     width: 100%;
     max-width: 520px;
-    min-height: 100vh;
+
     margin: 0 auto;
-    padding: 10px 10px 90px;
+
+    padding:
+        18px
+        18px
+        110px;
 
     background:
         radial-gradient(
-            circle at 50% 20%,
-            rgba(42, 91, 150, .16),
+            circle at 50% 25%,
+            rgba(22, 73, 125, .13),
             transparent 35%
-        ),
-        radial-gradient(
-            circle at 20% 70%,
-            rgba(111, 55, 170, .10),
-            transparent 30%
         ),
         #050914;
 }
 
+
 /* =========================================================
-   TOP BAR
+   HEADER
 ========================================================= */
 
-.topbar {
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 12px;
+}
+
+.logo-title {
+    font-size: 27px;
+    font-weight: 900;
+    letter-spacing: -.8px;
+}
+
+.status {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
+
+    padding: 10px 13px;
+
+    border-radius: 15px;
+
+    background: #141d31;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    color: #9aa7bd;
+
+    font-size: 12px;
 }
 
-.game-title {
-    font-size: 18px;
-    font-weight: 900;
-    letter-spacing: .5px;
-}
+.status-dot {
+    width: 9px;
+    height: 9px;
 
-.game-status {
-    padding: 6px 10px;
-    border-radius: 10px;
-
-    background: rgba(24, 31, 49, .95);
-    border: 1px solid rgba(255,255,255,.08);
-
-    font-size: 11px;
-    color: #8fa0bd;
-}
-
-.online-dot {
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-
-    margin-right: 5px;
+    margin-right: 8px;
 
     border-radius: 50%;
-    background: #45e69a;
 
-    box-shadow: 0 0 10px rgba(69,230,154,.7);
+    background: #43dfa0;
+
+    box-shadow:
+        0 0 10px rgba(67,223,160,.7);
 }
+
 
 /* =========================================================
    PLAYERS
@@ -109,82 +115,87 @@ button {
 
 .players {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
 
-    margin-bottom: 10px;
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 8px;
+
+    margin-bottom: 16px;
 }
 
 .player {
     min-width: 0;
-    padding: 8px 6px;
 
-    border-radius: 12px;
+    padding: 10px;
+
+    border-radius: 17px;
 
     background:
         linear-gradient(
             145deg,
-            rgba(24, 33, 54, .98),
-            rgba(12, 18, 32, .98)
+            #182238,
+            #101727
         );
 
-    border: 1px solid rgba(255,255,255,.07);
+    border:
+        1px solid rgba(255,255,255,.08);
 
     box-shadow:
-        inset 0 1px rgba(255,255,255,.03),
-        0 5px 15px rgba(0,0,0,.18);
+        0 8px 20px rgba(0,0,0,.18);
 }
 
 .player.active {
-    border-color: rgba(0, 210, 255, .65);
+    border-color: #00cfff;
 
     box-shadow:
-        0 0 0 1px rgba(0,210,255,.12),
-        0 0 18px rgba(0,210,255,.12);
+        0 0 18px rgba(0,207,255,.15);
 }
 
 .avatar {
-    width: 30px;
-    height: 30px;
-
-    margin-bottom: 4px;
+    width: 36px;
+    height: 36px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    border-radius: 9px;
+    margin-bottom: 7px;
 
-    background:
-        linear-gradient(135deg, #263553, #11192b);
+    border-radius: 11px;
 
-    font-size: 15px;
+    background: #1b2944;
+
+    font-size: 20px;
 }
 
 .player-name {
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 
-    font-size: 10px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    font-size: 13px;
     font-weight: 800;
 }
 
 .player-money {
-    margin-top: 2px;
+    margin-top: 5px;
 
-    font-size: 10px;
-    font-weight: 800;
+    font-size: 13px;
+    font-weight: 900;
 
-    color: #67e7b0;
+    color: #5de5ad;
 }
 
 .player-status {
-    margin-top: 2px;
+    margin-top: 4px;
 
-    font-size: 8px;
-    color: #71809a;
+    font-size: 10px;
+
+    color: #738098;
 }
+
 
 /* =========================================================
    BOARD
@@ -194,27 +205,30 @@ button {
     position: relative;
 
     width: 100%;
+
     aspect-ratio: 1 / 1;
 
-    padding: 7px;
+    padding: 9px;
 
-    border-radius: 18px;
+    border-radius: 25px;
 
     background:
         linear-gradient(
             145deg,
-            #182238,
-            #0b1221
+            #18243a,
+            #0d1525
         );
 
-    border: 1px solid rgba(255,255,255,.08);
+    border:
+        1px solid rgba(255,255,255,.09);
 
     box-shadow:
-        0 20px 60px rgba(0,0,0,.45),
-        inset 0 1px rgba(255,255,255,.05);
+        0 20px 50px rgba(0,0,0,.4),
+        inset 0 1px rgba(255,255,255,.04);
 
     overflow: hidden;
 }
+
 
 /* =========================================================
    BOARD GRID
@@ -222,59 +236,65 @@ button {
 
 .board-grid {
     position: absolute;
-    inset: 7px;
+
+    inset: 9px;
 
     display: grid;
 
     grid-template-columns:
-        1.05fr
-        repeat(8, 1fr)
-        1.05fr;
+        repeat(10, 1fr);
 
     grid-template-rows:
-        1.05fr
-        repeat(8, 1fr)
-        1.05fr;
+        repeat(10, 1fr);
 
-    gap: 3px;
+    gap: 4px;
 }
 
+
 /* =========================================================
-   PROPERTY TILE
+   TILE
 ========================================================= */
 
 .tile {
     position: relative;
 
-    min-width: 0;
-    min-height: 0;
-
     display: flex;
+
     flex-direction: column;
+
     align-items: center;
+
     justify-content: center;
 
-    padding: 3px;
+    min-width: 0;
 
     overflow: hidden;
 
-    border-radius: 6px;
+    padding:
+        3px
+        2px
+        3px;
+
+    border-radius: 7px;
 
     background:
         linear-gradient(
             145deg,
-            #202c44,
-            #10192a
+            #1b2740,
+            #10192b
         );
 
-    border: 1px solid rgba(255,255,255,.08);
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    box-shadow:
+        inset 0 1px rgba(255,255,255,.025);
 
     cursor: pointer;
 
     transition:
-        transform .15s ease,
-        border-color .15s ease,
-        box-shadow .15s ease;
+        transform .12s ease,
+        border-color .12s ease;
 }
 
 .tile:active {
@@ -282,24 +302,39 @@ button {
 }
 
 .tile:hover {
-    border-color: rgba(255,255,255,.25);
+    border-color:
+        rgba(255,255,255,.2);
 }
 
-.tile-color {
+
+/* COLOR STRIPE */
+
+.tile::before {
+    content: "";
+
     position: absolute;
 
     top: 0;
     left: 0;
     right: 0;
 
-    height: 4px;
+    height: 5px;
 
-    background: var(--group);
+    background:
+        var(--color);
 }
 
-.tile-logo {
-    width: 30px;
-    height: 30px;
+
+/* LOGO */
+
+.tile img {
+    display: block;
+
+    width: 100%;
+
+    max-width: 43px;
+
+    height: 42px;
 
     object-fit: contain;
 
@@ -307,51 +342,50 @@ button {
 
     filter:
         drop-shadow(
-            0 2px 4px rgba(0,0,0,.35)
+            0 2px 4px rgba(0,0,0,.4)
         );
 }
 
+
+/* NAME */
+
 .tile-name {
-    max-width: 100%;
+    width: 100%;
 
     margin-top: 2px;
 
     overflow: hidden;
-    text-overflow: ellipsis;
+
     white-space: nowrap;
 
-    font-size: 7px;
-    font-weight: 800;
+    text-overflow: ellipsis;
+
     text-align: center;
 
-    color: #eaf0ff;
-}
+    font-size: 8px;
 
-.tile-price {
-    margin-top: 1px;
+    line-height: 9px;
 
-    font-size: 7px;
     font-weight: 800;
 
-    color: #72dfad;
+    color: #e8eef9;
 }
 
-.tile-owned {
-    position: absolute;
 
-    right: 3px;
-    bottom: 3px;
+/* PRICE */
 
-    width: 5px;
-    height: 5px;
+.tile-price {
+    margin-top: 2px;
 
-    border-radius: 50%;
+    font-size: 8px;
 
-    background: #00d9ff;
+    line-height: 9px;
 
-    box-shadow:
-        0 0 8px rgba(0,217,255,.8);
+    font-weight: 900;
+
+    color: #5ee4ad;
 }
+
 
 /* =========================================================
    CORNERS
@@ -361,45 +395,50 @@ button {
     position: relative;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
-    padding: 5px;
+    text-align: center;
+
+    padding: 4px;
 
     border-radius: 8px;
 
     background:
         linear-gradient(
             145deg,
-            #26334e,
-            #111a2c
+            #26344f,
+            #121c2e
         );
 
-    border: 1px solid rgba(255,255,255,.09);
-
-    text-align: center;
+    border:
+        1px solid rgba(255,255,255,.1);
 }
 
 .corner-icon {
-    font-size: 23px;
+    font-size: 25px;
+
+    line-height: 26px;
 }
 
 .corner-title {
-    margin-top: 3px;
+    margin-top: 4px;
 
-    font-size: 7px;
+    font-size: 9px;
+
     font-weight: 900;
-
-    color: #d9e4fa;
 }
 
 .corner-subtitle {
     margin-top: 2px;
 
-    font-size: 6px;
+    font-size: 7px;
 
-    color: #73829d;
+    color: #8290a8;
 }
+
 
 /* =========================================================
    CENTER
@@ -414,146 +453,164 @@ button {
     width: 57%;
     height: 57%;
 
-    transform: translate(-50%, -50%);
+    transform:
+        translate(-50%, -50%);
 
-    padding: 7px;
+    padding: 12px;
 
-    border-radius: 15px;
+    border-radius: 22px;
 
     background:
         linear-gradient(
             145deg,
-            rgba(15, 24, 41, .98),
-            rgba(7, 12, 23, .98)
+            #0d182a,
+            #08111e
         );
 
     border:
-        1px solid rgba(0, 210, 255, .14);
+        1px solid rgba(0,205,255,.16);
 
     box-shadow:
-        0 15px 35px rgba(0,0,0,.38),
-        inset 0 1px rgba(255,255,255,.03);
+        0 10px 40px rgba(0,0,0,.45),
+        inset 0 1px rgba(255,255,255,.035);
 
     z-index: 20;
 }
 
-/* =========================================================
-   EVENTS
-========================================================= */
+
+/* CENTER HEADER */
 
 .events-header {
     display: flex;
-    justify-content: space-between;
+
     align-items: center;
 
-    padding: 4px 5px 6px;
+    justify-content: space-between;
+
+    padding:
+        3px
+        4px
+        9px;
 
     border-bottom:
         1px solid rgba(255,255,255,.06);
 }
 
 .events-title {
-    font-size: 10px;
+    font-size: 16px;
+
     font-weight: 900;
 }
 
-.events-live {
-    font-size: 7px;
-    color: #46df9c;
+.live {
+    color: #45dfa0;
+
+    font-size: 10px;
+
+    font-weight: 800;
 }
+
+
+/* EVENTS */
 
 .events {
-    height: 68%;
+    height: 63%;
 
-    padding: 5px;
+    padding:
+        7px
+        2px;
 
-    overflow-y: auto;
-
-    scrollbar-width: none;
-}
-
-.events::-webkit-scrollbar {
-    display: none;
+    overflow: hidden;
 }
 
 .event {
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 
-    padding: 5px 6px;
+    padding:
+        9px
+        9px;
 
-    border-radius: 7px;
+    border-radius: 9px;
 
     background:
         rgba(255,255,255,.035);
 
-    font-size: 8px;
-    line-height: 1.35;
+    color: #aebbd0;
 
-    color: #aab8d0;
+    font-size: 10px;
+
+    line-height: 13px;
 }
 
 .event strong {
-    color: #fff;
+    color: #ffffff;
 }
 
 .event.buy {
-    border-left: 2px solid #43e59b;
+    border-left:
+        2px solid #45dfa0;
 }
 
 .event.dice {
-    border-left: 2px solid #6b8cff;
+    border-left:
+        2px solid #4e9cff;
 }
 
-.event.warning {
-    border-left: 2px solid #ffb34f;
-}
 
 /* =========================================================
    GARDEN
 ========================================================= */
 
 .garden {
-    height: 27%;
+    position: absolute;
+
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+
+    height: 23%;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
-    padding: 7px;
+    padding:
+        10px
+        12px;
 
-    border-radius: 9px;
+    border-radius: 14px;
 
     background:
         linear-gradient(
             135deg,
-            rgba(34,76,59,.25),
-            rgba(12,30,27,.25)
+            rgba(34,86,63,.35),
+            rgba(13,35,28,.5)
         );
 
     border:
-        1px solid rgba(62, 211, 137, .12);
-}
-
-.garden-info {
-    min-width: 0;
+        1px solid rgba(64,218,140,.13);
 }
 
 .garden-title {
-    font-size: 10px;
+    font-size: 15px;
+
     font-weight: 900;
 }
 
 .garden-text {
-    margin-top: 3px;
+    margin-top: 4px;
 
-    font-size: 7px;
+    font-size: 9px;
 
-    color: #74879e;
+    color: #72839a;
 }
 
 .garden-icon {
-    font-size: 28px;
+    font-size: 36px;
 }
+
 
 /* =========================================================
    PIECE
@@ -562,10 +619,11 @@ button {
 .piece {
     position: absolute;
 
-    width: 18px;
-    height: 18px;
+    width: 25px;
+    height: 25px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -574,65 +632,74 @@ button {
     background:
         linear-gradient(
             135deg,
-            #00d9ff,
-            #536dff
+            #00cfff,
+            #5968ff
         );
 
     border:
-        2px solid #fff;
+        2px solid #ffffff;
 
     box-shadow:
-        0 0 14px rgba(0,210,255,.7);
+        0 0 16px rgba(0,207,255,.8);
 
-    z-index: 30;
+    z-index: 50;
 
-    font-size: 9px;
+    font-size: 11px;
+
     font-weight: 900;
 
     transition:
-        left .45s ease,
-        top .45s ease;
+        all .45s ease;
 }
 
+
 /* =========================================================
-   GAME CONTROLS
+   CONTROLS
 ========================================================= */
 
 .controls {
     display: grid;
-    grid-template-columns: 1fr 1.35fr 1fr;
 
-    gap: 7px;
+    grid-template-columns:
+        1fr
+        1.45fr
+        1fr;
 
-    margin-top: 10px;
+    gap: 8px;
+
+    margin-top: 12px;
 }
 
-.control-btn {
-    min-height: 48px;
+.control {
+    min-height: 61px;
 
-    border: 1px solid rgba(255,255,255,.08);
+    border: 0;
 
-    border-radius: 12px;
+    border-radius: 17px;
 
     background:
         linear-gradient(
             145deg,
-            #18243b,
-            #10192b
+            #18243a,
+            #101827
         );
 
-    color: #fff;
+    border:
+        1px solid rgba(255,255,255,.07);
 
-    font-size: 11px;
+    color: #ffffff;
+
+    font-size: 13px;
+
     font-weight: 900;
 
-    cursor: pointer;
-
     box-shadow:
-        0 7px 18px rgba(0,0,0,.2);
+        0 10px 20px rgba(0,0,0,.18);
+
+    cursor: pointer;
 }
 
-.control-btn:active {
+.control:active {
     transform: scale(.97);
 }
 
@@ -640,42 +707,14 @@ button {
     background:
         linear-gradient(
             135deg,
-            #00b9e8,
-            #465dff
+            #08bce9,
+            #485cff
         );
 
-    border-color:
-        rgba(255,255,255,.2);
-
     box-shadow:
-        0 8px 25px rgba(43,109,255,.28);
+        0 10px 28px rgba(49,105,255,.28);
 }
 
-/* =========================================================
-   DICE
-========================================================= */
-
-.dice {
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
-
-    width: 20px;
-    height: 20px;
-
-    margin-right: 4px;
-
-    border-radius: 5px;
-
-    background: #fff;
-
-    color: #111;
-
-    font-size: 12px;
-
-    vertical-align: middle;
-}
 
 /* =========================================================
    BOTTOM NAV
@@ -685,54 +724,63 @@ button {
     position: fixed;
 
     left: 50%;
-    bottom: 8px;
+    bottom: 12px;
 
-    width: calc(100% - 20px);
-    max-width: 500px;
+    transform:
+        translateX(-50%);
 
-    transform: translateX(-50%);
+    width:
+        calc(100% - 28px);
+
+    max-width: 492px;
 
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
 
-    gap: 5px;
+    grid-template-columns:
+        repeat(4, 1fr);
 
-    padding: 6px;
+    gap: 4px;
 
-    border-radius: 15px;
+    padding: 7px;
+
+    border-radius: 21px;
 
     background:
-        rgba(10, 17, 30, .94);
+        rgba(11,18,31,.95);
 
     border:
         1px solid rgba(255,255,255,.08);
 
-    backdrop-filter: blur(15px);
+    backdrop-filter:
+        blur(18px);
 
     box-shadow:
-        0 10px 35px rgba(0,0,0,.45);
+        0 12px 40px rgba(0,0,0,.5);
 
     z-index: 100;
 }
 
-.nav-btn {
+.nav {
     border: 0;
 
-    border-radius: 10px;
+    padding:
+        8px
+        3px;
 
-    padding: 8px 4px;
+    border-radius: 14px;
 
     background: transparent;
 
-    color: #66748d;
+    color: #6e7c94;
 
-    font-size: 9px;
+    font-size: 10px;
+
     font-weight: 800;
 }
 
-.nav-btn.active {
+.nav.active {
     background:
-        rgba(0, 196, 255, .10);
+        rgba(0,198,255,.1);
 
     color: #55dfff;
 }
@@ -742,8 +790,9 @@ button {
 
     margin-bottom: 3px;
 
-    font-size: 16px;
+    font-size: 20px;
 }
+
 
 /* =========================================================
    MODAL
@@ -755,184 +804,257 @@ button {
     inset: 0;
 
     display: none;
+
     align-items: flex-end;
+
     justify-content: center;
 
     background:
-        rgba(0,0,0,.68);
+        rgba(0,0,0,.72);
 
-    z-index: 200;
-
-    backdrop-filter: blur(5px);
+    z-index: 300;
 }
 
-.modal.show {
+.modal.open {
     display: flex;
 }
 
 .modal-box {
     width: min(520px, 100%);
 
-    padding: 16px;
+    padding: 20px;
 
     border-radius:
-        20px 20px 0 0;
+        23px
+        23px
+        0
+        0;
 
     background:
         linear-gradient(
             145deg,
-            #172238,
+            #18243a,
             #09111f
         );
 
     border-top:
         1px solid rgba(255,255,255,.1);
-
-    box-shadow:
-        0 -15px 50px rgba(0,0,0,.5);
-
-    animation:
-        modalUp .25s ease;
 }
 
-@keyframes modalUp {
-    from {
-        transform: translateY(100%);
-    }
-
-    to {
-        transform: translateY(0);
-    }
-}
-
-.modal-top {
+.modal-header {
     display: flex;
-    justify-content: space-between;
+
     align-items: center;
+
+    justify-content: space-between;
 }
 
 .modal-title {
-    font-size: 18px;
+    font-size: 21px;
+
     font-weight: 900;
 }
 
 .close {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
 
     border: 0;
 
     border-radius: 10px;
 
     background:
-        rgba(255,255,255,.06);
+        rgba(255,255,255,.07);
 
     color: #fff;
 
-    font-size: 16px;
+    font-size: 20px;
 }
 
 .modal-logo {
-    width: 70px;
-    height: 70px;
+    display: block;
+
+    width: 90px;
+    height: 90px;
 
     object-fit: contain;
 
-    display: block;
-
-    margin: 15px auto;
+    margin:
+        18px
+        auto;
 }
 
 .modal-price {
     text-align: center;
 
-    font-size: 24px;
+    font-size: 27px;
+
     font-weight: 900;
 
-    color: #55e6a4;
+    color: #59e3ac;
 }
 
-.modal-description {
-    margin-top: 6px;
+.modal-info {
+    margin-top: 7px;
 
     text-align: center;
 
-    font-size: 11px;
+    color: #77869e;
 
-    color: #7787a1;
+    font-size: 11px;
 }
 
-.buy-btn {
+.buy {
     width: 100%;
 
-    margin-top: 16px;
+    margin-top: 18px;
 
-    padding: 13px;
+    padding: 14px;
 
     border: 0;
 
-    border-radius: 12px;
+    border-radius: 14px;
 
     background:
         linear-gradient(
             135deg,
-            #00c8ee,
-            #5265ff
+            #08c8ed,
+            #5061ff
         );
 
-    color: white;
+    color: #fff;
 
     font-weight: 900;
+
+    font-size: 14px;
 }
 
+
 /* =========================================================
-   DESKTOP
+   SMALL PHONES
 ========================================================= */
 
-@media (min-width: 700px) {
+@media (max-width: 380px) {
 
     .app {
-        max-width: 680px;
+        padding-left: 10px;
+        padding-right: 10px;
     }
 
-    .board {
-        border-radius: 24px;
+    .logo-title {
+        font-size: 23px;
     }
 
-    .tile-logo {
-        width: 38px;
-        height: 38px;
+    .status {
+        font-size: 10px;
+
+        padding:
+            8px
+            10px;
     }
 
-    .tile-name {
-        font-size: 9px;
+    .players {
+        gap: 5px;
     }
 
-    .tile-price {
+    .player {
+        padding: 7px;
+    }
+
+    .avatar {
+        width: 30px;
+        height: 30px;
+
+        font-size: 16px;
+    }
+
+    .player-name {
+        font-size: 10px;
+    }
+
+    .player-money {
+        font-size: 10px;
+    }
+
+    .player-status {
         font-size: 8px;
     }
 
+    .tile img {
+        height: 32px;
+        max-width: 36px;
+    }
+
+    .tile-name {
+        font-size: 6px;
+        line-height: 7px;
+    }
+
+    .tile-price {
+        font-size: 7px;
+        line-height: 8px;
+    }
+
+    .corner-icon {
+        font-size: 20px;
+    }
+
+    .corner-title {
+        font-size: 7px;
+    }
+
+    .corner-subtitle {
+        font-size: 6px;
+    }
+
     .center {
-        width: 58%;
-        height: 58%;
+        padding: 8px;
+    }
+
+    .events-title {
+        font-size: 12px;
+    }
+
+    .event {
+        font-size: 8px;
+        line-height: 10px;
+
+        padding: 6px;
+    }
+
+    .garden-title {
+        font-size: 11px;
+    }
+
+    .garden-text {
+        font-size: 7px;
+    }
+
+    .garden-icon {
+        font-size: 26px;
     }
 }
+
 </style>
 </head>
 
+
 <body>
+
 
 <div class="app">
 
-    <!-- TOP -->
-    <div class="topbar">
 
-        <div class="game-title">
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="logo-title">
             KVS MONOPOLY
         </div>
 
-        <div class="game-status">
-            <span class="online-dot"></span>
+        <div class="status">
+            <span class="status-dot"></span>
             Гра триває
         </div>
 
@@ -940,55 +1062,99 @@ button {
 
 
     <!-- PLAYERS -->
+
     <div class="players">
 
         <div class="player active">
+
             <div class="avatar">👑</div>
-            <div class="player-name">Катерина</div>
-            <div class="player-money">1 660 ₴</div>
-            <div class="player-status">Ваш хід</div>
+
+            <div class="player-name">
+                Катерина
+            </div>
+
+            <div class="player-money">
+                1 660 ₴
+            </div>
+
+            <div class="player-status">
+                Ваш хід
+            </div>
+
         </div>
 
+
         <div class="player">
+
             <div class="avatar">❤️</div>
-            <div class="player-name">Вілка♥</div>
-            <div class="player-money">0 ₴</div>
-            <div class="player-status">Очікує</div>
+
+            <div class="player-name">
+                Вілка♥
+            </div>
+
+            <div class="player-money">
+                0 ₴
+            </div>
+
+            <div class="player-status">
+                Очікує
+            </div>
+
         </div>
 
+
         <div class="player">
+
             <div class="avatar">🦊</div>
-            <div class="player-name">Manwol♥</div>
-            <div class="player-money">15 050 ₴</div>
-            <div class="player-status">Очікує</div>
+
+            <div class="player-name">
+                Manwol♥
+            </div>
+
+            <div class="player-money">
+                15 050 ₴
+            </div>
+
+            <div class="player-status">
+                Очікує
+            </div>
+
         </div>
 
+
         <div class="player">
+
             <div class="avatar">🐱</div>
-            <div class="player-name">katya.ali</div>
-            <div class="player-money">5 640 ₴</div>
-            <div class="player-status">Очікує</div>
+
+            <div class="player-name">
+                katya.ali
+            </div>
+
+            <div class="player-money">
+                5 640 ₴
+            </div>
+
+            <div class="player-status">
+                Очікує
+            </div>
+
         </div>
 
     </div>
 
 
     <!-- BOARD -->
+
     <div class="board">
 
-        <div id="boardGrid" class="board-grid"></div>
-
-        <!-- PLAYER PIECE -->
         <div
-            id="piece"
-            class="piece"
-            style="left: 8%; top: 87%;"
-        >
-            K
+            id="boardGrid"
+            class="board-grid">
         </div>
 
 
         <!-- CENTER -->
+
         <div class="center">
 
             <div class="events-header">
@@ -997,17 +1163,21 @@ button {
                     Події гри
                 </div>
 
-                <div class="events-live">
+                <div class="live">
                     ● LIVE
                 </div>
 
             </div>
 
 
-            <div id="events" class="events">
+            <div
+                id="events"
+                class="events">
 
                 <div class="event">
-                    <strong>Я навіть не здивована</strong>
+                    <strong>
+                        Я навіть не здивована
+                    </strong>
                 </div>
 
                 <div class="event">
@@ -1015,33 +1185,31 @@ button {
                 </div>
 
                 <div class="event dice">
-                    <strong>Катерина</strong> викидає 6:3
+                    <strong>
+                        Катерина
+                    </strong>
+                    викидає 6:3
                 </div>
 
                 <div class="event">
-                    Катерина потрапляє на Садочок
+                    Катерина потрапляє
+                    на Садочок
                 </div>
 
                 <div class="event buy">
-                    <strong>Катерина</strong> купує філію
-                    Живчик за 1000 ₴
-                </div>
-
-                <div class="event">
-                    Manwol♥ отримує 200 ₴
-                </div>
-
-                <div class="event warning">
-                    Увага! Катерина близько до чужої території
+                    <strong>
+                        Катерина
+                    </strong>
+                    купує Живчик
+                    за 1000 ₴
                 </div>
 
             </div>
 
 
-            <!-- GARDEN -->
             <div class="garden">
 
-                <div class="garden-info">
+                <div>
 
                     <div class="garden-title">
                         🌱 Садочок
@@ -1061,34 +1229,54 @@ button {
 
         </div>
 
+
+        <!-- PLAYER PIECE -->
+
+        <div
+            id="piece"
+            class="piece"
+            style="
+                left: 12%;
+                top: 84%;
+            ">
+            K
+        </div>
+
     </div>
 
 
     <!-- CONTROLS -->
+
     <div class="controls">
 
         <button
-            class="control-btn"
-            onclick="showInfo()"
-        >
+            class="control"
+            onclick="showMessage('Відкрито майно гравця')">
+
             📋
             Майно
+
         </button>
 
+
         <button
-            class="control-btn roll"
-            onclick="rollDice()"
-        >
-            <span class="dice">⚄</span>
+            id="rollButton"
+            class="control roll"
+            onclick="rollDice()">
+
+            🎲
             Кинути кубики
+
         </button>
 
+
         <button
-            class="control-btn"
-            onclick="showInfo()"
-        >
+            class="control"
+            onclick="showMessage('Баланс: 1 660 ₴')">
+
             💰
             Баланс
+
         </button>
 
     </div>
@@ -1097,82 +1285,106 @@ button {
 
 
 <!-- BOTTOM NAV -->
+
 <div class="bottom-nav">
 
-    <button class="nav-btn active">
-        <span class="nav-icon">🎲</span>
+    <button class="nav active">
+
+        <span class="nav-icon">
+            🎲
+        </span>
+
         Гра
+
     </button>
 
-    <button class="nav-btn">
-        <span class="nav-icon">🏠</span>
+
+    <button class="nav">
+
+        <span class="nav-icon">
+            🏠
+        </span>
+
         Майно
+
     </button>
 
-    <button class="nav-btn">
-        <span class="nav-icon">👥</span>
+
+    <button class="nav">
+
+        <span class="nav-icon">
+            👥
+        </span>
+
         Гравці
+
     </button>
 
-    <button class="nav-btn">
-        <span class="nav-icon">⚙️</span>
+
+    <button class="nav">
+
+        <span class="nav-icon">
+            ⚙️
+        </span>
+
         Налаштування
+
     </button>
 
 </div>
 
 
 <!-- MODAL -->
+
 <div
     id="modal"
     class="modal"
-    onclick="closeModal(event)"
->
+    onclick="closeModal(event)">
 
     <div class="modal-box">
 
-        <div class="modal-top">
+        <div class="modal-header">
 
             <div
                 id="modalTitle"
-                class="modal-title"
-            >
+                class="modal-title">
                 Властивість
             </div>
 
             <button
                 class="close"
-                onclick="hideModal()"
-            >
+                onclick="hideModal()">
                 ×
             </button>
 
         </div>
 
+
         <img
             id="modalLogo"
             class="modal-logo"
             src=""
-            alt=""
-        >
+            alt="">
+
 
         <div
             id="modalPrice"
-            class="modal-price"
-        >
-            1000 ₴
+            class="modal-price">
+            0 ₴
         </div>
 
-        <div class="modal-description">
-            Філія бренду. Натисни кнопку,
-            щоб придбати територію.
+
+        <div class="modal-info">
+            Філія бренду
         </div>
+
 
         <button
-            class="buy-btn"
-            onclick="buyProperty()"
-        >
+            class="buy"
+            onclick="buyProperty()">
+
             💰 Купити філію
+
         </button>
 
     </div>
@@ -1182,8 +1394,9 @@ button {
 
 <script>
 
+
 /* =========================================================
-   28 БРЕНДІВ
+   PROPERTY DATA
 ========================================================= */
 
 const properties = [
@@ -1192,422 +1405,559 @@ const properties = [
         name: "Моршинська",
         file: "morshynska.png",
         price: 500,
-        group: "#38bdf8"
+        color: "#22b8e6"
     },
 
     {
         name: "Живчик",
         file: "zhyvchyk.png",
         price: 1000,
-        group: "#38bdf8"
+        color: "#22b8e6"
     },
 
     {
         name: "Нова Пошта",
         file: "novaposhta.png",
         price: 1200,
-        group: "#fb923c"
+        color: "#ff8a22"
     },
 
     {
         name: "OLX",
         file: "olx.png",
         price: 1400,
-        group: "#fb923c"
+        color: "#ff8a22"
     },
 
     {
         name: "Prom",
         file: "prom.png",
         price: 1600,
-        group: "#fb923c"
+        color: "#ff8a22"
     },
 
     {
         name: "Rozetka",
         file: "rozetka.png",
         price: 1800,
-        group: "#facc15"
+        color: "#ffd21c"
     },
 
     {
         name: "McDonald's",
         file: "mcdonalds.png",
         price: 2000,
-        group: "#facc15"
+        color: "#ffd21c"
     },
 
     {
         name: "Київстар",
         file: "kyivstar.png",
         price: 2200,
-        group: "#facc15"
+        color: "#ffd21c"
     },
 
     {
         name: "KFC",
         file: "kfc.png",
         price: 2400,
-        group: "#f472b6"
+        color: "#ff4fa0"
     },
 
     {
         name: "Burger King",
         file: "burgerking.png",
         price: 2600,
-        group: "#f472b6"
+        color: "#ff4fa0"
     },
 
     {
         name: "Укрпошта",
         file: "ukrposhta.png",
         price: 2800,
-        group: "#f472b6"
+        color: "#ff4fa0"
     },
 
     {
         name: "Adidas",
         file: "adidas.png",
         price: 3000,
-        group: "#a78bfa"
+        color: "#a66cff"
     },
 
     {
         name: "Nike",
         file: "nike.png",
         price: 3200,
-        group: "#a78bfa"
+        color: "#a66cff"
     },
 
     {
         name: "Puma",
         file: "puma.png",
         price: 3400,
-        group: "#a78bfa"
+        color: "#a66cff"
     },
 
     {
         name: "Apple",
         file: "apple.png",
         price: 3600,
-        group: "#34d399"
+        color: "#37d99a"
     },
 
     {
         name: "Samsung",
         file: "samsung.png",
         price: 3800,
-        group: "#34d399"
+        color: "#37d99a"
     },
 
     {
         name: "TikTok",
         file: "tiktok.png",
         price: 4000,
-        group: "#34d399"
+        color: "#37d99a"
     },
 
     {
         name: "Meest",
         file: "meest.png",
         price: 4200,
-        group: "#60a5fa"
+        color: "#559cf4"
     },
 
     {
         name: "YouTube",
         file: "youtube.png",
         price: 4400,
-        group: "#60a5fa"
+        color: "#559cf4"
     },
 
     {
         name: "Telegram",
         file: "telegram.png",
         price: 4600,
-        group: "#60a5fa"
+        color: "#559cf4"
     },
 
     {
         name: "ДТЕК",
         file: "dtek.png",
         price: 4800,
-        group: "#fbbf24"
+        color: "#ffc526"
     },
 
     {
         name: "Google",
         file: "google.png",
         price: 5000,
-        group: "#fbbf24"
+        color: "#ffc526"
     },
 
     {
         name: "ПриватБанк",
         file: "privatbank.png",
         price: 5200,
-        group: "#fbbf24"
+        color: "#ffc526"
     },
 
     {
         name: "Монобанк",
         file: "monobank.png",
         price: 5400,
-        group: "#f87171"
+        color: "#ef6c73"
     },
 
     {
         name: "Ощадбанк",
         file: "oschadbank.png",
         price: 5600,
-        group: "#f87171"
+        color: "#ef6c73"
     },
 
     {
         name: "Justin",
         file: "justin.png",
         price: 5800,
-        group: "#f87171"
+        color: "#ef6c73"
     },
 
     {
         name: "Райффайзен",
         file: "raiffeisen.png",
         price: 6000,
-        group: "#c084fc"
+        color: "#a968ef"
     },
 
     {
         name: "АТБ",
         file: "atb.png",
         price: 6200,
-        group: "#c084fc"
+        color: "#a968ef"
     }
 
 ];
 
 
 /* =========================================================
-   BOARD
+   BOARD POSITIONS
 ========================================================= */
-
-const boardGrid =
-    document.getElementById("boardGrid");
 
 
 /*
-   10 × 10 grid
+    10 × 10
 
-   Схема:
+    TOP:
+    START + 9 BRANDS
 
-   C C C C C C C C C C
-   C . . . . . . . . C
-   C . . . . . . . . C
-   C .       . . . . C
-   C .    CENTER     C
-   C .       . . . . C
-   C . . . . . . . . C
-   C . . . . . . . . C
-   C . . . . . . . . C
-   C C C C C C C C C C
+    RIGHT:
+    POLICE + 6 BRANDS + BOTTOM CORNER
+
+    BOTTOM:
+    9 BRANDS + PRISON
+
+    LEFT:
+    4 BRANDS + TAX
 */
 
 
-const cells = [];
+const top = [
+    "corner-start",
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+];
 
 
-/* TOP */
-
-for (let i = 0; i < 10; i++) {
-    cells.push({
-        row: 1,
-        col: i + 1
-    });
-}
-
-
-/* RIGHT */
-
-for (let i = 1; i < 10; i++) {
-    cells.push({
-        row: i + 1,
-        col: 10
-    });
-}
+const right = [
+    "corner-police",
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    "corner-prison"
+];
 
 
-/* BOTTOM */
+const bottom = [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+];
 
-for (let i = 8; i >= 0; i--) {
-    cells.push({
-        row: 10,
-        col: i + 1
-    });
-}
 
-
-/* LEFT */
-
-for (let i = 8; i >= 1; i--) {
-    cells.push({
-        row: i + 1,
-        col: 1
-    });
-}
+const left = [
+    25,
+    26,
+    27,
+    "corner-tax"
+];
 
 
 /* =========================================================
-   CORNERS
+   CELL CREATION
 ========================================================= */
 
-const corners = {
+const boardGrid =
+    document.getElementById(
+        "boardGrid"
+    );
 
-    0: {
-        icon: "🏁",
-        title: "СТАРТ",
-        subtitle: "+200 ₴"
-    },
 
-    10: {
-        icon: "🚔",
-        title: "ПОЛІЦІЯ",
-        subtitle: "Відпочинок"
-    },
+function createTile(
+    property
+) {
 
-    20: {
-        icon: "🔒",
-        title: "В'ЯЗНИЦЯ",
-        subtitle: "Пропуск ходу"
-    },
+    const tile =
+        document.createElement(
+            "div"
+        );
 
-    30: {
-        icon: "💸",
-        title: "ПОДАТОК",
-        subtitle: "-500 ₴"
-    }
+    tile.className =
+        "tile";
 
-};
+    tile.style.setProperty(
+        "--color",
+        property.color
+    );
+
+
+    tile.innerHTML = `
+
+        <img
+            src="logos/${property.file}"
+            alt="${property.name}"
+            onerror="
+                this.style.opacity='0';
+            "
+        >
+
+        <div class="tile-name">
+            ${property.name}
+        </div>
+
+        <div class="tile-price">
+            ${property.price.toLocaleString("uk-UA")} ₴
+        </div>
+
+    `;
+
+
+    tile.onclick = () => {
+
+        openProperty(
+            property
+        );
+
+    };
+
+
+    return tile;
+}
 
 
 /* =========================================================
-   CREATE BOARD
+   CORNER
 ========================================================= */
 
-cells.forEach((position, index) => {
+function createCorner(
+    type
+) {
 
-    const cell =
-        document.createElement("div");
+    const data = {
 
-    cell.style.gridRow =
-        position.row;
+        "corner-start": [
+            "🏁",
+            "СТАРТ",
+            "+200 ₴"
+        ],
 
-    cell.style.gridColumn =
-        position.col;
+        "corner-police": [
+            "🚔",
+            "ПОЛІЦІЯ",
+            "Відпочинок"
+        ],
+
+        "corner-prison": [
+            "🔒",
+            "В'ЯЗНИЦЯ",
+            "Пропуск ходу"
+        ],
+
+        "corner-tax": [
+            "💸",
+            "ПОДАТОК",
+            "-500 ₴"
+        ]
+
+    }[type];
 
 
-    if (corners[index]) {
-
-        cell.className = "corner";
-
-        cell.innerHTML = `
-
-            <div>
-
-                <div class="corner-icon">
-                    ${corners[index].icon}
-                </div>
-
-                <div class="corner-title">
-                    ${corners[index].title}
-                </div>
-
-                <div class="corner-subtitle">
-                    ${corners[index].subtitle}
-                </div>
-
-            </div>
-
-        `;
-
-    } else {
-
-        const property =
-            properties[(index - 1) % properties.length];
-
-        cell.className = "tile";
-
-        cell.style.setProperty(
-            "--group",
-            property.group
+    const corner =
+        document.createElement(
+            "div"
         );
 
+    corner.className =
+        "corner";
 
-        cell.innerHTML = `
 
-            <div class="tile-color"></div>
+    corner.innerHTML = `
 
-            <img
-                class="tile-logo"
-                src="logos/${property.file}"
-                alt="${property.name}"
-                onerror="this.style.display='none';"
-            >
+        <div>
 
-            <div class="tile-name">
-                ${property.name}
+            <div class="corner-icon">
+                ${data[0]}
             </div>
 
-            <div class="tile-price">
-                ${property.price} ₴
+            <div class="corner-title">
+                ${data[1]}
             </div>
 
-        `;
+            <div class="corner-subtitle">
+                ${data[2]}
+            </div>
+
+        </div>
+
+    `;
 
 
-        cell.addEventListener(
-            "click",
-            () => openProperty(property)
-        );
-
-    }
-
-
-    boardGrid.appendChild(cell);
-
-});
+    return corner;
+}
 
 
 /* =========================================================
-   PROPERTY MODAL
+   PLACE TOP
+========================================================= */
+
+top.forEach(
+    (item, index) => {
+
+        const cell =
+            typeof item === "string"
+                ? createCorner(item)
+                : createTile(
+                    properties[item]
+                );
+
+
+        cell.style.gridRow = "1";
+        cell.style.gridColumn =
+            String(index + 1);
+
+
+        boardGrid.appendChild(
+            cell
+        );
+
+    }
+);
+
+
+/* =========================================================
+   PLACE RIGHT
+========================================================= */
+
+right.forEach(
+    (item, index) => {
+
+        const cell =
+            typeof item === "string"
+                ? createCorner(item)
+                : createTile(
+                    properties[item]
+                );
+
+
+        cell.style.gridColumn = "10";
+        cell.style.gridRow =
+            String(index + 2);
+
+
+        boardGrid.appendChild(
+            cell
+        );
+
+    }
+);
+
+
+/* =========================================================
+   PLACE BOTTOM
+========================================================= */
+
+bottom.forEach(
+    (item, index) => {
+
+        const cell =
+            typeof item === "string"
+                ? createCorner(item)
+                : createTile(
+                    properties[item]
+                );
+
+
+        cell.style.gridRow = "10";
+
+        cell.style.gridColumn =
+            String(9 - index);
+
+
+        boardGrid.appendChild(
+            cell
+        );
+
+    }
+);
+
+
+/* =========================================================
+   PLACE LEFT
+========================================================= */
+
+left.forEach(
+    (item, index) => {
+
+        const cell =
+            typeof item === "string"
+                ? createCorner(item)
+                : createTile(
+                    properties[item]
+                );
+
+
+        cell.style.gridColumn = "1";
+
+        cell.style.gridRow =
+            String(9 - index);
+
+
+        boardGrid.appendChild(
+            cell
+        );
+
+    }
+);
+
+
+/* =========================================================
+   MODAL
 ========================================================= */
 
 let selectedProperty = null;
 
 
-function openProperty(property) {
+function openProperty(
+    property
+) {
 
     selectedProperty =
         property;
+
 
     document.getElementById(
         "modalTitle"
     ).textContent =
         property.name;
 
+
     document.getElementById(
         "modalPrice"
     ).textContent =
-        property.price.toLocaleString("uk-UA")
-        + " ₴";
+        property.price.toLocaleString(
+            "uk-UA"
+        ) + " ₴";
+
 
     document.getElementById(
         "modalLogo"
     ).src =
-        "logos/" + property.file;
+        "logos/" +
+        property.file;
+
 
     document.getElementById(
         "modal"
-    ).classList.add("show");
+    ).classList.add(
+        "open"
+    );
 
 }
 
@@ -1616,17 +1966,24 @@ function hideModal() {
 
     document.getElementById(
         "modal"
-    ).classList.remove("show");
+    ).classList.remove(
+        "open"
+    );
 
 }
 
 
-function closeModal(event) {
+function closeModal(
+    event
+) {
 
     if (
-        event.target.id === "modal"
+        event.target.id ===
+        "modal"
     ) {
+
         hideModal();
+
     }
 
 }
@@ -1644,108 +2001,12 @@ function buyProperty() {
 
 
     addEvent(
-        `Катерина купує філію <strong>${selectedProperty.name}</strong> за ${selectedProperty.price.toLocaleString("uk-UA")} ₴`,
+        `<strong>Катерина</strong> купує ${selectedProperty.name} за ${selectedProperty.price.toLocaleString("uk-UA")} ₴`,
         "buy"
     );
 
 
     hideModal();
-
-}
-
-
-/* =========================================================
-   DICE
-========================================================= */
-
-function rollDice() {
-
-    const button =
-        document.querySelector(".roll");
-
-    button.disabled = true;
-
-    button.innerHTML =
-        '<span class="dice">🎲</span> Кидаємо...';
-
-
-    setTimeout(() => {
-
-        const dice1 =
-            Math.floor(Math.random() * 6) + 1;
-
-        const dice2 =
-            Math.floor(Math.random() * 6) + 1;
-
-
-        addEvent(
-            `<strong>Катерина</strong> викидає ${dice1}:${dice2}`,
-            "dice"
-        );
-
-
-        button.disabled = false;
-
-        button.innerHTML =
-            '<span class="dice">⚄</span> Кинути кубики';
-
-
-        movePiece(
-            dice1 + dice2
-        );
-
-    }, 700);
-
-}
-
-
-/* =========================================================
-   MOVE PLAYER
-========================================================= */
-
-let playerPosition = 0;
-
-
-function movePiece(steps) {
-
-    playerPosition =
-        (playerPosition + steps) % 40;
-
-
-    /*
-       Візуальна демонстрація.
-
-       У реальній грі тут буде:
-       playerPosition
-       → конкретна клітинка
-       → координати фішки
-    */
-
-
-    const piece =
-        document.getElementById("piece");
-
-
-    const percentage =
-        8 + (playerPosition / 39) * 84;
-
-
-    piece.style.left =
-        percentage + "%";
-
-
-    if (playerPosition > 9 &&
-        playerPosition < 30) {
-
-        piece.style.top =
-            "48%";
-
-    } else {
-
-        piece.style.top =
-            "87%";
-
-    }
 
 }
 
@@ -1760,28 +2021,32 @@ function addEvent(
 ) {
 
     const events =
-        document.getElementById("events");
+        document.getElementById(
+            "events"
+        );
 
 
-    const event =
-        document.createElement("div");
+    const element =
+        document.createElement(
+            "div"
+        );
 
 
-    event.className =
+    element.className =
         "event " + type;
 
 
-    event.innerHTML =
+    element.innerHTML =
         text;
 
 
     events.prepend(
-        event
+        element
     );
 
 
     while (
-        events.children.length > 10
+        events.children.length > 7
     ) {
 
         events.removeChild(
@@ -1794,13 +2059,121 @@ function addEvent(
 
 
 /* =========================================================
-   INFO
+   DICE
 ========================================================= */
 
-function showInfo() {
+let position = 0;
+
+
+function rollDice() {
+
+    const button =
+        document.getElementById(
+            "rollButton"
+        );
+
+
+    button.disabled = true;
+
+    button.innerHTML =
+        "🎲 Кидаємо...";
+
+
+    setTimeout(
+        () => {
+
+            const dice1 =
+                Math.floor(
+                    Math.random() * 6
+                ) + 1;
+
+
+            const dice2 =
+                Math.floor(
+                    Math.random() * 6
+                ) + 1;
+
+
+            const total =
+                dice1 + dice2;
+
+
+            addEvent(
+                `<strong>Катерина</strong> викидає ${dice1}:${dice2}`,
+                "dice"
+            );
+
+
+            movePiece(
+                total
+            );
+
+
+            button.disabled =
+                false;
+
+            button.innerHTML =
+                "🎲 Кинути кубики";
+
+        },
+        650
+    );
+
+}
+
+
+/* =========================================================
+   PIECE
+========================================================= */
+
+function movePiece(
+    steps
+) {
+
+    position =
+        (position + steps) % 28;
+
+
+    const piece =
+        document.getElementById(
+            "piece"
+        );
+
+
+    /*
+       Демонстраційне переміщення.
+       Пізніше зробимо точні координати
+       кожної з 32 клітинок.
+    */
+
+
+    const percent =
+        10 +
+        (position / 27) * 80;
+
+
+    piece.style.left =
+        percent + "%";
+
+
+    piece.style.top =
+        position % 2 === 0
+            ? "8%"
+            : "84%";
+
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+function showMessage(
+    message
+) {
 
     addEvent(
-        "Відкрито інформацію про гравця."
+        message
     );
 
 }
