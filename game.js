@@ -26,11 +26,11 @@ const hm=()=>new Date().toTimeString().slice(0,5),fm=n=>n.toLocaleString('uk')+'
 function full(i){return T.every((x,k)=>x[2]!==T[i][2]||typeof x[1]!='number'||own[k]==own[i])}
 function rent(i){const b=Math.round(T[i][1]*.1),L=lvl[i];return L?b*[0,4,8,14][L]:b*(full(i)?2:1)}
 function tile(b,i){const[r,c]=pos(i),s=side(i%10==0?(i==0?0:i==10?9:i==20?21:31):i),t=b[1];
-const tk=P.map(p=>p.alive&&p.pos==i?tokn(p):'').join('');
+const tk=P.map(p=>p.alive&&dpos(p)==i?tokn(p):'').join('');
 const corner=i%10==0,cls=(corner?'sp ':'')+s;
-if(typeof t!='number')return '<div class="t '+cls+'" style="grid-area:'+r+'/'+c+'"><div class="in"><span class="em">'+b[2]+'</span>'+(corner?'':'<span class="nm">'+b[0]+'</span>')+'</div><div class="tk">'+tk+'</div></div>';
+if(typeof t!='number')return '<div class="t '+cls+'" data-i="'+i+'" style="grid-area:'+r+'/'+c+'"><div class="in"><span class="em">'+b[2]+'</span>'+(corner?'':'<span class="nm">'+b[0]+'</span>')+'</div><div class="tk">'+tk+'</div></div>';
 const bg=own[i]>=0?P[own[i]].c+'aa':'#fff';
-return '<div class="t '+cls+'" style="grid-area:'+r+'/'+c+';--b:'+bg+'"><div class="in">'+(LG[b[0]]?'<img class="lg" src="logos/'+LG[b[0]]+'.png" alt="'+b[0]+'" onerror="this.outerHTML=\'<span class=nm>\'+this.alt+\'</span>\'">':'<span class="em" style="color:'+b[4]+'">'+b[3]+'</span><span class="nm" style="color:'+b[4]+'">'+b[0]+'</span>')+(lvl[i]?'<div class="st">'+'★'.repeat(lvl[i])+'</div>':'')+'</div><div class="pr" style="--g:'+GC[b[2]]+'">'+t+'</div><div class="tk">'+tk+'</div></div>'}
+return '<div class="t '+cls+'" data-i="'+i+'" style="grid-area:'+r+'/'+c+';--b:'+bg+'"><div class="in">'+(LG[b[0]]?'<img class="lg" src="logos/'+LG[b[0]]+'.png" alt="'+b[0]+'" onerror="this.outerHTML=\'<span class=nm>\'+this.alt+\'</span>\'">':'<span class="em" style="color:'+b[4]+'">'+b[3]+'</span><span class="nm" style="color:'+b[4]+'">'+b[0]+'</span>')+(lvl[i]?'<div class="st">'+'★'.repeat(lvl[i])+'</div>':'')+'</div><div class="pr" style="--g:'+GC[b[2]]+'">'+t+'</div><div class="tk">'+tk+'</div></div>'}
 
 let code='',R=null,S=null,LOGS=[],showAll=true,busy=false,started=false,P,own,lvl,prevPos={};
 const $=id=>document.getElementById(id);
@@ -205,7 +205,7 @@ async function roll(){
   // Зберігаємо НОВУ позицію — фішки мають переїхати
   await save();
 
-  setTimeout(()=>land(),1600);
+  setTimeout(()=>land(),1700+(d1+d2)*170);
 }
 
 async function land(){
@@ -304,7 +304,7 @@ h+='</div>'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 
 const o=$('ci'),v=o?o.value:'',f=o&&document.activeElement===o;
 $('app').innerHTML=h;const n=$('ci');if(n){n.value=v;if(f)n.focus()}const lg=$('log');if(lg)lg.scrollTop=lg.scrollHeight;if(S.dice&&S.rid&&S.rid!==lastRid){lastRid=S.rid;playDice(S.dice)}
   // запам'ятати позиції для анімації фішок
-  P.forEach(p=>{prevPos[p.id]=p.pos});}
+  syncTokens();}
 setInterval(()=>{if(!S||!R||S.ph=='over')return;const tm=$('tm');if(tm)tm.textContent=Math.max(0,Math.ceil((S.tend-Date.now())/1000))+' c';
 if(!busy&&Date.now()>S.tend+800&&driver()){S.ph=='roll'?roll():S.ph=='buy'?skip():0}},500);
 Object.assign(window,{roll,buy,skip,say,newGame,tgl:()=>{showAll=!showAll;render()}});
@@ -312,7 +312,7 @@ Object.assign(window,{roll,buy,skip,say,newGame,tgl:()=>{showAll=!showAll;render
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function okp(u){return /^https:\/\/[^\s"'()<>\\]+$/.test(u||'')?u:''}
 function avh(p){const u=okp(p.ph),a=esc(p.a||'?');return u?`<img src="${u}" alt="" onerror="this.parentNode.textContent='${a}'">`:a}
-function tokn(p){const u=okp(p.ph);const moved=prevPos[p.id]!==undefined&&prevPos[p.id]!==p.pos;const cls=moved?' moving':'';return `<s class="${cls.trim()}" style="--c:${p.c}${u?`;background:url('${u}') center/cover`:''}">${u?'':esc(p.a)}</s>`}
+function tokn(p){const u=okp(p.ph);return `<s class="st${hopId===p.id?' hop':''}" style="--c:${p.c}${u?`;background:url('${u}') center/cover`:''}">${u?'':esc(p.a)}</s>`}
 let ROOMS=[],modal=null,stats=false;
 onValue(ref(db,'rooms'),s=>{
   ROOMS=[];s.forEach(c=>{const r=c.val();if(!r||!r.players)return;const ps=Object.values(r.players).sort((a,b)=>a.j-b.j);if(!ps.some(p=>p.online))return;const mine=ps.some(p=>p.id==myId);if(r.state&&r.state.ph=='over'&&!mine)return;ROOMS.push({code:c.key,st:r.status,ps,mine})});
@@ -359,4 +359,17 @@ const set=(a,b)=>z.querySelectorAll('.die').forEach((e,i)=>e.innerHTML=pips(i?b:
 const r=()=>1+Math.random()*6|0;set(r(),r());dzt=setInterval(()=>set(r(),r()),90);
 dzh=setTimeout(()=>{clearInterval(dzt);set(d[0],d[1]);z.querySelectorAll('.dd').forEach(e=>{e.classList.remove('roll');e.classList.add('pop')});const s=z.querySelector('.sum');if(s){s.textContent='';s.classList.remove('on')}
 try{tg&&tg.HapticFeedback&&tg.HapticFeedback.impactOccurred('medium')}catch(e){}
-dzh=setTimeout(()=>{z.style.display='none'},1100)},1000)}
+dzh=setTimeout(()=>{z.style.display='none'},650)},1000)}
+
+// ===== покрокове пересування фішок =====
+let vis={},stepping=false,hopId=null,wt=null;
+function dpos(p){return vis[p.id]===undefined?p.pos:vis[p.id]}
+function drawTokens(){if(!S)return;document.querySelectorAll('#bd .t').forEach(el=>{const i=+el.dataset.i,tk=el.querySelector('.tk');if(tk)tk.innerHTML=S.players.map(p=>p.alive&&dpos(p)==i?tokn(p):'').join('')})}
+function syncTokens(){if(!S)return;S.players.forEach(p=>{if(vis[p.id]===undefined)vis[p.id]=p.pos});if(stepping)return;
+const dz=$('dz');if(dz&&dz.style.display=='grid'){clearTimeout(wt);wt=setTimeout(syncTokens,200);return}
+const m=S.players.find(p=>p.alive&&vis[p.id]!==p.pos);if(!m)return;
+const dist=(m.pos-vis[m.id]+40)%40;if(dist>12){vis[m.id]=m.pos;drawTokens();return syncTokens()}
+stepping=true;const id=m.id;
+const tick=()=>{const q=S&&S.players.find(x=>x.id==id);if(!q||!q.alive||vis[id]===q.pos||(q.pos-vis[id]+40)%40>12){if(q)vis[id]=q.pos;stepping=false;hopId=null;drawTokens();return syncTokens()}
+vis[id]=(vis[id]+1)%40;hopId=id;drawTokens();setTimeout(tick,160)};
+tick()}
