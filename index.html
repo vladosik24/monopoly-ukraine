@@ -1,606 +1,251 @@
 <!DOCTYPE html>
-<html lang="uk">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#060a12">
-<title>KVS Monopoly</title>
+<html lang="uk"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Монополія UA</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { margin: 0; padding: 0; background: #060a12; color: #fff; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
-body { min-height: 100vh; overflow-x: hidden; }
-button { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
-
-.app {
-  width: 100%; max-width: 560px; min-height: 100vh; margin: auto;
-  padding: 14px 16px 105px;
-  background: radial-gradient(circle at 50% -10%, rgba(36,92,150,.20), transparent 34%),
-              linear-gradient(180deg, #080d17, #050912 70%, #050811);
-}
-
-.screen { display: none; animation: fadeIn 0.3s ease; }
-.screen.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-/* TOPBAR */
-.topbar { height: 50px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.top-left { display: flex; align-items: center; gap: 10px; }
-.icon-btn { width: 40px; height: 40px; border-radius: 13px; background: rgba(255,255,255,.055); font-size: 25px; display: flex; align-items: center; justify-content: center; }
-.page-title { font-size: 18px; font-weight: 900; }
-.gem { display: flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 14px; background: linear-gradient(135deg, #171d39, #28193f); border: 1px solid rgba(111,91,255,.55); font-weight: 900; font-size: 14px; }
-.gem-plus { width: 29px; height: 29px; border-radius: 9px; background: #7139d8; font-size: 20px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
-
-/* LOBBY */
-.profile { display: flex; align-items: center; justify-content: space-between; margin: 4px 8px 20px; }
-.profile-user { display: flex; align-items: center; gap: 11px; }
-.avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid #34435e; }
-.profile-name { font-size: 17px; font-weight: 900; }
-.profile-username { font-size: 12px; color: #758198; margin-top: 3px; }
-
-.hero {
-  position: relative; min-height: 390px; padding: 32px 30px; overflow: hidden;
-  border-radius: 28px;
-  background: radial-gradient(circle at 80% 25%, rgba(231,190,69,.13), transparent 30%), linear-gradient(145deg, #141c2d, #0b1220);
-  border: 1px solid rgba(211,171,48,.48); box-shadow: 0 25px 60px rgba(0,0,0,.32);
-}
-.hero-title { position: relative; z-index: 2; max-width: 285px; font-size: 47px; line-height: .95; font-weight: 1000; letter-spacing: -2px; text-transform: uppercase; }
-.hero-title span { display: block; color: #f1cd61; }
-.hero-description { position: relative; z-index: 2; max-width: 270px; margin-top: 25px; color: #8995a9; font-size: 15px; line-height: 1.55; }
-.hero-art {
-  position: absolute; right: -10px; top: 105px; width: 225px; height: 155px; transform: rotate(-7deg);
-  border: 4px solid #8f6d31; background: linear-gradient(135deg, #0e1727, #2b394d);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.5); border-radius: 12px;
-}
-.hero-art::before { content: "🎲"; position: absolute; right: 24px; top: 30px; font-size: 67px; transform: rotate(10deg); }
-.hero-art::after { content: "💵"; position: absolute; left: 25px; bottom: 12px; font-size: 43px; transform: rotate(-8deg); }
-
-.create-room {
-  position: absolute; left: 30px; right: 30px; bottom: 27px; height: 70px;
-  display: flex; align-items: center; padding: 8px 16px; border-radius: 20px;
-  border: 1px solid #a98828; background: linear-gradient(135deg, rgba(90,75,29,.72), rgba(39,34,19,.94));
-  font-weight: 950; font-size: 15px; cursor: pointer; transition: transform 0.2s;
-}
-.create-room:active { transform: scale(0.98); }
-.create-icon { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin-right: 14px; border-radius: 50%; background: #20242c; color: #f0d35f; font-size: 32px; }
-
-.rooms { margin-top: 27px; }
-.rooms-head { display: flex; justify-content: space-between; align-items: flex-end; }
-.rooms-title { font-size: 25px; font-weight: 950; }
-.rooms-count { color: #6d798f; font-size: 14px; margin-top: 4px; }
-.room-tools { display: flex; gap: 7px; }
-.small-btn { width: 43px; height: 38px; border-radius: 11px; border: 1px solid rgba(255,255,255,.1); background: #111a2b; font-size: 18px; display: flex; align-items: center; justify-content: center; }
-.small-btn.gold { color: #f2d65f; border-color: #796a2c; }
-
-.room-card {
-  display: flex; align-items: center; margin-top: 14px; padding: 13px; border-radius: 22px;
-  background: linear-gradient(145deg, #111a2b, #0d1524); border: 1px solid rgba(255,255,255,.12); border-left: 6px solid #4285ff;
-}
-.room-avatar { width: 58px; height: 58px; border-radius: 50%; object-fit: cover; border: 3px solid #315b9f; margin-right: 12px; }
-.room-info { flex: 1; min-width: 0; }
-.room-name { font-size: 17px; font-weight: 950; }
-.room-status { display: inline-block; margin-top: 5px; padding: 4px 9px; border-radius: 9px; background: rgba(62,129,255,.13); color: #77b0ff; font-size: 11px; font-weight: 900; }
-.room-players { margin-top: 5px; color: #778399; font-size: 12px; }
-.watch { padding: 13px 17px; border: 1px solid #3b65a5; border-radius: 16px; background: rgba(40,72,125,.22); color: #a6caff; font-weight: 900; font-size: 13px; }
-
-/* GAME */
-.game-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 11px; }
-.game-brand { font-size: 23px; font-weight: 1000; letter-spacing: -.5px; background: linear-gradient(90deg, #fff, #8995a9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.live-pill { display: flex; align-items: center; gap: 6px; padding: 8px 11px; border-radius: 13px; background: #131d2f; color: #8b98ac; font-size: 11px; font-weight: 700; }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: #49dfa0; box-shadow: 0 0 9px #49dfa0; }
-
-.players { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-bottom: 14px; }
-.player {
-  min-width: 0; padding: 10px; border-radius: 18px;
-  background: linear-gradient(145deg, #172239, #101827); border: 1px solid rgba(255,255,255,.08);
-  transition: all 0.3s ease;
-}
-.player.active { border-color: #16c9f1; box-shadow: 0 0 18px rgba(16,203,242,.13); background: linear-gradient(145deg, #1a2a45, #131e30); }
-.p-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 11px; background: #1d2b45; font-size: 18px; margin-bottom: 6px; }
-.p-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 900; }
-.p-money { margin-top: 3px; color: #5de2ac; font-size: 11px; font-weight: 950; }
-.p-turn { margin-top: 4px; color: #718096; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-.player.active .p-turn { color: #16c9f1; }
-
-/* BOARD */
-.board-wrap {
-  position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 27px;
-  padding: 7px; background: linear-gradient(145deg, #1b263b, #0e1727);
-  border: 1px solid rgba(255,255,255,.11); box-shadow: 0 25px 60px rgba(0,0,0,.42);
-}
-.board {
-  position: absolute; inset: 7px; display: grid;
-  grid-template-columns: repeat(9, 1fr); grid-template-rows: repeat(9, 1fr); gap: 3px;
-}
-.tile {
-  position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column;
-  align-items: center; justify-content: space-between; overflow: hidden;
-  padding: 4px 2px 2px; border-radius: 8px; background: linear-gradient(145deg, #19263b, #101827);
-  border: 1px solid rgba(255,255,255,.075); cursor: pointer; transition: transform 0.15s;
-}
-.tile:active { transform: scale(0.95); }
-.band { position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--c); }
-.tile-icon { font-size: 18px; margin-top: 4px; }
-.tile-name { width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; font-size: 7px; font-weight: 900; line-height: 1.1; }
-.tile-price { margin-top: 2px; color: #62dfac; font-size: 7px; font-weight: 950; }
-
-.corner {
-  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 3px; border-radius: 8px; background: linear-gradient(145deg, #26354f, #121c2d);
-  border: 1px solid rgba(255,255,255,.1);
-}
-.corner-icon { font-size: 22px; }
-.corner-title { margin-top: 3px; font-size: 7px; font-weight: 950; }
-.corner-sub { margin-top: 2px; color: #7c8aa0; font-size: 6px; }
-
-/* CENTER PANEL */
-.center {
-  position: absolute; left: 18%; right: 18%; top: 18%; bottom: 18%; z-index: 20;
-  padding: 12px; border-radius: 23px;
-  background: linear-gradient(145deg, rgba(9,18,32,.985), rgba(6,13,24,.985));
-  border: 1px solid rgba(0,207,255,.19); box-shadow: 0 18px 45px rgba(0,0,0,.53);
-  display: flex; flex-direction: column;
-}
-.center-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.06); }
-.events-title { font-size: 14px; font-weight: 950; }
-.live { color: #4be1a1; font-size: 9px; font-weight: 900; display: flex; align-items: center; gap: 4px; }
-.live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4be1a1; box-shadow: 0 0 6px #4be1a1; }
-
-.events { flex: 1; padding-top: 7px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
-.events::-webkit-scrollbar { width: 4px; }
-.events::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
-
-.event {
-  padding: 7px 8px; border-radius: 10px; background: rgba(255,255,255,.045);
-  color: #9aa7bb; font-size: 9px; line-height: 1.35; border-left: 2px solid rgba(255,255,255,0.1);
-}
-.event strong { color: #fff; font-weight: 800; }
-
-.garden {
-  margin-top: 10px; min-height: 61px; display: flex; align-items: center; justify-content: space-between;
-  padding: 9px 11px; border-radius: 15px;
-  background: linear-gradient(135deg, rgba(31,79,56,.5), rgba(12,32,25,.76));
-  border: 1px solid rgba(64,218,140,.17);
-}
-.garden-info { flex: 1; }
-.garden-name { font-size: 12px; font-weight: 950; display: flex; align-items: center; gap: 6px; }
-.garden-desc { margin-top: 4px; color: #75859a; font-size: 9px; line-height: 1.2; }
-.garden-progress { margin-top: 6px; height: 4px; background: rgba(0,0,0,0.3); border-radius: 2px; overflow: hidden; }
-.garden-fill { height: 100%; width: 60%; background: linear-gradient(90deg, #40da8c, #7bed9f); border-radius: 2px; }
-.garden-icon { font-size: 28px; margin-left: 10px; }
-
-/* PIECE */
-.piece {
-  position: absolute; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
-  border-radius: 50%; border: 2px solid #fff;
-  background: linear-gradient(135deg, #11d5ff, #5962ff);
-  box-shadow: 0 0 17px rgba(26,211,255,.8); z-index: 50;
-  font-size: 12px; font-weight: 950; color: #fff;
-  transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* CONTROLS */
-.controls { display: grid; grid-template-columns: 1fr 1.55fr 1fr; gap: 8px; margin-top: 12px; }
-.control {
-  height: 59px; border: 1px solid rgba(255,255,255,.07); border-radius: 18px;
-  background: linear-gradient(145deg, #17243a, #101827); font-size: 12px; font-weight: 950;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  transition: transform 0.15s, background 0.2s;
-}
-.control:active { transform: scale(0.97); }
-.roll { background: linear-gradient(135deg, #08bfe9, #4d58ff); border: none; box-shadow: 0 13px 30px rgba(41,93,255,.24); font-size: 14px; }
-.roll:disabled { opacity: 0.6; filter: grayscale(0.5); }
-
-/* BOTTOM NAV */
-.bottom {
-  position: fixed; left: 50%; bottom: 10px; transform: translateX(-50%);
-  width: calc(100% - 28px); max-width: 532px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
-  padding: 6px; border-radius: 23px; background: rgba(8,14,25,.95);
-  border: 1px solid rgba(255,255,255,.08); backdrop-filter: blur(18px); z-index: 100;
-}
-.nav {
-  height: 63px; border-radius: 17px; color: #68758b; font-size: 10px; font-weight: 900;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-  transition: all 0.2s;
-}
-.nav.active { background: rgba(26,177,230,.12); color: #4ddcff; }
-.nav-icon { font-size: 22px; }
-
-/* MODALS */
-.modal {
-  position: fixed; inset: 0; display: none; align-items: flex-end; justify-content: center;
-  background: rgba(0,0,0,.72); z-index: 500; backdrop-filter: blur(4px);
-}
-.modal.show { display: flex; animation: fadeIn 0.2s ease; }
-.modal-box {
-  width: 100%; max-width: 560px; padding: 23px; border-radius: 27px 27px 0 0;
-  background: linear-gradient(145deg, #18243a, #09111f); border-top: 1px solid rgba(255,255,255,.12);
-  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-.modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-.modal-title { font-size: 21px; font-weight: 950; }
-.close { width: 36px; height: 36px; border-radius: 11px; background: rgba(255,255,255,.07); font-size: 20px; display: flex; align-items: center; justify-content: center; }
-
-.modal-content { text-align: center; padding: 10px 0; }
-.modal-logo { font-size: 64px; margin-bottom: 10px; display: block; }
-.modal-price { color: #5ee2ad; font-size: 28px; font-weight: 950; margin-bottom: 5px; }
-.modal-desc { color: #8490a4; font-size: 13px; margin-bottom: 20px; }
-
-.modal-btn {
-  width: 100%; height: 54px; border-radius: 16px;
-  background: linear-gradient(135deg, #0bc8ec, #505eff); font-weight: 950; font-size: 15px;
-  box-shadow: 0 10px 25px rgba(41,93,255,.24);
-}
-
-.form-row { margin-top: 15px; }
-.label { display: block; color: #8490a4; font-size: 12px; margin-bottom: 7px; font-weight: 600; }
-.input {
-  width: 100%; height: 49px; border: 1px solid rgba(255,255,255,.09); border-radius: 14px;
-  background: #0e1727; color: #fff; padding: 0 14px; outline: none; font-size: 15px; font-weight: 600;
-}
-.input:focus { border-color: #4ddcff; }
-.select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238490a4' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
-.create-submit {
-  width: 100%; height: 54px; margin-top: 25px; border-radius: 16px;
-  background: linear-gradient(135deg, #0bc8ec, #505eff); font-weight: 950; font-size: 15px;
-}
-
-/* RESPONSIVE */
-@media (max-width: 390px) {
-  .app { padding-left: 11px; padding-right: 11px; }
-  .hero { min-height: 365px; padding: 28px 22px; }
-  .hero-title { font-size: 40px; }
-  .hero-art { width: 190px; height: 132px; right: -20px; }
-  .create-room { left: 22px; right: 22px; }
-  .players { gap: 5px; }
-  .player { padding: 7px; }
-  .p-icon { width: 30px; height: 30px; font-size: 16px; }
-  .p-name { font-size: 10px; }
-  .board-wrap { border-radius: 23px; }
-  .center { left: 17%; right: 17%; top: 17%; bottom: 17%; padding: 9px; }
-  .tile-icon { font-size: 14px; }
-  .tile-name, .tile-price { font-size: 6px; }
-  .garden { left: 7px; right: 7px; bottom: 7px; }
-}
-</style>
-</head>
-
-<body>
-<div class="app">
-
-<!-- ================= LOBBY ================= -->
-<section id="lobby" class="screen active">
-  <div class="topbar">
-    <div class="top-left">
-      <button class="icon-btn" onclick="history.back()">←</button>
-      <div class="page-title">Монополія</div>
-    </div>
-    <div class="gem">💎 <span>0</span><button class="gem-plus">+</button></div>
-  </div>
-
-  <div class="profile">
-    <div class="profile-user">
-      <img class="avatar" src="https://i.pravatar.cc/100?img=47" alt="Avatar">
-      <div><div class="profile-name">Tim Revo</div><div class="profile-username">@TimRevo</div></div>
-    </div>
-  </div>
-
-  <div class="hero">
-    <div class="hero-title"><span>Монополія</span>Онлайн</div>
-    <div class="hero-description">Створюйте кімнати, грайте з друзями або спостерігайте за партіями.</div>
-    <div class="hero-art"></div>
-    <button class="create-room" onclick="openCreate()"><span class="create-icon">+</span>СТВОРИТИ КІМНАТУ</button>
-  </div>
-
-  <div class="rooms">
-    <div class="rooms-head">
-      <div><div class="rooms-title">Доступні кімнати</div><div class="rooms-count">Знайдено: 1</div></div>
-      <div class="room-tools">
-        <button class="small-btn" onclick="alert('Правила гри')">❔</button>
-        <button class="small-btn gold" onclick="alert('Список оновлено')">↻</button>
-      </div>
-    </div>
-
-    <div class="room-card">
-      <img class="room-avatar" src="https://i.pravatar.cc/100?img=32" alt="Room">
-      <div class="room-info">
-        <div class="room-name">katya.ali</div>
-        <div class="room-status">Гра триває</div>
-        <div class="room-players">5/5 гравців</div>
-      </div>
-      <button class="watch" onclick="openGame()">Дивитись</button>
-    </div>
-  </div>
-</section>
-
-<!-- ================= GAME ================= -->
-<section id="game" class="screen">
-  <div class="game-head">
-    <div class="game-brand">KVS MONOPOLY</div>
-    <div class="live-pill"><span class="dot"></span>LIVE</div>
-  </div>
-
-  <div class="players">
-    <div class="player active">
-      <div class="p-icon">👑</div>
-      <div class="p-name">Катерина</div>
-      <div class="p-money">1 660 ₴</div>
-      <div class="p-turn">Ваш хід</div>
-    </div>
-    <div class="player">
-      <div class="p-icon">❤️</div>
-      <div class="p-name">Вілка♥</div>
-      <div class="p-money">0 ₴</div>
-      <div class="p-turn">Банкрут</div>
-    </div>
-    <div class="player">
-      <div class="p-icon">🦊</div>
-      <div class="p-name">Manwol♥</div>
-      <div class="p-money">15 050 ₴</div>
-      <div class="p-turn">Очікує</div>
-    </div>
-    <div class="player">
-      <div class="p-icon">🐱</div>
-      <div class="p-name">katya.ali</div>
-      <div class="p-money">5 640 ₴</div>
-      <div class="p-turn">Очікує</div>
-    </div>
-  </div>
-
-  <div class="board-wrap">
-    <div id="board" class="board"></div>
-
-    <div class="center">
-      <div class="center-head">
-        <div class="events-title">Події гри</div>
-        <div class="live">LIVE</div>
-      </div>
-      <div id="events" class="events">
-        <div class="event"><strong>Катерина</strong> викидає 6:3</div>
-        <div class="event">Катерина потрапляє на Садочок</div>
-        <div class="event"><strong>Катерина</strong> купує філію Живчик за 1 000 ₴</div>
-        <div class="event"><strong>Manwol♥</strong> сплатив податок 500 ₴</div>
-      </div>
-      <div class="garden">
-        <div class="garden-info">
-          <div class="garden-name">🌱 Садочок</div>
-          <div class="garden-desc">Діти ростуть і приносять дохід.</div>
-          <div class="garden-progress"><div class="garden-fill" style="width: 60%;"></div></div>
-        </div>
-        <div class="garden-icon">🌳</div>
-      </div>
-    </div>
-
-    <div id="piece" class="piece">K</div>
-  </div>
-
-  <div class="controls">
-    <button class="control" onclick="addEvent('📋 Майно Катерини: 2 об\'єкти')">📋 Майно</button>
-    <button id="roll" class="control roll" onclick="rollDice()">🎲 Кинути кубики</button>
-    <button class="control" onclick="addEvent('💰 Баланс: 1 660 ₴')">💰 Баланс</button>
-  </div>
-</section>
-
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#0b1026;color:#e8ebff;font-family:Inter,system-ui,sans-serif;overflow:hidden}
+.sc{position:fixed;inset:0;display:flex;flex-direction:column;gap:8px;padding:10px;overflow-y:auto}
+.hid{display:none!important}
+h1{margin:6px 0;text-align:center;font-size:26px;color:#f4c542}h3{margin:0 0 8px}
+.card{background:#141a33;border-radius:14px;padding:14px}
+input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #2a3360;background:#0b1026;color:#fff;font-size:15px;margin-bottom:8px}
+.b{border:0;border-radius:11px;padding:12px;font-weight:700;font-size:14px;flex:1;color:#fff;background:#1d2a5c;width:100%}
+.gold{background:#f4c542;color:#3a2a06}.red{background:#c0483f}.o{color:#9fb0ff}.b:disabled{opacity:.4}.b:active{transform:scale(.97)}
+.rw{display:flex;gap:8px}
+.rm{display:flex;align-items:center;gap:10px;background:#0b1026;border-radius:10px;padding:9px;margin-bottom:6px}
+#pl{display:grid;grid-template-columns:repeat(3,1fr);gap:9px 5px;padding-top:7px}
+.pc{position:relative;display:flex;align-items:center;gap:6px;padding:7px;border-radius:14px;background:#0f1733;border:2px solid var(--c);min-width:0}
+.av{width:30px;height:30px;border-radius:50%;flex:none;border:2px solid var(--c);background:var(--c);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
+.nm{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bal{font:700 11px monospace;color:#3ddc84}
+.pc>div:last-child{min-width:0}.pc.on{box-shadow:0 0 14px var(--c),inset 0 0 0 1px var(--c)}.pc.x{opacity:.4;filter:grayscale(1)}
+.tm{position:absolute;top:-8px;right:6px;background:#1f7a4a;font:800 9px monospace;padding:1px 6px;border-radius:10px}.tm.low{background:#d6403b}
+#bw{position:relative;width:min(100%,62vh);aspect-ratio:1;margin:0 auto;flex:none;border-radius:16px;border:1px solid #26335e;background:#0a1230}
+#board{position:absolute;inset:4px;display:grid;grid-template:repeat(11,1fr)/repeat(11,1fr);gap:2px}
+.cell{background:#fff;color:#1b1f2a;border-radius:6px;display:flex;flex-direction:column;overflow:hidden;position:relative;font-size:5px;box-shadow:0 1px 3px rgba(0,0,0,.5)}
+.cell.sp{background:#f1f3fb}.cell.co{background:#182040;color:#f4c542}.co .ic{font-size:16px!important}
+.lg{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0;padding:1px;gap:1px;overflow:hidden}
+.lg img{max-width:80%;max-height:55%;object-fit:contain}.lg .ic{font-size:11px;line-height:1}.lg .nn{font-weight:700;text-align:center;line-height:1;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lg.nf .nn{font-size:6px;white-space:normal;word-break:break-word}
+.pr{text-align:center;font:800 6.5px sans-serif;padding:2px 0;color:#fff;flex:none}
+.hr{position:absolute;top:1px;left:0;right:0;display:flex;justify-content:center;gap:1px;font-size:6px}.hr i{width:5px;height:5px;border-radius:50%;background:#ffd23f;box-shadow:0 0 0 .5px #000}
+#ctr{position:absolute;left:calc(4px + (100% - 8px)*.0909);top:calc(4px + (100% - 8px)*.0909);right:calc(4px + (100% - 8px)*.0909);bottom:calc(4px + (100% - 8px)*.0909);background:#0d1430;border-radius:12px;display:flex;flex-direction:column;overflow:hidden;border:1px solid #26335e}
+.hd{padding:7px 10px;font-weight:800;font-size:clamp(11px,3.2vmin,15px);border-bottom:1px solid rgba(255,255,255,.08)}
+#feed{flex:1;overflow-y:auto;padding:6px 8px;min-height:0}.fm{position:relative;font-size:clamp(9px,2.5vmin,12px);margin-bottom:5px;color:#e8ebff;background:#111a38;border-left:3px solid var(--c,#3a4680);border-radius:8px;padding:5px 8px;line-height:1.25}
+.fm b{display:block;color:var(--c)}.fm .tt{position:absolute;top:5px;right:7px;font-size:.8em;opacity:.5}
+.fm.ch{background:#111a38}
+.ir{display:flex;gap:5px;padding:5px;border-top:1px solid rgba(255,255,255,.08)}.ir input{margin:0;padding:6px 9px;font-size:12px}.ir button{border:0;border-radius:8px;background:#1d2a5c;color:#9fb0ff;padding:0 12px}
+#tk{position:absolute;inset:4px;pointer-events:none}
+.tok{position:absolute;width:4.4%;height:4.4%;border-radius:50%;overflow:hidden;font:800 5px sans-serif;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px #fff,0 1px 3px #000;transition:left .35s,top .35s;z-index:5}
+.tok img{width:100%;height:100%;object-fit:cover}
+#dc{position:absolute;left:50%;top:40%;z-index:20;display:flex;gap:14px;pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.5) rotate(-25deg);transition:all .28s cubic-bezier(.3,1.5,.5,1)}
+#dc.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.dv{width:clamp(46px,15vmin,70px);height:clamp(46px,15vmin,70px);background:rgba(235,238,250,.95);border-radius:14px;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:8px;box-shadow:0 6px 18px #000}.dv i{border-radius:50%;background:#1b1f2a;margin:12%}
+#st{background:#141a33;border-left:4px solid #3ddc84;border-radius:14px;padding:10px 14px;display:flex;flex-direction:column;gap:2px;flex:none}#st b{font-size:16px}#st span{font-size:12px;color:#9aa3c7}
+.mb{position:fixed;inset:0;background:rgba(6,10,25,.75);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+.mx{background:#141a33;width:100%;max-width:480px;border-radius:18px 18px 0 0;padding:18px;max-height:85vh;overflow-y:auto}
+.ar{display:flex;align-items:center;gap:6px;background:#0b1026;border-radius:10px;padding:8px;margin-bottom:6px;font-size:12px}.ar i{width:12px;height:12px;border-radius:3px;flex:none}.ar .in{flex:1}.ar b{display:block}
+.ar button{border:0;border-radius:8px;padding:7px 9px;background:#1d2a5c;color:#fff;font-weight:700;font-size:11px}
+#ts{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#1d2a5c;padding:9px 16px;border-radius:30px;font-size:13px;z-index:99;opacity:0;transition:.25s;pointer-events:none}#ts.on{opacity:1}
+</style></head><body>
+<div id="lobby" class="sc">
+ <h1>МОНОПОЛІЯ UA</h1>
+ <div class="card"><h3>➕ Нова гра</h3><select id="map"><option value="brands">🏷️ Бренди (з логотипами)</option><option value="ua">🏙️ Українська</option><option value="fruit">🍉 Фруктова</option></select><button class="b gold" id="bNew">Створити кімнату</button></div>
+ <div class="card"><h3>🎲 Відкриті кімнати</h3><div id="rooms">⏳</div></div>
+ <div class="card"><h3>🔑 Код кімнати</h3><input id="code" maxlength="4" placeholder="ABCD" style="text-transform:uppercase;text-align:center"><button class="b" id="bJoin">Приєднатись</button></div>
 </div>
-
-<!-- NAV -->
-<nav class="bottom">
-  <button class="nav active" onclick="showLobby()"><span class="nav-icon">🎮</span>Ігри</button>
-  <button class="nav"><span class="nav-icon">🛍️</span>Магазин</button>
-  <button class="nav"><span class="nav-icon">🎒</span>Інвентар</button>
-  <button class="nav"><span class="nav-icon">👤</span>Профіль</button>
-</nav>
-
-<!-- PROPERTY MODAL -->
-<div id="propertyModal" class="modal" onclick="closeOutside(event)">
-  <div class="modal-box">
-    <div class="modal-head">
-      <div id="mTitle" class="modal-title">Властивість</div>
-      <button class="close" onclick="hideModal()">✕</button>
-    </div>
-    <div class="modal-content">
-      <div id="mLogo" class="modal-logo">🏢</div>
-      <div id="mPrice" class="modal-price">0 ₴</div>
-      <div class="modal-desc">Оренда: 100 ₴ | З будинком: 500 ₴</div>
-      <button class="modal-btn" onclick="buyProperty()">💰 КУПИТИ ФІЛІЮ</button>
-    </div>
-  </div>
+<div id="wait" class="sc hid">
+ <h1>Кімната <span id="wc"></span></h1><div class="card"><h3>Гравці (<span id="wn"></span>/8)</h3><div id="wl"></div></div>
+ <button class="b gold hid" id="bStart">Почати гру</button><button class="b o" id="bLeave">Вийти</button>
 </div>
-
-<!-- CREATE ROOM MODAL -->
-<div id="createModal" class="modal" onclick="closeCreateOutside(event)">
-  <div class="modal-box">
-    <div class="modal-head">
-      <div class="modal-title">Створити кімнату</div>
-      <button class="close" onclick="hideCreate()">✕</button>
-    </div>
-    <div class="form-row">
-      <label class="label">Назва кімнати</label>
-      <input id="roomName" class="input" value="KVS Monopoly">
-    </div>
-    <div class="form-row">
-      <label class="label">Кількість гравців</label>
-      <select id="maxPlayers" class="input select">
-        <option>2</option><option>3</option><option selected>4</option><option>5</option>
-      </select>
-    </div>
-    <button class="create-submit" onclick="createRoom()">СТВОРИТИ КІМНАТУ</button>
-  </div>
+<div id="game" class="sc hid">
+ <div id="pl"></div>
+ <div id="bw"><div id="board"></div>
+  <div id="ctr"><div class="hd">Події гри</div><div id="feed"></div><div class="ir"><input id="ci" placeholder="Написати..." maxlength="200"><button id="cs">➤</button></div></div>
+  <div id="tk"></div><div id="dc"></div></div>
+ <div id="st"></div>
+ <div class="rw"><button class="b gold" id="bRoll">🎲 Кинути кубики</button><button class="b red hid" id="bEnd">Завершити хід</button></div>
+ <div class="rw"><button class="b o" id="bProps">🏠 Власність</button><button class="b o" id="bSur">🏳️ Здатися</button></div>
 </div>
-
+<div id="ts"></div>
 <script>
-// Ініціалізація Telegram WebApp
-if (window.Telegram && window.Telegram.WebApp) {
-  window.Telegram.WebApp.ready();
-  window.Telegram.WebApp.expand();
-}
+const FB={apiKey:"AIzaSyBQNVeXBCqQi5eKhfjAQTJivwKzT9gXT0k",authDomain:"monopoly-fc387.firebaseapp.com",databaseURL:"https://monopoly-fc387-default-rtdb.firebaseio.com",projectId:"monopoly-fc387",storageBucket:"monopoly-fc387.firebasestorage.app",messagingSenderId:"748860996691",appId:"1:748860996691:web:7ae524502e9dc368991aa6"};
+firebase.initializeApp(FB);const db=firebase.database();
+const tg=window.Telegram&&Telegram.WebApp;if(tg){tg.ready();tg.expand()}
+const tu=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;
+const MY_ID=tu?String(tu.id):(localStorage.mono_gid||(localStorage.mono_gid='g'+Math.random().toString(36).slice(2,9)));
+const MY_NAME=tu?tu.first_name+(tu.last_name?' '+tu.last_name:''):'Гравець',MY_AV=tu&&tu.photo_url||null;
+const $=id=>document.getElementById(id),A=x=>x||[],esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(m){const e=$('ts');e.textContent=m;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2200)}
+function show(id){['lobby','wait','game'].forEach(s=>$(s).classList.toggle('hid',s!=id))}
 
-// [Назва, Емодзі (замість картинки), Ціна, Колір групи]
-const properties = [
-  ["Моршинська", "💧", 500, "#25bce8"], ["Живчик", "🍋", 1000, "#25bce8"],
-  ["Нова Пошта", "📦", 1200, "#ff8d24"], ["OLX", "🔍", 1400, "#ff8d24"],
-  ["Prom", "🟪", 1600, "#ff8d24"], ["Rozetka", "🛒", 1800, "#ffd21d"],
-  ["McDonald's", "🍟", 2000, "#ffd21d"], ["Київстар", "📱", 2200, "#ffd21d"],
-  ["KFC", "🍗", 2400, "#ff4e9d"], ["Burger King", "🍔", 2600, "#ff4e9d"],
-  ["Укрпошта", "✉️", 2800, "#ff4e9d"], ["Adidas", "👟", 3000, "#a56af0"],
-  ["Nike", "👟", 3200, "#a56af0"], ["Puma", "🐆", 3400, "#a56af0"],
-  ["Apple", "🍎", 3600, "#35d99b"], ["Samsung", "📱", 3800, "#35d99b"],
-  ["TikTok", "🎵", 4000, "#35d99b"], ["Meest", "🚚", 4200, "#4f9cf2"],
-  ["YouTube", "▶️", 4400, "#4f9cf2"], ["Telegram", "✈️", 4600, "#4f9cf2"],
-  ["ДТЕК", "⚡", 4800, "#ffc425"], ["Google", "🔍", 5000, "#ffc425"],
-  ["ПриватБанк", "🏦", 5200, "#ffc425"], ["Монобанк", "🐈", 5400, "#e96d75"],
-  ["Ощадбанк", "🏛️", 5600, "#e96d75"], ["Justin", "👕", 5800, "#e96d75"],
-  ["Райффайзен", "🏦", 6000, "#a86aef"], ["АТБ", "🏪", 6200, "#a86aef"]
-];
+/* ---- ДАНІ ПОЛЯ: структура одна, різні назви ---- */
+const GCOL=['#8B4A2B','#8FCBEB','#D6539E','#E8892B','#D6403B','#F0D93B','#2E9E5B','#1D3E6E'],HC=[50,50,100,100,150,150,200,200];
+const LAY="g;p60,4,0;c;p60,4,0;t200;r;p100,6,1;h;p100,6,1;p120,8,1;j;p140,10,2;u;p140,10,2;p160,12,2;r;p180,14,3;c;p180,14,3;p200,16,3;k;p220,18,4;h;p220,18,4;p240,20,4;r;p260,22,5;p260,22,5;u;p280,24,5;J;p300,26,6;p300,26,6;c;p320,28,6;r;h;p350,35,7;t100;p400,50,7";
+const MAPS={brands:"СТАРТ|Моршинська|Казна|Живчик|Податок|Нова Пошта|Prom|Шанс|OLX|Rozetka|В'язниця|ATB|DTEK|Сільпо|Епіцентр|Укрпошта|Oschadbank|Казна|Raiffeisen|monobank|Парковка|PrivatBank|Шанс|McDonald's|KFC|Meest|Burger King|Metro|Kyivstar|Samsung|До в'язниці|adidas|Nike|Казна|Puma|Justin|Шанс|Google|Розкіш|Apple",ua:"СТАРТ|Бердичів|Казна|Ізмаїл|Податок|Вокзал Пн|Тернопіль|Шанс|Рівне|Луцьк|В'язниця|Хмельницький|Водоканал|Вінниця|Житомир|Вокзал Сх|Черкаси|Казна|Кропивницький|Суми|Парковка|Чернігів|Шанс|Полтава|Кременчук|Вокзал Пд|Запоріжжя|Миколаїв|Енергозбут|Херсон|До в'язниці|Івано-Франківськ|Чернівці|Казна|Ужгород|Вокзал Зх|Шанс|Львів|Розкіш|Київ",
+fruit:"СТАРТ|Лимон|Кошик|Лайм|Мито|Візок Пн|Полуниця|Шанс|Малина|Ожина|Черга|Ківі|Сік-бар|Манго|Папая|Візок Сх|Диня|Кошик|Гарбуз|Кавун|Пікнік|Вишня|Шанс|Черешня|Слива|Візок Пд|Банан|Ананас|Смузі|Кокос|На ринок|Виноград|Гранат|Кошик|Інжир|Візок Зх|Шанс|Персик|Делікатес|Золотий ананас"};
+const MN={brands:'🏷️ Бренди',ua:'🏙️ Українська',fruit:'🍉 Фруктова'};
+const ICO={g:'🏁',j:'⛓️',k:'🅿️',J:'👮',h:'❓',c:'📦',t:'💸',r:'🚂',u:'🔧'};
+let B=[],curMap=null;
+function mk(id){const nm=MAPS[id].split('|');B=LAY.split(';').map((s,i)=>{const t=s[0],n=s.slice(1).split(',').map(Number),c={t,n:nm[i],i};
+ if(t=='p'){c.p=n[0];c.r=n[1];c.g=n[2]}else if(t=='r')c.p=200;else if(t=='u')c.p=150;else if(t=='t')c.a=n[0];return c})}
+const CH=[["Банк помилково нарахував 200₴",'m',200],["Штраф за швидкість: 50₴",'m',-50],["На СТАРТ! +200₴",'g'],["До в'язниці!",'j'],["Карта «Звільнення з в'язниці»",'f'],["Ремонт доріг: -100₴",'m',-100],["Виграш у конкурсі +100₴",'m',100],["Їдьте на Вокзал Сх",'v',15]];
+const CC=[["Повернення податків +20₴",'m',20],["Лікарня: -100₴",'m',-100],["Продаж акцій +50₴",'m',50],["Спадщина +100₴",'m',100],["Навчання: -150₴",'m',-150],["Карта «Звільнення з в'язниці»",'f'],["День народження! +10₴ від кожного",'a',10],["До в'язниці!",'j']];
+const COLORS=["#E63946","#457B9D","#2A9D8F","#F4A261","#9B5DE5","#F72585","#4CC9F0","#FFD166"];
 
-const board = document.getElementById("board");
+/* ---- СТАН ---- */
+let room=null,game=null,roomRef=null,logRef=null,lock=0,bf=null,lastRoll=null,logs=[];
+const H=(p,i)=>(p.houses||{})['h'+i]||0;
+const owner=(g,i)=>Object.keys(g.players).find(k=>A(g.players[k].props).includes(i))||null;
+function snap(){const g=JSON.parse(JSON.stringify(game));for(const k in g.players){const p=g.players[k];p.props=A(p.props);p.houses=p.houses||{};p.mortgaged=A(p.mortgaged)}return g}
+const newP=(o)=>({name:MY_NAME,order:o,pos:0,balance:1500,props:[],houses:{},mortgaged:[],inJail:false,jailTurns:0,jailFree:false,bankrupt:false,color:COLORS[o%8],avatar:MY_AV});
+const genCode=()=>Array.from({length:4},()=>"ABCDEFGHJKLMNPQRSTUVWXYZ"[Math.random()*24|0]).join('');
 
-function corner(icon, title, sub) {
-  const d = document.createElement("div");
-  d.className = "corner";
-  d.innerHTML = `<div class="corner-icon">${icon}</div><div class="corner-title">${title}</div><div class="corner-sub">${sub}</div>`;
-  return d;
-}
+/* ---- ЛОБІ ---- */
+db.ref('rooms').orderByChild('status').equalTo('waiting').on('value',s=>{
+ const el=$('rooms'),r=[];s.forEach(c=>{const v=c.val(),n=Object.keys(v.players||{}).length;if(n<8)r.push([c.key,v,n])});
+ el.innerHTML=r.length?r.sort((a,b)=>b[1].createdAt-a[1].createdAt).slice(0,12).map(x=>`<div class="rm" onclick="join('${x[0]}')"><b>${x[0]}</b><span style="flex:1;font-size:12px">${MN[x[1].map]||''} · ${x[2]}/8</span>›</div>`).join(''):'<span style="font-size:12px;opacity:.6">Немає кімнат — створи свою</span>'});
+$('bNew').onclick=async()=>{const c=genCode(),m=$('map').value;
+ await db.ref('rooms/'+c).set({status:'waiting',hostId:MY_ID,map:m,createdAt:Date.now(),players:{[MY_ID]:newP(0)}});enter(c)};
+$('bJoin').onclick=()=>join($('code').value.trim().toUpperCase());
+async function join(c){const s=await db.ref('rooms/'+c).get();if(!s.exists())return toast('Кімнату не знайдено');const v=s.val();
+ if(!(v.players||{})[MY_ID]){if(v.status!='waiting')return toast('Гра вже почалась');const n=Object.keys(v.players).length;if(n>=8)return toast('Кімната заповнена');
+  await db.ref('rooms/'+c+'/players/'+MY_ID).set(newP(n));db.ref('logs/'+c).push({t:MY_NAME+' приєднався(лась)'})}enter(c)}
+function enter(c){room=c;localStorage.mono_room=c;roomRef=db.ref('rooms/'+c);logRef=db.ref('logs/'+c);
+ roomRef.on('value',s=>{if(!s.exists()){if(room){localStorage.removeItem('mono_room');toast('Кімнату закрито');setTimeout(()=>location.reload(),900)}return}
+  game=s.val();if(curMap!=game.map){curMap=game.map;mk(curMap);bf=null}render()});
+ logRef.limitToLast(60).on('value',s=>{logs=[];s.forEach(c=>logs.push(c.val()));drawLog()})}
+$('bLeave').onclick=async()=>{localStorage.removeItem('mono_room');if(game.hostId==MY_ID){await roomRef.remove();logRef.remove()}else await roomRef.child('players/'+MY_ID).remove();location.reload()};
+$('bStart').onclick=()=>{const o=Object.keys(game.players);for(let i=o.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[o[i],o[j]]=[o[j],o[i]]}
+ roomRef.update({status:'playing',phase:'roll',turnOrder:o,currentTurn:0,turnCount:1,doubles:0,turnAt:Date.now()});logRef.push({t:'Гру розпочато!'})};
+function rWait(){show('wait');$('wc').textContent=room;const ps=Object.values(game.players).sort((a,b)=>a.order-b.order);$('wn').textContent=ps.length;
+ $('wl').innerHTML=ps.map(p=>`<div class="rm"><div class="av" style="--c:${p.color}">${p.avatar?`<img src="${esc(p.avatar)}">`:esc(p.name[0]||'?')}</div>${esc(p.name)}</div>`).join('');
+ $('bStart').classList.toggle('hid',!(game.hostId==MY_ID&&ps.length>=2))}
 
-function tile(i) {
-  const p = properties[i];
-  const d = document.createElement("div");
-  d.className = "tile";
-  d.style.setProperty("--c", p[3]);
-  d.innerHTML = `<div class="band"></div><div class="tile-icon">${p[1]}</div><div class="tile-name">${p[0]}</div><div class="tile-price">${p[2].toLocaleString("uk-UA")} ₴</div>`;
-  d.onclick = () => openProperty(i);
-  return d;
-}
+/* ---- ЛОГІКА ГРИ (усе рахує гравець, чий хід; запис — атомарно) ---- */
+async function run(f){if(lock)return;lock=1;try{await f()}catch(e){console.error(e);toast('Помилка')}finally{lock=0}}
+async function commit(g,L,ids){const u={};if(ids){ids.forEach(k=>u['players/'+k]=g.players[k])}else{for(const k in g.players)u['players/'+k]=g.players[k];
+ ['currentTurn','phase','doubles','dbl','turnCount','turnAt','lastDice','rollId','status','winner'].forEach(k=>{if(g[k]!==undefined)u[k]=g[k]})}
+ await roomRef.update(u);for(const t of L)await logRef.push({t,ts:Date.now()})}
+function nextTurn(g){const o=g.turnOrder;let n=g.currentTurn;for(let k=0;k<o.length;k++){n=(n+1)%o.length;if(!g.players[o[n]].bankrupt)break}
+ g.currentTurn=n;g.phase='roll';g.doubles=0;g.dbl=false;g.turnCount=(g.turnCount||1)+1;g.turnAt=Date.now()}
+function jail(g,p){p.pos=10;p.inJail=true;p.jailTurns=0;g.dbl=false}
+function rent(g,c,o){const p=g.players[o];if(A(p.mortgaged).includes(c.i))return 0;
+ if(c.t=='p'){const h=H(p,c.i);if(h)return c.r*[1,5,15,45,80,110][h];return B.filter(x=>x.g===c.g).every(x=>p.props.includes(x.i))?c.r*2:c.r}
+ const n=B.filter(x=>x.t==c.t&&p.props.includes(x.i)).length;
+ return c.t=='r'?[0,25,50,100,200][n]:(g.lastDice||[1,1]).reduce((a,b)=>a+b)*(n>1?10:4)}
+function raise(g,p,L){for(const i of p.props.slice()){if(p.balance>=0)break;const c=B[i];
+ if(c.t=='p'&&H(p,i)){p.balance+=H(p,i)*HC[c.g]/2;delete p.houses['h'+i]}
+ if(!p.mortgaged.includes(i)){p.mortgaged.push(i);p.balance+=c.p/2;L.push(`🏦 ${p.name}: авто-застава «${c.n}»`)}}}
+function bust(g,id,to,L){const p=g.players[id];if(to){const t=g.players[to];t.props=t.props.concat(p.props);t.mortgaged=t.mortgaged.concat(p.mortgaged)}
+ p.props=[];p.houses={};p.mortgaged=[];p.bankrupt=true;p.balance=0;L.push(`💀 ${p.name} збанкрутував(ла)`);
+ const al=Object.keys(g.players).filter(k=>!g.players[k].bankrupt);if(al.length==1){g.status='finished';g.phase='over';g.winner=al[0]}}
+function pay(g,id,to,amt,L){const p=g.players[id];p.balance-=amt;if(p.balance<0)raise(g,p,L);
+ if(p.balance<0){if(to)g.players[to].balance+=amt+p.balance;bust(g,id,to,L)}else if(to)g.players[to].balance+=amt}
+function land(g,id,L,dbl){const p=g.players[id],c=B[p.pos];L.push(`${p.name} → «${c.n}»`);g.phase=dbl?'roll':'end';
+ if(c.t=='J'){jail(g,p);g.phase='end';return}
+ if(c.t=='t'){pay(g,id,null,c.a,L);return}
+ if(c.t=='h'||c.t=='c'){const d=c.t=='h'?CH:CC,k=d[Math.random()*d.length|0];L.push('🃏 '+k[0]);
+  if(k[1]=='m'){k[2]>0?p.balance+=k[2]:pay(g,id,null,-k[2],L)}
+  else if(k[1]=='g'){p.pos=0;p.balance+=200}
+  else if(k[1]=='j'){jail(g,p);g.phase='end'}
+  else if(k[1]=='f')p.jailFree=true;
+  else if(k[1]=='v'){if(k[2]<p.pos)p.balance+=200;p.pos=k[2];land(g,id,L,dbl)}
+  else if(k[1]=='a'){for(const o in g.players)if(o!=id&&!g.players[o].bankrupt)pay(g,o,id,k[2],L)}
+  return}
+ if('pru'.includes(c.t)){const o=owner(g,c.i);if(!o)g.phase='buy';else if(o!=id){const r=rent(g,c,o);if(r){L.push(`💰 рента ${r}₴ → ${g.players[o].name}`);pay(g,id,o,r,L)}}}}
+function finish(g,id,L){if(g.status!='finished'&&g.players[id].bankrupt)nextTurn(g);else if(g.phase=='roll')g.turnAt=Date.now();return commit(g,L)}
+const roll=()=>run(async()=>{if(!game||game.phase!='roll')return;
+ const g=snap(),id=g.turnOrder[g.currentTurn],p=g.players[id],d=[1+Math.random()*6|0,1+Math.random()*6|0],L=[`🎲 ${p.name}: ${d[0]}+${d[1]}`];
+ let dbl=d[0]==d[1],mv=true;g.lastDice=d;g.rollId=Date.now();g.doubles=(g.doubles||0)+(dbl?1:0);
+ if(p.inJail){g.doubles=0;
+  if(dbl){p.inJail=false;dbl=false;L.push("🔓 дублі — вихід з в'язниці")}
+  else if(p.jailFree){p.jailFree=false;p.inJail=false;L.push('🔓 використано карту')}
+  else if(++p.jailTurns>=3){p.inJail=false;L.push('🔓 платить 50₴');pay(g,id,null,50,L)}
+  else{mv=false;g.phase='end';g.dbl=false}}
+ else if(g.doubles>=3){jail(g,p);L.push("3 дублі — у в'язницю!");mv=false;g.phase='end'}
+ if(mv&&!p.bankrupt){const np=p.pos+d[0]+d[1];if(np>=40){p.balance+=200;L.push('+200₴ за СТАРТ')}p.pos=np%40;g.dbl=dbl;land(g,id,L,dbl)}
+ await finish(g,id,L)});
+const afterBuy=g=>{g.phase=g.dbl?'roll':'end';if(g.phase=='roll')g.turnAt=Date.now()};
+const buy=()=>run(async()=>{if(game.phase!='buy')return;const g=snap(),id=g.turnOrder[g.currentTurn],p=g.players[id],c=B[p.pos];
+ if(p.balance<c.p)return toast('Недостатньо грошей');p.balance-=c.p;p.props.push(c.i);afterBuy(g);await commit(g,[`🏠 ${p.name} купує «${c.n}» за ${c.p}₴`])});
+const decline=()=>run(async()=>{if(game.phase!='buy')return;const g=snap(),p=g.players[g.turnOrder[g.currentTurn]];afterBuy(g);await commit(g,[`${p.name} не купує «${B[p.pos].n}»`])});
+const endTurn=()=>run(async()=>{if(game.phase!='end')return;const g=snap();nextTurn(g);await commit(g,[])});
+const auto=()=>{const ph=game.phase;ph=='roll'?roll():ph=='buy'?decline():ph=='end'?endTurn():0};
+function act(k,i){run(async()=>{const g=snap(),p=g.players[MY_ID],c=B[i],L=[],gr=B.filter(x=>c.t=='p'&&x.g===c.g),h=H(p,i),cost=HC[c.g];
+ if(k=='b'){if(!gr.every(x=>p.props.includes(x.i)&&!p.mortgaged.includes(x.i)))return toast('Потрібна монополія без застави');
+  if(h>=5)return toast('Максимум');if(gr.some(x=>H(p,x.i)<h))return toast('Будуйте рівномірно');if(p.balance<cost)return toast('Мало грошей');
+  p.balance-=cost;p.houses['h'+i]=h+1;L.push(`🏗 ${p.name} будує на «${c.n}»`)}
+ else if(k=='s'){if(!h)return;if(gr.some(x=>H(p,x.i)>h))return toast('Продавайте рівномірно');p.balance+=cost/2;p.houses['h'+i]=h-1;L.push(`${p.name} продає будинок на «${c.n}»`)}
+ else if(p.mortgaged.includes(i)){const v=c.p*.55|0;if(p.balance<v)return toast('Мало грошей');p.balance-=v;p.mortgaged=p.mortgaged.filter(x=>x!=i);L.push(`🏦 ${p.name} викупив «${c.n}»`)}
+ else{if(gr.some(x=>H(p,x.i)))return toast('Спершу продайте будинки групи');p.mortgaged.push(i);p.balance+=c.p/2;L.push(`🏦 ${p.name} заклав «${c.n}»`)}
+ await commit(g,L,[MY_ID])})}
+$('bRoll').onclick=roll;$('bEnd').onclick=endTurn;
+$('bSur').onclick=()=>{if(!confirm('Здатися і вийти?'))return;run(async()=>{const g=snap(),L=[];bust(g,MY_ID,null,L);
+ if(g.status!='finished'&&g.turnOrder[g.currentTurn]==MY_ID)nextTurn(g);await commit(g,L);localStorage.removeItem('mono_room');location.reload()})};
+$('cs').onclick=sendChat;$('ci').onkeydown=e=>{if(e.key=='Enter')sendChat()};
+function sendChat(){const t=$('ci').value.trim();if(!t||!logRef)return;$('ci').value='';logRef.push({chat:1,n:MY_NAME,c:game.players[MY_ID]?game.players[MY_ID].color:'#fff',t:t.slice(0,200),ts:Date.now()})}
 
-function put(el, r, c) {
-  el.style.gridRow = r;
-  el.style.gridColumn = c;
-  board.appendChild(el);
-}
-
-// Генерація поля 9x9 (периметр = 32 клітинки)
-put(corner("🏁", "СТАРТ", "+200 ₴"), 1, 1);
-for (let i = 0; i < 7; i++) put(tile(i), 1, i + 2);
-put(corner("🚔", "ПОЛІЦІЯ", "Відпочинок"), 1, 9);
-
-for (let i = 0; i < 7; i++) put(tile(i + 7), i + 2, 9);
-
-put(corner("🔒", "В'ЯЗНИЦЯ", "Пропуск ходу"), 9, 9);
-for (let i = 0; i < 7; i++) put(tile(i + 14), 9, 8 - i);
-put(corner("💸", "ПОДАТОК", "-500 ₴"), 9, 1);
-
-for (let i = 0; i < 7; i++) put(tile(i + 21), 8 - i, 1);
-
-// Екрани
-function openGame() {
-  document.getElementById("lobby").classList.remove("active");
-  document.getElementById("game").classList.add("active");
-  window.scrollTo(0, 0);
-}
-
-function showLobby() {
-  document.getElementById("game").classList.remove("active");
-  document.getElementById("lobby").classList.add("active");
-  window.scrollTo(0, 0);
-}
-
-// Властивість
-let selected = null;
-function openProperty(i) {
-  selected = properties[i];
-  document.getElementById("mTitle").textContent = selected[0];
-  document.getElementById("mLogo").textContent = selected[1];
-  document.getElementById("mPrice").textContent = selected[2].toLocaleString("uk-UA") + " ₴";
-  document.getElementById("propertyModal").classList.add("show");
-}
-
-function hideModal() { document.getElementById("propertyModal").classList.remove("show"); }
-function closeOutside(e) { if (e.target.id === "propertyModal") hideModal(); }
-
-function buyProperty() {
-  if (!selected) return;
-  addEvent(`<strong>Катерина</strong> купує філію ${selected[0]} за ${selected[2].toLocaleString("uk-UA")} ₴`);
-  hideModal();
-}
-
-// Події
-function addEvent(text) {
-  const box = document.getElementById("events");
-  const e = document.createElement("div");
-  e.className = "event";
-  e.innerHTML = text;
-  box.prepend(e);
-  while (box.children.length > 8) box.removeChild(box.lastElementChild);
-}
-
-// Рух фішки (математично точне позиціонування в центрі кожної клітинки 9x9)
-let pos = 0;
-const positions = [];
-// Верхній ряд (1,1) до (1,9)
-for (let c = 1; c <= 9; c++) positions.push([(c - 0.5) * 11.11, 5.55]);
-// Правий стовпець (2,9) до (8,9)
-for (let r = 2; r <= 8; r++) positions.push([94.44, (r - 0.5) * 11.11]);
-// Нижній ряд (9,9) до (9,1)
-for (let c = 9; c >= 1; c--) positions.push([(c - 0.5) * 11.11, 94.44]);
-// Лівий стовпець (8,1) до (2,1)
-for (let r = 8; r >= 2; r--) positions.push([5.55, (r - 0.5) * 11.11]);
-
-function rollDice() {
-  const b = document.getElementById("roll");
-  b.disabled = true;
-  b.textContent = "🎲 Кидаємо...";
-  
-  setTimeout(() => {
-    const a = Math.floor(Math.random() * 6) + 1;
-    const c = Math.floor(Math.random() * 6) + 1;
-    const total = a + c;
-    
-    addEvent(`<strong>Катерина</strong> викидає ${a}:${c} (${total})`);
-    movePiece(total);
-    
-    b.disabled = false;
-    b.textContent = "🎲 Кинути кубики";
-  }, 600);
-}
-
-function movePiece(n) {
-  pos = (pos + n) % positions.length;
-  const p = positions[pos];
-  const piece = document.getElementById("piece");
-  
-  // Віднімаємо половину розміру фішки (14px ≈ 2.5% від 560px) для ідеального центру
-  piece.style.left = `calc(${p[0]}% - 14px)`;
-  piece.style.top = `calc(${p[1]}% - 14px)`;
-  
-  setTimeout(() => {
-    addEvent(`Катерина переміщується на ${n} клітинок`);
-  }, 400);
-}
-
-// Створення кімнати
-function openCreate() { document.getElementById("createModal").classList.add("show"); }
-function hideCreate() { document.getElementById("createModal").classList.remove("show"); }
-function closeCreateOutside(e) { if (e.target.id === "createModal") hideCreate(); }
-
-function createRoom() {
-  const name = document.getElementById("roomName").value.trim() || "KVS Monopoly";
-  const max = document.getElementById("maxPlayers").value;
-  hideCreate();
-  
-  // Імітація створення
-  addEvent(`<strong>Система:</strong> Кімнату "${name}" створено`);
-  setTimeout(openGame, 300);
-}
-
-// Початкове позиціонування фішки
-window.onload = () => {
-  const p = positions[0];
-  const piece = document.getElementById("piece");
-  piece.style.left = `calc(${p[0]}% - 14px)`;
-  piece.style.top = `calc(${p[1]}% - 14px)`;
-};
-</script>
-</body>
-</html>
+/* ---- ІНТЕРФЕЙС ---- */
+const cp=i=>i<=10?[11,11-i]:i<=20?[21-i,1]:i<=30?[1,i-19]:[i-29,11];
+const LOGO_DIR='logos/',LOGO_EXT='png';
+const LG={brands:"-,morshynska,-,zhyvchyk,-,novaposhta,prom,-,olx,rozetka,-,atb,dtek,silpo,epicentr,ukrposhta,oschadbank,-,raiffeisen,monobank,-,privatbank,-,mcdonalds,kfc,meest,burgerking,metro,kyivstar,samsung,-,adidas,nike,-,puma,justin,-,google,-,apple".split(',')};
+function buildBoard(){const b=$('board');b.innerHTML='';const lgs=LG[curMap]||[];B.forEach(c=>{const d=document.createElement('div'),[r,k]=cp(c.i);d.id='c'+c.i;
+ d.className='cell'+(c.i%10==0?' co sp':c.t=='p'?'':' sp');d.style.gridRow=r;d.style.gridColumn=k;
+ const lk=lgs[c.i],n=c.n.length>12?c.n.slice(0,11)+'.':c.n,
+ logo=lk&&lk!='-'?`<img src="${LOGO_DIR}${lk}.${LOGO_EXT}" alt="" onerror="this.parentNode.classList.add('nf');this.remove()">`:(c.t=='p'?'':`<span class="ic">${ICO[c.t]}</span>`),
+ pc=c.t=='p'?(c.g==5?'#d8a800':GCOL[c.g]):'#566089';
+ d.innerHTML=`<div class="lg${!logo&&c.t=='p'?' nf':''}">${logo}<span class="nn">${esc(n)}</span></div>`+(c.p?`<div class="pr" style="background:${pc}">${c.p}</div>`:c.a?`<div class="pr" style="background:#566089">-${c.a}</div>`:'')+'<div class="hr"></div>';
+ d.onclick=()=>{if(c.p){const o=owner(game,c.i);toast(`${c.n} — ${c.p}₴ · ${o?game.players[o].name:'вільна'}`)}};b.appendChild(d)});$('tk').innerHTML=''}
+const FACE={1:[5],2:[1,9],3:[1,5,9],4:[1,3,7,9],5:[1,3,5,7,9],6:[1,3,4,6,7,9]};
+const die=n=>'<div class="dv">'+Array.from({length:9},(_,i)=>`<i${FACE[n].includes(i+1)?'':' style="visibility:hidden"'}></i>`).join('')+'</div>';
+function drawLog(){const f=$('feed');if(!f||!game)return;const ps=Object.values(game.players||{}).filter(p=>p.name).sort((a,b)=>b.name.length-a.name.length);
+ const low=f.scrollTop+f.clientHeight>=f.scrollHeight-20;
+ f.innerHTML=logs.map(m=>{const tt=m.ts?`<span class="tt">${new Date(m.ts).toTimeString().slice(0,5)}</span>`:'';
+  if(m.chat)return`<div class="fm ch" style="--c:${esc(m.c)}">${tt}<b>${esc(m.n)}</b>${esc(m.t)}</div>`;
+  const q=m.t.replace(/^[^\p{L}\p{N}]+/u,''),p=ps.find(x=>q.startsWith(x.name));
+  return p?`<div class="fm" style="--c:${p.color}">${tt}<b>${esc(p.name)}</b>${esc(q.slice(p.name.length).replace(/^[:\s]+/,''))}</div>`:`<div class="fm">${tt}${esc(m.t)}</div>`}).join('');
+ if(low)f.scrollTop=f.scrollHeight}
+function modal(h,id){const d=document.createElement('div');d.className='mb';d.id=id;d.innerHTML='<div class="mx" id="'+id+'x">'+h+'</div>';
+ d.onclick=e=>{if(e.target===d&&id!='buyM')d.remove()};document.body.appendChild(d)}
+function propsHTML(){const g=snap(),p=g.players[MY_ID];if(!p||!p.props.length)return'<h3>🏠 Власність</h3><p>Поки нічого немає.</p>';
+ return'<h3>🏠 Власність</h3>'+p.props.map(i=>{const c=B[i],m=p.mortgaged.includes(i),h=c.t=='p'?H(p,i):0;
+ return`<div class="ar"><i style="background:${c.t=='p'?GCOL[c.g]:'#888'}"></i><div class="in"><b>${esc(c.n)}</b>${m?'🏦 застава':h==5?'🏨':'🏠'.repeat(h)||'—'}</div>`+
+ (c.t=='p'?`<button onclick="act('b',${i})">+🏠 ${HC[c.g]}</button>${h?`<button onclick="act('s',${i})">−🏠</button>`:''}`:'')+
+ `<button onclick="act('m',${i})">${m?'Викуп '+(c.p*.55|0):'Закл. +'+c.p/2}</button></div>`}).join('')}
+$('bProps').onclick=()=>{if(game.players[MY_ID])modal(propsHTML(),'pm')};
+function render(){if(!game)return;if(game.status=='waiting')return rWait();show('game');if(bf!==room+curMap){bf=room+curMap;buildBoard()}
+ const g=game,ids=g.turnOrder,cid=ids[g.currentTurn],cur=g.players[cid],mine=cid==MY_ID,ph=g.phase;
+ B.forEach(c=>{if(!'pru'.includes(c.t))return;const el=$('c'+c.i),o=owner(g,c.i),op=o&&g.players[o];
+  el.style.boxShadow=op?`inset 0 0 0 3px ${op.color}`:'';el.style.opacity=op&&A(op.mortgaged).includes(c.i)?.45:1;
+  if(c.t=='p'){const h=op?H(op,c.i):0;el.querySelector('.hr').innerHTML=h==5?'🏨':'<i></i>'.repeat(h)}});
+ Object.entries(g.players).sort((a,b)=>a[1].order-b[1].order).forEach(([id,p],k)=>{let t=$('t'+id);
+  if(!t){t=document.createElement('div');t.id='t'+id;t.className='tok';$('tk').appendChild(t)}
+  const [r,c]=cp(p.pos),u=100/11,s=u*.44;t.style.display=p.bankrupt?'none':'flex';t.style.background=p.color;
+  t.innerHTML=p.avatar?`<img src="${esc(p.avatar)}">`:esc(p.name[0]||'?');
+  t.style.left=((c-1)*u+u*.06+(k%4)*(s+u*.03))+'%';t.style.top=((r-1)*u+u-s*((k/4|0)+1)-u*.06)+'%'});
+ $('pl').innerHTML=ids.map(id=>{const p=g.players[id];if(!p)return'';const on=id==cid&&!p.bankrupt&&ph!='over';
+  return`<div class="pc${on?' on':''}${p.bankrupt?' x':''}" style="--c:${p.color}">${on?'<span class="tm">60 c</span>':''}<div class="av">${p.avatar?`<img src="${esc(p.avatar)}">`:esc(p.name[0]||'?')}</div><div><div class="nm">${esc(p.name)}</div>${p.bankrupt?'<div style="font-size:8px;opacity:.7">БАНКРУТ</div>':`<div class="bal">${p.balance.toLocaleString()} ₴</div>`}</div></div>`}).join('');
+ let t,s='';if(ph=='over')t='Гру завершено';else if(mine){t='Ваш хід';s={roll:'Киньте кубики.',end:'Завершіть хід.',buy:'Купувати власність?'}[ph]||''}
+ else{t='Хід гравця '+cur.name;s=ph=='buy'?'Очікуємо рішення про купівлю.':'Очікуйте завершення ходу.'}
+ const cc=B[cur.pos],co=owner(g,cc.i),oh=co&&cc.t=='p'?H(g.players[co],cc.i):0;
+ $('st').style.borderLeftColor=cur.color;$('st').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:18px">${cc.t!='p'?ICO[cc.t]+' ':''}${esc(cc.n)}</b>${cc.t=='p'?`<span>${oh}/5 🏠</span>`:''}</div><span>${esc(t)}${s?' — '+s:''}${co?' · власник: '+esc(g.players[co].name):''}</span>${cc.t=='p'?`<div style="height:8px;border-radius:6px;background:#0b1026;margin-top:6px"><div style="height:100%;width:${oh*20}%;border-radius:6px;background:#2ecc71"></div></div>`:''}`;
+ $('bRoll').classList.toggle('hid',ph=='end'||ph=='buy');$('bRoll').disabled=!(mine&&ph=='roll');$('bEnd').classList.toggle('hid',!(mine&&ph=='end'));
+ if(g.rollId&&g.rollId!==lastRoll){if(lastRoll!==null&&g.lastDice){$('dc').innerHTML=die(g.lastDice[0])+die(g.lastDice[1]);$('dc').classList.add('show');clearTimeout(render._t);render._t=setTimeout(()=>$('dc').classList.remove('show'),1600);if(navigator.vibrate)navigator.vibrate(30)}}
+ lastRoll=g.rollId||0;
+ if(mine&&ph=='buy'&&!$('buyM')){const c=B[cur.pos];modal(`<h3>${esc(c.n)}</h3><p>Вільна власність. Купити за <b>${c.p}₴</b>?</p><div class="rw"><button class="b o" onclick="decline()">Відмовитись</button><button class="b gold" onclick="buy()">Купити</button></div>`,'buyM')}
+ if(!(mine&&ph=='buy')&&$('buyM'))$('buyM').remove();
+ if($('pmx'))$('pmx').innerHTML=propsHTML();
+ if(ph=='over'&&!$('winM'))modal(`<h3>🏆 Гру завершено!</h3><p><b>${esc(g.players[g.winner].name)}</b> переміг(ла)!</p><button class="b gold" onclick="localStorage.removeItem('mono_room');location.reload()">На головну</button>`,'winM');
+ drawLog()}
+/* таймер ходу: показ для всіх; автодія — у гравця (60с), резерв — у хоста (75с) */
+setInterval(()=>{if(!game||game.status!='playing'||!game.turnAt)return;const over=Date.now()-game.turnAt,left=Math.max(0,60-Math.floor(over/1000)),tm=document.querySelector('.pc.on .tm');
+ if(tm){tm.textContent=left+' c';tm.classList.toggle('low',left<=10)}
+ if((over>61000&&game.turnOrder[game.currentTurn]==MY_ID)||(over>75000&&game.hostId==MY_ID))auto()},1000);
+/* повернення в гру після перезапуску */
+(async()=>{const c=localStorage.mono_room;if(!c)return;const s=await db.ref('rooms/'+c).get();
+ if(s.exists()&&(s.val().players||{})[MY_ID]&&s.val().status!='finished')enter(c);else localStorage.removeItem('mono_room')})();
+</script></body></html>
