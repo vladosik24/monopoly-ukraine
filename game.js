@@ -71,7 +71,7 @@ function sync(){P=S.players;own=S.own;lvl=S.lvl}
 const on=id=>!(R&&R.players&&R.players[id]&&R.players[id].online===false);
 function driver(){const c=S.players[S.cur];if(on(c.id))return c.id==myId;const h=S.players.find(p=>p.alive&&on(p.id));return !!h&&h.id==myId}
 function pay(k,a,to){const p=S.players[k];p.m-=a;if(to!=null)S.players[to].m+=a;if(p.m<0){p.m=0;p.alive=false;S.own.forEach((o,j)=>{if(o==k){S.own[j]=-1;S.lvl[j]=0}});ev(k,'збанкрутував 💥')}}
-async function roll(){if(!S||S.ph!='roll'||busy||!driver())return;busy=true;sync();const k=S.cur,p=P[k],d1=1+Math.random()*6|0,d2=1+Math.random()*6|0;S.dice=[d1,d2];S.ph='wait';ev(k,'викидає '+d1+':'+d2);
+async function roll(){if(!S||S.ph!='roll'||busy||!driver())return;busy=true;sync();const k=S.cur,p=P[k],d1=1+Math.random()*6|0,d2=1+Math.random()*6|0;S.dice=[d1,d2];S.rid=Date.now()+Math.random();S.ph='wait';ev(k,'викидає '+d1+':'+d2);
 if(p.jail>0){p.jail--;ev(k,'у в\'язниці, пропускає хід');await save();return setTimeout(()=>{S.dice=null;end()},1800)}
 const np=p.pos+d1+d2;if(np>=40){p.m+=1200;ev(k,'отримав зарплату +1200 ₴')}p.pos=np%40;await save();setTimeout(land,1800)}
 async function land(){sync();const k=S.cur,p=P[k],b=T[p.pos],t=b[1];S.dice=null;
@@ -96,14 +96,14 @@ function say(){const i=$('ci');if(!S||!i||!i.value.trim())return;const m=P.findI
 function render(){if(!S)return;sync();const k=S.cur,c=P[k],mine=c.id==myId,ph=S.ph,dice=S.dice,pb=T[c.pos];
 const spec=!P.some(p=>p.id==myId);const isB=typeof pb[1]=='number'&&own[c.pos]==k;
 const pn=P.map((p,i)=>'<div class="pl'+(i==k?' on':'')+(p.alive?'':' dead')+'" style="--c:'+p.c+'" onclick="prof('+i+')">'+(i==k&&p.alive&&ph!='over'?'<i class="tm" id="tm">30 c</i>':'')+'<div class="av">'+avh(p)+'</div><div><b>'+esc(p.n)+(p.id==myId?' (ти)':'')+'</b><span>'+(p.alive?fm(p.m):'БАНКРУТ')+'</span></div></div>').join('');
-const ac=mine&&ph=='roll'?'<div class="ac"><button onclick="roll()">🎲 Кинути кубики</button></div>':mine&&ph=='buy'?'<div class="ac"><button class="y" onclick="buy()">'+(isB?'Покращити '+Math.round(pb[1]/2):'Купити '+pb[1])+' ₴</button><button class="n" onclick="skip()">Пас</button></div>':ph=='over'&&P[0].id==myId?'<div class="ac"><button onclick="newGame()">Нова гра</button></div>':'';
+const ac=mine&&ph=='buy'?'<div class="ac"><button class="y" onclick="buy()">'+(isB?'Покращити '+Math.round(pb[1]/2):'Купити '+pb[1])+' ₴</button><button class="n" onclick="skip()">Пас</button></div>':ph=='over'&&P[0].id==myId?'<div class="ac"><button onclick="newGame()">Нова гра</button></div>':'';
 const sub=ph=='over'?'Гру завершено':mine&&ph=='buy'?(isB?'Покращити ділянку?':'Купити '+pb[0]+'?'):mine&&ph=='roll'?'Твій хід — кидай кубики.':'Очікуйте завершення ходу.';
 const L=showAll?LOGS:LOGS.slice(-4);
 let h='<div id="top">'+pn+'<button class="mn" onclick="if(confirm(\'Вийти з гри?\'))location.reload()">⋮</button></div><div id="bd">'+T.map(tile).join('');
 h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+P.length+'</span><button class="ib" onclick="tgl()">'+(showAll?'Менше':'Усі')+'</button></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b>'+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key==\'Enter\')say()"><button onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b><small>'+sub+'</small>'+ac+'</div></div>';
-if(dice)h+='<div id="dice"><span>'+DF[dice[0]-1]+'</span><span>'+DF[dice[1]-1]+'</span></div>';
-h+='</div>'+modalHtml();const o=$('ci'),v=o?o.value:'',f=o&&document.activeElement===o;
-$('app').innerHTML=h;const n=$('ci');if(n){n.value=v;if(f)n.focus()}const lg=$('log');if(lg)lg.scrollTop=lg.scrollHeight}
+
+h+='</div>'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+modalHtml();const o=$('ci'),v=o?o.value:'',f=o&&document.activeElement===o;
+$('app').innerHTML=h;const n=$('ci');if(n){n.value=v;if(f)n.focus()}const lg=$('log');if(lg)lg.scrollTop=lg.scrollHeight;if(S.dice&&S.rid&&S.rid!==lastRid){lastRid=S.rid;playDice(S.dice)}}
 setInterval(()=>{if(!S||!R||S.ph=='over')return;const tm=$('tm');if(tm)tm.textContent=Math.max(0,Math.ceil((S.tend-Date.now())/1000))+' c';
 if(!busy&&Date.now()>S.tend+800&&driver()){S.ph=='roll'?roll():S.ph=='buy'?skip():0}},500);
 Object.assign(window,{roll,buy,skip,say,newGame,tgl:()=>{showAll=!showAll;render()}});
@@ -137,3 +137,14 @@ await save();busy=false}
 async function surr(){if(!S||busy||!driver()||!(S.ph=='roll'||S.ph=='buy'))return;sync();const k=S.cur,p=P[k];if(p.id!=myId||!confirm('Здатися?'))return;busy=true;modal=null;
 p.m=0;p.alive=false;S.own.forEach((o,j)=>{if(o==k){S.own[j]=-1;S.lvl[j]=0}});ev(k,'здався 🏳️');S.ph='wait';await save();end()}
 Object.assign(window,{joinRoom,watch,prof,closeProf,tgs,credit,surr});
+
+let lastRid=null,dzt=null,dzh=null;
+const PIPS=[[],[5],[1,9],[1,5,9],[1,3,7,9],[1,3,5,7,9],[1,3,4,6,7,9]];
+const pips=n=>{let s='';for(let i=1;i<=9;i++)s+='<i'+(PIPS[n].includes(i)?' class="p"':'')+'></i>';return s};
+function playDice(d){const z=$('dz');clearInterval(dzt);clearTimeout(dzh);
+z.innerHTML='<div class="dw"><div class="dd roll"><div class="die"></div></div><div class="dd d2 roll"><div class="die"></div></div></div><div class="sum"></div>';z.style.display='grid';
+const set=(a,b)=>z.querySelectorAll('.die').forEach((e,i)=>e.innerHTML=pips(i?b:a));
+const r=()=>1+Math.random()*6|0;set(r(),r());dzt=setInterval(()=>set(r(),r()),90);
+dzh=setTimeout(()=>{clearInterval(dzt);set(d[0],d[1]);z.querySelectorAll('.dd').forEach(e=>{e.classList.remove('roll');e.classList.add('pop')});const s=z.querySelector('.sum');s.textContent='= '+(d[0]+d[1]);s.classList.add('on');
+try{tg&&tg.HapticFeedback&&tg.HapticFeedback.impactOccurred('medium')}catch(e){}
+dzh=setTimeout(()=>{z.style.display='none'},1100)},1000)}
