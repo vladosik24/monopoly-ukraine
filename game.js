@@ -131,7 +131,7 @@ function listen(){
       $('startGameBtn').disabled=a.length<2;
       $('startGameBtn').textContent='Почати гру ('+a.length+' гравців)';
     } else if(R.state){
-      S=R.state;
+      if(!busy||!S)S=R.state; // поки ходить цей клієнт — не підміняємо стан застарілим знімком
       if(!started){started=true;$('lobby').style.display='none';$('gameBoard').style.display='block'}
       render();
     }
