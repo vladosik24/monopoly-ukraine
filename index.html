@@ -59,6 +59,18 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 .stt{margin-top:8px;font-size:13px;background:#0a1530;border-radius:10px;padding:8px}.cb{display:flex;gap:6px;margin-top:6px}
 .pl{cursor:pointer}
 .row2{display:flex;gap:6px;margin:8px 0}#lobby .row2 input{margin:0}#lobby .row2 button{width:auto;margin:0;padding:0 16px}
+
+#dz{position:fixed;inset:0;display:none;place-items:center;z-index:40;pointer-events:none;background:rgba(2,6,18,.45)}
+.dw{display:flex;gap:24px}.dd{will-change:transform}
+.die{width:84px;height:84px;background:#fff;border-radius:18px;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:11px;gap:2px;box-shadow:0 10px 28px rgba(0,0,0,.55),inset 0 -4px 0 rgba(0,0,0,.12)}
+.die i{display:block;border-radius:50%}.die i.p{background:#111;box-shadow:inset 0 -2px 3px rgba(255,255,255,.35)}
+.dd.roll{animation:tmb 1s cubic-bezier(.3,.7,.4,1)}.dd.d2.roll{animation-name:tmb2;animation-delay:.07s}.dd.pop{animation:pop .35s ease-out}
+@keyframes tmb{0%{transform:translate(-90px,-260px) rotate(0) scale(.5);opacity:0}15%{opacity:1}45%{transform:translate(10px,0) rotate(260deg) scale(1.15)}60%{transform:translate(0,-60px) rotate(400deg) scale(1.05)}78%{transform:translate(0,0) rotate(560deg) scale(1)}90%{transform:translate(0,-16px) rotate(680deg)}100%{transform:translate(0,0) rotate(720deg)}}
+@keyframes tmb2{0%{transform:translate(90px,-260px) rotate(0) scale(.5);opacity:0}15%{opacity:1}45%{transform:translate(-10px,0) rotate(-300deg) scale(1.15)}60%{transform:translate(0,-60px) rotate(-440deg) scale(1.05)}78%{transform:translate(0,0) rotate(-600deg) scale(1)}90%{transform:translate(0,-16px) rotate(-700deg)}100%{transform:translate(0,0) rotate(-720deg)}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.18)}100%{transform:scale(1)}}
+.sum{position:absolute;top:calc(50% + 84px);font-size:28px;font-weight:800;color:#ffd23f;text-shadow:0 2px 10px #000;opacity:0;transition:opacity .2s}.sum.on{opacity:1}
+.fab{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;padding:16px 30px;font-size:18px;border-radius:999px;background:linear-gradient(#ffd23f,#e6a800);color:#201500;box-shadow:0 6px 26px rgba(255,200,0,.5);animation:fp 1.4s infinite}
+@keyframes fp{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.06)}}
 </style></head><body>
 <div id="lobby">
 <div class="hd"><div class="av big" id="meAv"></div><div><b id="meName"></b><br><small id="meUser" class="mut"></small></div></div>
@@ -71,5 +83,6 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 <div class="sec"><h3>Доступні кімнати</h3><small id="roomCount" class="mut">Знайдено: 0</small></div>
 <div id="roomList"></div></div>
 <div id="waitingRoom" style="display:none"><div class="code">Код кімнати: <b id="roomCodeDisplay"></b></div><div id="playersList"></div><button id="startGameBtn" disabled>Почати гру</button><button class="n" onclick="location.reload()">Вийти</button></div></div>
+<div id="dz"></div>
 <div id="gameBoard" style="display:none"><div id="app"></div></div>
 <script type="module" src="game.js"></script></body></html>
