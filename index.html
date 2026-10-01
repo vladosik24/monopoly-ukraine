@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#070b14">
 <title>KVS Monopoly</title>
+
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;background:#060a12;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
@@ -71,6 +72,7 @@ linear-gradient(145deg,#141c2d,#0b1220);border:1px solid rgba(211,171,48,.48);bo
 .business-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .business-card{display:flex;flex-direction:column;align-items:center;background:#101827;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:6px 4px;text-align:center;cursor:pointer;transition:0.2s;position:relative;overflow:hidden}
 .business-card:active{transform:scale(0.95)}
+.business-card.active{border-color:#00d2ff;box-shadow:0 0 10px rgba(0,210,255,0.3)}
 .business-card .band{position:absolute;top:0;left:0;right:0;height:3px;background:var(--c)}
 .business-card img{width:32px;height:32px;object-fit:contain;margin-top:4px;margin-bottom:4px}
 .business-name{font-size:9px;font-weight:bold;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
@@ -173,7 +175,7 @@ linear-gradient(145deg,#141c2d,#0b1220);border:1px solid rgba(211,171,48,.48);bo
     <div class="live-pill"><span class="dot"></span>Гра триває</div>
   </div>
 
-  <!-- Players Grid -->
+  <!-- Players Grid (Стиль зі скріншоту) -->
   <div class="players-grid">
     <div class="player-card red">
       <img src="https://i.pravatar.cc/100?img=47" class="avatar">
@@ -281,7 +283,7 @@ linear-gradient(145deg,#141c2d,#0b1220);border:1px solid rgba(211,171,48,.48);bo
 </div>
 
 <script>
-// Тут використовуються ТІЛЬКИ ті назви та файли, які були у вашому початковому коді
+// Ваші оригінальні дані (назви, файли, ціни)
 const properties = [
   ["Моршинська", "morshynska.png", 2800, "#25bce8"],
   ["Живчик", "zhyvchyk.png", 100, "#25bce8"],
@@ -314,15 +316,29 @@ const properties = [
 
 const board = document.getElementById("businessGrid");
 
-// Відображення сітки бізнесів (як на скріншоті)
+// Відображення сітки бізнесів
 function renderBusinessGrid() {
   board.innerHTML = "";
+  
+  // Додаємо клітинку "Старт" на початок
+  const startCard = document.createElement("div");
+  startCard.className = "business-card";
+  startCard.style.setProperty("--c", "#f1c40f");
+  startCard.innerHTML = `
+    <div class="band"></div>
+    <div style="font-size:24px; margin-top:4px; margin-bottom:4px;">🏁</div>
+    <div class="business-name">СТАРТ</div>
+    <div class="business-price">+200 ₴</div>
+  `;
+  startCard.onclick = () => addEvent("Ви на клітинці СТАРТ! Отримано 200 ₴");
+  board.appendChild(startCard);
+
+  // Додаємо бізнеси
   properties.forEach((p, index) => {
     const card = document.createElement("div");
     card.className = "business-card";
     card.style.setProperty("--c", p[3]);
     
-    // Використовуємо файли зображень з вашого коду (папка logos)
     card.innerHTML = `
       <div class="band"></div>
       <img src="logos/${p[1]}" alt="${p[0]}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -337,7 +353,7 @@ function renderBusinessGrid() {
 
 renderBusinessGrid();
 
-// Початкові події (як на скріншоті)
+// Додаємо початкові події
 addEvent('<strong>Manwol♥</strong> купив ділянку на OLX за 2600 ₴');
 addEvent('<strong>Катерина</strong> сплатив податок 500 ₴');
 addEvent('<strong>katya.ali</strong> отримав зарплату +1200 ₴');
@@ -385,6 +401,7 @@ function addEvent(text){
 }
 
 /* dice */
+let pos = 0;
 function rollDice(){
   const b = document.getElementById("roll");
   b.disabled = true;
@@ -392,10 +409,36 @@ function rollDice(){
   setTimeout(() => {
     const a = Math.floor(Math.random()*6)+1;
     const c = Math.floor(Math.random()*6)+1;
+    const total = a + c;
     addEvent(`<strong>Катерина</strong> викидає ${a}:${c}`);
+    
+    // Переміщення по сітці
+    pos = (pos + total) % (properties.length + 1);
+    highlightActiveCard(pos);
+    
     b.disabled = false;
     b.textContent = "🎲 Кинути кубики";
   }, 550);
+}
+
+function highlightActiveCard(index) {
+  const cards = document.querySelectorAll('.business-card');
+  cards.forEach((card, i) => {
+    if (i === index) {
+      card.classList.add('active');
+      // Прокрутка до активної картки
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      card.classList.remove('active');
+    }
+  });
+  
+  if (index === 0) {
+    addEvent("Ви на клітинці СТАРТ! Отримано 200 ₴");
+  } else {
+    const prop = properties[index - 1];
+    addEvent(`Катерина потрапляє на ${prop[0]}`);
+  }
 }
 
 /* create room */
