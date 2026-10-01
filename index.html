@@ -40,10 +40,33 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 #dice span{background:rgba(120,125,140,.75);border-radius:16px;padding:0 6px}
 .lg{max-width:92%;max-height:60%;object-fit:contain}.lf .lg,.rt .lg{max-width:80%;max-height:90%}
 #lobby{max-width:420px;margin:0 auto;padding:18px;text-align:center}#lobby h1{font-size:22px;color:#4aa8ff;margin:10px 0 16px}#lobby h1 span{color:#ffd23f}#lobby input{width:100%;background:#0a1530;border:1px solid var(--ln);border-radius:10px;color:var(--fg);padding:11px;font-size:15px;margin-bottom:8px}#lobby button{width:100%;padding:12px;font-size:15px;margin-bottom:8px}#lobby button:disabled{opacity:.4}.or{color:var(--mut);margin:6px 0}.cs{color:var(--mut);margin:10px}.code{font-size:15px;margin:10px 0}.code b{font-size:22px;color:var(--gn);letter-spacing:1px}.pi{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:10px;margin-bottom:6px}
+
+.av{overflow:hidden}.av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.hd .av,.rm .av,.pi .av{--c:#4aa8ff}.hd{display:flex;align-items:center;gap:12px;text-align:left;margin-bottom:10px}.big{width:64px;height:64px;font-size:28px}.hd .big{width:48px;height:48px;font-size:20px}
+.mut{color:var(--mut)}.sec{text-align:left;margin:16px 0 8px}.sec h3{margin:0;font-size:20px}
+#lobby .gb{display:block;background:linear-gradient(#3a3115,#241f12);border:1px solid #a58a2c;color:#fff;font-size:17px;padding:16px;border-radius:16px}
+.rm{display:flex;align-items:center;gap:10px;background:var(--pn);border:1px solid var(--ln);border-left:4px solid #2f6fe0;border-radius:16px;padding:10px;margin-bottom:10px;text-align:left}
+.rm .av{flex:none;width:48px;height:48px;font-size:20px}.ri{flex:1;min-width:0}.ri b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd{display:inline-block;font-size:11px;padding:2px 8px;border-radius:8px;margin:3px 0}.pg{background:#16306a;color:#7fb2ff}.wt{background:#14391f;color:#5de08a}
+#lobby .rm button{width:auto;margin:0;padding:10px 12px}
+.pi{display:flex;align-items:center;gap:8px}.pi .av{width:30px;height:30px;font-size:14px;flex:none}
+.ov{position:fixed;inset:0;background:rgba(2,6,18,.78);display:grid;place-items:center;z-index:50;padding:16px}
+.md{width:100%;max-width:440px;background:linear-gradient(#142450,#0b1530);border:1px solid #2b3f7a;border-radius:24px;padding:16px}
+.mh{display:flex;gap:12px;align-items:center}.mh .x{margin-left:auto;border-radius:50%;width:36px;height:36px;padding:0;background:#0a1530;border:1px solid var(--ln)}
+.mh .big{flex:none}.gd{color:#e6b800;font-weight:700;letter-spacing:1px;font-size:11px}.md h2{margin:2px 0;font-size:22px}.mm{color:var(--gn);font-weight:800;font-size:18px}
+.mi{display:flex;gap:12px;align-items:center;border-radius:14px;padding:12px;margin-top:10px;border:1px solid}.mi i{font-style:normal;font-size:26px;width:46px;height:46px;flex:none;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.08)}
+.mi b{font-size:16px;display:block}.mi small{color:var(--mut)}.gold{background:#2a2418;border-color:#7a6320}.grn{background:#0f2f2a;border-color:#1f7a5a}.red{background:#2a1520;border-color:#7a2040}
+.stt{margin-top:8px;font-size:13px;background:#0a1530;border-radius:10px;padding:8px}.cb{display:flex;gap:6px;margin-top:6px}
+.pl{cursor:pointer}
 </style></head><body>
-<div id="lobby"><h1>Монополія <span>Україна</span></h1>
+<div id="lobby">
+<div class="hd"><div class="av big" id="meAv"></div><div><b id="meName"></b><br><small id="meUser" class="mut"></small></div></div>
 <div id="connectionStatus" class="cs">Підключення…</div>
-<div id="lobbyContent" style="display:none"><input id="playerName" placeholder="Твоє ім'я" maxlength="16"><button id="createBtn">Створити кімнату</button><div class="or">або</div><input id="roomCodeInput" placeholder="Код кімнати: GAME-XXXX"><button id="joinBtn" class="y">Приєднатись</button></div>
-<div id="waitingRoom" style="display:none"><div class="code">Код кімнати: <b id="roomCodeDisplay"></b></div><div id="playersList"></div><button id="startGameBtn" disabled>Почати гру</button></div></div>
+<div id="lobbyContent" style="display:none">
+<div id="nameRow"><input id="playerName" placeholder="Твоє ім'я" maxlength="16"></div>
+<button id="createBtn" class="gb">➕ СТВОРИТИ КІМНАТУ</button>
+<div class="sec"><h3>Доступні кімнати</h3><small id="roomCount" class="mut">Знайдено: 0</small></div>
+<div id="roomList"></div></div>
+<div id="waitingRoom" style="display:none"><div class="code">Код кімнати: <b id="roomCodeDisplay"></b></div><div id="playersList"></div><button id="startGameBtn" disabled>Почати гру</button><button class="n" onclick="location.reload()">Вийти</button></div></div>
 <div id="gameBoard" style="display:none"><div id="app"></div></div>
 <script type="module" src="game.js"></script></body></html>
