@@ -58,6 +58,7 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 .mi b{font-size:16px;display:block}.mi small{color:var(--mut)}.gold{background:#2a2418;border-color:#7a6320}.grn{background:#0f2f2a;border-color:#1f7a5a}.red{background:#2a1520;border-color:#7a2040}
 .stt{margin-top:8px;font-size:13px;background:#0a1530;border-radius:10px;padding:8px}.cb{display:flex;gap:6px;margin-top:6px}
 .pl{cursor:pointer}
+.row2{display:flex;gap:6px;margin:8px 0}#lobby .row2 input{margin:0}#lobby .row2 button{width:auto;margin:0;padding:0 16px}
 </style></head><body>
 <div id="lobby">
 <div class="hd"><div class="av big" id="meAv"></div><div><b id="meName"></b><br><small id="meUser" class="mut"></small></div></div>
@@ -65,6 +66,7 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 <div id="lobbyContent" style="display:none">
 <div id="nameRow"><input id="playerName" placeholder="Твоє ім'я" maxlength="16"></div>
 <button id="createBtn" class="gb">➕ СТВОРИТИ КІМНАТУ</button>
+<div class="row2"><input id="roomCodeInput" placeholder="Код кімнати GAME-XXXX"><button id="joinBtn" class="y">Увійти</button></div>
 <div class="sec"><h3>Доступні кімнати</h3><small id="roomCount" class="mut">Знайдено: 0</small></div>
 <div id="roomList"></div></div>
 <div id="waitingRoom" style="display:none"><div class="code">Код кімнати: <b id="roomCodeDisplay"></b></div><div id="playersList"></div><button id="startGameBtn" disabled>Почати гру</button><button class="n" onclick="location.reload()">Вийти</button></div></div>
