@@ -115,6 +115,11 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 
 .tk s.tkn{animation:none}.tk s.hop{animation:stepHop .16s ease-out}
 @keyframes stepHop{0%{transform:translateY(-7px) scale(1.25)}100%{transform:translateY(0) scale(1)}}
+.tc{display:flex;gap:8px;margin-top:10px}.tcol{flex:1;min-width:0;background:#0a1530;border:1px solid var(--ln);border-radius:12px;padding:8px}.tcol>b{font-size:13px;display:block;margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;gap:4px;max-height:34vh;overflow:auto}.chip{font-size:11px;padding:4px 6px;border-radius:8px;background:#16264a;border:1px solid var(--ln)}.chip.on{background:#1f7a5a;border-color:#2ee67a}.chip.dis{opacity:.4}
+.cash{display:flex;align-items:center;justify-content:space-between;margin-top:8px;font-size:13px}.cash button{padding:4px 12px}
+.tbar{display:flex;gap:8px;align-items:center;justify-content:space-between;background:#2a2418;border:1px solid #7a6320;border-radius:10px;padding:6px 10px;margin:0 0 8px;font-size:12px}.tbar button{padding:4px 10px}
+.rowb{display:flex;gap:6px;margin:8px 0}#lobby .rowb button{width:auto;flex:1;margin:0;background:#1d3a8a;border:1px solid #3b6be0;font-size:16px;padding:14px}.rowb select{width:64px;background:#0a1530;color:var(--fg);border:1px solid var(--ln);border-radius:10px;font-size:16px;padding:0 6px}
 </style></head><body>
 <div id="lobby">
 <div class="lobby-hero">
@@ -127,6 +132,7 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 <div id="connectionStatus" class="cs">Підключення…</div>
 <div id="lobbyContent">
 <button id="createBtn" class="gb">➕ Створити кімнату</button>
+<div class="rowb"><button id="botBtn" class="gb2">🤖 ГРАТИ З БОТАМИ</button><select id="botN"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></div>
 <div class="row2"><input id="roomCodeInput" placeholder="Код GAME-XXXX"><button id="joinBtn" class="y">Увійти</button></div>
 <div class="sec"><h3>Доступні кімнати</h3><small id="roomCount" class="mut">Знайдено: 0</small></div>
 <div id="roomList"></div>
@@ -134,12 +140,12 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 <div id="waitingRoom" style="display:none">
 <div class="code">Код кімнати: <b id="roomCodeDisplay"></b></div>
 <div id="playersList"></div>
-<button id="startGameBtn" disabled>Почати гру</button>
+<button id="addBotBtn" class="n" style="display:none">➕ Додати бота</button><button id="startGameBtn" disabled>Почати гру</button>
 <button class="n" onclick="location.reload()">Вийти</button>
 </div>
 </div>
 <div id="dz"></div>
 <div id="gameBoard" style="display:none"><div id="app"></div></div>
-<script type="module" src="game.js?v=4"></script>
-<div style="position:fixed;left:6px;bottom:2px;font-size:9px;opacity:.35;pointer-events:none">v4</div>
+<script type="module" src="game.js?v=6"></script>
+<div style="position:fixed;left:6px;bottom:2px;font-size:9px;opacity:.35;pointer-events:none">v6</div>
 </body></html>
