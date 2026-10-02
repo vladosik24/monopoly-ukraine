@@ -17,8 +17,15 @@ const T=[['СТАРТ','s','🏁'],['Нова Пошта',3200,0,'✚','#e1251b'
 ['В\'язниця','j','⛓️'],['Telegram',4500,3,'✈️','#27a'],['Kyivstar',4000,3,'✳️','#09f'],['TikTok',4500,3,'🎵','#000'],['YouTube',3500,4,'▶️','#d00'],['Google',3500,4,'🔍','#48f'],['ПриватБанк',2000,1,'🏦','#2a3'],['Шанс','c','❓'],['Живчик',5500,5,'🍋','#2a8'],['Моршинська',5500,5,'⛰️','#d32'],
 ['Казино','k','🎰'],['АТБ',2200,6,'🛒','#17b'],['Шанс','c','❓'],['justin',1800,6,'🟦','#16f'],['Епіцентр',2400,7,'🔧','#14a'],['Ощадбанк',2400,7,'💚','#052'],['McDonald\'s',2600,8,'Ⓜ️','#e90'],['KFC',2600,8,'🍗','#c00'],['ДТЕК',2000,7,'⚡','#fc0'],['Burger King',2800,8,'🍔','#d62'],
 ['Іди в в\'язницю','g','👮'],['Rozetka',3000,9,'😄','#2a8'],['OLX',3000,9,'⭕','#0a7'],['Шанс','c','❓'],['prom',3200,4,'🟪','#60c'],['Райффайзен',3000,1,'✖️','#fc0'],['Податок','x','💰'],['Apple',3500,10,'🍏','#000'],['Шанс','c','❓'],['Samsung',4000,10,'📱','#14a']];
-const LG={'Нова Пошта':'novaposhta','Укрпошта':'ukrposhta','monobank':'monobank','Adidas':'adidas','Nike':'nike','Puma':'puma','Telegram':'telegram','TikTok':'tiktok','Google':'google','ПриватБанк':'privatbank','Живчик':'zhyvchyk','АТБ':'atb','Ощадбанк':'oschadbank',"McDonald's":'mcdonalds','KFC':'kfc','Burger King':'burgerking','Rozetka':'rozetka','OLX':'olx','prom':'prom','Райффайзен':'raiffeisen','Apple':'apple','Samsung':'samsung','Kyivstar':'kyivstar','YouTube':'youtube','Моршинська':'morshynska','justin':'justin','ДТЕК':'dtek'};
-const CARDS=[['Знайшов гаманець: +500',500],['Штраф за паркування: −400',-400],['Лотерея: +1000',1000],['Ремонт авто: −800',-800],['Бабусин подарунок: +300',300],['Іди на СТАРТ',0,'go'],['Лови поліцію! В\'язниця',0,'jail']];
+const LG={'Нова Пошта':'novaposhta','Укрпошта':'ukrposhta','monobank':'monobank','Adidas':'adidas','Nike':'nike','Puma':'puma','Telegram':'telegram','TikTok':'tiktok','Google':'google','ПриватБанк':'privatbank','Живчик':'zhyvchyk','АТБ':'atb','Ощадбанк':'oschadbank',"McDonald's":'mcdonalds','KFC':'kfc','Burger King':'burgerking','Rozetka':'rozetka','OLX':'olx','prom':'prom','Райффайзен':'raiffeisen','Apple':'apple','Samsung':'samsung','Kyivstar':'kyivstar','YouTube':'youtube','Моршинська':'morshynska','justin':'justin','ДТЕК':'dtek','Епіцентр':'epicentr'};
+const CARDS=[
+['💸 Знайшов гаманець на Хрещатику: +500',500],['🚓 Штраф за паркування: −400',-400],['🎟 Лотерея «Мегалот»: +2000',2000],['🔧 Ремонт авто: −800',-800],
+['👵 Бабуся передала 500 ₴ та банку варення',500],['☕ Кава у Львові для всієї компанії: −200',-200],['💙 Кешбек від monobank: +400',400],['📦 Нова Пошта загубила посилку — компенсація +700',700],
+['🧾 Податкова перевірка: −1000',-1000],['🍀 Знайшов чотирилисник: +300',300],['🏁 Іди на СТАРТ і отримай 1200 ₴',0,'go'],['👮 Лови поліцію! Іди у в\'язницю',0,'jail'],
+['⏪ Затор на Столичному: відступи на 3 клітинки',0,'back3'],['🎂 День народження! Кожен гравець дарує тобі 200 ₴',200,'eachget'],['🧱 Скинулись на ремонт у під\'їзді: сплати кожному по 150 ₴',150,'eachpay'],
+['🏗 Ремонт у твоїх магазинах: 250 ₴ за кожну ★',250,'repair'],['🚂 Укрзалізниця довезе тебе до Нової Пошти',0,'to:Нова Пошта'],['✈️ Лети до Telegram',0,'to:Telegram'],
+['🛒 Акція в Rozetka! Біжи туди',0,'to:Rozetka'],['🏦 Візит до ПриватБанку',0,'to:ПриватБанк'],['🎰 Ризикни — іди в казино!',0,'to:Казино']
+];
 const PC=['#ff4d4d','#3ddc84','#ffd23f','#4aa8ff','#b46bff'];
 const pos=i=>i<=10?[1,1+i]:i<=20?[i-9,11]:i<=30?[11,31-i]:[41-i,1];
 const side=i=>i<10?'top':i<20?'rt':i<30?'bot':'lf';
@@ -97,7 +104,7 @@ $('startGameBtn').onclick=startGame;
 async function createRoom(){
   try{
     code='GAME-'+Math.random().toString(36).slice(2,6).toUpperCase();
-    await set(ref(db,'rooms/'+code),{code,status:'waiting',players:{[myId]:{id:myId,name:nm(),ph:myPh,j:Date.now(),online:true}}});
+    await set(ref(db,'rooms/'+code),{code,status:'waiting',players:{[myId]:{id:myId,name:nm(),ph:myPh,dk:SK.d,fr:SK.f,j:Date.now(),online:true}}});
     enter();
   }catch(e){alert('Не вдалося створити кімнату. Перевір Firebase Rules.\n'+e.message);console.error(e)}
 }
@@ -109,8 +116,8 @@ async function joinRoom(c){
     if(!ps[myId]){
       if(r.status!='waiting')return alert('Гра вже почалась!');
       if(Object.keys(ps).length>=5)return alert('Кімната повна!');
-      await set(ref(db,`rooms/${c}/players/${myId}`),{id:myId,name:nm(),ph:myPh,j:Date.now(),online:true});
-    } else await update(ref(db,`rooms/${c}/players/${myId}`),{online:true,name:nm(),ph:myPh});
+      await set(ref(db,`rooms/${c}/players/${myId}`),{id:myId,name:nm(),ph:myPh,dk:SK.d,fr:SK.f,j:Date.now(),online:true});
+    } else await update(ref(db,`rooms/${c}/players/${myId}`),{online:true,name:nm(),ph:myPh,dk:SK.d,fr:SK.f});
     code=c;enter();
   }catch(e){alert('Помилка входу.\n'+e.message);console.error(e)}
 }
@@ -140,14 +147,14 @@ function listen(){
     LOGS=[];s.forEach(c=>{LOGS.push(c.val())});if(S)render();
   });
 }
-function fresh(ps){return{players:ps.map((p,i)=>({id:p.id,n:p.n,ph:p.ph||'',c:PC[i],a:p.bot?'🤖':(Array.from(p.n||'?')[0]||'?').toUpperCase(),bot:!!p.bot,m:10000,pos:0,jail:0,alive:true})),own:Array(40).fill(-1),lvl:Array(40).fill(0),cur:0,ph:'roll',tend:Date.now()+30000}}
+function fresh(ps){return{players:ps.map((p,i)=>({id:p.id,n:p.n,ph:p.ph||'',c:PC[i],a:p.bot?'🤖':(Array.from(p.n||'?')[0]||'?').toUpperCase(),bot:!!p.bot,dk:p.dk||'classic',fr:p.fr||'none',m:10000,pos:0,jail:0,alive:true})),own:Array(40).fill(-1),lvl:Array(40).fill(0),cur:0,ph:'roll',tend:Date.now()+30000}}
 async function startGame(){
   const ps=Object.values((await get(ref(db,'rooms/'+code+'/players'))).val()||{}).sort((a,b)=>a.j-b.j);
   if(ps.length<2)return;
-  await update(ref(db,'rooms/'+code),{state:fresh(ps.map(p=>({id:p.id,n:p.name,ph:p.ph||'',bot:!!p.bot}))),status:'playing'});
+  await update(ref(db,'rooms/'+code),{state:fresh(ps.map(p=>({id:p.id,n:p.name,ph:p.ph||'',bot:!!p.bot,dk:p.dk,fr:p.fr}))),status:'playing'});
   ev(0,'Гра почалась! Капітал '+fm(10000));
 }
-async function newGame(){if(!S||S.players[0].id!=myId)return;S=fresh(S.players.map(p=>({id:p.id,n:p.n,ph:p.ph||'',bot:!!p.bot})));await save();ev(0,'Нова гра! Капітал '+fm(10000))}
+async function newGame(){if(!S||S.players[0].id!=myId)return;S=fresh(S.players.map(p=>({id:p.id,n:p.n,ph:p.ph||'',bot:!!p.bot,dk:p.dk,fr:p.fr})));await save();ev(0,'Нова гра! Капітал '+fm(10000))}
 const ev=(p,t,c)=>push(ref(db,'rooms/'+code+'/log'),{p,t,c:c?1:0,h:hm()});
 const save=()=>set(ref(db,'rooms/'+code+'/state'),S);
 function sync(){
@@ -178,7 +185,7 @@ async function roll(){
   const d1=1+Math.floor(Math.random()*6);
   const d2=1+Math.floor(Math.random()*6);
   S.dice=[d1,d2];
-  S.rid=Date.now()+Math.random();
+  S.rid=Date.now()+Math.random();S.dsk=p.dk||'classic';
   S.ph='wait';
   ev(k,'викидає '+d1+':'+d2);
   toast(p.n+' кидає '+d1+':'+d2);
@@ -246,13 +253,7 @@ async function land(){
       return;
     }
   }else if(t==='c'){
-    const c=CARDS[Math.floor(Math.random()*CARDS.length)];
-    ev(k,'🎴 '+c[0]);
-    toast(c[0]);
-    if(c[2]==='go'){p.pos=0;p.m=(Number(p.m)||0)+1200}
-    else if(c[2]==='jail'){p.pos=10;p.jail=1}
-    else if(c[1]>0)p.m=(Number(p.m)||0)+c[1]
-    else pay(k,-c[1]);
+    if(drawCard(k)){await save();setTimeout(()=>{land()},900);return}
   }else if(t==='x'){
     ev(k,'сплатив податок 800 ₴');
     pay(k,800);
@@ -293,8 +294,8 @@ function say(){
 }
 function render(){if(!S)return;sync();trNotify();const k=S.cur,c=P[k],mine=c.id==myId,ph=S.ph,pb=T[c.pos];
 const spec=!P.some(p=>p.id==myId);const isB=typeof pb[1]=='number'&&own[c.pos]==k;
-const pn=P.map((p,i)=>'<div class="pl'+(i==k?' on':'')+(p.alive?'':' dead')+'" style="--c:'+p.c+'" onclick="prof('+i+')">'+(i==k&&p.alive&&ph!='over'?'<i class="tm" id="tm">30 c</i>':'')+'<div class="av">'+avh(p)+'</div><div><b>'+esc(p.n)+(p.id==myId?' (ти)':'')+'</b><span>'+(p.alive?fm(p.m):'БАНКРУТ')+'</span></div></div>').join('');
-const ac=mine&&ph=='buy'?'<div class="ac"><button class="y" onclick="buy()">'+(isB?'⭐ Покращити '+Math.round(pb[1]/2):'🛒 Купити '+pb[0]+' · '+pb[1])+' ₴</button><button class="n" onclick="skip()">Пас</button></div>':ph=='over'&&P[0].id==myId?'<div class="ac"><button onclick="newGame()">Нова гра</button></div>':'';
+const pn=P.map((p,i)=>'<div class="pl'+(i==k?' on':'')+(p.alive?'':' dead')+'" style="--c:'+p.c+'" onclick="prof('+i+')">'+(i==k&&p.alive&&ph!='over'?'<i class="tm" id="tm">30 c</i>':'')+'<div class="av'+frc(p)+'"'+fra(p)+'>'+avh(p)+'</div><div><b>'+esc(p.n)+(p.id==myId?' (ти)':'')+'</b><span>'+(p.alive?fm(p.m):'БАНКРУТ')+'</span></div></div>').join('');
+const ac=ph=='over'&&P[0].id==myId?'<div class="ac"><button onclick="newGame()">Нова гра</button></div>':'';
 const buyFab=mine&&ph=='buy'?'<div class="buybar"><button class="y" onclick="buy()">'+(isB?'⭐ Покращити за '+Math.round(pb[1]/2):'🛒 Купити «'+pb[0]+'» за '+pb[1])+' ₴</button><button class="n" onclick="skip()">Пас</button></div>':'';
 const sub=ph=='over'?'Гру завершено':mine&&ph=='buy'?(isB?'Покращити ділянку?':'Купити '+pb[0]+'?'):mine&&ph=='roll'?'Твій хід — кидай кубики.':'Очікуйте завершення ходу.';
 const L=LOGS;
@@ -312,7 +313,7 @@ Object.assign(window,{roll,buy,skip,say,newGame,tgl:()=>{showAll=!showAll;render
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function okp(u){return /^https:\/\/[^\s"'()<>\\]+$/.test(u||'')?u:''}
 function avh(p){const u=okp(p.ph),a=esc(p.a||'?');return u?`<img src="${u}" alt="" onerror="this.parentNode.textContent='${a}'">`:a}
-function tokn(p){const u=okp(p.ph);return `<s class="tkn${hopId===p.id?' hop':''}" style="--c:${p.c}${u?`;background:url('${u}') center/cover`:''}">${u?'':esc(p.a)}</s>`}
+function tokn(p){const u=okp(p.ph);return `<s class="tkn${frc(p)}${hopId===p.id?' hop':''}" style="--c:${p.c}${u?`;background:url('${u}') center/cover`:''}">${u?'':esc(p.a)}</s>`}
 let ROOMS=[],modal=null,stats=false;
 onValue(ref(db,'rooms'),s=>{
   ROOMS=[];s.forEach(c=>{const r=c.val();if(!r||!r.players)return;const ps=Object.values(r.players).sort((a,b)=>a.j-b.j);if(!ps.some(p=>p.online&&!p.bot))return;const mine=ps.some(p=>p.id==myId);if(r.state&&r.state.ph=='over'&&!mine)return;ROOMS.push({code:c.key,st:r.status,ps,mine})});
@@ -332,7 +333,7 @@ function tgs(){stats=!stats;render()}
 function modalHtml(){if(modal==null||!S)return '';const p=P[modal];if(!p)return '';
 const me=p.id==myId,my=me&&S.cur==modal&&driver()&&(S.ph=='roll'||S.ph=='buy'),ls=T.map((b,i)=>own[i]==modal?i:-1).filter(i=>i>=0),val=ls.reduce((s,i)=>s+T[i][1],0),st=ls.reduce((s,i)=>s+lvl[i],0);
 let h=`<div class="ov" onclick="closeProf()"><div class="md" onclick="event.stopPropagation()">
-<div class="mh"><div class="av big" style="--c:${p.c}">${avh(p)}</div><div><small class="gd">ПРОФІЛЬ ГРАВЦЯ</small><h2>${esc(p.n)}</h2><span class="mm">${fm(p.m)}</span></div><button class="x" onclick="closeProf()">✕</button></div>
+<div class="mh"><div class="av big${frc(p)}"${fra(p,'--c:'+p.c)}>${avh(p)}</div><div><small class="gd">ПРОФІЛЬ ГРАВЦЯ</small><h2>${esc(p.n)}</h2><span class="mm">${fm(p.m)}</span></div><button class="x" onclick="closeProf()">✕</button></div>
 <div class="stats-row">
   <div class="stat-card"><div class="si">🏠</div><div class="sv">${ls.length}</div><div class="sl">ДІЛЯНОК</div></div>
   <div class="stat-card"><div class="si">⭐</div><div class="sv">${st}</div><div class="sl">ЗІРОК</div></div>
@@ -354,7 +355,7 @@ Object.assign(window,{joinRoom,watch,prof,closeProf,tgs,credit,surr});
 let lastRid=null,dzt=null,dzh=null;
 const PIPS=[[],[5],[1,9],[1,5,9],[1,3,7,9],[1,3,5,7,9],[1,3,4,6,7,9]];
 const pips=n=>{let s='';for(let i=1;i<=9;i++)s+='<i'+(PIPS[n].includes(i)?' class="p"':'')+'></i>';return s};
-function playDice(d){const z=$('dz');clearInterval(dzt);clearTimeout(dzh);
+function playDice(d){const z=$('dz');applyDie(z);clearInterval(dzt);clearTimeout(dzh);
 z.innerHTML='<div class="dw"><div class="dd roll"><div class="die"></div></div><div class="dd d2 roll"><div class="die"></div></div></div><div class="sum"></div>';z.style.display='grid';
 const set=(a,b)=>z.querySelectorAll('.die').forEach((e,i)=>e.innerHTML=pips(i?b:a));
 const r=()=>1+Math.random()*6|0;set(r(),r());dzt=setInterval(()=>set(r(),r()),90);
@@ -418,9 +419,9 @@ Object.assign(window,{openTrade,closeTrade,tgp,adj,sendTrade,answerTrade,cancelT
 // ===== БОТИ =====
 const BOTN=['Тарас','Оля','Іван','Марина','Богдан'];
 async function addBot(){if(!R||!R.players)return;const ps=Object.values(R.players);if(ps.length>=5)return;const n=ps.filter(p=>p.bot).length,id='bot_'+Date.now()+n;
-await set(ref(db,`rooms/${code}/players/${id}`),{id,name:'🤖 '+BOTN[n%5],ph:'',j:Date.now(),online:true,bot:true})}
+await set(ref(db,`rooms/${code}/players/${id}`),{id,name:'🤖 '+BOTN[n%5],ph:'',dk:rnd(DICE),fr:rnd(FRAMES),j:Date.now(),online:true,bot:true})}
 async function startSolo(){try{const n=Math.max(1,Math.min(4,+$('botN').value||3));code='GAME-'+Math.random().toString(36).slice(2,6).toUpperCase();
-const players={[myId]:{id:myId,name:nm(),ph:myPh,j:Date.now(),online:true}};for(let i=0;i<n;i++){const id='bot_'+i;players[id]={id,name:'🤖 '+BOTN[i],ph:'',j:Date.now()+1+i,online:true,bot:true}}
+const players={[myId]:{id:myId,name:nm(),ph:myPh,dk:SK.d,fr:SK.f,j:Date.now(),online:true}};for(let i=0;i<n;i++){const id='bot_'+i;players[id]={id,name:'🤖 '+BOTN[i],ph:'',dk:rnd(DICE),fr:rnd(FRAMES),j:Date.now()+1+i,online:true,bot:true}}
 await set(ref(db,'rooms/'+code),{code,status:'waiting',players});enter();await startGame()}catch(e){alert('Не вдалося почати гру: '+e.message)}}
 $('botBtn').onclick=startSolo;$('addBotBtn').onclick=addBot;
 const isHost=()=>{if(!S||!R)return false;const h=S.players.find(p=>!p.bot&&p.alive&&on(p.id));return !!h&&h.id==myId};
@@ -431,3 +432,35 @@ if(p&&p.bot&&p.alive&&driver()&&Date.now()>S.tend-30000+1300){
 if(isHost()){const t=trList().find(x=>x.status=='pending'&&P.some(q=>q.id==x.toId&&q.bot&&q.alive));
  if(t){const val=(a,c)=>(a||[]).reduce((s,i)=>s+(T[i]?T[i][1]:0),0)+(+c||0);setTr(t.id,val(t.give,t.gc)>=val(t.ask,t.ac)*1.15?'accepted':'declined')}}}
 setInterval(()=>{try{botTick()}catch(e){console.error(e)}},500);
+
+// ===== КАРТИ «ШАНС» =====
+function drawCard(k){const p=P[k],c=CARDS[Math.random()*CARDS.length|0],sp=c[2]||'';ev(k,'🎴 '+c[0]);toast(c[0]);
+if(sp=='go'){p.pos=0;p.m+=1200;return false}
+if(sp=='jail'){p.pos=10;p.jail=1;return false}
+if(sp=='back3'){p.pos=(p.pos+37)%40;return true}
+if(sp.indexOf('to:')==0){const i=T.findIndex(x=>x[0]==sp.slice(3));if(i<0)return false;if(i<p.pos)p.m+=1200;p.pos=i;return true}
+if(sp=='eachget'){P.forEach((q,i)=>{if(i!=k&&q.alive){const a=Math.min(q.m,c[1]);q.m-=a;p.m+=a}});return false}
+if(sp=='eachpay'){P.forEach((q,i)=>{if(i!=k&&q.alive){const a=Math.min(p.m,c[1]);p.m-=a;q.m+=a}});return false}
+if(sp=='repair'){const n=lvl.reduce((s,l,i)=>s+(own[i]===k?l:0),0);if(n)pay(k,n*c[1]);else ev(k,'зірок немає — платити нічого');return false}
+if(c[1]>0)p.m+=c[1];else pay(k,-c[1]);return false}
+
+// ===== СКІНИ =====
+const DICE=[{id:'classic',n:'Класика',bg:'#fff',pip:'#111'},{id:'gold',n:'Золото',bg:'linear-gradient(135deg,#ffe27a,#e0a800)',pip:'#3a2600'},{id:'neon',n:'Неон',bg:'#0b1230',pip:'#38f2ff',glow:'0 0 8px #38f2ff'},
+{id:'carbon',n:'Карбон',bg:'#15171c',pip:'#ffd23f',glow:'0 0 6px #ffd23f'},{id:'emerald',n:'Смарагд',bg:'linear-gradient(135deg,#46f08c,#0e7a45)',pip:'#022'},{id:'ruby',n:'Рубін',bg:'linear-gradient(135deg,#ff7a7a,#a00020)',pip:'#fff'},{id:'ua',n:'Жовто-блакитні',bg:'#ffd23f',pip:'#1f4fb8'}];
+const FRAMES=[{id:'none',n:'Без рамки'},{id:'gold',n:'Золото',b:'👑'},{id:'neon',n:'Неон',b:'⚡'},{id:'fire',n:'Вогонь',b:'🔥'},{id:'ua',n:'Тризуб',b:'🔱'},{id:'royal',n:'Діамант',b:'💎'}];
+const rnd=a=>a[Math.random()*a.length|0].id;
+const lsg=k=>{try{return localStorage.getItem(k)}catch(e){return null}},lss=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const SK={d:lsg('sk_d')||'classic',f:lsg('sk_f')||'none'};
+const dsk=id=>DICE.find(x=>x.id==id)||DICE[0],frm=id=>FRAMES.find(x=>x.id==id)||FRAMES[0];
+const frc=p=>p&&p.fr&&p.fr!='none'?' fr-'+p.fr:'';
+function fra(p,ex){const f=p&&frm(p.fr),on=f&&f.id!='none',st=(ex?ex+';':'')+(on?"--fi:url('skins/frame-"+f.id+".png')":'');return (on&&f.b?' data-b="'+f.b+'"':'')+(st?' style="'+st+'"':'')}
+function applyDie(z){const s=dsk(S&&S.dsk);z.style.setProperty('--dbg',s.bg);z.style.setProperty('--dpip',s.pip);z.style.setProperty('--dglow',s.glow||'inset 0 -2px 3px rgba(255,255,255,.35)');z.style.setProperty('--dimg',"url('skins/dice-"+s.id+".png')")}
+function skinUI(){const z=$('skm');
+const dices=DICE.map(s=>`<div class="sk${SK.d==s.id?' on':''}" onclick="pickSk('d','${s.id}')"><div class="die mini" style="--dbg:${s.bg};--dpip:${s.pip};--dglow:${s.glow||'none'};--dimg:url('skins/dice-${s.id}.png')">${pips(5)}</div><small>${s.n}</small></div>`).join('');
+const frames=FRAMES.map(f=>`<div class="sk${SK.f==f.id?' on':''}" onclick="pickSk('f','${f.id}')"><div class="av big${f.id=='none'?'':' fr-'+f.id}"${f.b?` data-b="${f.b}"`:''} style="--c:#4aa8ff;--fi:url('skins/frame-${f.id}.png')">${avh({ph:myPh,a:(Array.from(nm())[0]||'?').toUpperCase()})}</div><small>${f.n}</small></div>`).join('');
+z.innerHTML=`<div class="md" onclick="event.stopPropagation()"><div class="mh"><h2>🎨 Скіни</h2><button class="x" onclick="closeSk()">✕</button></div><b>Кубики</b><div class="skg">${dices}</div><b>Рамки аватарки</b><div class="skg">${frames}</div></div>`;z.style.display='grid'}
+function closeSk(){$('skm').style.display='none'}
+function hdrFrame(){const a=$('meAv'),f=frm(SK.f);a.className='av big'+(f.id=='none'?'':' fr-'+f.id);if(f.id!='none'&&f.b)a.dataset.b=f.b;else delete a.dataset.b}
+function pickSk(kind,id){SK[kind]=id;lss(kind=='d'?'sk_d':'sk_f',id);hdrFrame();skinUI()}
+$('skinBtn').onclick=skinUI;hdrFrame();
+Object.assign(window,{pickSk,closeSk});
