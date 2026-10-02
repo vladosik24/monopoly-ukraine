@@ -23,8 +23,8 @@ const CARDS=[
 ['👵 Бабуся передала 500 ₴ та банку варення',500],['☕ Кава у Львові для всієї компанії: −200',-200],['💙 Кешбек від monobank: +400',400],['📦 Нова Пошта загубила посилку — компенсація +700',700],
 ['🧾 Податкова перевірка: −1000',-1000],['🍀 Знайшов чотирилисник: +300',300],['🏁 Іди на СТАРТ і отримай 1200 ₴',0,'go'],['👮 Лови поліцію! Іди у в\'язницю',0,'jail'],
 ['⏪ Затор на Столичному: відступи на 3 клітинки',0,'back3'],['🎂 День народження! Кожен гравець дарує тобі 200 ₴',200,'eachget'],['🧱 Скинулись на ремонт у під\'їзді: сплати кожному по 150 ₴',150,'eachpay'],
-['🏗 Ремонт у твоїх магазинах: 250 ₴ за кожну ★',250,'repair'],['🚂 Укрзалізниця довезе тебе до Нової Пошти',0,'to:Нова Пошта'],['✈️ Лети до Telegram',0,'to:Telegram'],
-['🛒 Акція в Rozetka! Біжи туди',0,'to:Rozetka'],['🏦 Візит до ПриватБанку',0,'to:ПриватБанк'],['🎰 Ризикни — іди в казино!',0,'to:Казино']
+['🏗 Ремонт у твоїх магазинах: 250 ₴ за кожну ★',250,'repair'],['🚂 Рейс! Їдь до «{n}»',0,'to:1'],['✈️ Лети до «{n}»',0,'to:11'],
+['🛒 Акція! Біжи до «{n}»',0,'to:31'],['🏦 Візит до «{n}»',0,'to:16'],['🎰 Ризикни — іди в казино!',0,'to:20']
 ];
 const PC=['#ff4d4d','#3ddc84','#ffd23f','#4aa8ff','#b46bff'];
 const pos=i=>i<=10?[1,1+i]:i<=20?[i-9,11]:i<=30?[11,31-i]:[41-i,1];
@@ -35,9 +35,9 @@ function rent(i){const b=Math.round(T[i][1]*.1),L=lvl[i];return L?b*[0,4,8,14][L
 function tile(b,i){const[r,c]=pos(i),s=side(i%10==0?(i==0?0:i==10?9:i==20?21:31):i),t=b[1];
 const tk=P.map(p=>p.alive&&dpos(p)==i?tokn(p):'').join('');
 const corner=i%10==0,cls=(corner?'sp ':'')+s;
-if(typeof t!='number')return '<div class="t '+cls+'" data-i="'+i+'" style="grid-area:'+r+'/'+c+'"><div class="in"><span class="em">'+b[2]+'</span>'+(corner?'':'<span class="nm">'+b[0]+'</span>')+'</div><div class="tk">'+tk+'</div></div>';
-const bg=own[i]>=0?P[own[i]].c+'aa':'#fff';
-return '<div class="t '+cls+'" data-i="'+i+'" style="grid-area:'+r+'/'+c+';--b:'+bg+'"><div class="in">'+(LG[b[0]]?'<img class="lg" src="logos/'+LG[b[0]]+'.png" alt="'+b[0]+'" onerror="this.outerHTML=\'<span class=nm>\'+this.alt+\'</span>\'">':'<span class="em" style="color:'+b[4]+'">'+b[3]+'</span><span class="nm" style="color:'+b[4]+'">'+b[0]+'</span>')+(lvl[i]?'<div class="st">'+'★'.repeat(lvl[i])+'</div>':'')+'</div><div class="pr" style="--g:'+GC[b[2]]+'">'+t+'</div><div class="tk">'+tk+'</div></div>'}
+if(typeof t!='number')return '<div class="t '+cls+'" data-i="'+i+'" onclick="tinfo('+i+')" style="grid-area:'+r+'/'+c+'"><div class="in"><span class="em">'+b[2]+'</span>'+(corner?'':'<span class="nm">'+b[0]+'</span>')+'</div><div class="tk">'+tk+'</div></div>';
+const bg=own[i]>=0?P[own[i]].c+'aa':'var(--tile,#fff)';
+return '<div class="t '+cls+'" data-i="'+i+'" onclick="tinfo('+i+')" style="grid-area:'+r+'/'+c+';--b:'+bg+'"><div class="in">'+tcont(b)+(lvl[i]?'<div class="st">'+'★'.repeat(lvl[i])+'</div>':'')+'</div><div class="pr" style="--g:'+GC[b[2]]+'">'+t+'</div><div class="tk">'+tk+'</div></div>'}
 
 let code='',R=null,S=null,LOGS=[],showAll=true,busy=false,started=false,P,own,lvl,prevPos={};
 const $=id=>document.getElementById(id);
@@ -104,7 +104,7 @@ $('startGameBtn').onclick=startGame;
 async function createRoom(){
   try{
     code='GAME-'+Math.random().toString(36).slice(2,6).toUpperCase();
-    await set(ref(db,'rooms/'+code),{code,status:'waiting',players:{[myId]:{id:myId,name:nm(),ph:myPh,dk:SK.d,fr:SK.f,j:Date.now(),online:true}}});
+    await set(ref(db,'rooms/'+code),{code,status:'waiting',map:selMap(),players:{[myId]:{id:myId,name:nm(),ph:myPh,dk:SK.d,fr:SK.f,j:Date.now(),online:true}}});
     enter();
   }catch(e){alert('Не вдалося створити кімнату. Перевір Firebase Rules.\n'+e.message);console.error(e)}
 }
@@ -147,14 +147,14 @@ function listen(){
     LOGS=[];s.forEach(c=>{LOGS.push(c.val())});if(S)render();
   });
 }
-function fresh(ps){return{players:ps.map((p,i)=>({id:p.id,n:p.n,ph:p.ph||'',c:PC[i],a:p.bot?'🤖':(Array.from(p.n||'?')[0]||'?').toUpperCase(),bot:!!p.bot,dk:p.dk||'classic',fr:p.fr||'none',m:10000,pos:0,jail:0,alive:true})),own:Array(40).fill(-1),lvl:Array(40).fill(0),cur:0,ph:'roll',tend:Date.now()+30000}}
+function fresh(ps,map){return{map:map||'brands',players:ps.map((p,i)=>({id:p.id,n:p.n,ph:p.ph||'',c:PC[i],a:p.bot?'🤖':(Array.from(p.n||'?')[0]||'?').toUpperCase(),bot:!!p.bot,dk:p.dk||'classic',fr:p.fr||'none',m:10000,pos:0,jail:0,alive:true})),own:Array(40).fill(-1),lvl:Array(40).fill(0),cur:0,ph:'roll',tend:Date.now()+30000}}
 async function startGame(){
   const ps=Object.values((await get(ref(db,'rooms/'+code+'/players'))).val()||{}).sort((a,b)=>a.j-b.j);
-  if(ps.length<2)return;
-  await update(ref(db,'rooms/'+code),{state:fresh(ps.map(p=>({id:p.id,n:p.name,ph:p.ph||'',bot:!!p.bot,dk:p.dk,fr:p.fr}))),status:'playing'});
+  if(ps.length<2)return;const mp=(await get(ref(db,'rooms/'+code+'/map'))).val()||'brands';
+  await update(ref(db,'rooms/'+code),{state:fresh(ps.map(p=>({id:p.id,n:p.name,ph:p.ph||'',bot:!!p.bot,dk:p.dk,fr:p.fr})),mp),status:'playing'});
   ev(0,'Гра почалась! Капітал '+fm(10000));
 }
-async function newGame(){if(!S||S.players[0].id!=myId)return;S=fresh(S.players.map(p=>({id:p.id,n:p.n,ph:p.ph||'',bot:!!p.bot,dk:p.dk,fr:p.fr})));await save();ev(0,'Нова гра! Капітал '+fm(10000))}
+async function newGame(){if(!S||S.players[0].id!=myId)return;S=fresh(S.players.map(p=>({id:p.id,n:p.n,ph:p.ph||'',bot:!!p.bot,dk:p.dk,fr:p.fr})),S.map);await save();ev(0,'Нова гра! Капітал '+fm(10000))}
 const ev=(p,t,c)=>push(ref(db,'rooms/'+code+'/log'),{p,t,c:c?1:0,h:hm()});
 const save=()=>set(ref(db,'rooms/'+code+'/state'),S);
 function sync(){
@@ -292,7 +292,7 @@ function say(){
   try{ev(m<0?0:m,t,1)}catch(e){console.error(e)}
   setTimeout(()=>{sayBusy=false},300);
 }
-function render(){if(!S)return;sync();trNotify();const k=S.cur,c=P[k],mine=c.id==myId,ph=S.ph,pb=T[c.pos];
+function render(){if(!S)return;useMap(S.map||'brands');sync();trNotify();const k=S.cur,c=P[k],mine=c.id==myId,ph=S.ph,pb=T[c.pos];
 const spec=!P.some(p=>p.id==myId);const isB=typeof pb[1]=='number'&&own[c.pos]==k;
 const pn=P.map((p,i)=>'<div class="pl'+(i==k?' on':'')+(p.alive?'':' dead')+'" style="--c:'+p.c+'" onclick="prof('+i+')">'+(i==k&&p.alive&&ph!='over'?'<i class="tm" id="tm">30 c</i>':'')+'<div class="av'+frc(p)+'"'+fra(p)+'>'+avh(p)+'</div><div><b>'+esc(p.n)+(p.id==myId?' (ти)':'')+'</b><span>'+(p.alive?fm(p.m):'БАНКРУТ')+'</span></div></div>').join('');
 const ac=ph=='over'&&P[0].id==myId?'<div class="ac"><button onclick="newGame()">Нова гра</button></div>':'';
@@ -301,7 +301,7 @@ const sub=ph=='over'?'Гру завершено':mine&&ph=='buy'?(isB?'Покр�
 const L=LOGS;
 let h='<div id="top">'+pn+'<button class="mn" onclick="if(confirm(\'Вийти з гри?\'))location.reload()">⋮</button></div>'+tbar()+'<div id="bd">'+T.map(tile).join('');
 h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+LOGS.length+'</span></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();say()}"><button type="button" onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b><small>'+sub+'</small>'+ac+'</div></div>';
-h+='</div>'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+modalHtml()+tradeUI();
+h+='</div>'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+modalHtml()+tradeUI()+tileModal();
 const o=$('ci'),v=o?o.value:'',f=o&&document.activeElement===o;
 $('app').innerHTML=h;const n=$('ci');if(n){n.value=v;if(f)n.focus()}const lg=$('log');if(lg)lg.scrollTop=lg.scrollHeight;if(S.dice&&S.rid&&S.rid!==lastRid){lastRid=S.rid;playDice(S.dice)}
   // запам'ятати позиції для анімації фішок
@@ -316,7 +316,7 @@ function avh(p){const u=okp(p.ph),a=esc(p.a||'?');return u?`<img src="${u}" alt=
 function tokn(p){const u=okp(p.ph);return `<s class="tkn${frc(p)}${hopId===p.id?' hop':''}" style="--c:${p.c}${u?`;background:url('${u}') center/cover`:''}">${u?'':esc(p.a)}</s>`}
 let ROOMS=[],modal=null,stats=false;
 onValue(ref(db,'rooms'),s=>{
-  ROOMS=[];s.forEach(c=>{const r=c.val();if(!r||!r.players)return;const ps=Object.values(r.players).sort((a,b)=>a.j-b.j);if(!ps.some(p=>p.online&&!p.bot))return;const mine=ps.some(p=>p.id==myId);if(r.state&&r.state.ph=='over'&&!mine)return;ROOMS.push({code:c.key,st:r.status,ps,mine})});
+  ROOMS=[];s.forEach(c=>{const r=c.val();if(!r||!r.players)return;const ps=Object.values(r.players).sort((a,b)=>a.j-b.j);if(!ps.some(p=>p.online&&!p.bot))return;const mine=ps.some(p=>p.id==myId);if(r.state&&r.state.ph=='over'&&!mine)return;ROOMS.push({code:c.key,st:r.status,ps,mine,map:r.map})});
   if(!code)renderLobby();
 },e=>{
   $('roomList').innerHTML='<p class="mut">⚠️ Немає доступу до списку кімнат.<br>Firebase → Realtime Database → Rules:<br><code>{ "rules": { ".read": true, ".write": true } }</code><br>(або обмеж лише /rooms)</p>';
@@ -325,7 +325,7 @@ onValue(ref(db,'rooms'),s=>{
 function renderLobby(){$('roomCount').textContent='Знайдено: '+ROOMS.length;
 $('roomList').innerHTML=ROOMS.map(r=>{const h=r.ps[0],pl=r.st=='playing',q="'"+r.code+"'";
 const btn=r.mine?`<button class="y" onclick="joinRoom(${q})">Продовжити</button>`:pl?`<button class="n" onclick="watch(${q})">Дивитися</button>`:r.ps.length>=5?'<button class="n" disabled>Повна</button>':`<button onclick="joinRoom(${q})">Приєднатися</button>`;
-return `<div class="rm"><div class="av">${avh({ph:h.ph,a:Array.from(h.name||'?')[0].toUpperCase()})}</div><div class="ri"><b>${esc(h.name)}</b><span class="bd ${pl?'pg':'wt'}">${pl?'Гра триває':'Очікування'}</span><small class="mut">${r.ps.length}/5 гравців</small></div>${btn}</div>`}).join('')||'<p class="mut">Кімнат поки немає — створи свою!</p>'}
+return `<div class="rm"><div class="av">${avh({ph:h.ph,a:Array.from(h.name||'?')[0].toUpperCase()})}</div><div class="ri"><b>${esc(h.name)}</b><span class="bd ${pl?'pg':'wt'}">${pl?'Гра триває':'Очікування'}</span><small class="mut">${r.ps.length}/5 гравців · ${(MAPS[r.map]||MAPS.brands).ico} ${(MAPS[r.map]||MAPS.brands).n}</small></div>${btn}</div>`}).join('')||'<p class="mut">Кімнат поки немає — створи свою!</p>'}
 function watch(c){code=c;enter(true)}
 function prof(i){modal=i;stats=false;render()}
 function closeProf(){modal=null;render()}
@@ -422,7 +422,7 @@ async function addBot(){if(!R||!R.players)return;const ps=Object.values(R.player
 await set(ref(db,`rooms/${code}/players/${id}`),{id,name:'🤖 '+BOTN[n%5],ph:'',dk:rnd(DICE),fr:rnd(FRAMES),j:Date.now(),online:true,bot:true})}
 async function startSolo(){try{const n=Math.max(1,Math.min(4,+$('botN').value||3));code='GAME-'+Math.random().toString(36).slice(2,6).toUpperCase();
 const players={[myId]:{id:myId,name:nm(),ph:myPh,dk:SK.d,fr:SK.f,j:Date.now(),online:true}};for(let i=0;i<n;i++){const id='bot_'+i;players[id]={id,name:'🤖 '+BOTN[i],ph:'',dk:rnd(DICE),fr:rnd(FRAMES),j:Date.now()+1+i,online:true,bot:true}}
-await set(ref(db,'rooms/'+code),{code,status:'waiting',players});enter();await startGame()}catch(e){alert('Не вдалося почати гру: '+e.message)}}
+await set(ref(db,'rooms/'+code),{code,status:'waiting',map:selMap(),players});enter();await startGame()}catch(e){alert('Не вдалося почати гру: '+e.message)}}
 $('botBtn').onclick=startSolo;$('addBotBtn').onclick=addBot;
 const isHost=()=>{if(!S||!R)return false;const h=S.players.find(p=>!p.bot&&p.alive&&on(p.id));return !!h&&h.id==myId};
 function botTick(){if(!S||!R||busy||S.ph=='over'||S.ph=='wait')return;sync();const k=S.cur,p=P[k];
@@ -434,11 +434,11 @@ if(isHost()){const t=trList().find(x=>x.status=='pending'&&P.some(q=>q.id==x.toI
 setInterval(()=>{try{botTick()}catch(e){console.error(e)}},500);
 
 // ===== КАРТИ «ШАНС» =====
-function drawCard(k){const p=P[k],c=CARDS[Math.random()*CARDS.length|0],sp=c[2]||'';ev(k,'🎴 '+c[0]);toast(c[0]);
+function drawCard(k){const p=P[k],c=CARDS[Math.random()*CARDS.length|0],sp=c[2]||'';let tx=c[0];if(sp.indexOf('to:')==0){const q=T[+sp.slice(3)];tx=tx.replace('{n}',q?q[0]:'')}ev(k,'🎴 '+tx);toast(tx);
 if(sp=='go'){p.pos=0;p.m+=1200;return false}
 if(sp=='jail'){p.pos=10;p.jail=1;return false}
 if(sp=='back3'){p.pos=(p.pos+37)%40;return true}
-if(sp.indexOf('to:')==0){const i=T.findIndex(x=>x[0]==sp.slice(3));if(i<0)return false;if(i<p.pos)p.m+=1200;p.pos=i;return true}
+if(sp.indexOf('to:')==0){const i=+sp.slice(3);if(!(i>=0))return false;if(i<p.pos)p.m+=1200;p.pos=i;return true}
 if(sp=='eachget'){P.forEach((q,i)=>{if(i!=k&&q.alive){const a=Math.min(q.m,c[1]);q.m-=a;p.m+=a}});return false}
 if(sp=='eachpay'){P.forEach((q,i)=>{if(i!=k&&q.alive){const a=Math.min(p.m,c[1]);p.m-=a;q.m+=a}});return false}
 if(sp=='repair'){const n=lvl.reduce((s,l,i)=>s+(own[i]===k?l:0),0);if(n)pay(k,n*c[1]);else ev(k,'зірок немає — платити нічого');return false}
@@ -450,7 +450,7 @@ const DICE=[{id:'classic',n:'Класика',bg:'#fff',pip:'#111'},{id:'gold',n:
 const FRAMES=[{id:'none',n:'Без рамки'},{id:'gold',n:'Золото',b:'👑'},{id:'neon',n:'Неон',b:'⚡'},{id:'fire',n:'Вогонь',b:'🔥'},{id:'ua',n:'Тризуб',b:'🔱'},{id:'royal',n:'Діамант',b:'💎'}];
 const rnd=a=>a[Math.random()*a.length|0].id;
 const lsg=k=>{try{return localStorage.getItem(k)}catch(e){return null}},lss=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
-const SK={d:lsg('sk_d')||'classic',f:lsg('sk_f')||'none'};
+const SK={d:lsg('sk_d')||'classic',f:lsg('sk_f')||'none',t:lsg('sk_t')||'neon'};
 const dsk=id=>DICE.find(x=>x.id==id)||DICE[0],frm=id=>FRAMES.find(x=>x.id==id)||FRAMES[0];
 const frc=p=>p&&p.fr&&p.fr!='none'?' fr-'+p.fr:'';
 function fra(p,ex){const f=p&&frm(p.fr),on=f&&f.id!='none',st=(ex?ex+';':'')+(on?"--fi:url('skins/frame-"+f.id+".png')":'');return (on&&f.b?' data-b="'+f.b+'"':'')+(st?' style="'+st+'"':'')}
@@ -458,9 +458,44 @@ function applyDie(z){const s=dsk(S&&S.dsk);z.style.setProperty('--dbg',s.bg);z.s
 function skinUI(){const z=$('skm');
 const dices=DICE.map(s=>`<div class="sk${SK.d==s.id?' on':''}" onclick="pickSk('d','${s.id}')"><div class="die mini" style="--dbg:${s.bg};--dpip:${s.pip};--dglow:${s.glow||'none'};--dimg:url('skins/dice-${s.id}.png')">${pips(5)}</div><small>${s.n}</small></div>`).join('');
 const frames=FRAMES.map(f=>`<div class="sk${SK.f==f.id?' on':''}" onclick="pickSk('f','${f.id}')"><div class="av big${f.id=='none'?'':' fr-'+f.id}"${f.b?` data-b="${f.b}"`:''} style="--c:#4aa8ff;--fi:url('skins/frame-${f.id}.png')">${avh({ph:myPh,a:(Array.from(nm())[0]||'?').toUpperCase()})}</div><small>${f.n}</small></div>`).join('');
-z.innerHTML=`<div class="md" onclick="event.stopPropagation()"><div class="mh"><h2>🎨 Скіни</h2><button class="x" onclick="closeSk()">✕</button></div><b>Кубики</b><div class="skg">${dices}</div><b>Рамки аватарки</b><div class="skg">${frames}</div></div>`;z.style.display='grid'}
+const themes=THEMES.map(t=>`<div class="sk${SK.t==t.id?' on':''}" onclick="pickSk('t','${t.id}')"><div class="thm" style="background:${t.bdbg}"><span style="background:${t.tile}"></span><span style="background:${t.tile}"></span><span style="background:${t.tile}"></span></div><small>${t.n}</small></div>`).join('');
+z.innerHTML=`<div class="md" onclick="event.stopPropagation()"><div class="mh"><h2>🎨 Скіни</h2><button class="x" onclick="closeSk()">✕</button></div><b>Кубики</b><div class="skg">${dices}</div><b>Рамки аватарки</b><div class="skg">${frames}</div><b>Стиль поля</b><div class="skg">${themes}</div></div>`;z.style.display='grid'}
 function closeSk(){$('skm').style.display='none'}
 function hdrFrame(){const a=$('meAv'),f=frm(SK.f);a.className='av big'+(f.id=='none'?'':' fr-'+f.id);if(f.id!='none'&&f.b)a.dataset.b=f.b;else delete a.dataset.b}
-function pickSk(kind,id){SK[kind]=id;lss(kind=='d'?'sk_d':'sk_f',id);hdrFrame();skinUI()}
+function pickSk(kind,id){SK[kind]=id;lss('sk_'+kind,id);if(kind=='t')applyTheme();hdrFrame();skinUI()}
 $('skinBtn').onclick=skinUI;hdrFrame();
 Object.assign(window,{pickSk,closeSk});
+const MAPS={
+brands:{n:'Бренди України',ico:'🏷',list:null},
+cities:{n:'Міста України',ico:'🏙',list:[["Харків", "kharkiv", "🏗", "#c0392b"],["Київ", "kyiv", "🏛", "#2980b9"],["Полтава", "poltava", "🏙", "#27ae60"],["Львів", "lviv", "☕", "#8e44ad"],["Одеса", "odesa", "⚓", "#d35400"],["Дніпро", "dnipro", "🌉", "#16a085"],["Ужгород", "uzhhorod", "🏙", "#2c3e50"],["Мукачево", "mukachevo", "🏙", "#e67e22"],["Чернівці", "chernivtsi", "🏙", "#c0392b"],["Вінниця", "vinnytsia", "🏙", "#2980b9"],["Житомир", "zhytomyr", "🏙", "#27ae60"],["Суми", "sumy", "🏙", "#8e44ad"],["Яремче", "iaremche", "⛰", "#d35400"],["Буковель", "bukovel", "🎿", "#16a085"],["Херсон", "kherson", "🏙", "#2c3e50"],["Миколаїв", "mykolaiv", "🏙", "#e67e22"],["Черкаси", "cherkasy", "🏙", "#c0392b"],["Кропивницький", "kropyvnytskyi", "🏙", "#2980b9"],["Луцьк", "lutsk", "🏙", "#27ae60"],["Тернопіль", "ternopil", "🏙", "#8e44ad"],["Рівне", "rivne", "🏙", "#d35400"],["Кам'янець-Подільський", "kamianets-podilskyi", "🏙", "#16a085"],["Запоріжжя", "zaporizhzhia", "🏙", "#2c3e50"],["Маріуполь", "mariupol", "🏙", "#e67e22"],["Хмельницький", "khmelnytskyi", "🏙", "#c0392b"],["Чернігів", "chernihiv", "🏙", "#2980b9"],["Умань", "uman", "🏙", "#27ae60"],["Біла Церква", "bila-tserkva", "🏙", "#8e44ad"]]},
+food:{n:'Смаки України',ico:'🍲',list:[["Борщ", "borshch", "🍲", "#c0392b"],["Вареники", "varenyky", "🥟", "#2980b9"],["Сало", "salo", "🥓", "#27ae60"],["Котлета по-київськи", "kotleta-po-kyivsky", "🍲", "#8e44ad"],["Київський торт", "kyivskyi-tort", "🍰", "#d35400"],["Львівський сирник", "lvivskyi-syrnyk", "🍲", "#16a085"],["Голубці", "holubtsi", "🍲", "#2c3e50"],["Налисники", "nalysnyky", "🍲", "#e67e22"],["Пампушки", "pampushky", "🍲", "#c0392b"],["Холодець", "kholodets", "🍲", "#2980b9"],["Кутя", "kutia", "🍲", "#27ae60"],["Галушки", "halushky", "🍲", "#8e44ad"],["Узвар", "uzvar", "🍐", "#d35400"],["Квас", "kvas", "🥤", "#16a085"],["Сирники", "syrnyky", "🍲", "#2c3e50"],["Кисіль", "kysil", "🍲", "#e67e22"],["Паска", "paska", "🍞", "#c0392b"],["Книш", "knysh", "🍲", "#2980b9"],["Банош", "banosh", "🍲", "#27ae60"],["Куліш", "kulish", "🍲", "#8e44ad"],["Лемішка", "lemishka", "🍲", "#d35400"],["Крученики", "kruchenyky", "🍲", "#16a085"],["Деруни", "deruny", "🍲", "#2c3e50"],["Вертута", "vertuta", "🍲", "#e67e22"],["Мамалига", "mamalyha", "🍲", "#c0392b"],["Капусняк", "kapusniak", "🍲", "#2980b9"],["Горілка з перцем", "horilka-z-pertsem", "🍲", "#27ae60"],["Мед з горіхами", "med-z-horikhamy", "🍯", "#8e44ad"]]},
+places:{n:'Мандрівка Україною',ico:'🏰',list:[["Хортиця", "khortytsia", "🏞", "#c0392b"],["Софія Київська", "sofiia-kyivska", "🏰", "#2980b9"],["Софіївка", "sofiivka", "🏰", "#27ae60"],["Києво-Печерська лавра", "kyievo-pecherska-lavra", "🏰", "#8e44ad"],["Хотинська фортеця", "khotynska-fortetsia", "🏰", "#d35400"],["Говерла", "hoverla", "⛰", "#16a085"],["Олеський замок", "oleskyi-zamok", "🏰", "#2c3e50"],["Замок Паланок", "zamok-palanok", "🏰", "#e67e22"],["Синевир", "synevyr", "🏰", "#c0392b"],["Шацькі озера", "shatski-ozera", "🌊", "#2980b9"],["Асканія-Нова", "askaniia-nova", "🏰", "#27ae60"],["Дніпрогес", "dniprohes", "⚡", "#8e44ad"],["Мармурова печера", "marmurova-pechera", "🏰", "#d35400"],["Тунель кохання", "tunel-kokhannia", "🏰", "#16a085"],["Кам'янець-Подільський замок", "kamianets-podilskyi-zamok", "🏰", "#2c3e50"],["Одеська опера", "odeska-opera", "🎭", "#e67e22"],["Львівська опера", "lvivska-opera", "🎭", "#c0392b"],["Золоті ворота", "zoloti-vorota", "🏰", "#2980b9"],["Андріївський узвіз", "andriivskyi-uzviz", "🏰", "#27ae60"],["Майдан Незалежності", "maidan-nezalezhnosti", "🏰", "#8e44ad"],["Пирогів", "pyrohiv", "🏰", "#d35400"],["Підгорецький замок", "pidhoretskyi-zamok", "🏰", "#16a085"],["Тростянець", "trostianets", "🏰", "#2c3e50"],["Бакота", "bakota", "🏰", "#e67e22"],["Ворохта", "vorokhta", "🏰", "#c0392b"],["Острозький замок", "ostrozkyi-zamok", "🏰", "#2980b9"],["Спаський собор", "spaskyi-sobor", "🏰", "#27ae60"],["Софійський собор", "sofiiskyi-sobor", "🏰", "#8e44ad"]]}};
+
+// ===== КАРТИ ПОЛЯ, СТИЛІ, ІНФО ПРО КЛІТИНКУ =====
+const BASE=T.map(x=>x.slice()),OK={};let curMap=null,ti=null;
+function useMap(id){if(!MAPS[id])id='brands';if(curMap===id)return;curMap=id;const list=MAPS[id].list;let k=0;
+BASE.forEach((b,i)=>{if(typeof b[1]=='number'){let e;if(!list){const f=LG[b[0]];e=b.slice(0,5);e[5]=f?'logos/'+f+'.png':''}else{const m=list[k++];e=[m[0],b[1],b[2],m[2],m[3],'maps/'+id+'/'+m[1]+'.png']}T[i]=e}else T[i]=b.slice()})}
+function tcont(b){const p=b[5],fb='<span class="em" style="color:'+b[4]+'">'+b[3]+'</span><span class="nm" style="color:'+b[4]+'">'+esc(b[0])+'</span>';
+if(p&&OK[p]!==0)return '<img class="lg" src="'+p+'" alt="'+esc(b[0])+'" data-p="'+p+'" data-e="'+esc(b[3])+'" data-c="'+b[4]+'" onerror="imgFail(this)">';return fb}
+function imgFail(el){OK[el.dataset.p]=0;el.outerHTML='<span class="em" style="color:'+el.dataset.c+'">'+el.dataset.e+'</span><span class="nm" style="color:'+el.dataset.c+'">'+el.alt+'</span>'}
+const SPEC={s:'🏁 СТАРТ — проходячи його, отримуєш 1200 ₴.',c:'❓ Шанс — витягни картку: бонус, штраф, переміщення або гроші від гравців.',x:'💰 Податок — сплати 800 ₴.',j:'⛓ В\'язниця — тут лише відвідини. Сюди потрапляють за карткою або з клітинки «Іди в в\'язницю».',k:'🎰 Казино — 40% шанс виграти 1000 ₴, інакше втрачаєш 600 ₴.',g:'👮 Іди в в\'язницю — пропустиш наступний хід.'};
+function tinfo(i){ti=i;render()}
+function closeTi(){ti=null;render()}
+function ticon(b){const p=b[5];return p&&OK[p]!==0?'<img src="'+p+'" alt="" data-p="'+p+'" data-e="'+esc(b[3])+'" onerror="OK[this.dataset.p]=0;this.outerHTML=\'<b>\'+this.dataset.e+\'</b>\'">':'<b>'+esc(b[3])+'</b>'}
+function tileModal(){if(ti==null||!S||!T[ti])return '';sync();const b=T[ti],o=own[ti],pr=typeof b[1]=='number';
+let h=`<div class="ov" onclick="closeTi()"><div class="md" onclick="event.stopPropagation()"><div class="mh"><div class="ticon">${pr?ticon(b):'<b>'+esc(b[2])+'</b>'}</div><div><small class="gd">${pr?'ДІЛЯНКА':'ПОЛЕ'} №${ti}</small><h2>${esc(b[0])}</h2></div><button class="x" onclick="closeTi()">✕</button></div>`;
+if(pr){const base=Math.round(b[1]*.1),ow=o>=0?P[o]:null,grp=T.map((x,i)=>x[2]===b[2]&&typeof x[1]=='number'?i:-1).filter(i=>i>=0);
+h+=`<div class="stt"><span class="dotg" style="background:${GC[b[2]]}"></span> Група: ${grp.map(i=>esc(T[i][0])+(own[i]>=0?` <i style="color:${P[own[i]].c}">●</i>`:'')).join(' · ')}</div>`;
+h+=`<table class="rtb"><tr><td>Ціна</td><td>${fm(b[1])}</td></tr><tr><td>Оренда</td><td>${fm(base)}</td></tr><tr><td>Уся група в одного власника</td><td>${fm(base*2)}</td></tr><tr><td>★ рівень 1</td><td>${fm(base*4)}</td></tr><tr><td>★★ рівень 2</td><td>${fm(base*8)}</td></tr><tr><td>★★★ рівень 3</td><td>${fm(base*14)}</td></tr><tr><td>Покращення (за ★)</td><td>${fm(Math.round(b[1]/2))}</td></tr></table>`;
+h+=`<div class="stt">${ow?`Власник: <b style="color:${ow.c}">${esc(ow.n)}</b> · ★ ${lvl[ti]||0} · оренда зараз: <b>${fm(rent(ti))}</b>`:'Вільна ділянка — її можна купити'}</div>`}
+else h+=`<div class="stt">${SPEC[b[1]]||''}</div>`;
+return h+'</div></div>'}
+const THEMES=[{id:'neon',n:'Неон',bg:'#070f22',pn:'#0e1a36',ln:'#1c2c52',bdbg:'#0a1530',tile:'#ffffff'},{id:'gold',n:'Золото',bg:'#14100a',pn:'#241b0e',ln:'#5a4617',bdbg:'linear-gradient(135deg,#2b210f,#14100a)',tile:'#fff3d1'},
+{id:'classic',n:'Класика',bg:'#0d1f14',pn:'#14301f',ln:'#2c6b40',bdbg:'#2f7a4a',tile:'#fff7e6'},{id:'ocean',n:'Океан',bg:'#041a2b',pn:'#0a2a44',ln:'#1d5a85',bdbg:'linear-gradient(160deg,#0b4f7a,#062a45)',tile:'#eaf6ff'},
+{id:'sunset',n:'Захід',bg:'#1a0b24',pn:'#2a1238',ln:'#6a2f78',bdbg:'linear-gradient(160deg,#7a2f5a,#2a1238)',tile:'#fff0e6'},{id:'forest',n:'Ліс',bg:'#08170d',pn:'#10301a',ln:'#2c6b40',bdbg:'linear-gradient(160deg,#1f5a2e,#0b2412)',tile:'#eaf7e6'}];
+function applyTheme(){const t=THEMES.find(x=>x.id==SK.t)||THEMES[0],s=document.documentElement&&document.documentElement.style;if(!s)return;
+s.setProperty('--bg',t.bg);s.setProperty('--pn',t.pn);s.setProperty('--ln',t.ln);s.setProperty('--bdbg',t.bdbg);s.setProperty('--tile',t.tile);s.setProperty('--bdimg',"url('styles/"+t.id+".jpg')")}
+const mapSel=$('mapSel');mapSel.innerHTML=Object.keys(MAPS).map(k=>`<option value="${k}">${MAPS[k].ico} ${MAPS[k].n}</option>`).join('');mapSel.value=lsg('sk_m')||'brands';mapSel.onchange=()=>lss('sk_m',mapSel.value);
+function selMap(){return MAPS[mapSel.value]?mapSel.value:'brands'}
+applyTheme();
+Object.assign(window,{tinfo,closeTi,imgFail,OK});
