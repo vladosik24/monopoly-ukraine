@@ -125,6 +125,12 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 .fr-gold{box-shadow:0 0 0 2px #ffd23f,0 0 10px #ffd23f}.fr-neon{box-shadow:0 0 0 2px #38f2ff,0 0 12px #38f2ff}.fr-fire{box-shadow:0 0 0 2px #ff7a00,0 0 12px #ff3d00}.fr-ua{box-shadow:0 0 0 2px #2f6fe0,0 0 0 4px #ffd23f}.fr-royal{box-shadow:0 0 0 2px #b46bff,0 0 12px #b46bff}
 .skg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 14px}.sk{text-align:center;border:1px solid var(--ln);border-radius:12px;padding:10px 4px 6px;background:#0a1530}.sk.on{border-color:var(--gn);background:#0f2f2a}
 .sk .die,.sk .av{margin:0 auto 6px}.die.mini{width:44px;height:44px;padding:6px;border-radius:10px;gap:1px}.sk small{font-size:11px;color:var(--mut)}
+#bd{background:var(--bdimg,none) center/cover no-repeat,var(--bdbg,#0a1530)!important}.sp .in{background:var(--tile,#fff)}
+.rowm{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:14px;text-align:left}.rowm span{flex:none}.rowm select{flex:1;min-width:0;background:#0a1530;color:var(--fg);border:1px solid var(--ln);border-radius:10px;font-size:15px;padding:10px}
+.ticon{flex:none;width:56px;height:56px;border-radius:14px;background:#fff;display:grid;place-items:center;font-size:28px;overflow:hidden;padding:4px}.ticon img{max-width:100%;max-height:100%;object-fit:contain}
+.rtb{width:100%;border-collapse:collapse;margin-top:10px}.rtb td{padding:7px 4px;border-bottom:1px solid var(--ln);font-size:13px}.rtb td:last-child{text-align:right;font-weight:700;white-space:nowrap}
+.dotg{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}.thm{height:44px;border-radius:10px;border:1px solid var(--ln);display:flex;gap:3px;align-items:flex-end;justify-content:center;padding:5px;margin:0 auto 6px}.thm span{width:14px;height:14px;border-radius:3px}
+.t{cursor:pointer}
 </style></head><body>
 <div id="lobby">
 <div class="lobby-hero">
@@ -136,6 +142,7 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 <div id="src" class="mut" style="font-size:12px;margin-bottom:6px"></div>
 <div id="connectionStatus" class="cs">Підключення…</div>
 <div id="lobbyContent">
+<div class="rowm"><span>🗺 Карта поля</span><select id="mapSel"></select></div>
 <button id="createBtn" class="gb">➕ Створити кімнату</button>
 <div class="rowb"><button id="botBtn" class="gb2">🤖 ГРАТИ З БОТАМИ</button><select id="botN"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></div>
 <div class="row2"><input id="roomCodeInput" placeholder="Код GAME-XXXX"><button id="joinBtn" class="y">Увійти</button></div>
@@ -152,6 +159,6 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 <div id="dz"></div>
 <div id="skm" class="ov" style="display:none" onclick="closeSk()"></div>
 <div id="gameBoard" style="display:none"><div id="app"></div></div>
-<script type="module" src="game.js?v=7"></script>
-<div style="position:fixed;left:6px;bottom:2px;font-size:9px;opacity:.35;pointer-events:none">v7</div>
+<script type="module" src="game.js?v=8"></script>
+<div style="position:fixed;left:6px;bottom:2px;font-size:9px;opacity:.35;pointer-events:none">v8</div>
 </body></html>
