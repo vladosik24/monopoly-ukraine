@@ -126,8 +126,8 @@ function listen(){
     R=s.val();if(!R)return;
     if(R.status=='waiting'){
       const a=Object.values(R.players||{}).sort((x,y)=>x.j-y.j);
-      $('playersList').innerHTML=a.map(p=>'<div class="pi"><span class="av">'+avh({ph:p.ph,a:(p.name||'?')[0].toUpperCase()})+'</span> '+esc(p.name)+' '+(p.online?'🟢':'🔴')+'</div>').join('');
-      $('startGameBtn').style.display=a[0]&&a[0].id==myId?'block':'none';
+      $('playersList').innerHTML=a.map(p=>'<div class="pi"><span class="av">'+avh({ph:p.ph,a:Array.from(p.name||'?')[0].toUpperCase()})+'</span> '+esc(p.name)+' '+(p.bot?'🤖':p.online?'🟢':'🔴')+'</div>').join('');
+      $('startGameBtn').style.display=a[0]&&a[0].id==myId?'block':'none';$('addBotBtn').style.display=a[0]&&a[0].id==myId&&a.length<5?'block':'none';
       $('startGameBtn').disabled=a.length<2;
       $('startGameBtn').textContent='Почати гру ('+a.length+' гравців)';
     } else if(R.state){
@@ -140,14 +140,14 @@ function listen(){
     LOGS=[];s.forEach(c=>{LOGS.push(c.val())});if(S)render();
   });
 }
-function fresh(ps){return{players:ps.map((p,i)=>({id:p.id,n:p.n,ph:p.ph||'',c:PC[i],a:((p.n||'?')[0]||'?').toUpperCase(),m:10000,pos:0,jail:0,alive:true})),own:Array(40).fill(-1),lvl:Array(40).fill(0),cur:0,ph:'roll',tend:Date.now()+30000}}
+function fresh(ps){return{players:ps.map((p,i)=>({id:p.id,n:p.n,ph:p.ph||'',c:PC[i],a:p.bot?'🤖':(Array.from(p.n||'?')[0]||'?').toUpperCase(),bot:!!p.bot,m:10000,pos:0,jail:0,alive:true})),own:Array(40).fill(-1),lvl:Array(40).fill(0),cur:0,ph:'roll',tend:Date.now()+30000}}
 async function startGame(){
   const ps=Object.values((await get(ref(db,'rooms/'+code+'/players'))).val()||{}).sort((a,b)=>a.j-b.j);
   if(ps.length<2)return;
-  await update(ref(db,'rooms/'+code),{state:fresh(ps.map(p=>({id:p.id,n:p.name,ph:p.ph||''}))),status:'playing'});
+  await update(ref(db,'rooms/'+code),{state:fresh(ps.map(p=>({id:p.id,n:p.name,ph:p.ph||'',bot:!!p.bot}))),status:'playing'});
   ev(0,'Гра почалась! Капітал '+fm(10000));
 }
-async function newGame(){if(!S||S.players[0].id!=myId)return;S=fresh(S.players.map(p=>({id:p.id,n:p.n,ph:p.ph||''})));await save();ev(0,'Нова гра! Капітал '+fm(10000))}
+async function newGame(){if(!S||S.players[0].id!=myId)return;S=fresh(S.players.map(p=>({id:p.id,n:p.n,ph:p.ph||'',bot:!!p.bot})));await save();ev(0,'Нова гра! Капітал '+fm(10000))}
 const ev=(p,t,c)=>push(ref(db,'rooms/'+code+'/log'),{p,t,c:c?1:0,h:hm()});
 const save=()=>set(ref(db,'rooms/'+code+'/state'),S);
 function sync(){
@@ -166,7 +166,7 @@ function sync(){
   P=S.players;own=S.own;lvl=S.lvl;
 }
 const on=id=>!(R&&R.players&&R.players[id]&&R.players[id].online===false);
-function driver(){const c=S.players[S.cur];if(on(c.id))return c.id==myId;const h=S.players.find(p=>p.alive&&on(p.id));return !!h&&h.id==myId}
+function driver(){const c=S.players[S.cur];if(c.bot){const h=S.players.find(p=>!p.bot&&p.alive&&on(p.id));return !!h&&h.id==myId}if(on(c.id))return c.id==myId;const h=S.players.find(p=>!p.bot&&p.alive&&on(p.id));return !!h&&h.id==myId}
 function pay(k,a,to){const p=S.players[k];p.m-=a;if(to!=null)S.players[to].m+=a;if(p.m<0){p.m=0;p.alive=false;S.own.forEach((o,j)=>{if(o==k){S.own[j]=-1;S.lvl[j]=0}});ev(k,'збанкрутував 💥')}}
 async function roll(){
   if(!S||S.ph!='roll'||busy||!driver())return;
@@ -277,7 +277,7 @@ else if(p.m>=b[1]){p.m-=b[1];own[pos]=k;ev(k,'купує філію '+b[0]+' з�
 S.ph='wait';await save();setTimeout(end,900)}
 async function skip(){if(!S||S.ph!='buy'||busy||!driver())return;busy=true;S.ph='wait';await save();end()}
 async function end(){sync();const al=P.filter(p=>p.alive);
-if(al.length<2){S.ph='over';S.dice=null;ev(P.indexOf(al[0]),'🏆 переміг!');await save();busy=false;return}
+if(al.length<2||!al.some(p=>!p.bot)){S.ph='over';S.dice=null;ev(P.indexOf(al[0]),al.length<2?'🏆 переміг!':'🏆 боти перемогли');await save();busy=false;return}
 let n=S.cur;do{n=(n+1)%P.length}while(!P[n].alive);S.cur=n;S.ph='roll';S.dice=null;S.tend=Date.now()+30000;await save();busy=false}
 let sayBusy=false;
 function say(){
@@ -291,16 +291,16 @@ function say(){
   try{ev(m<0?0:m,t,1)}catch(e){console.error(e)}
   setTimeout(()=>{sayBusy=false},300);
 }
-function render(){if(!S)return;sync();const k=S.cur,c=P[k],mine=c.id==myId,ph=S.ph,pb=T[c.pos];
+function render(){if(!S)return;sync();trNotify();const k=S.cur,c=P[k],mine=c.id==myId,ph=S.ph,pb=T[c.pos];
 const spec=!P.some(p=>p.id==myId);const isB=typeof pb[1]=='number'&&own[c.pos]==k;
 const pn=P.map((p,i)=>'<div class="pl'+(i==k?' on':'')+(p.alive?'':' dead')+'" style="--c:'+p.c+'" onclick="prof('+i+')">'+(i==k&&p.alive&&ph!='over'?'<i class="tm" id="tm">30 c</i>':'')+'<div class="av">'+avh(p)+'</div><div><b>'+esc(p.n)+(p.id==myId?' (ти)':'')+'</b><span>'+(p.alive?fm(p.m):'БАНКРУТ')+'</span></div></div>').join('');
 const ac=mine&&ph=='buy'?'<div class="ac"><button class="y" onclick="buy()">'+(isB?'⭐ Покращити '+Math.round(pb[1]/2):'🛒 Купити '+pb[0]+' · '+pb[1])+' ₴</button><button class="n" onclick="skip()">Пас</button></div>':ph=='over'&&P[0].id==myId?'<div class="ac"><button onclick="newGame()">Нова гра</button></div>':'';
 const buyFab=mine&&ph=='buy'?'<div class="buybar"><button class="y" onclick="buy()">'+(isB?'⭐ Покращити за '+Math.round(pb[1]/2):'🛒 Купити «'+pb[0]+'» за '+pb[1])+' ₴</button><button class="n" onclick="skip()">Пас</button></div>':'';
 const sub=ph=='over'?'Гру завершено':mine&&ph=='buy'?(isB?'Покращити ділянку?':'Купити '+pb[0]+'?'):mine&&ph=='roll'?'Твій хід — кидай кубики.':'Очікуйте завершення ходу.';
 const L=LOGS;
-let h='<div id="top">'+pn+'<button class="mn" onclick="if(confirm(\'Вийти з гри?\'))location.reload()">⋮</button></div><div id="bd">'+T.map(tile).join('');
+let h='<div id="top">'+pn+'<button class="mn" onclick="if(confirm(\'Вийти з гри?\'))location.reload()">⋮</button></div>'+tbar()+'<div id="bd">'+T.map(tile).join('');
 h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+LOGS.length+'</span></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();say()}"><button type="button" onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b><small>'+sub+'</small>'+ac+'</div></div>';
-h+='</div>'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+modalHtml();
+h+='</div>'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+modalHtml()+tradeUI();
 const o=$('ci'),v=o?o.value:'',f=o&&document.activeElement===o;
 $('app').innerHTML=h;const n=$('ci');if(n){n.value=v;if(f)n.focus()}const lg=$('log');if(lg)lg.scrollTop=lg.scrollHeight;if(S.dice&&S.rid&&S.rid!==lastRid){lastRid=S.rid;playDice(S.dice)}
   // запам'ятати позиції для анімації фішок
@@ -312,10 +312,10 @@ Object.assign(window,{roll,buy,skip,say,newGame,tgl:()=>{showAll=!showAll;render
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function okp(u){return /^https:\/\/[^\s"'()<>\\]+$/.test(u||'')?u:''}
 function avh(p){const u=okp(p.ph),a=esc(p.a||'?');return u?`<img src="${u}" alt="" onerror="this.parentNode.textContent='${a}'">`:a}
-function tokn(p){const u=okp(p.ph);return `<s class="st${hopId===p.id?' hop':''}" style="--c:${p.c}${u?`;background:url('${u}') center/cover`:''}">${u?'':esc(p.a)}</s>`}
+function tokn(p){const u=okp(p.ph);return `<s class="tkn${hopId===p.id?' hop':''}" style="--c:${p.c}${u?`;background:url('${u}') center/cover`:''}">${u?'':esc(p.a)}</s>`}
 let ROOMS=[],modal=null,stats=false;
 onValue(ref(db,'rooms'),s=>{
-  ROOMS=[];s.forEach(c=>{const r=c.val();if(!r||!r.players)return;const ps=Object.values(r.players).sort((a,b)=>a.j-b.j);if(!ps.some(p=>p.online))return;const mine=ps.some(p=>p.id==myId);if(r.state&&r.state.ph=='over'&&!mine)return;ROOMS.push({code:c.key,st:r.status,ps,mine})});
+  ROOMS=[];s.forEach(c=>{const r=c.val();if(!r||!r.players)return;const ps=Object.values(r.players).sort((a,b)=>a.j-b.j);if(!ps.some(p=>p.online&&!p.bot))return;const mine=ps.some(p=>p.id==myId);if(r.state&&r.state.ph=='over'&&!mine)return;ROOMS.push({code:c.key,st:r.status,ps,mine})});
   if(!code)renderLobby();
 },e=>{
   $('roomList').innerHTML='<p class="mut">⚠️ Немає доступу до списку кімнат.<br>Firebase → Realtime Database → Rules:<br><code>{ "rules": { ".read": true, ".write": true } }</code><br>(або обмеж лише /rooms)</p>';
@@ -324,7 +324,7 @@ onValue(ref(db,'rooms'),s=>{
 function renderLobby(){$('roomCount').textContent='Знайдено: '+ROOMS.length;
 $('roomList').innerHTML=ROOMS.map(r=>{const h=r.ps[0],pl=r.st=='playing',q="'"+r.code+"'";
 const btn=r.mine?`<button class="y" onclick="joinRoom(${q})">Продовжити</button>`:pl?`<button class="n" onclick="watch(${q})">Дивитися</button>`:r.ps.length>=5?'<button class="n" disabled>Повна</button>':`<button onclick="joinRoom(${q})">Приєднатися</button>`;
-return `<div class="rm"><div class="av">${avh({ph:h.ph,a:(h.name||'?')[0].toUpperCase()})}</div><div class="ri"><b>${esc(h.name)}</b><span class="bd ${pl?'pg':'wt'}">${pl?'Гра триває':'Очікування'}</span><small class="mut">${r.ps.length}/5 гравців</small></div>${btn}</div>`}).join('')||'<p class="mut">Кімнат поки немає — створи свою!</p>'}
+return `<div class="rm"><div class="av">${avh({ph:h.ph,a:Array.from(h.name||'?')[0].toUpperCase()})}</div><div class="ri"><b>${esc(h.name)}</b><span class="bd ${pl?'pg':'wt'}">${pl?'Гра триває':'Очікування'}</span><small class="mut">${r.ps.length}/5 гравців</small></div>${btn}</div>`}).join('')||'<p class="mut">Кімнат поки немає — створи свою!</p>'}
 function watch(c){code=c;enter(true)}
 function prof(i){modal=i;stats=false;render()}
 function closeProf(){modal=null;render()}
@@ -341,6 +341,7 @@ let h=`<div class="ov" onclick="closeProf()"><div class="md" onclick="event.stop
 if(ls.length){h+=`<div class="stt" style="max-height:120px;overflow:auto">${ls.map(i=>esc(T[i][0])+(lvl[i]?' ★'+lvl[i]:'')).join(' · ')}</div>`}
 if(me){h+=`<div class="mi grn"><i>🏦</i><div><b>Кредит</b><small>${my?'Борг: '+fm(p.debt||0):'Лише під час вашого ходу'}</small>${my?'<div class="cb"><button onclick="credit(1)">Взяти 2 000 ₴</button><button class="n" onclick="credit(0)">Повернути</button></div>':''}</div></div>`;
 h+=`<div class="mi red"${my?' onclick="surr()"':' style="opacity:.55"'}><i>🏳️</i><div><b>Здатися</b><small>${my?'Вийти з гри':'Лише під час вашого ходу'}</small></div></div>`}
+if(!me&&p.alive&&P.some(q=>q.id==myId&&q.alive))h+=`<div class="mi gold" onclick="openTrade(${modal})"><i>🤝</i><div><b>Обмін</b><small>Запропонувати обмін ділянками та грошима</small></div></div>`;
 return h+'</div></div>'}
 async function credit(t){if(!S||busy||!driver()||!(S.ph=='roll'||S.ph=='buy'))return;sync();const k=S.cur,p=P[k];if(p.id!=myId)return;busy=true;
 if(t){if((p.debt||0)>=4800){busy=false;return alert('Ліміт кредиту досягнуто')}p.m+=2000;p.debt=(p.debt||0)+2400;ev(k,'взяв кредит 2000 ₴ (повернути 2400 ₴)')}
@@ -373,3 +374,60 @@ stepping=true;const id=m.id;
 const tick=()=>{const q=S&&S.players.find(x=>x.id==id);if(!q||!q.alive||vis[id]===q.pos||(q.pos-vis[id]+40)%40>12){if(q)vis[id]=q.pos;stepping=false;hopId=null;drawTokens();return syncTokens()}
 vis[id]=(vis[id]+1)%40;hopId=id;drawTokens();setTimeout(tick,160)};
 tick()}
+
+// ===== ТОРГИ =====
+let tr=null,trSeen=null;
+const myIdx=()=>P.findIndex(p=>p.id==myId);
+const trList=()=>Object.values((R&&R.trades)||{});
+const trOut=()=>trList().find(t=>t.fromId==myId&&(t.status=='pending'||t.status=='accepted'));
+const trIn=()=>trList().find(t=>t.toId==myId&&t.status=='pending');
+const pname=id=>{const p=(S&&S.players||[]).find(x=>x.id==id);return p?p.n:'?'};
+function openTrade(i){if(!S)return;if(trOut())return toast('Спочатку дочекайся відповіді на попередню пропозицію');tr={to:i,give:[],ask:[],gc:0,ac:0};modal=null;render()}
+function closeTrade(){tr=null;render()}
+function tgp(side,i){if(!tr)return;const a=side=='g'?tr.give:tr.ask,j=a.indexOf(i);j<0?a.push(i):a.splice(j,1);render()}
+function adj(side,d){if(!tr)return;const me=P[myIdx()],o=P[tr.to];if(side=='g')tr.gc=Math.max(0,Math.min(me.m,tr.gc+d));else tr.ac=Math.max(0,Math.min(o.m,tr.ac+d));render()}
+async function sendTrade(){if(!tr||!S)return;sync();if(myIdx()<0)return;if(!tr.give.length&&!tr.ask.length&&!tr.gc&&!tr.ac)return toast('Додай щось до обміну');
+const id='t'+Date.now(),d=tr;for(const t of trList().filter(t=>t.fromId==myId&&t.status!='pending'&&t.status!='accepted'))await set(ref(db,`rooms/${code}/trades/${t.id}`),null);
+await set(ref(db,`rooms/${code}/trades/${id}`),{id,fromId:myId,toId:P[d.to].id,give:d.give,ask:d.ask,gc:d.gc,ac:d.ac,status:'pending',ts:Date.now()});tr=null;toast('🤝 Пропозицію надіслано');render()}
+const setTr=(id,st)=>update(ref(db,`rooms/${code}/trades/${id}`),{status:st});
+const answerTrade=(id,yes)=>setTr(id,yes?'accepted':'declined');
+const cancelTrade=id=>setTr(id,'cancelled');
+function trNotify(){const L=trList();if(trSeen===null){trSeen={};L.forEach(t=>trSeen[t.id]=t.status);return}
+L.forEach(t=>{if(trSeen[t.id]===t.status)return;trSeen[t.id]=t.status;if(t.fromId!=myId&&t.toId!=myId)return;
+if(t.status=='done')toast('🤝 Обмін завершено: '+pname(t.fromId)+' ↔ '+pname(t.toId));
+else if(t.status=='declined'&&t.fromId==myId)toast(pname(t.toId)+' відхилив обмін');
+else if(t.status=='failed')toast('Обмін не вдався: умови змінились');
+else if(t.status=='pending'&&t.toId==myId)toast('🤝 Пропозиція обміну від '+pname(t.fromId))})}
+const chip=(i,on,dis,fn)=>`<span class="chip${on?' on':''}${dis?' dis':''}"${dis?'':` onclick="${fn}"`}><i style="color:${GC[T[i][2]]}">●</i> ${esc(T[i][0])} · ${T[i][1]}${lvl[i]?' ★'+lvl[i]:''}</span>`;
+const desc=(a,c)=>(a||[]).map(i=>T[i]?esc(T[i][0]):'').filter(Boolean).concat(c?[fm(c)]:[]).join(', ')||'—';
+function tbar(){const t=trOut();if(!t)return '';const o=P.find(p=>p.id==t.toId);return `<div class="tbar"><span>🤝 Обмін: очікуємо ${esc(o?o.n:'')}</span>${t.status=='pending'?`<button class="n" onclick="cancelTrade('${t.id}')">Скасувати</button>`:''}</div>`}
+function tradeUI(){if(!S)return '';sync();const me=myIdx();
+if(tr&&me>=0){const o=P[tr.to],mp=T.map((b,i)=>own[i]===me?i:-1).filter(i=>i>=0),tp=T.map((b,i)=>own[i]===tr.to?i:-1).filter(i=>i>=0),none='<small class="mut">Немає ділянок</small>';
+return `<div class="ov" onclick="closeTrade()"><div class="md" onclick="event.stopPropagation()"><div class="mh"><div><small class="gd">ОБМІН</small><h2>🤝 ${esc(o.n)}</h2></div><button class="x" onclick="closeTrade()">✕</button></div><div class="tc"><div class="tcol"><b>Ти віддаєш</b><div class="chips">${mp.map(i=>chip(i,tr.give.includes(i),lvl[i]>0,`tgp('g',${i})`)).join('')||none}</div><div class="cash"><button onclick="adj('g',-500)">−</button><b>${fm(tr.gc)}</b><button onclick="adj('g',500)">+</button></div></div><div class="tcol"><b>Ти просиш</b><div class="chips">${tp.map(i=>chip(i,tr.ask.includes(i),lvl[i]>0,`tgp('a',${i})`)).join('')||none}</div><div class="cash"><button onclick="adj('a',-500)">−</button><b>${fm(tr.ac)}</b><button onclick="adj('a',500)">+</button></div></div></div><small class="mut">Ділянки із зірочками ★ обмінювати не можна</small><div class="cb"><button class="y" onclick="sendTrade()">Запропонувати</button></div></div></div>`}
+const t=trIn();if(t)return `<div class="ov"><div class="md"><small class="gd">ПРОПОЗИЦІЯ ОБМІНУ</small><h2>🤝 ${esc(pname(t.fromId))}</h2><div class="stt"><b>Віддає тобі:</b> ${desc(t.give,t.gc)}</div><div class="stt"><b>Просить у тебе:</b> ${desc(t.ask,t.ac)}</div><div class="cb"><button class="y" onclick="answerTrade('${t.id}',true)">Прийняти</button><button class="n" onclick="answerTrade('${t.id}',false)">Відхилити</button></div></div></div>`;
+return ''}
+async function applyTrades(){if(!S||busy||!R||!R.trades||!driver()||!(S.ph=='roll'||S.ph=='buy'))return;
+const t=trList().find(x=>x.status=='accepted');if(!t)return;busy=true;sync();
+const a=P.findIndex(p=>p.id==t.fromId),b=P.findIndex(p=>p.id==t.toId),give=t.give||[],ask=t.ask||[],gc=+t.gc||0,ac=+t.ac||0;
+const ok=a>=0&&b>=0&&a!=b&&P[a].alive&&P[b].alive&&give.every(i=>own[i]===a&&!lvl[i])&&ask.every(i=>own[i]===b&&!lvl[i])&&P[a].m>=gc&&P[b].m>=ac;
+if(ok){give.forEach(i=>{own[i]=b});ask.forEach(i=>{own[i]=a});P[a].m+=ac-gc;P[b].m-=ac-gc;ev(a,'обмінявся з '+P[b].n+': віддав '+desc(give,gc)+', отримав '+desc(ask,ac));await save()}
+await setTr(t.id,ok?'done':'failed');busy=false}
+setInterval(()=>{applyTrades().catch(e=>{busy=false;console.error(e)})},500);
+Object.assign(window,{openTrade,closeTrade,tgp,adj,sendTrade,answerTrade,cancelTrade});
+
+// ===== БОТИ =====
+const BOTN=['Тарас','Оля','Іван','Марина','Богдан'];
+async function addBot(){if(!R||!R.players)return;const ps=Object.values(R.players);if(ps.length>=5)return;const n=ps.filter(p=>p.bot).length,id='bot_'+Date.now()+n;
+await set(ref(db,`rooms/${code}/players/${id}`),{id,name:'🤖 '+BOTN[n%5],ph:'',j:Date.now(),online:true,bot:true})}
+async function startSolo(){try{const n=Math.max(1,Math.min(4,+$('botN').value||3));code='GAME-'+Math.random().toString(36).slice(2,6).toUpperCase();
+const players={[myId]:{id:myId,name:nm(),ph:myPh,j:Date.now(),online:true}};for(let i=0;i<n;i++){const id='bot_'+i;players[id]={id,name:'🤖 '+BOTN[i],ph:'',j:Date.now()+1+i,online:true,bot:true}}
+await set(ref(db,'rooms/'+code),{code,status:'waiting',players});enter();await startGame()}catch(e){alert('Не вдалося почати гру: '+e.message)}}
+$('botBtn').onclick=startSolo;$('addBotBtn').onclick=addBot;
+const isHost=()=>{if(!S||!R)return false;const h=S.players.find(p=>!p.bot&&p.alive&&on(p.id));return !!h&&h.id==myId};
+function botTick(){if(!S||!R||busy||S.ph=='over'||S.ph=='wait')return;sync();const k=S.cur,p=P[k];
+if(p&&p.bot&&p.alive&&driver()&&Date.now()>S.tend-30000+1300){
+ if(S.ph=='roll')return void roll();
+ if(S.ph=='buy'){const b=T[p.pos],up=own[p.pos]===k,cost=up?Math.round(b[1]/2):b[1],grp=T.every((x,i)=>x[2]!==b[2]||typeof x[1]!='number'||own[i]===k||i===p.pos);return void(p.m>=cost+(grp?600:1500)?buy():skip())}}
+if(isHost()){const t=trList().find(x=>x.status=='pending'&&P.some(q=>q.id==x.toId&&q.bot&&q.alive));
+ if(t){const val=(a,c)=>(a||[]).reduce((s,i)=>s+(T[i]?T[i][1]:0),0)+(+c||0);setTr(t.id,val(t.give,t.gc)>=val(t.ask,t.ac)*1.15?'accepted':'declined')}}}
+setInterval(()=>{try{botTick()}catch(e){console.error(e)}},500);
