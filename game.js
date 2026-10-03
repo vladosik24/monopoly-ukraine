@@ -142,7 +142,7 @@ function listen(){
       $('startGameBtn').textContent='Почати гру ('+a.length+' гравців)';
     } else if(R.state){
       if(!busy||!S)S=R.state; // поки ходить цей клієнт — не підміняємо стан застарілим знімком
-      if(!started){started=true;$('lobby').style.display='none';$('gameBoard').style.display='block'}
+      if(!started){started=true;if(S.players.some(p=>p.id==myId))bumpGames();$('lobby').style.display='none';$('gameBoard').style.display='block'}
       render();
     }
   });
@@ -295,7 +295,7 @@ function say(){
   try{ev(m<0?0:m,t,1)}catch(e){console.error(e)}
   setTimeout(()=>{sayBusy=false},300);
 }
-function render(){if(!S)return;useMap(S.map||'brands');sync();trNotify();const k=S.cur,c=P[k],mine=c.id==myId,ph=S.ph,pb=T[c.pos];
+function render(){if(!S)return;useMap(S.map||'brands');sync();trNotify();checkWin();const k=S.cur,c=P[k],mine=c.id==myId,ph=S.ph,pb=T[c.pos];
 const spec=!P.some(p=>p.id==myId);const isB=typeof pb[1]=='number'&&own[c.pos]==k;
 const pn=P.map((p,i)=>'<div class="pl'+(i==k?' on':'')+(p.alive?'':' dead')+'" style="--c:'+p.c+'" onclick="prof('+i+')">'+(i==k&&p.alive&&ph!='over'?'<i class="tm" id="tm">30 c</i>':'')+'<div class="av'+frc(p)+'"'+fra(p)+'>'+avh(p)+'</div><div><b>'+esc(p.n)+(p.id==myId?' (ти)':'')+'</b><span>'+(p.alive?fm(p.m):'БАНКРУТ')+'</span></div></div>').join('');
 const ac=ph=='over'&&P[0].id==myId?'<div class="ac"><button onclick="newGame()">Нова гра</button></div>':'';
@@ -316,7 +316,7 @@ Object.assign(window,{roll,buy,skip,say,newGame,tgl:()=>{showAll=!showAll;render
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function okp(u){return /^https:\/\/[^\s"'()<>\\]+$/.test(u||'')?u:''}
 function avh(p){const u=okp(p.ph),a=esc(p.a||'?');return u?`<img src="${u}" alt="" onerror="this.parentNode.textContent='${a}'">`:a}
-function tokn(p){const u=okp(p.ph);return `<s class="tkn${frc(p)}${hopId===p.id?' hop':''}" style="--c:${p.c}${u?`;background:url('${u}') center/cover`:''}">${u?'':esc(p.a)}</s>`}
+function tokn(p){const u=okp(p.ph);return `<s class="tkn${frc(p)}${hopId===p.id?' hop':''}" style="--c:${p.c};${frs(p)}${u?`;background:url('${u}') center/cover`:''}">${u?'':esc(p.a)}</s>`}
 let ROOMS=[],modal=null,stats=false;
 onValue(ref(db,'rooms'),s=>{
   ROOMS=[];s.forEach(c=>{const r=c.val();if(!r||!r.players)return;const ps=Object.values(r.players).sort((a,b)=>a.j-b.j);if(!ps.some(p=>p.online&&!p.bot))return;const mine=ps.some(p=>p.id==myId);if(r.state&&r.state.ph=='over'&&!mine)return;ROOMS.push({code:c.key,st:r.status,ps,mine,map:r.map})});
@@ -450,21 +450,24 @@ if(c[1]>0)p.m+=c[1];else pay(k,-c[1]);return false}
 // ===== СКІНИ =====
 const DICE=[{id:'classic',n:'Класика',bg:'#fff',pip:'#111'},{id:'gold',n:'Золото',bg:'linear-gradient(135deg,#ffe27a,#e0a800)',pip:'#3a2600'},{id:'neon',n:'Неон',bg:'#0b1230',pip:'#38f2ff',glow:'0 0 8px #38f2ff'},
 {id:'carbon',n:'Карбон',bg:'#15171c',pip:'#ffd23f',glow:'0 0 6px #ffd23f'},{id:'emerald',n:'Смарагд',bg:'linear-gradient(135deg,#46f08c,#0e7a45)',pip:'#022'},{id:'ruby',n:'Рубін',bg:'linear-gradient(135deg,#ff7a7a,#a00020)',pip:'#fff'},{id:'ua',n:'Жовто-блакитні',bg:'#ffd23f',pip:'#1f4fb8'}];
-const FRAMES=[{id:'none',n:'Без рамки'},{id:'gold',n:'Золото',b:'👑'},{id:'neon',n:'Неон',b:'⚡'},{id:'fire',n:'Вогонь',b:'🔥'},{id:'ua',n:'Тризуб',b:'🔱'},{id:'royal',n:'Діамант',b:'💎'}];
+const FRAMES=[{id:'none',n:'Без рамки'},{id:'gold',n:'Золото',b:'👑'},{id:'neon',n:'Неон',b:'⚡'},{id:'fire',n:'Вогонь',b:'🔥'},{id:'ua',n:'Тризуб',b:'🔱'},{id:'royal',n:'Діамант',b:'💎'},{id:'red',n:'Червона',c:'#ff4d4d'},{id:'orange',n:'Помаранчева',c:'#ff9f1c'},{id:'yellow',n:'Жовта',c:'#ffd23f'},{id:'green',n:'Зелена',c:'#3ddc84'},{id:'mint',n:'М\'ятна',c:'#2ee6c4'},{id:'sky',n:'Блакитна',c:'#4aa8ff'},{id:'blue',n:'Синя',c:'#2f6fe0'},{id:'purple',n:'Фіолетова',c:'#b46bff'},{id:'pink',n:'Рожева',c:'#ff6bb5'},{id:'white',n:'Біла',c:'#ffffff'}];
+(function(){let s='';FRAMES.forEach(f=>{if(f.c)s+='.fr-'+f.id+'{box-shadow:0 0 0 2px '+f.c+',0 0 12px '+f.c+'}'});if(document.head){const e=document.createElement('style');e.textContent=s;document.head.appendChild(e)}})();
+const isHex=s=>/^#[0-9a-fA-F]{6}$/.test(s||'');
 const rnd=a=>a[Math.random()*a.length|0].id;
 const lsg=k=>{try{return localStorage.getItem(k)}catch(e){return null}},lss=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 const SK={d:lsg('sk_d')||'classic',f:lsg('sk_f')||'none',t:lsg('sk_t')||'neon'};
-const dsk=id=>DICE.find(x=>x.id==id)||DICE[0],frm=id=>FRAMES.find(x=>x.id==id)||FRAMES[0];
-const frc=p=>p&&p.fr&&p.fr!='none'?' fr-'+p.fr:'';
-function fra(p,ex){const f=p&&frm(p.fr),on=f&&f.id!='none',st=(ex?ex+';':'')+(on?"--fi:url('skins/frame-"+f.id+".png')":'');return (on&&f.b?' data-b="'+f.b+'"':'')+(st?' style="'+st+'"':'')}
+const dsk=id=>DICE.find(x=>x.id==id)||DICE[0],frm=id=>isHex(id)?{id:id,n:'Свій колір',c:id,custom:1}:(FRAMES.find(x=>x.id==id)||FRAMES[0]);
+const frc=p=>p&&p.fr&&p.fr!='none'&&/^[a-z0-9_-]+$/i.test(p.fr)?' fr-'+p.fr:'';
+const frs=p=>p&&isHex(p.fr)?'box-shadow:0 0 0 2px '+p.fr+',0 0 12px '+p.fr+';':'';
+function fra(p,ex){const f=p&&frm(p.fr),on=f&&f.id!='none',st=(ex?ex+';':'')+frs(p)+(on&&!f.custom?"--fi:url('skins/frame-"+f.id+".png')":'');return (on&&f.b&&!f.custom?' data-b="'+f.b+'"':'')+(st?' style="'+st+'"':'')}
 function applyDie(z){const s=dsk(S&&S.dsk);z.style.setProperty('--dbg',s.bg);z.style.setProperty('--dpip',s.pip);z.style.setProperty('--dglow',s.glow||'inset 0 -2px 3px rgba(255,255,255,.35)');z.style.setProperty('--dimg',"url('skins/dice-"+s.id+".png')")}
 function skinUI(){const z=$('skm');
 const dices=DICE.map(s=>`<div class="sk${SK.d==s.id?' on':''}" onclick="pickSk('d','${s.id}')"><div class="die mini" style="--dbg:${s.bg};--dpip:${s.pip};--dglow:${s.glow||'none'};--dimg:url('skins/dice-${s.id}.png')">${pips(5)}</div><small>${s.n}</small></div>`).join('');
 const frames=FRAMES.map(f=>`<div class="sk${SK.f==f.id?' on':''}" onclick="pickSk('f','${f.id}')"><div class="av big${f.id=='none'?'':' fr-'+f.id}"${f.b?` data-b="${f.b}"`:''} style="--c:#4aa8ff;--fi:url('skins/frame-${f.id}.png')">${avh({ph:myPh,a:(Array.from(nm())[0]||'?').toUpperCase()})}</div><small>${f.n}</small></div>`).join('');
 const themes=THEMES.map(t=>`<div class="sk${SK.t==t.id?' on':''}" onclick="pickSk('t','${t.id}')"><div class="thm" style="background:${t.bdbg}"><span style="background:${t.tile}"></span><span style="background:${t.tile}"></span><span style="background:${t.tile}"></span></div><small>${t.n}</small></div>`).join('');
-z.innerHTML=`<div class="md" onclick="event.stopPropagation()"><div class="mh"><h2>🎨 Скіни</h2><button class="x" onclick="closeSk()">✕</button></div><b>Кубики</b><div class="skg">${dices}</div><b>Рамки аватарки</b><div class="skg">${frames}</div><b>Стиль поля</b><div class="skg">${themes}</div></div>`;z.style.display='grid'}
+z.innerHTML=`<div class="md" onclick="event.stopPropagation()"><div class="mh"><h2>🎨 Скіни</h2><button class="x" onclick="closeSk()">✕</button></div><b>Кубики</b><div class="skg">${dices}</div><b>Рамки аватарки</b><div class="skg">${frames}</div><b>Свій колір рамки</b><div class="cust"><input type="color" id="fcol" value="${isHex(SK.f)?SK.f:'#ff4d4d'}" onchange="pickSk('f',this.value)"><small>обери будь-який колір</small></div><b>Стиль поля</b><div class="skg">${themes}</div></div>`;z.style.display='grid'}
 function closeSk(){$('skm').style.display='none'}
-function hdrFrame(){const a=$('meAv'),f=frm(SK.f);a.className='av big'+(f.id=='none'?'':' fr-'+f.id);if(f.id!='none'&&f.b)a.dataset.b=f.b;else delete a.dataset.b}
+function hdrFrame(){const a=$('meAv'),f=frm(SK.f);a.className='av big'+(f.id=='none'||f.custom?'':' fr-'+f.id);a.style.boxShadow=f.custom?'0 0 0 2px '+f.c+',0 0 12px '+f.c:'';if(f.id!='none'&&f.b)a.dataset.b=f.b;else delete a.dataset.b}
 function pickSk(kind,id){SK[kind]=id;lss('sk_'+kind,id);if(kind=='t')applyTheme();hdrFrame();skinUI()}
 $('skinBtn').onclick=skinUI;hdrFrame();
 Object.assign(window,{pickSk,closeSk});
@@ -502,3 +505,22 @@ const mapSel=$('mapSel');mapSel.innerHTML=Object.keys(MAPS).map(k=>`<option valu
 function selMap(){return MAPS[mapSel.value]?mapSel.value:'brands'}
 applyTheme();
 Object.assign(window,{tinfo,closeTi,imgFail,OK});
+
+// ===== ЛОБІ: рівень, перемоги, топ гравців, швидка гра =====
+const gi=k=>+(lsg(k)||0);
+function statsUI(){const gm=gi('st_g'),w=gi('st_w'),xp=gm*100+w*300,lv=Math.floor(xp/1000)+1,cur=xp%1000;
+$('lvTxt').textContent='Рівень '+lv;$('xpBar').style.width=cur/10+'%';$('xpTxt').textContent=cur+' / 1000';$('winChip').textContent='🏆 '+w}
+function bumpGames(){lss('st_g',gi('st_g')+1);statsUI()}
+const won={};
+function checkWin(){if(!S||S.ph!='over'||won[code])return;const al=S.players.filter(p=>p.alive);if(al.length==1&&al[0].id==myId){won[code]=1;lss('st_w',gi('st_w')+1);statsUI();recWin(al[0])}}
+async function recWin(p){try{const r=ref(db,'leaderboard/'+myId),o=(await get(r)).val()||{};await set(r,{name:p.n,ph:p.ph||'',wins:(o.wins||0)+1})}catch(e){}}
+onValue(ref(db,'leaderboard'),s=>{const a=Object.values(s.val()||{}).filter(x=>x&&x.wins).sort((x,y)=>y.wins-x.wins).slice(0,5);
+$('topList').innerHTML=a.map((x,i)=>`<div class="tr"><span>${i==0?'👑':i+1}</span><b>${esc(x.name)}</b><em>${x.wins} 🏆</em></div>`).join('')||'<small class="mut">Поки порожньо — стань першим!</small>'},
+()=>{$('topList').innerHTML='<small class="mut">Топ недоступний: у правилах Firebase дозволь читання leaderboard</small>'});
+async function quickPlay(){const r=ROOMS.find(x=>x.st=='waiting'&&!x.mine&&x.ps.length<5);if(r)return joinRoom(r.code);return createRoom()}
+$('quickBtn').onclick=quickPlay;
+$('joinToggle').onclick=()=>{const j=$('joinRow');j.style.display=j.style.display=='none'?'flex':'none'};
+statsUI();
+
+// якщо є справжня картинка лобі — прибираємо намальований силует
+{const _i=new Image();_i.onload=()=>{const s=document.querySelector('.scene');if(s)s.style.display='none'};_i.src='styles/lobby.jpg'}
