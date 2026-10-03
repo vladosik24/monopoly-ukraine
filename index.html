@@ -131,6 +131,14 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 .rtb{width:100%;border-collapse:collapse;margin-top:10px}.rtb td{padding:7px 4px;border-bottom:1px solid var(--ln);font-size:13px}.rtb td:last-child{text-align:right;font-weight:700;white-space:nowrap}
 .dotg{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}.thm{height:44px;border-radius:10px;border:1px solid var(--ln);display:flex;gap:3px;align-items:flex-end;justify-content:center;padding:5px;margin:0 auto 6px}.thm span{width:14px;height:14px;border-radius:3px}
 .t{cursor:pointer}
+
+#app{padding:6px 6px 12px}
+#bd{aspect-ratio:1/1.36!important}
+#acts{min-height:64px;display:flex;align-items:center;justify-content:center;padding:8px 0}
+#acts .fab{position:static;transform:none;padding:12px 28px;font-size:17px;white-space:nowrap;animation:fp2 1.4s infinite}
+@keyframes fp2{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+#acts .buybar{position:static;transform:none;width:100%;max-width:480px}
+.tl{display:none;margin-top:6px;padding:6px 10px;border-radius:8px;background:#16306a;color:#cfe0ff;font-size:13px;font-weight:600}.tl.on{display:block}
 </style></head><body>
 <div id="lobby">
 <div class="lobby-hero">
@@ -159,6 +167,6 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 <div id="dz"></div>
 <div id="skm" class="ov" style="display:none" onclick="closeSk()"></div>
 <div id="gameBoard" style="display:none"><div id="app"></div></div>
-<script type="module" src="game.js?v=8"></script>
-<div style="position:fixed;left:6px;bottom:2px;font-size:9px;opacity:.35;pointer-events:none">v8</div>
+<script type="module" src="game.js?v=9"></script>
+<div style="position:fixed;left:6px;bottom:2px;font-size:9px;opacity:.35;pointer-events:none">v9</div>
 </body></html>
