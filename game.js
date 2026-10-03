@@ -99,7 +99,7 @@ $('startGameBtn').onclick=startGame;
 async function createRoom(){
   try{
     code='GAME-'+Math.random().toString(36).slice(2,6).toUpperCase();
-    await set(ref(db,'rooms/'+code),{code,status:'waiting',map:selMap(),players:{[myId]:{id:myId,name:nm(),ph:myPh,dk:SK.d,fr:SK.f,j:Date.now(),online:true}}});
+    await set(ref(db,'rooms/'+code),{code,status:'waiting',ts:Date.now(),map:selMap(),players:{[myId]:{id:myId,name:nm(),ph:myPh,dk:SK.d,fr:SK.f,j:Date.now(),ts:Date.now(),online:true}}});
     enter();
   }catch(e){alert('Не вдалося створити кімнату. Перевір Firebase Rules.\n'+e.message);console.error(e)}
 }
@@ -111,13 +111,13 @@ async function joinRoom(c){
     if(!ps[myId]){
       if(r.status!='waiting')return alert('Гра вже почалась!');
       if(Object.keys(ps).length>=5)return alert('Кімната повна!');
-      await set(ref(db,`rooms/${c}/players/${myId}`),{id:myId,name:nm(),ph:myPh,dk:SK.d,fr:SK.f,j:Date.now(),online:true});
+      await set(ref(db,`rooms/${c}/players/${myId}`),{id:myId,name:nm(),ph:myPh,dk:SK.d,fr:SK.f,j:Date.now(),ts:Date.now(),online:true});
     } else await update(ref(db,`rooms/${c}/players/${myId}`),{online:true,name:nm(),ph:myPh,dk:SK.d,fr:SK.f});
     code=c;enter();
   }catch(e){alert('Помилка входу.\n'+e.message);console.error(e)}
 }
 function enter(spec){
-  if(!spec)onDisconnect(ref(db,`rooms/${code}/players/${myId}`)).update({online:false});
+  if(!spec){dc=onDisconnect(ref(db,`rooms/${code}/players/${myId}`));dc.update({online:false})}
   $('lobbyContent').style.display='none';
   $('roomCodeDisplay').textContent=code;
   $('waitingRoom').style.display='block';
@@ -129,7 +129,7 @@ function listen(){
     if(R.status=='waiting'){
       const a=Object.values(R.players||{}).sort((x,y)=>x.j-y.j);
       $('playersList').innerHTML=a.map(p=>'<div class="pi"><span class="av">'+avh({ph:p.ph,a:Array.from(p.name||'?')[0].toUpperCase()})+'</span> '+esc(p.name)+' '+(p.bot?'🤖':p.online?'🟢':'🔴')+'</div>').join('');
-      $('startGameBtn').style.display=a[0]&&a[0].id==myId?'block':'none';$('addBotBtn').style.display=a[0]&&a[0].id==myId&&a.length<5?'block':'none';
+      $('startGameBtn').style.display=isH(a)?'block':'none';$('addBotBtn').style.display=isH(a)&&a.length<5?'block':'none';
       $('startGameBtn').disabled=a.length<2;
       $('startGameBtn').textContent='Почати гру ('+a.length+' гравців)';
     } else if(R.state){
@@ -311,7 +311,7 @@ function avh(p){const u=okp(p.ph),a=esc(p.a||'?');return u?`<img src="${u}" alt=
 function tokn(p){const u=okp(p.ph);return `<s class="tkn${frc(p)}${hopId===p.id?' hop':''}" style="--c:${p.c};${frs(p)}${u?`;background:url('${u}') center/cover`:''}">${u?'':esc(p.a)}</s>`}
 let ROOMS=[],modal=null,stats=false;
 onValue(ref(db,'rooms'),s=>{
-  ROOMS=[];s.forEach(c=>{const r=c.val();if(!r||!r.players)return;const ps=Object.values(r.players).sort((a,b)=>a.j-b.j);if(!ps.some(p=>p.online&&!p.bot))return;const mine=ps.some(p=>p.id==myId);if(r.state&&r.state.ph=='over'&&!mine)return;ROOMS.push({code:c.key,st:r.status,ps,mine,map:r.map})});
+  cleanRooms(s);ROOMS=[];s.forEach(c=>{const r=c.val();if(!r||!r.players)return;const ps=Object.values(r.players).filter(p=>p&&p.name).sort((a,b)=>a.j-b.j);if(!ps.some(p=>p.online&&!p.bot))return;const mine=ps.some(p=>p.id==myId);if(r.state&&r.state.ph=='over'&&!mine)return;ROOMS.push({code:c.key,st:r.status,ps,mine,map:r.map})});
   if(!code)renderLobby();
 },e=>{
   $('roomList').innerHTML='<p class="mut">⚠️ Немає доступу до списку кімнат.<br>Firebase → Realtime Database → Rules:<br><code>{ "rules": { ".read": true, ".write": true } }</code><br>(або обмеж лише /rooms)</p>';
@@ -414,10 +414,10 @@ Object.assign(window,{openTrade,closeTrade,tgp,adj,sendTrade,answerTrade,cancelT
 // ===== БОТИ =====
 const BOTN=['Тарас','Оля','Іван','Марина','Богдан'];
 async function addBot(){if(!R||!R.players)return;const ps=Object.values(R.players);if(ps.length>=5)return;const n=ps.filter(p=>p.bot).length,id='bot_'+Date.now()+n;
-await set(ref(db,`rooms/${code}/players/${id}`),{id,name:'🤖 '+BOTN[n%5],ph:'',dk:rnd(DICE),fr:rnd(FRAMES),j:Date.now(),online:true,bot:true})}
+await set(ref(db,`rooms/${code}/players/${id}`),{id,name:'🤖 '+BOTN[n%5],ph:'',dk:rnd(DICE),fr:rnd(FRAMES),j:Date.now(),ts:Date.now(),online:true,bot:true})}
 async function startSolo(){try{const n=Math.max(1,Math.min(4,+$('botN').value||3));code='GAME-'+Math.random().toString(36).slice(2,6).toUpperCase();
-const players={[myId]:{id:myId,name:nm(),ph:myPh,dk:SK.d,fr:SK.f,j:Date.now(),online:true}};for(let i=0;i<n;i++){const id='bot_'+i;players[id]={id,name:'🤖 '+BOTN[i],ph:'',dk:rnd(DICE),fr:rnd(FRAMES),j:Date.now()+1+i,online:true,bot:true}}
-await set(ref(db,'rooms/'+code),{code,status:'waiting',map:selMap(),players});enter();await startGame()}catch(e){alert('Не вдалося почати гру: '+e.message)}}
+const players={[myId]:{id:myId,name:nm(),ph:myPh,dk:SK.d,fr:SK.f,j:Date.now(),ts:Date.now(),online:true}};for(let i=0;i<n;i++){const id='bot_'+i;players[id]={id,name:'🤖 '+BOTN[i],ph:'',dk:rnd(DICE),fr:rnd(FRAMES),j:Date.now()+1+i,online:true,bot:true}}
+await set(ref(db,'rooms/'+code),{code,status:'waiting',ts:Date.now(),map:selMap(),players});enter();await startGame()}catch(e){alert('Не вдалося почати гру: '+e.message)}}
 $('botBtn').onclick=startSolo;$('addBotBtn').onclick=addBot;
 const isHost=()=>{if(!S||!R)return false;const h=S.players.find(p=>!p.bot&&p.alive&&on(p.id));return !!h&&h.id==myId};
 function botTick(){if(!S||!R||busy||S.ph=='over'||S.ph=='wait')return;sync();const k=S.cur,p=P[k];
@@ -536,3 +536,18 @@ if(/debug/.test(location.search)){const v=document.querySelector('.ver');if(v)v.
 
 // ===== ГЛЯДАЧІ: 👁 показує скільки людей дивиться гру =====
 function viewerCount(){const v=(R&&R.viewers)||{},ids=new Set((S&&S.players||[]).map(p=>p.id));return Object.keys(v).filter(k=>!ids.has(k)).length}
+
+// ===== АВТО-ПРИБИРАННЯ КІМНАТ =====
+let dc=null,lastClean=0;
+const isH=a=>{const h=a.find(p=>!p.bot&&p.online);return !!h&&h.id==myId};
+// кімнати без живих людей видаляються: очікування — через 2 хв, ігри — через 60 хв (старі без позначки часу — одразу)
+function cleanRooms(s){const now=Date.now();if(now-lastClean<20000)return;lastClean=now;
+s.forEach(c=>{const r=c.val();if(!r)return;const hs=Object.values(r.players||{}).filter(p=>p&&!p.bot);if(hs.some(p=>p.online))return;
+const seen=Math.max(r.ts||0,...hs.map(p=>p.ts||0)),limit=r.status=='waiting'?120000:3600000;
+if(!seen||now-seen>limit)set(ref(db,'rooms/'+c.key),null).catch(()=>{})})}
+// «серцебиття»: поки гравець у кімнаті — оновлюємо ts та online
+setInterval(()=>{if(code&&R&&R.players&&R.players[myId])update(ref(db,`rooms/${code}/players/${myId}`),{ts:Date.now(),online:true}).catch(()=>{})},30000);
+async function leaveRoom(){try{try{dc&&dc.cancel()}catch(e){}
+if(R&&R.status=='waiting'){const ps=Object.values(R.players||{}).filter(p=>p&&p.name&&!p.bot).sort((a,b)=>a.j-b.j);
+if(ps[0]&&ps[0].id==myId)await set(ref(db,'rooms/'+code),null);else await set(ref(db,`rooms/${code}/players/${myId}`),null)}}catch(e){}location.reload()}
+window.leaveRoom=leaveRoom;
