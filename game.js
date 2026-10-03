@@ -124,8 +124,9 @@ function enter(spec){
   listen();
 }
 function listen(){
-  onValue(ref(db,'rooms/'+code),s=>{
-    R=s.val();if(!R)return;
+  const myCode=code;
+  unsubs.push(onValue(ref(db,'rooms/'+code),s=>{
+    if(myCode!==code)return;R=s.val();if(!R){alert('Кімнату закрито');toLobby();return}
     if(R.status=='waiting'){
       const a=Object.values(R.players||{}).sort((x,y)=>x.j-y.j);
       $('playersList').innerHTML=a.map(p=>'<div class="pi"><span class="av">'+avh({ph:p.ph,a:Array.from(p.name||'?')[0].toUpperCase()})+'</span> '+esc(p.name)+' '+(p.bot?'🤖':p.online?'🟢':'🔴')+'</div>').join('');
@@ -137,10 +138,10 @@ function listen(){
       if(!started){started=true;if(S.players.some(p=>p.id==myId))bumpGames();$('lobby').style.display='none';$('gameBoard').style.display='block'}
       render();
     }
-  });
-  onValue(query(ref(db,'rooms/'+code+'/log'),limitToLast(60)),s=>{
-    LOGS=[];s.forEach(c=>{LOGS.push(c.val())});if(S)render();
-  });
+  }));
+  unsubs.push(onValue(query(ref(db,'rooms/'+code+'/log'),limitToLast(60)),s=>{
+    if(myCode!==code)return;LOGS=[];s.forEach(c=>{LOGS.push(c.val())});if(S)render();
+  }));
 }
 function fresh(ps,map){return{t0:Date.now(),round:1,map:map||'brands',players:ps.map((p,i)=>({id:p.id,n:p.n,ph:p.ph||'',c:PC[i],a:p.bot?'🤖':(Array.from(p.n||'?')[0]||'?').toUpperCase(),bot:!!p.bot,dk:p.dk||'classic',fr:p.fr||'none',m:10000,pos:0,jail:0,alive:true})),own:Array(40).fill(-1),lvl:Array(40).fill(0),cur:0,ph:'roll',tend:Date.now()+30000}}
 async function startGame(){
@@ -294,9 +295,9 @@ const ac=ph=='over'&&P[0].id==myId?'<div class="ac"><button onclick="newGame()">
 const buyFab=mine&&ph=='buy'?'<div class="buybar"><button class="y" onclick="buy()">'+(isB?'⭐ Покращити за '+Math.round(pb[1]/2):'🛒 Купити «'+pb[0]+'» за '+pb[1])+' ₴</button><button class="n" onclick="skip()">Пас</button></div>':'';
 const sub=ph=='over'?'Гру завершено':mine&&ph=='buy'?(isB?'Покращити ділянку?':'Купити '+pb[0]+'?'):mine&&ph=='roll'?'Твій хід — кидай кубики.':'Очікуйте завершення ходу.';
 const L=LOGS;
-let h='<div id="top">'+pn+'<button class="mn" onclick="if(confirm(\'Вийти з гри?\'))location.reload()">⋮</button></div>'+tbar()+'<div id="bd">'+T.map(tile).join('');
+let h='<div id="top">'+pn+'<button class="mn" onclick="lvOpen()">⋮</button></div>'+tbar()+'<div id="bd">'+T.map(tile).join('');
 h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+viewerCount()+'</span><button class="ib" onclick="stOpen()">📊</button><button class="ib" onclick="hpOpen()">❓</button></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();say()}"><button type="button" onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b>'+ac+'</div></div>';
-h+='</div><div id="acts">'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+'</div>'+modalHtml()+tradeUI()+tileModal()+statsModal()+helpModal();
+h+='</div><div id="acts">'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+'</div>'+modalHtml()+tradeUI()+tileModal()+statsModal()+helpModal()+leaveModal();
 const o=$('ci'),v=o?o.value:'',f=o&&document.activeElement===o;
 $('app').innerHTML=h;const n=$('ci');if(n){n.value=v;if(f)n.focus()}const lg=$('log');if(lg)lg.scrollTop=lg.scrollHeight;if(S.dice&&S.rid&&S.rid!==lastRid){lastRid=S.rid;playDice(S.dice)}
   // запам'ятати позиції для анімації фішок
@@ -538,7 +539,7 @@ if(/debug/.test(location.search)){const v=document.querySelector('.ver');if(v)v.
 function viewerCount(){const v=(R&&R.viewers)||{},ids=new Set((S&&S.players||[]).map(p=>p.id));return Object.keys(v).filter(k=>!ids.has(k)).length}
 
 // ===== АВТО-ПРИБИРАННЯ КІМНАТ =====
-let dc=null,lastClean=0;
+let dc=null,lastClean=0,unsubs=[];
 const isH=a=>{const h=a.find(p=>!p.bot&&p.online);return !!h&&h.id==myId};
 // кімнати без живих людей видаляються: очікування — через 2 хв, ігри — через 60 хв (старі без позначки часу — одразу)
 function cleanRooms(s){const now=Date.now();if(now-lastClean<20000)return;lastClean=now;
@@ -547,7 +548,18 @@ const seen=Math.max(r.ts||0,...hs.map(p=>p.ts||0)),limit=r.status=='waiting'?120
 if(!seen||now-seen>limit)set(ref(db,'rooms/'+c.key),null).catch(()=>{})})}
 // «серцебиття»: поки гравець у кімнаті — оновлюємо ts та online
 setInterval(()=>{if(code&&R&&R.players&&R.players[myId])update(ref(db,`rooms/${code}/players/${myId}`),{ts:Date.now(),online:true}).catch(()=>{})},30000);
-async function leaveRoom(){try{try{dc&&dc.cancel()}catch(e){}
-if(R&&R.status=='waiting'){const ps=Object.values(R.players||{}).filter(p=>p&&p.name&&!p.bot).sort((a,b)=>a.j-b.j);
-if(ps[0]&&ps[0].id==myId)await set(ref(db,'rooms/'+code),null);else await set(ref(db,`rooms/${code}/players/${myId}`),null)}}catch(e){}location.reload()}
-window.leaveRoom=leaveRoom;
+function toLobby(){
+  try{unsubs.splice(0).forEach(f=>{try{f&&f()}catch(e){}})}catch(e){}
+  code='';R=null;S=null;LOGS=[];started=false;busy=false;tr=null;modal=null;ti=null;stm=false;hpm=false;lvm=false;trSeen=null;
+  $('gameBoard').style.display='none';$('waitingRoom').style.display='none';$('lobby').style.display='block';$('lobbyContent').style.display='block';
+  const dz=$('dz');if(dz)dz.style.display='none';renderLobby();statsUI();
+}
+async function leaveRoom(){const c=code,r=R;try{dc&&dc.cancel()}catch(e){}toLobby();
+  try{if(r&&r.status=='waiting'){const ps=Object.values(r.players||{}).filter(p=>p&&p.name&&!p.bot).sort((a,b)=>a.j-b.j);
+    if(ps[0]&&ps[0].id==myId)await set(ref(db,'rooms/'+c),null);else await set(ref(db,`rooms/${c}/players/${myId}`),null)}}catch(e){}}
+async function leaveGame(){const c=code,isP=!!(R&&R.players&&R.players[myId]);try{dc&&dc.cancel()}catch(e){}toLobby();
+  try{if(c){if(isP)await update(ref(db,`rooms/${c}/players/${myId}`),{online:false});else await set(ref(db,`rooms/${c}/viewers/${myId}`),null)}}catch(e){}}
+let lvm=false;
+function lvOpen(){lvm=true;render()}function lvClose(){lvm=false;render()}
+function leaveModal(){if(!lvm)return '';return `<div class="ov" onclick="lvClose()"><div class="md" onclick="event.stopPropagation()"><div class="mh"><h2>Вийти з гри?</h2><button class="x" onclick="lvClose()">✕</button></div><div class="stt">Ти зможеш повернутися: кімната буде в лобі з кнопкою «Продовжити».</div><div class="cb"><button class="y" style="background:#e5484d;color:#fff" onclick="leaveGame()">Вийти</button><button class="n" onclick="lvClose()">Лишитись</button></div></div></div>`}
+window.leaveRoom=leaveRoom;Object.assign(window,{leaveGame,lvOpen,lvClose});
