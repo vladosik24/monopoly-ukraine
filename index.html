@@ -164,6 +164,17 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 .hero{background-position:center top!important}
 .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(7,15,34,0) 38%,rgba(7,15,34,.5) 78%,rgba(7,15,34,.7) 100%);pointer-events:none}
 .lspace{height:min(36vh,300px);min-height:130px}
+
+html,body{height:100%}
+#gameBoard{height:100vh;height:100dvh}
+#app{height:100%;display:flex;flex-direction:column;padding:6px 6px calc(8px + env(safe-area-inset-bottom,0px))}
+#top{flex:none}.tbar{flex:none}
+.note{flex:none;min-height:38px;display:flex;align-items:center;gap:6px;padding:6px 12px;margin:0 0 8px;border-radius:12px;background:rgba(20,52,102,.55);border:1px solid var(--ln);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:24px}
+#bd{flex:1 1 auto;min-height:0;aspect-ratio:auto!important}
+#acts{flex:none;min-height:56px;padding:8px 0 0}
+.stg{display:flex;justify-content:space-around;text-align:center;background:#0a1530;border:1px solid var(--ln);border-radius:14px;padding:12px 6px;margin:10px 0}.stg b{display:block;font-size:20px}.stg b.gn{color:var(--gn)}.stg small{color:var(--mut);font-size:11px}
+.stt2{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px}.stt2 th{color:var(--mut);font-weight:600;text-align:right;padding:6px 3px;border-bottom:1px solid var(--ln)}.stt2 th:nth-child(2){text-align:left}
+.stt2 td{padding:7px 3px;border-bottom:1px solid var(--ln);text-align:right;white-space:nowrap}.stt2 td:nth-child(2){text-align:left}.stt2 .pn{display:flex;align-items:center;gap:6px;max-width:92px}.stt2 .pn b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.stt2 .av{width:24px;height:24px;font-size:11px;flex:none}.stt2 tr.dd{opacity:.45}
 </style></head><body>
 <div id="lobby">
 <div class="hero"><svg class="scene" viewBox="0 0 400 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
@@ -198,6 +209,6 @@ button{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:8px;ba
 <div id="dz"></div>
 <div id="skm" class="ov" style="display:none" onclick="closeSk()"></div>
 <div id="gameBoard" style="display:none"><div id="app"></div></div>
-<script type="module" src="game.js?v=11"></script>
-<div style="position:fixed;left:6px;bottom:2px;font-size:9px;opacity:.35;pointer-events:none">v11</div>
+<script type="module" src="game.js?v=13"></script>
+<div class="ver" style="position:fixed;left:6px;bottom:2px;font-size:9px;opacity:.35;pointer-events:none;display:none">v12</div>
 </body></html>
