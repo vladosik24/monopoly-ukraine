@@ -41,10 +41,7 @@ return '<div class="t '+cls+'" data-i="'+i+'" onclick="tinfo('+i+')" style="grid
 
 let code='',R=null,S=null,LOGS=[],showAll=true,busy=false,started=false,P,own,lvl,prevPos={};
 const $=id=>document.getElementById(id);
-let tmsg='',tmt=0;
-const noteHtml=()=>{if(Date.now()<tmt)return '🔔 '+esc(tmsg);const e=LOGS[LOGS.length-1];if(!e)return '';const q=(S&&S.players[e.p])||{c:'#9fb0d6',n:''};return '<b style="color:'+q.c+'">'+esc(q.n)+'</b> '+esc(e.t)};
-function updNote(){const n=$('note');if(n)n.innerHTML=noteHtml()}
-function toast(msg,ms=2800){tmsg=msg;tmt=Date.now()+ms;updNote();setTimeout(updNote,ms+60)}
+function toast(){} // повідомлення дублювали журнал подій — окремої смуги більше немає
 
 const tg=window.Telegram&&Telegram.WebApp;let tu=null;
 if(tg){try{tg.ready();tg.expand();tg.setHeaderColor('#070f22');tg.setBackgroundColor('#070f22');tu=tg.initDataUnsafe&&tg.initDataUnsafe.user||null}catch(e){}}
@@ -297,7 +294,7 @@ const ac=ph=='over'&&P[0].id==myId?'<div class="ac"><button onclick="newGame()">
 const buyFab=mine&&ph=='buy'?'<div class="buybar"><button class="y" onclick="buy()">'+(isB?'⭐ Покращити за '+Math.round(pb[1]/2):'🛒 Купити «'+pb[0]+'» за '+pb[1])+' ₴</button><button class="n" onclick="skip()">Пас</button></div>':'';
 const sub=ph=='over'?'Гру завершено':mine&&ph=='buy'?(isB?'Покращити ділянку?':'Купити '+pb[0]+'?'):mine&&ph=='roll'?'Твій хід — кидай кубики.':'Очікуйте завершення ходу.';
 const L=LOGS;
-let h='<div id="top">'+pn+'<button class="mn" onclick="if(confirm(\'Вийти з гри?\'))location.reload()">⋮</button></div><div id="note" class="note">'+noteHtml()+'</div>'+tbar()+'<div id="bd">'+T.map(tile).join('');
+let h='<div id="top">'+pn+'<button class="mn" onclick="if(confirm(\'Вийти з гри?\'))location.reload()">⋮</button></div>'+tbar()+'<div id="bd">'+T.map(tile).join('');
 h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+viewerCount()+'</span><button class="ib" onclick="stOpen()">📊</button><button class="ib" onclick="hpOpen()">❓</button></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();say()}"><button type="button" onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b>'+ac+'</div></div>';
 h+='</div><div id="acts">'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+'</div>'+modalHtml()+tradeUI()+tileModal()+statsModal()+helpModal();
 const o=$('ci'),v=o?o.value:'',f=o&&document.activeElement===o;
@@ -381,15 +378,15 @@ const trList=()=>Object.values((R&&R.trades)||{});
 const trOut=()=>trList().find(t=>t.fromId==myId&&(t.status=='pending'||t.status=='accepted'));
 const trIn=()=>trList().find(t=>t.toId==myId&&t.status=='pending');
 const pname=id=>{const p=(S&&S.players||[]).find(x=>x.id==id);return p?p.n:'?'};
-function openTrade(i){if(!S)return;if(trOut())return toast('Спочатку дочекайся відповіді на попередню пропозицію');tr={to:i,give:[],ask:[],gc:0,ac:0};modal=null;render()}
+function openTrade(i){if(!S)return;if(trOut())return alert('Спочатку дочекайся відповіді на попередню пропозицію');tr={to:i,give:[],ask:[],gc:0,ac:0};modal=null;render()}
 function closeTrade(){tr=null;render()}
 function tgp(side,i){if(!tr)return;const a=side=='g'?tr.give:tr.ask,j=a.indexOf(i);j<0?a.push(i):a.splice(j,1);render()}
 function adj(side,d){if(!tr)return;const me=P[myIdx()],o=P[tr.to];if(side=='g')tr.gc=Math.max(0,Math.min(me.m,tr.gc+d));else tr.ac=Math.max(0,Math.min(o.m,tr.ac+d));render()}
-async function sendTrade(){if(!tr||!S)return;sync();if(myIdx()<0)return;if(!tr.give.length&&!tr.ask.length&&!tr.gc&&!tr.ac)return toast('Додай щось до обміну');
+async function sendTrade(){if(!tr||!S)return;sync();if(myIdx()<0)return;if(!tr.give.length&&!tr.ask.length&&!tr.gc&&!tr.ac)return alert('Додай щось до обміну');
 const id='t'+Date.now(),d=tr;for(const t of trList().filter(t=>t.fromId==myId&&t.status!='pending'&&t.status!='accepted'))await set(ref(db,`rooms/${code}/trades/${t.id}`),null);
-await set(ref(db,`rooms/${code}/trades/${id}`),{id,fromId:myId,toId:P[d.to].id,give:d.give,ask:d.ask,gc:d.gc,ac:d.ac,status:'pending',ts:Date.now()});tr=null;toast('🤝 Пропозицію надіслано');render()}
+await set(ref(db,`rooms/${code}/trades/${id}`),{id,fromId:myId,toId:P[d.to].id,give:d.give,ask:d.ask,gc:d.gc,ac:d.ac,status:'pending',ts:Date.now()});tr=null;ev(myIdx(),'пропонує обмін: '+pname(P[d.to].id));render()}
 const setTr=(id,st)=>update(ref(db,`rooms/${code}/trades/${id}`),{status:st});
-const answerTrade=(id,yes)=>setTr(id,yes?'accepted':'declined');
+const answerTrade=(id,yes)=>{if(!yes)ev(myIdx(),'відхилив пропозицію обміну');return setTr(id,yes?'accepted':'declined')};
 const cancelTrade=id=>setTr(id,'cancelled');
 function trNotify(){const L=trList();if(trSeen===null){trSeen={};L.forEach(t=>trSeen[t.id]=t.status);return}
 L.forEach(t=>{if(trSeen[t.id]===t.status)return;trSeen[t.id]=t.status;if(t.fromId!=myId&&t.toId!=myId)return;
@@ -410,7 +407,7 @@ const t=trList().find(x=>x.status=='accepted');if(!t)return;busy=true;sync();
 const a=P.findIndex(p=>p.id==t.fromId),b=P.findIndex(p=>p.id==t.toId),give=t.give||[],ask=t.ask||[],gc=+t.gc||0,ac=+t.ac||0;
 const ok=a>=0&&b>=0&&a!=b&&P[a].alive&&P[b].alive&&give.every(i=>own[i]===a&&!lvl[i])&&ask.every(i=>own[i]===b&&!lvl[i])&&P[a].m>=gc&&P[b].m>=ac;
 if(ok){give.forEach(i=>{own[i]=b});ask.forEach(i=>{own[i]=a});P[a].m+=ac-gc;P[b].m-=ac-gc;ev(a,'обмінявся з '+P[b].n+': віддав '+desc(give,gc)+', отримав '+desc(ask,ac));await save()}
-await setTr(t.id,ok?'done':'failed');busy=false}
+if(!ok)ev(a>=0?a:0,'обмін не вдався: умови змінились');await setTr(t.id,ok?'done':'failed');busy=false}
 setInterval(()=>{applyTrades().catch(e=>{busy=false;console.error(e)})},500);
 Object.assign(window,{openTrade,closeTrade,tgp,adj,sendTrade,answerTrade,cancelTrade});
 
@@ -428,7 +425,7 @@ if(p&&p.bot&&p.alive&&driver()&&Date.now()>S.tend-30000+1300){
  if(S.ph=='roll')return void roll();
  if(S.ph=='buy'){const b=T[p.pos],up=own[p.pos]===k,cost=up?Math.round(b[1]/2):b[1],grp=T.every((x,i)=>x[2]!==b[2]||typeof x[1]!='number'||own[i]===k||i===p.pos);return void(p.m>=cost+(grp?600:1500)?buy():skip())}}
 if(isHost()){const t=trList().find(x=>x.status=='pending'&&P.some(q=>q.id==x.toId&&q.bot&&q.alive));
- if(t){const val=(a,c)=>(a||[]).reduce((s,i)=>s+(T[i]?T[i][1]:0),0)+(+c||0);setTr(t.id,val(t.give,t.gc)>=val(t.ask,t.ac)*1.15?'accepted':'declined')}}}
+ if(t){const val=(a,c)=>(a||[]).reduce((s,i)=>s+(T[i]?T[i][1]:0),0)+(+c||0);{const ok=val(t.give,t.gc)>=val(t.ask,t.ac)*1.15;if(!ok)ev(P.findIndex(q=>q.id==t.toId),'відхилив пропозицію обміну');setTr(t.id,ok?'accepted':'declined')}}}}
 setInterval(()=>{try{botTick()}catch(e){console.error(e)}},500);
 
 // ===== КАРТИ «ШАНС» =====
