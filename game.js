@@ -42,14 +42,9 @@ return '<div class="t '+cls+'" data-i="'+i+'" onclick="tinfo('+i+')" style="grid
 let code='',R=null,S=null,LOGS=[],showAll=true,busy=false,started=false,P,own,lvl,prevPos={};
 const $=id=>document.getElementById(id);
 let tmsg='',tmt=0;
-function toast(msg,ms=2800){
-  if(S&&$('sc')){tmsg=msg;tmt=Date.now()+ms;const e=$('tl');if(e){e.textContent=msg;e.classList.add('on')}
-    setTimeout(()=>{const e2=$('tl');if(e2&&Date.now()>=tmt){e2.textContent='';e2.classList.remove('on')}},ms+60);return}
-  let t=$('toast');
-  if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t)}
-  t.textContent=msg;t.className='toast show';
-  clearTimeout(t._h);t._h=setTimeout(()=>t.className='toast',ms);
-}
+const noteHtml=()=>{if(Date.now()<tmt)return '🔔 '+esc(tmsg);const e=LOGS[LOGS.length-1];if(!e)return '';const q=(S&&S.players[e.p])||{c:'#9fb0d6',n:''};return '<b style="color:'+q.c+'">'+esc(q.n)+'</b> '+esc(e.t)};
+function updNote(){const n=$('note');if(n)n.innerHTML=noteHtml()}
+function toast(msg,ms=2800){tmsg=msg;tmt=Date.now()+ms;updNote();setTimeout(updNote,ms+60)}
 
 const tg=window.Telegram&&Telegram.WebApp;let tu=null;
 if(tg){try{tg.ready();tg.expand();tg.setHeaderColor('#070f22');tg.setBackgroundColor('#070f22');tu=tg.initDataUnsafe&&tg.initDataUnsafe.user||null}catch(e){}}
@@ -150,7 +145,7 @@ function listen(){
     LOGS=[];s.forEach(c=>{LOGS.push(c.val())});if(S)render();
   });
 }
-function fresh(ps,map){return{map:map||'brands',players:ps.map((p,i)=>({id:p.id,n:p.n,ph:p.ph||'',c:PC[i],a:p.bot?'🤖':(Array.from(p.n||'?')[0]||'?').toUpperCase(),bot:!!p.bot,dk:p.dk||'classic',fr:p.fr||'none',m:10000,pos:0,jail:0,alive:true})),own:Array(40).fill(-1),lvl:Array(40).fill(0),cur:0,ph:'roll',tend:Date.now()+30000}}
+function fresh(ps,map){return{t0:Date.now(),round:1,map:map||'brands',players:ps.map((p,i)=>({id:p.id,n:p.n,ph:p.ph||'',c:PC[i],a:p.bot?'🤖':(Array.from(p.n||'?')[0]||'?').toUpperCase(),bot:!!p.bot,dk:p.dk||'classic',fr:p.fr||'none',m:10000,pos:0,jail:0,alive:true})),own:Array(40).fill(-1),lvl:Array(40).fill(0),cur:0,ph:'roll',tend:Date.now()+30000}}
 async function startGame(){
   const ps=Object.values((await get(ref(db,'rooms/'+code+'/players'))).val()||{}).sort((a,b)=>a.j-b.j);
   if(ps.length<2)return;const mp=(await get(ref(db,'rooms/'+code+'/map'))).val()||'brands';
@@ -207,7 +202,7 @@ async function roll(){
   let np=pos+d1+d2;
   if(np>=40){
     p.m=(Number(p.m)||0)+1200;
-    ev(k,'отримав зарплату +1200 ₴');
+    p.laps=(p.laps||0)+1;ev(k,'отримав зарплату +1200 ₴');
     toast(p.n+' +1200 ₴ зарплата');
     np=np%40;
   }
@@ -282,7 +277,7 @@ S.ph='wait';await save();setTimeout(end,900)}
 async function skip(){if(!S||S.ph!='buy'||busy||!driver())return;busy=true;S.ph='wait';await save();end()}
 async function end(){sync();const al=P.filter(p=>p.alive);
 if(al.length<2||!al.some(p=>!p.bot)){S.ph='over';S.dice=null;ev(P.indexOf(al[0]),al.length<2?'🏆 переміг!':'🏆 боти перемогли');await save();busy=false;return}
-let n=S.cur;do{n=(n+1)%P.length}while(!P[n].alive);S.cur=n;S.ph='roll';S.dice=null;S.tend=Date.now()+30000;await save();busy=false}
+let n=S.cur;do{n=(n+1)%P.length}while(!P[n].alive);if(n<=S.cur)S.round=(S.round||1)+1;S.cur=n;S.ph='roll';S.dice=null;S.tend=Date.now()+30000;await save();busy=false}
 let sayBusy=false;
 function say(){
   const i=$('ci');
@@ -302,9 +297,9 @@ const ac=ph=='over'&&P[0].id==myId?'<div class="ac"><button onclick="newGame()">
 const buyFab=mine&&ph=='buy'?'<div class="buybar"><button class="y" onclick="buy()">'+(isB?'⭐ Покращити за '+Math.round(pb[1]/2):'🛒 Купити «'+pb[0]+'» за '+pb[1])+' ₴</button><button class="n" onclick="skip()">Пас</button></div>':'';
 const sub=ph=='over'?'Гру завершено':mine&&ph=='buy'?(isB?'Покращити ділянку?':'Купити '+pb[0]+'?'):mine&&ph=='roll'?'Твій хід — кидай кубики.':'Очікуйте завершення ходу.';
 const L=LOGS;
-let h='<div id="top">'+pn+'<button class="mn" onclick="if(confirm(\'Вийти з гри?\'))location.reload()">⋮</button></div>'+tbar()+'<div id="bd">'+T.map(tile).join('');
-h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+LOGS.length+'</span></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();say()}"><button type="button" onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b><small>'+sub+'</small><div id="tl" class="tl'+(Date.now()<tmt?' on':'')+'">'+(Date.now()<tmt?esc(tmsg):'')+'</div>'+ac+'</div></div>';
-h+='</div><div id="acts">'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+'</div>'+modalHtml()+tradeUI()+tileModal();
+let h='<div id="top">'+pn+'<button class="mn" onclick="if(confirm(\'Вийти з гри?\'))location.reload()">⋮</button></div><div id="note" class="note">'+noteHtml()+'</div>'+tbar()+'<div id="bd">'+T.map(tile).join('');
+h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+viewerCount()+'</span><button class="ib" onclick="stOpen()">📊</button><button class="ib" onclick="hpOpen()">❓</button></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();say()}"><button type="button" onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b>'+ac+'</div></div>';
+h+='</div><div id="acts">'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+'</div>'+modalHtml()+tradeUI()+tileModal()+statsModal()+helpModal();
 const o=$('ci'),v=o?o.value:'',f=o&&document.activeElement===o;
 $('app').innerHTML=h;const n=$('ci');if(n){n.value=v;if(f)n.focus()}const lg=$('log');if(lg)lg.scrollTop=lg.scrollHeight;if(S.dice&&S.rid&&S.rid!==lastRid){lastRid=S.rid;playDice(S.dice)}
   // запам'ятати позиції для анімації фішок
@@ -329,7 +324,7 @@ function renderLobby(){$('roomCount').textContent='Знайдено: '+ROOMS.len
 $('roomList').innerHTML=ROOMS.map(r=>{const h=r.ps[0],pl=r.st=='playing',q="'"+r.code+"'";
 const btn=r.mine?`<button class="y" onclick="joinRoom(${q})">Продовжити</button>`:pl?`<button class="n" onclick="watch(${q})">Дивитися</button>`:r.ps.length>=5?'<button class="n" disabled>Повна</button>':`<button onclick="joinRoom(${q})">Приєднатися</button>`;
 return `<div class="rm"><div class="av">${avh({ph:h.ph,a:Array.from(h.name||'?')[0].toUpperCase()})}</div><div class="ri"><b>${esc(h.name)}</b><span class="bd ${pl?'pg':'wt'}">${pl?'Гра триває':'Очікування'}</span><small class="mut">${r.ps.length}/5 гравців · ${(MAPS[r.map]||MAPS.brands).ico} ${(MAPS[r.map]||MAPS.brands).n}</small></div>${btn}</div>`}).join('')||'<p class="mut">Кімнат поки немає — створи свою!</p>'}
-function watch(c){code=c;enter(true)}
+function watch(c){code=c;enter(true);try{const vr=ref(db,`rooms/${c}/viewers/${myId}`);set(vr,{name:nm(),ts:Date.now()});onDisconnect(vr).remove()}catch(e){}}
 function prof(i){modal=i;stats=false;render()}
 function closeProf(){modal=null;render()}
 function tgs(){stats=!stats;render()}
@@ -524,3 +519,23 @@ statsUI();
 
 // якщо є справжня картинка лобі — прибираємо намальований силует
 {const _i=new Image();_i.onload=()=>{const s=document.querySelector('.scene');if(s)s.style.display='none'};_i.src='styles/lobby.jpg'}
+
+// ===== СТАТИСТИКА ТА ПРАВИЛА =====
+let stm=false,hpm=false;
+function stOpen(){stm=true;render()}function stClose(){stm=false;render()}
+function hpOpen(){hpm=true;render()}function hpClose(){hpm=false;render()}
+function statsModal(){if(!stm||!S)return '';sync();
+const sec=Math.max(0,Math.floor((Date.now()-(S.t0||Date.now()))/1000)),mm=String(Math.floor(sec/60)).padStart(2,'0'),ss=String(sec%60).padStart(2,'0');
+const rows=P.map((p,i)=>{let mine=0,cnt=0;T.forEach((b,k)=>{if(own[k]===i&&typeof b[1]=='number'){cnt++;mine+=b[1]+(lvl[k]||0)*Math.round(b[1]/2)}});return{p,cnt,assets:p.m+mine-(p.debt||0)}}).sort((a,b)=>b.assets-a.assets);
+return `<div class="ov" onclick="stClose()"><div class="md" onclick="event.stopPropagation()"><div class="mh"><h2>Статистика гри</h2><button class="x" onclick="stClose()">✕</button></div>
+<div class="stg"><div><b>${mm}:${ss}</b><small>Час гри</small></div><div><b>${S.round||1}</b><small>Раунд</small></div><div><b class="gn">${fm(1200)}</b><small>Дохід за коло</small></div></div>
+<table class="stt2"><tr><th></th><th>Гравець</th><th>Активи</th><th>Гроші</th><th>Майно</th><th>Кола</th></tr>${rows.map((r,k)=>`<tr class="${r.p.alive?'':'dd'}"><td>${k+1}</td><td><div class="pn"><span class="av" style="--c:${r.p.c}">${avh(r.p)}</span><b>${esc(r.p.n)}</b></div></td><td>${fm(r.assets)}</td><td>${fm(r.p.m)}</td><td>${r.cnt}</td><td>${r.p.laps||0}</td></tr>`).join('')}</table>
+<small class="mut">Активи: гроші + вартість ділянок і ★ − кредит.</small></div></div>`}
+function helpModal(){if(!hpm)return '';
+return `<div class="ov" onclick="hpClose()"><div class="md" onclick="event.stopPropagation()"><div class="mh"><h2>Як грати</h2><button class="x" onclick="hpClose()">✕</button></div>
+<div class="stt">🎲 Кидай кубики й ходь по полю.<br>🏷 Вільну ділянку можна купити, на чужій платиш оренду.<br>🎨 Збери всі ділянки одного кольору — оренда ×2, далі їх можна покращувати зірками ★.<br>🏁 Пройшов СТАРТ — отримай 1200 ₴.<br>❓ Шанс — випадкові бонуси, штрафи й переміщення.<br>🤝 Тап по гравцю — обмін ділянками, кредит або здача.<br>👆 Тап по клітинці — повна інформація про неї.</div></div></div>`}
+Object.assign(window,{stOpen,stClose,hpOpen,hpClose});
+if(/debug/.test(location.search)){const v=document.querySelector('.ver');if(v)v.style.display='block'}
+
+// ===== ГЛЯДАЧІ: 👁 показує скільки людей дивиться гру =====
+function viewerCount(){const v=(R&&R.viewers)||{},ids=new Set((S&&S.players||[]).map(p=>p.id));return Object.keys(v).filter(k=>!ids.has(k)).length}
