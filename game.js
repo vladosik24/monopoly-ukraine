@@ -41,7 +41,10 @@ return '<div class="t '+cls+'" data-i="'+i+'" onclick="tinfo('+i+')" style="grid
 
 let code='',R=null,S=null,LOGS=[],showAll=true,busy=false,started=false,P,own,lvl,prevPos={};
 const $=id=>document.getElementById(id);
+let tmsg='',tmt=0;
 function toast(msg,ms=2800){
+  if(S&&$('sc')){tmsg=msg;tmt=Date.now()+ms;const e=$('tl');if(e){e.textContent=msg;e.classList.add('on')}
+    setTimeout(()=>{const e2=$('tl');if(e2&&Date.now()>=tmt){e2.textContent='';e2.classList.remove('on')}},ms+60);return}
   let t=$('toast');
   if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t)}
   t.textContent=msg;t.className='toast show';
@@ -300,8 +303,8 @@ const buyFab=mine&&ph=='buy'?'<div class="buybar"><button class="y" onclick="buy
 const sub=ph=='over'?'Гру завершено':mine&&ph=='buy'?(isB?'Покращити ділянку?':'Купити '+pb[0]+'?'):mine&&ph=='roll'?'Твій хід — кидай кубики.':'Очікуйте завершення ходу.';
 const L=LOGS;
 let h='<div id="top">'+pn+'<button class="mn" onclick="if(confirm(\'Вийти з гри?\'))location.reload()">⋮</button></div>'+tbar()+'<div id="bd">'+T.map(tile).join('');
-h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+LOGS.length+'</span></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();say()}"><button type="button" onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b><small>'+sub+'</small>'+ac+'</div></div>';
-h+='</div>'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+modalHtml()+tradeUI()+tileModal();
+h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+LOGS.length+'</span></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();say()}"><button type="button" onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b><small>'+sub+'</small><div id="tl" class="tl'+(Date.now()<tmt?' on':'')+'">'+(Date.now()<tmt?esc(tmsg):'')+'</div>'+ac+'</div></div>';
+h+='</div><div id="acts">'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+'</div>'+modalHtml()+tradeUI()+tileModal();
 const o=$('ci'),v=o?o.value:'',f=o&&document.activeElement===o;
 $('app').innerHTML=h;const n=$('ci');if(n){n.value=v;if(f)n.focus()}const lg=$('log');if(lg)lg.scrollTop=lg.scrollHeight;if(S.dice&&S.rid&&S.rid!==lastRid){lastRid=S.rid;playDice(S.dice)}
   // запам'ятати позиції для анімації фішок
