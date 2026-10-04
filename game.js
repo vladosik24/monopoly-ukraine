@@ -124,7 +124,7 @@ function enter(spec){
   listen();
 }
 function listen(){
-  const myCode=code;
+  const myCode=code;lastLogKey=null;lastCur=null;lastBid=null;
   unsubs.push(onValue(ref(db,'rooms/'+code),s=>{
     if(myCode!==code)return;R=s.val();if(!R){alert('Кімнату закрито');toLobby();return}
     if(R.status=='waiting'){
@@ -140,7 +140,7 @@ function listen(){
     }
   }));
   unsubs.push(onValue(query(ref(db,'rooms/'+code+'/log'),limitToLast(60)),s=>{
-    if(myCode!==code)return;LOGS=[];s.forEach(c=>{LOGS.push(c.val())});if(S)render();
+    if(myCode!==code)return;LOGS=[];const ks=[];s.forEach(c=>{LOGS.push(c.val());ks.push(c.key)});logSounds(ks);if(S)render();
   }));
 }
 function fresh(ps,map,cfg){cfg=cfg||{};const o={};['auc','team','hard','short','shuf','evt'].forEach(k=>{o[k]=cfg[k]?1:0});if(ps.length<4)o.team=0;
@@ -300,7 +300,7 @@ function say(){
   try{ev(m<0?0:m,t,1)}catch(e){console.error(e)}
   setTimeout(()=>{sayBusy=false},300);
 }
-function render(){if(!S)return;useMap(S.map||'brands',S.perm);sync();trNotify();checkWin();checkAch();const k=S.cur,c=P[k],mine=c.id==myId,ph=S.ph,pb=T[c.pos];
+function render(){if(!S)return;useMap(S.map||'brands',S.perm);sync();trNotify();checkWin();checkAch();sndRender();const k=S.cur,c=P[k],mine=c.id==myId,ph=S.ph,pb=T[c.pos];
 const spec=!P.some(p=>p.id==myId);const isB=typeof pb[1]=='number'&&own[c.pos]==k;
 const pn=P.map((p,i)=>'<div class="pl'+(i==k?' on':'')+(p.alive?'':' dead')+'" style="--c:'+p.c+'" onclick="prof('+i+')">'+(i==k&&p.alive&&ph!='over'?'<i class="tm" id="tm">30 c</i>':'')+'<div class="av'+frc(p)+'"'+fra(p)+'>'+avh(p)+'</div><div><b>'+esc(p.n)+(p.id==myId?' (ти)':'')+(CF().team&&p.tm!=null?' <span class="tmk t'+p.tm+'">'+(p.tm?'Б':'А')+'</span>':'')+'</b><span>'+(p.alive?fm(p.m):'БАНКРУТ')+'</span></div></div>').join('');
 const ac=ph=='over'&&P[0].id==myId?'<div class="ac"><button onclick="newGame()">Нова гра</button></div>':'';
@@ -308,7 +308,7 @@ const buyFab=mine&&ph=='buy'?'<div class="buybar"><button class="y" onclick="buy
 const sub=ph=='over'?'Гру завершено':mine&&ph=='buy'?(isB?'Покращити ділянку?':'Купити '+pb[0]+'?'):mine&&ph=='roll'?'Твій хід — кидай кубики.':'Очікуйте завершення ходу.';
 const L=LOGS;
 let h='<div id="top">'+pn+'<button class="mn" onclick="lvOpen()">⋮</button></div>'+tbar()+'<div id="bd">'+T.map(tile).join('');
-h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+viewerCount()+'</span><button class="ib" onclick="stOpen()">📊</button><button class="ib" onclick="hpOpen()">❓</button></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();say()}"><button type="button" onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b>'+evb()+ac+'</div></div>';
+h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+viewerCount()+'</span><button class="ib'+(SND_ON?'':' off')+'" onclick="tgSnd();render()">🔊</button><button class="ib'+(MUS_ON?'':' off')+'" onclick="tgMus();render()">🎵</button><button class="ib" onclick="stOpen()">📊</button><button class="ib" onclick="hpOpen()">❓</button></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();say()}"><button type="button" onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b>'+evb()+ac+'</div></div>';
 h+='</div><div id="acts">'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+aucBar()+'</div>'+modalHtml()+tradeUI()+tileModal()+statsModal()+helpModal()+leaveModal();
 const o=$('ci'),v=o?o.value:'',f=o&&document.activeElement===o;
 $('app').innerHTML=h;const n=$('ci');if(n){n.value=v;if(f)n.focus()}const lg=$('log');if(lg)lg.scrollTop=lg.scrollHeight;if(S.dice&&S.rid&&S.rid!==lastRid){lastRid=S.rid;playDice(S.dice)}
@@ -363,12 +363,12 @@ Object.assign(window,{joinRoom,watch,prof,closeProf,tgs,credit,surr});
 let lastRid=null,dzt=null,dzh=null;
 const PIPS=[[],[5],[1,9],[1,5,9],[1,3,7,9],[1,3,5,7,9],[1,3,4,6,7,9]];
 const pips=n=>{let s='';for(let i=1;i<=9;i++)s+='<i'+(PIPS[n].includes(i)?' class="p"':'')+'></i>';return s};
-function playDice(d){const z=$('dz');applyDie(z);clearInterval(dzt);clearTimeout(dzh);
+function playDice(d){const z=$('dz');applyDie(z);play('dice');clearInterval(dzt);clearTimeout(dzh);
 z.innerHTML='<div class="dw"><div class="dd roll"><div class="die"></div></div><div class="dd d2 roll"><div class="die"></div></div></div><div class="sum"></div>';z.style.display='grid';
 const set=(a,b)=>z.querySelectorAll('.die').forEach((e,i)=>e.innerHTML=pips(i?b:a));
 const r=()=>1+Math.random()*6|0;set(r(),r());dzt=setInterval(()=>set(r(),r()),90);
 dzh=setTimeout(()=>{clearInterval(dzt);set(d[0],d[1]);z.querySelectorAll('.dd').forEach(e=>{e.classList.remove('roll');e.classList.add('pop')});const s=z.querySelector('.sum');if(s){s.textContent='';s.classList.remove('on')}
-try{tg&&tg.HapticFeedback&&tg.HapticFeedback.impactOccurred('medium')}catch(e){}
+play('dicestop');try{tg&&tg.HapticFeedback&&tg.HapticFeedback.impactOccurred('medium')}catch(e){}
 dzh=setTimeout(()=>{z.style.display='none'},650)},1000)}
 
 // ===== покрокове пересування фішок =====
@@ -381,7 +381,7 @@ const m=S.players.find(p=>p.alive&&vis[p.id]!==p.pos);if(!m)return;
 const dist=(m.pos-vis[m.id]+40)%40;if(dist>12){vis[m.id]=m.pos;drawTokens();return syncTokens()}
 stepping=true;const id=m.id;
 const tick=()=>{const q=S&&S.players.find(x=>x.id==id);if(!q||!q.alive||vis[id]===q.pos||(q.pos-vis[id]+40)%40>12){if(q)vis[id]=q.pos;stepping=false;hopId=null;drawTokens();return syncTokens()}
-vis[id]=(vis[id]+1)%40;hopId=id;drawTokens();setTimeout(tick,160)};
+vis[id]=(vis[id]+1)%40;hopId=id;play('step');drawTokens();setTimeout(tick,160)};
 tick()}
 
 // ===== ТОРГИ =====
@@ -470,7 +470,7 @@ function skinUI(){const z=$('skm');
 const dices=DICE.map(s=>`<div class="sk${SK.d==s.id?' on':''}" onclick="pickSk('d','${s.id}')"><div class="die mini" style="--dbg:${s.bg};--dpip:${s.pip};--dglow:${s.glow||'none'};--dimg:url('skins/dice-${s.id}.png')">${pips(5)}</div><small>${s.n}</small></div>`).join('');
 const frames=FRAMES.map(f=>`<div class="sk${SK.f==f.id?' on':''}" onclick="pickSk('f','${f.id}')"><div class="av big${f.id=='none'?'':' fr-'+f.id}"${f.b?` data-b="${f.b}"`:''} style="--c:#4aa8ff;--fi:url('skins/frame-${f.id}.png')">${avh({ph:myPh,a:(Array.from(nm())[0]||'?').toUpperCase()})}</div><small>${f.n}</small></div>`).join('');
 const themes=THEMES.map(t=>`<div class="sk${SK.t==t.id?' on':''}" onclick="pickSk('t','${t.id}')"><div class="thm" style="background:${t.bdbg}"><span style="background:${t.tile}"></span><span style="background:${t.tile}"></span><span style="background:${t.tile}"></span></div><small>${t.n}</small></div>`).join('');
-z.innerHTML=`<div class="md" onclick="event.stopPropagation()"><div class="mh"><h2>🎨 Скіни</h2><button class="x" onclick="closeSk()">✕</button></div><b>Кубики</b><div class="skg">${dices}</div><b>Рамки аватарки</b><div class="skg">${frames}</div><b>Свій колір рамки</b><div class="cust"><input type="color" id="fcol" value="${isHex(SK.f)?SK.f:'#ff4d4d'}" onchange="pickSk('f',this.value)"><small>обери будь-який колір</small></div><b>Стиль поля</b><div class="skg">${themes}</div></div>`;z.style.display='grid'}
+z.innerHTML=`<div class="md" onclick="event.stopPropagation()"><div class="mh"><h2>🎨 Скіни</h2><button class="x" onclick="closeSk()">✕</button></div><b>Звук</b><div class="chips2" style="margin:8px 0 14px"><button class="cc${SND_ON?' on':''}" onclick="tgSnd();skinUI()">🔊 Звуки</button><button class="cc${MUS_ON?' on':''}" onclick="tgMus();skinUI()">🎵 Музика</button></div><b>Кубики</b><div class="skg">${dices}</div><b>Рамки аватарки</b><div class="skg">${frames}</div><b>Свій колір рамки</b><div class="cust"><input type="color" id="fcol" value="${isHex(SK.f)?SK.f:'#ff4d4d'}" onchange="pickSk('f',this.value)"><small>обери будь-який колір</small></div><b>Стиль поля</b><div class="skg">${themes}</div></div>`;z.style.display='grid'}
 function closeSk(){$('skm').style.display='none'}
 function hdrFrame(){const a=$('meAv'),f=frm(SK.f);a.className='av big'+(f.id=='none'||f.custom?'':' fr-'+f.id);a.style.boxShadow=f.custom?'0 0 0 2px '+f.c+',0 0 12px '+f.c:'';if(f.id!='none'&&f.b)a.dataset.b=f.b;else delete a.dataset.b}
 function pickSk(kind,id){SK[kind]=id;lss('sk_'+kind,id);if(kind=='t')applyTheme();hdrFrame();skinUI()}
@@ -564,7 +564,7 @@ if(!seen||now-seen>limit)set(ref(db,'rooms/'+c.key),null).catch(()=>{})})}
 setInterval(()=>{if(code&&R&&R.players&&R.players[myId])update(ref(db,`rooms/${code}/players/${myId}`),{ts:Date.now(),online:true}).catch(()=>{})},30000);
 function toLobby(){
   try{unsubs.splice(0).forEach(f=>{try{f&&f()}catch(e){}})}catch(e){}
-  code='';R=null;S=null;LOGS=[];started=false;busy=false;tr=null;modal=null;ti=null;stm=false;hpm=false;lvm=false;trSeen=null;
+  code='';R=null;S=null;LOGS=[];lastLogKey=null;lastCur=null;lastBid=null;started=false;busy=false;tr=null;modal=null;ti=null;stm=false;hpm=false;lvm=false;trSeen=null;
   $('gameBoard').style.display='none';$('waitingRoom').style.display='none';$('lobby').style.display='block';$('lobbyContent').style.display='block';
   const dz=$('dz');if(dz)dz.style.display='none';renderLobby();statsUI();
 }
@@ -622,3 +622,43 @@ ACH.forEach(a=>{if(cond[a.id]&&have.indexOf(a.id)<0){have.push(a.id);lss('ach',J
 function achUI(){const have=achGet();$('skm').innerHTML=`<div class="md" onclick="event.stopPropagation()"><div class="mh"><h2>🎖 Досягнення ${have.length}/${ACH.length}</h2><button class="x" onclick="closeSk()">✕</button></div>${ACH.map(a=>{const ok=have.indexOf(a.id)>=0;return `<div class="mi ${ok?'grn':'gold'}" style="${ok?'':'opacity:.55'}"><i>${a.ic}</i><div><b>${a.n}</b><small>${a.d} · +${a.xp} XP</small></div></div>`}).join('')}</div>`;$('skm').style.display='grid'}
 cfgUI();$('achBtn').onclick=achUI;
 Object.assign(window,{bid,tgCfg,achUI});
+
+// ===== ЗВУКИ (синтез у браузері; свої файли — у папці sounds/) =====
+let AC=null,SND_ON=lsg('snd')!=='0',MUS_ON=lsg('mus')==='1',VOL=.6,lastLogKey=null,lastCur=null,lastBid=null,musT=null;const CUSTOM={},lastPl={};
+function ac(){if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;try{AC=new C()}catch(e){return null}}if(AC.state=='suspended'){try{AC.resume()}catch(e){}}return AC}
+function tone(f,t0,d,type,v,f2){const a=ac();if(!a)return;const o=a.createOscillator(),gn=a.createGain(),t=a.currentTime+t0;o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);
+gn.gain.setValueAtTime(.0001,t);gn.gain.exponentialRampToValueAtTime(Math.max(.0002,(v||.15)*VOL),t+.012);gn.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(gn);gn.connect(a.destination);o.start(t);o.stop(t+d+.05)}
+function noise(t0,d,v,f1,f2){const a=ac();if(!a)return;const n=Math.max(1,Math.floor(a.sampleRate*d)),b=a.createBuffer(1,n,a.sampleRate),ch=b.getChannelData(0);for(let i=0;i<n;i++)ch[i]=Math.random()*2-1;
+const s=a.createBufferSource();s.buffer=b;const fl=a.createBiquadFilter(),gn=a.createGain(),t=a.currentTime+t0;fl.type='bandpass';fl.frequency.setValueAtTime(f1||1500,t);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,t+d);fl.Q.value=1.2;
+gn.gain.setValueAtTime(Math.max(.0002,(v||.15)*VOL),t);gn.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(fl);fl.connect(gn);gn.connect(a.destination);s.start(t)}
+const SFX={click:()=>tone(900,0,.04,'square',.05),step:()=>tone(380+Math.random()*80,0,.05,'triangle',.09),
+dice:()=>{for(let i=0;i<9;i++)noise(i*.1+Math.random()*.04,.06,.2,1800+Math.random()*1500)},dicestop:()=>{tone(170,0,.14,'triangle',.28,80);noise(0,.08,.18,900)},
+buy:()=>{tone(1250,0,.07,'square',.1);tone(1850,.07,.3,'sine',.16);tone(2500,.15,.25,'sine',.09)},rent:()=>{tone(1500,0,.06,'square',.08);tone(1100,.08,.06,'square',.08);tone(800,.16,.12,'square',.08)},
+salary:()=>{[523,659,784,1047].forEach((f,i)=>tone(f,i*.08,.18,'triangle',.14))},card:()=>{noise(0,.28,.16,700,3200);tone(1320,.22,.2,'sine',.1)},
+jackpot:()=>{[523,659,784,1047,1319,1047,1319,1568].forEach((f,i)=>tone(f,i*.09,.2,'square',.09))},lose:()=>{[392,330,262].forEach((f,i)=>tone(f,i*.16,.22,'sawtooth',.08))},
+teleport:()=>{tone(300,0,.5,'sine',.14,1800);noise(.1,.4,.07,3000,6000)},rescue:()=>{tone(880,0,.25,'sine',.14);tone(1320,.14,.4,'sine',.14)},
+gavel:()=>{[0,.2].forEach(t=>{tone(190,t,.09,'square',.25,70);noise(t,.05,.2,1200)})},whoosh:()=>noise(0,.3,.14,600,2800),
+bankrupt:()=>{[330,262,196,131].forEach((f,i)=>tone(f,i*.2,.3,'sawtooth',.1))},win:()=>{[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,i*.13,.28,'square',.1))},
+ach:()=>{[1047,1319,1568,2093].forEach((f,i)=>tone(f,i*.07,.3,'sine',.12))},upgrade:()=>{[0,.12,.24].forEach((t,i)=>{noise(t,.05,.2,1500);tone(500+i*120,t,.1,'triangle',.12)})},
+tax:()=>{tone(150,0,.18,'sine',.3,90);tone(120,.2,.2,'sine',.3,70)},jail:()=>{tone(220,0,.35,'square',.14,110);noise(0,.15,.15,2500)},trade:()=>{tone(660,0,.1,'triangle',.12);tone(880,.1,.2,'triangle',.12)},
+event:()=>{tone(784,0,.15,'sine',.12);tone(988,.12,.15,'sine',.12);tone(1175,.24,.3,'sine',.12)},yourturn:()=>{tone(880,0,.2,'sine',.14);tone(660,.16,.3,'sine',.14)},bid:()=>tone(720,0,.07,'square',.09),chat:()=>tone(620,0,.07,'sine',.1)};
+function play(n){if(!SND_ON)return;const now=Date.now();if(lastPl[n]&&now-lastPl[n]<60)return;lastPl[n]=now;
+try{if(CUSTOM[n]){const a=new Audio('sounds/'+n+'.mp3');a.volume=VOL;a.play().catch(()=>{});return}if(SFX[n])SFX[n]()}catch(e){}}
+function sfxFor(e){const t=e.t||'';if(e.c)return 'chat';
+if(/досягнення «/.test(t))return 'ach';if(/🏆/.test(t))return 'win';if(/збанкрутував/.test(t))return 'bankrupt';if(/виграв аукціон/.test(t))return 'gavel';if(/на аукціон/.test(t))return 'whoosh';
+if(/купує філію/.test(t))return 'buy';if(/покращив/.test(t))return 'upgrade';if(/платить оренду/.test(t))return 'rent';if(/рятувальн/.test(t))return 'rescue';
+if(/виграв у лотерею|виграв у казино|отримав грант/.test(t))return 'jackpot';if(/програв у казино|лотерея: без/.test(t))return 'lose';if(/телепорт/.test(t))return 'teleport';
+if(/🎴/.test(t))return 'card';if(/податок/.test(t))return 'tax';if(/зарплат/.test(t))return 'salary';if(/в.язниц/.test(t)&&/іде|пропускає/.test(t))return 'jail';if(/обмінявся/.test(t))return 'trade';
+if(/Свято|Повінь|Розпродаж|бум|Податкова|Грант/.test(t))return 'event';return null}
+function logSounds(ks){if(lastLogKey===null){lastLogKey=ks.length?ks[ks.length-1]:'';return}const q=[];LOGS.forEach((e,i)=>{if(ks[i]>lastLogKey){const n=sfxFor(e);if(n)q.push(n)}});if(ks.length)lastLogKey=ks[ks.length-1];q.slice(0,3).forEach((n,i)=>setTimeout(()=>play(n),i*180))}
+function sndRender(){if(S.cur!==lastCur){lastCur=S.cur;if(P[S.cur]&&P[S.cur].id==myId&&S.ph=='roll')play('yourturn')}
+if(S.ph=='auc'){const f=aucInfo(),top=f&&f.top?f.top.amt:0;if(lastBid!==null&&top>lastBid)play('bid');lastBid=top}else lastBid=null}
+const SCALE=[261.6,293.7,329.6,392,440,523.3,587.3];
+function musStart(){if(musT||!MUS_ON)return;musT=setInterval(()=>{if(!MUS_ON||!ac())return;const f=SCALE[Math.floor(Math.random()*SCALE.length)]*(Math.random()<.3?.5:1);tone(f,0,1.8,'sine',.05);if(Math.random()<.4)tone(f*1.5,.3,1.3,'sine',.03)},900)}
+function musStop(){clearInterval(musT);musT=null}
+function tgSnd(){SND_ON=!SND_ON;lss('snd',SND_ON?'1':'0');if(SND_ON)play('click')}
+function tgMus(){MUS_ON=!MUS_ON;lss('mus',MUS_ON?'1':'0');if(MUS_ON){ac();musStart()}else musStop()}
+// свої звуки: поклади sounds/<назва>.mp3 — вони замінять синтезовані
+Object.keys(SFX).forEach(n=>{try{fetch('sounds/'+n+'.mp3',{method:'HEAD'}).then(r=>{if(r&&r.ok)CUSTOM[n]=1}).catch(()=>{})}catch(e){}});
+if(document.addEventListener){document.addEventListener('click',e=>{ac();const b=e.target&&e.target.closest&&e.target.closest('button');if(b)play('click');if(MUS_ON)musStart()})}
+Object.assign(window,{tgSnd,tgMus});
