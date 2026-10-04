@@ -185,6 +185,22 @@ html,body{height:100%}
 .topr{flex-wrap:nowrap}
 .ib.off{opacity:.4;text-decoration:line-through}.md .cc{width:auto;margin:0;padding:8px 10px;border-radius:12px;border:1px solid var(--ln);background:#0a1530;font-size:12px;color:var(--fg);font-weight:600}.md .cc.on{background:#1f7a5a;border-color:#2ee67a}
 #lobby .rm .ico{width:44px;flex:none;padding:10px 0;font-size:17px;background:#3a1f2a;border:1px solid #7a2040}.cbc{flex-direction:column}.cbc button{width:100%}
+
+#rw{position:fixed;inset:0;display:none;place-items:center;z-index:45;background:rgba(2,6,18,.72);pointer-events:none}
+.rwb{display:flex;flex-direction:column;align-items:center}.rwp{font-size:30px;color:#ffd23f;margin-bottom:-16px;z-index:2;text-shadow:0 2px 6px #000}
+.rwh{position:relative;width:250px;height:250px;border-radius:50%;border:7px solid #b8892b;box-shadow:0 0 0 3px #5a4217,0 12px 40px rgba(0,0,0,.6)}
+.rwh span{position:absolute;left:50%;top:50%;width:18px;margin:-8px 0 0 -9px;text-align:center;font-size:9px;font-weight:800;color:#fff}
+.rwc{position:absolute;inset:80px;border-radius:50%;background:radial-gradient(#27345f,#10172f);border:3px solid #b8892b}
+.rwr{display:flex;align-items:center;gap:12px;min-height:72px;margin-top:14px}.rwn{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;font-size:28px;font-weight:900;color:#fff;border:3px solid #ffd23f}
+.rwt{font-size:28px;font-weight:900}.rwt.w{color:#3ddc84}.rwt.l{color:#ff6b6b}
+.bsub{display:block;font-size:11px;font-weight:500;opacity:.85;margin-top:1px}
+.pchips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;max-height:110px;overflow:auto}
+.emo{display:flex;gap:4px}.emo .ib{flex:1;font-size:16px;padding:3px 0}
+.confetti{position:fixed;inset:0;overflow:hidden;pointer-events:none}.confetti i{position:absolute;top:-16px;width:8px;height:14px;opacity:.9;animation:cf linear infinite}
+@keyframes cf{to{transform:translateY(108vh) rotate(720deg)}}
+
+.t.mg .in{filter:grayscale(.9);opacity:.62}.t.mg::after{content:'🏦';position:absolute;left:2px;bottom:2px;font-size:11px;z-index:3}
+.rngrid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin:8px 0}.rn{padding:7px 0;text-align:center;border-radius:6px;font-size:12px;font-weight:700;color:#fff}.rn.r{background:#d62f3a}.rn.b{background:#15171c;border:1px solid #333}.rn.g{background:#1f9d55}.rn.on{outline:2px solid #ffd23f}
 </style></head><body>
 <div id="lobby">
 <div class="hero"><svg class="scene" viewBox="0 0 400 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
@@ -217,9 +233,9 @@ html,body{height:100%}
 <div id="roomList"></div></div>
 <div id="waitingRoom" class="glass" style="display:none"><div class="code">Код кімнати: <b id="roomCodeDisplay"></b></div><div id="playersList"></div><button id="addBotBtn" class="n" style="display:none">➕ Додати бота</button><button id="startGameBtn" disabled>Почати гру</button><button class="n" id="leaveBtn" onclick="leaveRoom()">Вийти</button></div>
 </div></div>
-<div id="dz"></div>
+<div id="dz"></div><div id="rw"></div>
 <div id="skm" class="ov" style="display:none" onclick="closeSk()"></div>
 <div id="gameBoard" style="display:none"><div id="app"></div></div>
-<script type="module" src="game.js?v=19"></script>
-<div class="ver" style="position:fixed;left:6px;bottom:2px;font-size:9px;opacity:.35;pointer-events:none;display:none">v19</div>
+<script type="module" src="game.js?v=22"></script>
+<div class="ver" style="position:fixed;left:6px;bottom:2px;font-size:9px;opacity:.35;pointer-events:none;display:none">v22</div>
 </body></html>
