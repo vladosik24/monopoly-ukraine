@@ -174,6 +174,15 @@ html,body{height:100%}
 .stg{display:flex;justify-content:space-around;text-align:center;background:#0a1530;border:1px solid var(--ln);border-radius:14px;padding:12px 6px;margin:10px 0}.stg b{display:block;font-size:20px}.stg b.gn{color:var(--gn)}.stg small{color:var(--mut);font-size:11px}
 .stt2{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px}.stt2 th{color:var(--mut);font-weight:600;text-align:right;padding:6px 3px;border-bottom:1px solid var(--ln)}.stt2 th:nth-child(2){text-align:left}
 .stt2 td{padding:7px 3px;border-bottom:1px solid var(--ln);text-align:right;white-space:nowrap}.stt2 td:nth-child(2){text-align:left}.stt2 .pn{display:flex;align-items:center;gap:6px;max-width:92px}.stt2 .pn b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.stt2 .av{width:24px;height:24px;font-size:11px;flex:none}.stt2 tr.dd{opacity:.45}
+
+.cfgh{font-size:13px;color:#ffd23f;font-weight:700;margin-bottom:6px}.chips2{display:flex;flex-wrap:wrap;gap:6px}
+#lobby .cc{width:auto;margin:0;padding:8px 10px;border-radius:12px;border:1px solid var(--ln);background:#0a1530;font-size:12px;color:var(--fg);font-weight:600}#lobby .cc.on{background:#1f7a5a;border-color:#2ee67a}
+.tmk{display:inline-block;font-size:9px;padding:0 5px;border-radius:6px;margin-left:3px;color:#fff;vertical-align:middle}.tmk.t0{background:#e5484d}.tmk.t1{background:#2f6fe0}
+.evr{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}.evb{font-size:11px;padding:2px 8px;border-radius:8px;background:#16306a;color:#cfe0ff}
+.aucbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%;max-width:480px;background:#2a2418;border:1px solid #a58a2c;border-radius:14px;padding:8px 10px}
+.aucbar .al{flex:1;min-width:0}.aucbar b{display:block;font-size:14px}.aucbar small{color:#d9c98a;font-size:12px}#aucT{font-weight:800;color:#ffd23f;font-size:18px}
+.aucbtn{display:flex;gap:6px;width:100%}.aucbtn button{flex:1;padding:10px 4px;font-size:14px;background:#a58a2c;color:#201500}
+.topr{flex-wrap:nowrap}
 </style></head><body>
 <div id="lobby">
 <div class="hero"><svg class="scene" viewBox="0 0 400 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
@@ -187,7 +196,7 @@ html,body{height:100%}
 </svg></div>
 <div class="lcont">
 <div class="topbar"><div class="pcard"><div class="av big" id="meAv"></div><div class="pinf"><b id="meName"></b><small id="meUser" class="mut"></small><div class="lv"><span id="lvTxt">Рівень 1</span><div class="xp"><i id="xpBar"></i></div><em id="xpTxt">0 / 1000</em></div></div></div>
-<div class="topr"><div class="chip" id="winChip">🏆 0</div><button id="skinBtn" class="gear" title="Скіни та стилі">⚙</button></div></div>
+<div class="topr"><div class="chip" id="winChip">🏆 0</div><button id="achBtn" class="gear" title="Досягнення">🎖</button><button id="skinBtn" class="gear" title="Скіни та стилі">⚙</button></div></div>
 <div class="logo"><div class="hat">🎩</div><div class="la">МОНОПОЛІЯ</div><div class="lb"><span>УКРАЇНА</span></div></div>
 <div class="lspace"></div>
 <div id="src" class="mut" style="font-size:12px;margin-bottom:6px"></div>
@@ -200,6 +209,7 @@ html,body{height:100%}
 <div class="row2" id="joinRow" style="display:none"><input id="roomCodeInput" placeholder="Код кімнати GAME-XXXX"><button id="joinBtn" class="y">Увійти</button></div>
 <div class="rowb"><button id="botBtn" class="mb"><i>🤖</i><span><b>ГРА З БОТАМИ</b><small>Тренування проти комп'ютера</small></span></button><select id="botN"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></div>
 <div class="rowm glass"><span>🗺 Карта поля</span><select id="mapSel"></select></div>
+<div class="glass" id="cfgBox"><div class="cfgh">⚙ Режим гри</div><div id="cfgRow" class="chips2"></div></div>
 <div class="top5 glass"><h3>👑 Топ гравців</h3><div id="topList"><small class="mut">Завантаження…</small></div></div>
 <div class="sec"><h3>Доступні кімнати</h3><small id="roomCount" class="mut">Знайдено: 0</small></div>
 <div id="roomList"></div></div>
@@ -208,6 +218,6 @@ html,body{height:100%}
 <div id="dz"></div>
 <div id="skm" class="ov" style="display:none" onclick="closeSk()"></div>
 <div id="gameBoard" style="display:none"><div id="app"></div></div>
-<script type="module" src="game.js?v=16"></script>
-<div class="ver" style="position:fixed;left:6px;bottom:2px;font-size:9px;opacity:.35;pointer-events:none;display:none">v16</div>
+<script type="module" src="game.js?v=17"></script>
+<div class="ver" style="position:fixed;left:6px;bottom:2px;font-size:9px;opacity:.35;pointer-events:none;display:none">v17</div>
 </body></html>
