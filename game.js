@@ -23,18 +23,18 @@ const CARDS=[
 ['👵 Бабуся передала 500 ₴ та банку варення',500],['☕ Кава у Львові для всієї компанії: −200',-200],['💙 Кешбек від monobank: +400',400],['📦 Нова Пошта загубила посилку — компенсація +700',700],
 ['🧾 Податкова перевірка: −1000',-1000],['🍀 Знайшов чотирилисник: +300',300],['🏁 Іди на СТАРТ і отримай зарплату',0,'go'],['👮 Лови поліцію! Іди у в\'язницю',0,'jail'],
 ['⏪ Затор на Столичному: відступи на 3 клітинки',0,'back3'],['🎂 День народження! Кожен гравець дарує тобі 200 ₴',200,'eachget'],['🧱 Скинулись на ремонт у під\'їзді: сплати кожному по 150 ₴',150,'eachpay'],
-['🏗 Ремонт у твоїх магазинах: 250 ₴ за кожну ★',250,'repair'],['🚂 Рейс! Їдь до «{n}»',0,'to:1'],['✈️ Лети до «{n}»',0,'to:11'],
-['🛒 Акція! Біжи до «{n}»',0,'to:31'],['🏦 Візит до «{n}»',0,'to:16'],['🎰 Ризикни — іди в казино!',0,'to:20']
+['🏗 Ремонт у твоїх магазинах: 250 ₴ за кожну ★',250,'repair'],['🚂 Рейс! Їдь до «{n}»',0,'to:p0'],['✈️ Лети до «{n}»',0,'to:p9'],
+['🛒 Акція! Біжи до «{n}»',0,'to:p22'],['🏦 Візит до «{n}»',0,'to:p11'],['🎡 Ризикни — на рулетку!',0,'to:k']
 ];
 const PC=['#ff4d4d','#3ddc84','#ffd23f','#4aa8ff','#b46bff'];
 const pos=i=>i<=10?[1,1+i]:i<=20?[i-9,11]:i<=30?[11,31-i]:[41-i,1];
 const side=i=>i<10?'top':i<20?'rt':i<30?'bot':'lf';
 const hm=()=>new Date().toTimeString().slice(0,5),fm=n=>n.toLocaleString('uk')+' ₴';
 function full(i){return T.every((x,k)=>x[2]!==T[i][2]||typeof x[1]!='number'||own[k]==own[i])}
-function rent(i){const b=Math.round(T[i][1]*.1),L=lvl[i],r=L?b*[0,4,8,14][L]:b*(full(i)?2:1),m=S&&S.evt&&S.evt.r===S.round?(S.evt.m||1):1;return Math.round(r*m)}
+function rent(i){if(S&&S.mg&&S.mg[i])return 0;const b=T[i][6]||Math.round(T[i][1]*.1),L=lvl[i],r=L?b*RM.s[L]:b*(full(i)?RM.m:1),m=S&&S.evt&&S.evt.r===S.round?(S.evt.m||1):1;return Math.round(r*m)}
 function tile(b,i){const[r,c]=pos(i),s=side(i%10==0?(i==0?0:i==10?9:i==20?21:31):i),t=b[1];
 const tk=P.map(p=>p.alive&&dpos(p)==i?tokn(p):'').join('');
-const corner=i%10==0,cls=(corner?'sp ':'')+s;
+const corner=i%10==0,cls=(corner?'sp ':'')+s+(S&&S.mg&&S.mg[i]?' mg':'');
 if(typeof t!='number')return '<div class="t '+cls+'" data-i="'+i+'" onclick="tinfo('+i+')" style="grid-area:'+r+'/'+c+'"><div class="in"><span class="em">'+b[2]+'</span>'+(corner?'':'<span class="nm">'+b[0]+'</span>')+'</div><div class="tk">'+tk+'</div></div>';
 const bg=own[i]>=0?P[own[i]].c+'aa':'var(--tile,#fff)';
 return '<div class="t '+cls+'" data-i="'+i+'" onclick="tinfo('+i+')" style="grid-area:'+r+'/'+c+';--b:'+bg+'"><div class="in">'+tcont(b)+(lvl[i]?'<div class="st">'+'★'.repeat(lvl[i])+'</div>':'')+'</div><div class="pr" style="--g:'+GC[b[2]]+'">'+t+'</div><div class="tk">'+tk+'</div></div>'}
@@ -145,7 +145,7 @@ function listen(){
 }
 function fresh(ps,map,cfg){cfg=cfg||{};const o={};['auc','team','hard','short','shuf','evt'].forEach(k=>{o[k]=cfg[k]?1:0});if(ps.length<4)o.team=0;
 const st=o.short?6000:10000;let perm=null;if(o.shuf){perm=Array.from({length:28},(_,i)=>i);for(let i=27;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=perm[i];perm[i]=perm[j];perm[j]=t}}
-const r={t0:Date.now(),round:1,map:map||'brands',cfg:o,players:ps.map((p,i)=>Object.assign({id:p.id,n:p.n,ph:p.ph||'',c:PC[i],a:p.bot?'🤖':(Array.from(p.n||'?')[0]||'?').toUpperCase(),bot:!!p.bot,dk:p.dk||'classic',fr:p.fr||'none',m:st,pos:0,jail:0,alive:true},o.team?{tm:i%2}:{})),own:Array(40).fill(-1),lvl:Array(40).fill(0),cur:0,ph:'roll',tend:Date.now()+30000};
+const r={mg:Array(40).fill(0),t0:Date.now(),round:1,map:map||'brands',cfg:o,players:ps.map((p,i)=>Object.assign({id:p.id,n:p.n,ph:p.ph||'',c:PC[i],a:p.bot?'🤖':(Array.from(p.n||'?')[0]||'?').toUpperCase(),bot:!!p.bot,dk:p.dk||'classic',fr:p.fr||'none',m:st,pos:0,jail:0,alive:true},o.team?{tm:i%2}:{})),own:Array(40).fill(-1),lvl:Array(40).fill(0),cur:0,ph:'roll',tend:Date.now()+30000};
 if(perm)r.perm=perm;return r}
 async function startGame(){
   const ps=Object.values((await get(ref(db,'rooms/'+code+'/players'))).val()||{}).sort((a,b)=>a.j-b.j);
@@ -173,7 +173,7 @@ function sync(){
 }
 const on=id=>!(R&&R.players&&R.players[id]&&R.players[id].online===false);
 function driver(){const c=S.players[S.cur];if(c.bot){const h=S.players.find(p=>!p.bot&&p.alive&&on(p.id));return !!h&&h.id==myId}if(on(c.id))return c.id==myId;const h=S.players.find(p=>!p.bot&&p.alive&&on(p.id));return !!h&&h.id==myId}
-function pay(k,a,to){const p=S.players[k];p.m-=a;if(to!=null)S.players[to].m+=a;if(p.m<0){p.m=0;p.alive=false;S.own.forEach((o,j)=>{if(o==k){S.own[j]=-1;S.lvl[j]=0}});ev(k,'збанкрутував 💥')}}
+function pay(k,a,to){autoMortgage(k,a);const p=S.players[k];p.m-=a;if(to!=null)S.players[to].m+=a;if(p.m<0){p.m=0;p.alive=false;S.own.forEach((o,j)=>{if(o==k){S.own[j]=-1;S.lvl[j]=0;if(S.mg)S.mg[j]=0}});ev(k,'збанкрутував 💥')}}
 async function roll(){
   if(!S||S.ph!='roll'||busy||!driver())return;
   busy=true;
@@ -195,7 +195,7 @@ async function roll(){
     toast(p.n+' у в\'язниці');
     S.dice=null;
     await save();
-    setTimeout(()=>{end()},1200);
+    gt(()=>{end()},1200);
     return;
   }
 
@@ -211,7 +211,7 @@ async function roll(){
   // Зберігаємо НОВУ позицію — фішки мають переїхати
   await save();
 
-  setTimeout(()=>land(),1700+(d1+d2)*170);
+  gt(()=>land(),1700+(d1+d2)*170);
 }
 
 async function land(){
@@ -239,8 +239,8 @@ async function land(){
       return;
     }
     if(o!==k&&CF().team&&P[o]&&P[o].tm===p.tm){ev(k,'у союзника — оренди немає')}else if(o!==k){
-      if(p.res){p.res=0;p.rs=(p.rs||0)+1;ev(k,'🛟 рятувальна карта скасувала оренду')}else{const r=rent(pos);ev(k,'платить оренду '+r+' ₴ → '+(P[o]?P[o].n:'?'));pay(k,r,o)}
-    }else if(full(pos)&&lvl[pos]<3){
+      if(p.res){p.res=0;p.rs=(p.rs||0)+1;ev(k,'🛟 рятувальна карта скасувала оренду')}else if(S.mg&&S.mg[pos]){ev(k,'ділянка в заставі — оренди немає')}else{const r=rent(pos);ev(k,'платить оренду '+r+' ₴ → '+(P[o]?P[o].n:'?'));pay(k,r,o)}
+    }else if(full(pos)&&lvl[pos]<3&&!(S.mg&&S.mg[pos])){
       S.ph='buy';
       S.tend=Date.now()+30000;
       await save();
@@ -249,44 +249,40 @@ async function land(){
       return;
     }
   }else if(t==='c'){
-    if(drawCard(k)){await save();setTimeout(()=>{land()},900);return}
-  }else if(t==='l'){
-    if(p.m<300){ev(k,'не вистачає на квиток лотереї')}
-    else{p.m-=300;const r=Math.random();let w=0;if(r<.04)w=5000;else if(r<.15)w=1500;else if(r<.4)w=500;
-      if(w){p.m+=w;if(w>=1500)p.lk=(p.lk||0)+1;ev(k,'🎟 виграв у лотерею +'+w+' ₴ (квиток −300 ₴)')}else ev(k,'🎟 лотерея: без виграшу (квиток −300 ₴)')}
+    if(drawCard(k)){await save();gt(()=>{land()},900);return}
+  }else if(t==='l'||t==='k'){
+    if(p.bot){if(p.m>(t==='l'?900:1800)&&Math.random()<.5){if(t==='l')doGame(k,t);else botRoulette(k)}else ev(k,'пропустив '+(t==='l'?'лотерею':'рулетку'))}
+    else{S.ph='gm';S.gm=t;S.tend=Date.now()+30000;await save();busy=false;return}
   }else if(t==='t'){
     const cand=[];for(let i=0;i<40;i++)if(i!==pos&&i!==30&&i!==10)cand.push(i);const to=cand[Math.floor(Math.random()*cand.length)];
-    ev(k,'🌀 телепорт на «'+T[to][0]+'»');if(to<pos)p.m+=SAL();p.pos=to;await save();setTimeout(()=>{land()},900);return;
+    ev(k,'🌀 телепорт на «'+T[to][0]+'»');if(to<pos)p.m+=SAL();p.pos=to;await save();gt(()=>{land()},900);return;
   }else if(t==='r'){
     if(p.res){ev(k,'вже має рятувальну карту')}else{p.res=1;ev(k,'🛟 отримав рятувальну карту (скасує оренду або в\'язницю)')}
   }else if(t==='x'){
     const tx=TAX();ev(k,tx?'сплатив податок '+tx+' ₴':'податок скасовано подією');if(tx)pay(k,tx);
   }else if(t==='g'){
     if(p.res){p.res=0;p.rs=(p.rs||0)+1;ev(k,'🛟 рятувальна карта врятувала від в\'язниці')}else{p.pos=10;p.jail=1;ev(k,'іде у в\'язницю')}
-  }else if(t==='k'){
-    if(Math.random()<0.4){p.m=(Number(p.m)||0)+1000;ev(k,'виграв у казино +1000 ₴');toast('Казино +1000 ₴')}
-    else{ev(k,'програв у казино −600 ₴');pay(k,600);toast('Казино −600 ₴')}
   }
   // СТАРТ (s) та в'язниця-відвідини (j) — просто зупинка
   await save();
-  setTimeout(()=>end(),1200);
+  gt(()=>end(),(S.rl&&Date.now()-S.rl.rid<2500)?5600:1200);
 }
 
 async function buy(){if(!S||S.ph!='buy'||busy||!driver())return;busy=true;sync();const k=S.cur,p=P[k];const pos=Number(p.pos)||0;const b=T[pos];
 if(!b||typeof b[1]!=='number'){S.ph='wait';await save();busy=false;return end()}
 if(own[pos]==k){const c=Math.round(b[1]/2);if(p.m>=c){p.m-=c;lvl[pos]++;ev(k,'покращив '+b[0]+' до рівня '+lvl[pos]+' за '+c+' ₴');toast('Покращено '+b[0])}else {ev(k,'не вистачає коштів');toast('Не вистачає коштів')}}
 else if(p.m>=b[1]){p.m-=b[1];own[pos]=k;ev(k,'купує філію '+b[0]+' за '+b[1]+'₴');toast('Куплено '+b[0]+'!')}else {ev(k,'не вистачає коштів');toast('Не вистачає коштів')}
-S.ph='wait';await save();setTimeout(end,900)}
+S.ph='wait';await save();gt(end,900)}
 async function skip(){if(!S||S.ph!='buy'||busy||!driver())return;busy=true;sync();const k=S.cur,p=P[k],pos=Number(p.pos)||0,b=T[pos];
 if(CF().auc&&b&&typeof b[1]=='number'&&own[pos]===-1){S.ph='auc';S.auc={i:pos,end:Date.now()+15000,min:Math.max(50,Math.round(b[1]*.3))};S.tend=Date.now()+60000;
 ev(k,'відмовився купувати — «'+b[0]+'» іде на аукціон');try{await set(ref(db,'rooms/'+code+'/bids'),null)}catch(e){}await save();busy=false;return}
 S.ph='wait';await save();end()}
-function assets(i){let s=P[i].m-(P[i].debt||0);T.forEach((b,k)=>{if(own[k]===i&&typeof b[1]=='number')s+=b[1]+(lvl[k]||0)*Math.round(b[1]/2)});return s}
+function assets(i){let s=P[i].m-(P[i].debt||0);T.forEach((b,k)=>{if(own[k]===i&&typeof b[1]=='number'&&!(S.mg&&S.mg[k]))s+=b[1]+(lvl[k]||0)*Math.round(b[1]/2)});return s}
 async function end(){sync();const al=P.filter(p=>p.alive),tm=CF().team,sides=new Set(al.map(p=>tm?p.tm:p.id));
 if(sides.size<2||!al.some(p=>!p.bot)){S.ph='over';S.dice=null;if(sides.size<2)S.win=P.indexOf(al[0]);ev(P.indexOf(al[0]),sides.size<2?(tm?'🏆 команда перемогла!':'🏆 переміг!'):'🏆 боти перемогли');await save();busy=false;return}
 let n=S.cur;do{n=(n+1)%P.length}while(!P[n].alive);let wrap=false;if(n<=S.cur){S.round=(S.round||1)+1;wrap=true}
 if(wrap&&CF().short&&S.round>ROUNDS){const a=P.map((p,i)=>({i,v:assets(i)})).filter(x=>P[x.i].alive).sort((x,y)=>y.v-x.v)[0];S.ph='over';S.dice=null;S.win=a.i;ev(a.i,'🏆 переміг за активами після '+ROUNDS+' раундів ('+fm(a.v)+')');await save();busy=false;return}
-if(wrap&&CF().evt)roundEvent();
+if(wrap)creditCheck();if(wrap&&CF().evt)roundEvent();
 S.cur=n;S.ph='roll';S.dice=null;S.tend=Date.now()+30000;await save();busy=false}
 let sayBusy=false;
 function say(){
@@ -300,22 +296,22 @@ function say(){
   try{ev(m<0?0:m,t,1)}catch(e){console.error(e)}
   setTimeout(()=>{sayBusy=false},300);
 }
-function render(){if(!S)return;useMap(S.map||'brands',S.perm);sync();trNotify();checkWin();checkAch();sndRender();const k=S.cur,c=P[k],mine=c.id==myId,ph=S.ph,pb=T[c.pos];
+function render(){if(!S)return;useMap(S.map||'brands',S.perm);sync();trNotify();checkWin();checkAch();sndRender();rlRender();const k=S.cur,c=P[k],mine=c.id==myId,ph=S.ph,pb=T[c.pos];
 const spec=!P.some(p=>p.id==myId);const isB=typeof pb[1]=='number'&&own[c.pos]==k;
-const pn=P.map((p,i)=>'<div class="pl'+(i==k?' on':'')+(p.alive?'':' dead')+'" style="--c:'+p.c+'" onclick="prof('+i+')">'+(i==k&&p.alive&&ph!='over'?'<i class="tm" id="tm">30 c</i>':'')+'<div class="av'+frc(p)+'"'+fra(p)+'>'+avh(p)+'</div><div><b>'+esc(p.n)+(p.id==myId?' (ти)':'')+(CF().team&&p.tm!=null?' <span class="tmk t'+p.tm+'">'+(p.tm?'Б':'А')+'</span>':'')+'</b><span>'+(p.alive?fm(p.m):'БАНКРУТ')+'</span></div></div>').join('');
+const pn=P.map((p,i)=>'<div class="pl'+(i==k?' on':'')+(p.alive?'':' dead')+'" style="--c:'+p.c+'" onclick="prof('+i+')">'+(i==k&&p.alive&&ph!='over'?'<i class="tm" id="tm">30 c</i>':'')+'<div class="av'+frc(p)+'"'+fra(p)+'>'+avh(p)+'</div><div><b>'+esc(p.n)+(p.id==myId?' (ти)':'')+(CF().team&&p.tm!=null?' <span class="tmk t'+p.tm+'">'+(p.tm?'Б':'А')+'</span>':'')+(p.debt>0?' <span title="Кредит">💳</span>':'')+'</b><span>'+(p.alive?fm(p.m):'БАНКРУТ')+'</span></div></div>').join('');
 const ac=ph=='over'&&P[0].id==myId?'<div class="ac"><button onclick="newGame()">Нова гра</button></div>':'';
-const buyFab=mine&&ph=='buy'?'<div class="buybar"><button class="y" onclick="buy()">'+(isB?'⭐ Покращити за '+Math.round(pb[1]/2):'🛒 Купити «'+pb[0]+'» за '+pb[1])+' ₴</button><button class="n" onclick="skip()">Пас</button></div>':'';
+const buyFab=mine&&ph=='buy'?'<div class="buybar"><button class="y" onclick="buy()">'+rentBuy(pb,isB)+'</button><button class="n" onclick="skip()">Пас</button></div>':'';
 const sub=ph=='over'?'Гру завершено':mine&&ph=='buy'?(isB?'Покращити ділянку?':'Купити '+pb[0]+'?'):mine&&ph=='roll'?'Твій хід — кидай кубики.':'Очікуйте завершення ходу.';
 const L=LOGS;
 let h='<div id="top">'+pn+'<button class="mn" onclick="lvOpen()">⋮</button></div>'+tbar()+'<div id="bd">'+T.map(tile).join('');
-h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+viewerCount()+'</span><button class="ib'+(SND_ON?'':' off')+'" onclick="tgSnd();render()">🔊</button><button class="ib'+(MUS_ON?'':' off')+'" onclick="tgMus();render()">🎵</button><button class="ib" onclick="stOpen()">📊</button><button class="ib" onclick="hpOpen()">❓</button></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();say()}"><button type="button" onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b>'+evb()+ac+'</div></div>';
-h+='</div><div id="acts">'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+aucBar()+'</div>'+modalHtml()+tradeUI()+tileModal()+statsModal()+helpModal()+leaveModal();
+h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+viewerCount()+'</span><button class="ib'+(SND_ON?'':' off')+'" onclick="tgSnd();render()">🔊</button><button class="ib'+(MUS_ON?'':' off')+'" onclick="tgMus();render()">🎵</button>'+pauseBtn()+'<button class="ib" onclick="stOpen()">📊</button><button class="ib" onclick="hpOpen()">❓</button></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="emo">'+(spec?'':['😂','👍','😡','🎉','💸','😱'].map(e=>'<button class="ib" onclick="sendEmo(\''+e+'\')">'+e+'</button>').join(''))+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();say()}"><button type="button" onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b>'+evb()+ac+'</div></div>';
+h+='</div><div id="acts">'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+aucBar()+gmBar()+'</div>'+modalHtml()+tradeUI()+tileModal()+statsModal()+helpModal()+leaveModal()+rlModal()+resModal()+pauseModal();
 const o=$('ci'),v=o?o.value:'',f=o&&document.activeElement===o;
 $('app').innerHTML=h;const n=$('ci');if(n){n.value=v;if(f)n.focus()}const lg=$('log');if(lg)lg.scrollTop=lg.scrollHeight;if(S.dice&&S.rid&&S.rid!==lastRid){lastRid=S.rid;playDice(S.dice)}
   // запам'ятати позиції для анімації фішок
   syncTokens();}
-setInterval(()=>{if(!S||!R||S.ph=='over')return;const tm=$('tm');if(tm)tm.textContent=Math.max(0,Math.ceil((S.tend-Date.now())/1000))+' c';
-if(!busy&&Date.now()>S.tend+800&&driver()){S.ph=='roll'?roll():S.ph=='buy'?skip():0}},500);
+setInterval(()=>{if(!S||!R||S.ph=='over'||isPaused())return;const tm=$('tm');if(tm)tm.textContent=Math.max(0,Math.ceil((S.tend-Date.now())/1000))+' c';
+if(!busy&&Date.now()>S.tend+800&&driver()){S.ph=='roll'?roll():S.ph=='buy'?skip():S.ph=='gm'?gmSkip():0}},500);
 Object.assign(window,{roll,buy,skip,say,newGame,tgl:()=>{showAll=!showAll;render()}});
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -340,25 +336,27 @@ function prof(i){modal=i;stats=false;render()}
 function closeProf(){modal=null;render()}
 function tgs(){stats=!stats;render()}
 function modalHtml(){if(modal==null||!S)return '';const p=P[modal];if(!p)return '';
-const me=p.id==myId,my=me&&S.cur==modal&&driver()&&(S.ph=='roll'||S.ph=='buy'),ls=T.map((b,i)=>own[i]==modal?i:-1).filter(i=>i>=0),val=ls.reduce((s,i)=>s+T[i][1],0),st=ls.reduce((s,i)=>s+lvl[i],0);
+const me=p.id==myId,my=me&&S.cur==modal&&driver()&&(S.ph=='roll'||S.ph=='buy'),ls=T.map((b,i)=>own[i]==modal&&typeof b[1]=='number'?i:-1).filter(i=>i>=0);
+const val=ls.reduce((s,i)=>s+T[i][1],0),st=ls.reduce((s,i)=>s+(lvl[i]||0),0),inc=ls.reduce((s,i)=>s+rent(i),0),as=assets(modal),rank=P.map((q,i)=>({i,v:assets(i)})).sort((a,b)=>b.v-a.v).findIndex(x=>x.i===modal)+1;
+const chips=[];if(!p.alive)chips.push('☠ вибув');if(p.jail>0)chips.push('⛓ у в\'язниці');if(p.res)chips.push('🛟 рятувальна карта');if(p.debt>0)chips.push('💳 борг '+fm(p.debt)+(p.cd?' до раунду '+p.cd:''));if(CF().team&&p.tm!=null)chips.push('👥 команда '+(p.tm?'Б':'А'));if(p.bot)chips.push('🤖 бот');
+const card=(i,v,l)=>`<div class="stat-card"><div class="si">${i}</div><div class="sv">${v}</div><div class="sl">${l}</div></div>`;
 let h=`<div class="ov" onclick="closeProf()"><div class="md" onclick="event.stopPropagation()">
-<div class="mh"><div class="av big${frc(p)}"${fra(p,'--c:'+p.c)}>${avh(p)}</div><div><small class="gd">ПРОФІЛЬ ГРАВЦЯ</small><h2>${esc(p.n)}</h2><span class="mm">${fm(p.m)}</span></div><button class="x" onclick="closeProf()">✕</button></div>
-<div class="stats-row">
-  <div class="stat-card"><div class="si">🏠</div><div class="sv">${ls.length}</div><div class="sl">ДІЛЯНОК</div></div>
-  <div class="stat-card"><div class="si">⭐</div><div class="sv">${st}</div><div class="sl">ЗІРОК</div></div>
-  <div class="stat-card"><div class="si">💰</div><div class="sv">${fm(val)}</div><div class="sl">ВАРТІСТЬ</div></div>
-</div>`;
-if(ls.length){h+=`<div class="stt" style="max-height:120px;overflow:auto">${ls.map(i=>esc(T[i][0])+(lvl[i]?' ★'+lvl[i]:'')).join(' · ')}</div>`}
-if(me){h+=`<div class="mi grn"><i>🏦</i><div><b>Кредит</b><small>${my?'Борг: '+fm(p.debt||0):'Лише під час вашого ходу'}</small>${my?'<div class="cb"><button onclick="credit(1)">Взяти 2 000 ₴</button><button class="n" onclick="credit(0)">Повернути</button></div>':''}</div></div>`;
+<div class="mh"><div class="av big${frc(p)}"${fra(p,'--c:'+p.c)}>${avh(p)}</div><div><small class="gd">ПРОФІЛЬ ГРАВЦЯ · #${rank}</small><h2>${esc(p.n)}</h2><span class="mm">${fm(p.m)}</span></div><button class="x" onclick="closeProf()">✕</button></div>
+${chips.length?'<div class="evr">'+chips.map(c=>'<span class="evb">'+esc(c)+'</span>').join('')+'</div>':''}
+<div class="stats-row">${card('💎',fm(as),'АКТИВИ')}${card('🏠',ls.length+'/'+SLOTS.length,'ДІЛЯНОК')}${card('⭐',st,'ЗІРОК')}</div>
+<div class="stats-row">${card('💰',fm(val),'ВАРТІСТЬ')}${card('📈',fm(inc),'ОРЕНДА/КОЛО')}${card('🏃',p.laps||0,'КІЛ')}</div>
+<div class="stats-row">${card('🤝',p.tr||0,'ОБМІНІВ')}${card('🔨',p.aw||0,'АУКЦІОНІВ')}${card('🍀',p.lk||0,'ВИГРАШІВ')}</div>`;
+if(ls.length)h+=`<div class="pchips">${ls.map(i=>`<span class="chip" onclick="closeProf();tinfo(${i})"><i style="color:${GC[T[i][2]]}">●</i> ${esc(T[i][0])}${lvl[i]?' ★'+lvl[i]:''}${isMg(i)?' 🏦':''}</span>`).join('')}</div>`;
+if(me){h+=`<div class="mi grn"><i>🏦</i><div><b>Кредит</b><small>${my?'Борг: '+fm(p.debt||0)+(p.cd?' · до раунду '+p.cd:''):'Лише під час вашого ходу'}</small>${my?'<div class="cb"><button onclick="credit(1)">Взяти 2 000 ₴</button><button class="n" onclick="credit(0)">Повернути</button></div>':''}</div></div>`;
 h+=`<div class="mi red"${my?' onclick="surr()"':' style="opacity:.55"'}><i>🏳️</i><div><b>Здатися</b><small>${my?'Вийти з гри':'Лише під час вашого ходу'}</small></div></div>`}
 if(!me&&p.alive&&P.some(q=>q.id==myId&&q.alive))h+=`<div class="mi gold" onclick="openTrade(${modal})"><i>🤝</i><div><b>Обмін</b><small>Запропонувати обмін ділянками та грошима</small></div></div>`;
 return h+'</div></div>'}
 async function credit(t){if(!S||busy||!driver()||!(S.ph=='roll'||S.ph=='buy'))return;if(CF().hard)return alert('У хардкорі кредит недоступний');sync();const k=S.cur,p=P[k];if(p.id!=myId)return;busy=true;
-if(t){if((p.debt||0)>=4800){busy=false;return alert('Ліміт кредиту досягнуто')}p.m+=2000;p.debt=(p.debt||0)+2400;ev(k,'взяв кредит 2000 ₴ (повернути 2400 ₴)')}
-else{const x=Math.min(p.m,p.debt||0);if(x<=0){busy=false;return}p.m-=x;p.debt-=x;ev(k,'повернув кредит '+x+' ₴')}
+if(t){if((p.debt||0)>=4800){busy=false;return alert('Ліміт кредиту досягнуто')}if(!(p.debt>0))p.cd=(S.round||1)+CREDIT_ROUNDS;p.m+=2000;p.debt=(p.debt||0)+2400;ev(k,'взяв кредит 2000 ₴ (повернути 2400 ₴ до раунду '+p.cd+')')}
+else{const x=Math.min(p.m,p.debt||0);if(x<=0){busy=false;return}p.m-=x;p.debt-=x;if(p.debt<=0){p.debt=0;p.cd=0}ev(k,'повернув кредит '+x+' ₴')}
 await save();busy=false}
 async function surr(){if(!S||busy||!driver()||!(S.ph=='roll'||S.ph=='buy'))return;sync();const k=S.cur,p=P[k];if(p.id!=myId||!confirm('Здатися?'))return;busy=true;modal=null;
-p.m=0;p.alive=false;S.own.forEach((o,j)=>{if(o==k){S.own[j]=-1;S.lvl[j]=0}});ev(k,'здався 🏳️');S.ph='wait';await save();end()}
+p.m=0;p.alive=false;S.own.forEach((o,j)=>{if(o==k){S.own[j]=-1;S.lvl[j]=0;if(S.mg)S.mg[j]=0}});ev(k,'здався 🏳️');S.ph='wait';await save();end()}
 Object.assign(window,{joinRoom,watch,prof,closeProf,tgs,credit,surr});
 
 let lastRid=null,dzt=null,dzh=null;
@@ -413,13 +411,13 @@ const desc=(a,c)=>(a||[]).map(i=>T[i]?esc(T[i][0]):'').filter(Boolean).concat(c?
 function tbar(){const t=trOut();if(!t)return '';const o=P.find(p=>p.id==t.toId);return `<div class="tbar"><span>🤝 Обмін: очікуємо ${esc(o?o.n:'')}</span>${t.status=='pending'?`<button class="n" onclick="cancelTrade('${t.id}')">Скасувати</button>`:''}</div>`}
 function tradeUI(){if(!S)return '';sync();const me=myIdx();
 if(tr&&me>=0){const o=P[tr.to],mp=T.map((b,i)=>own[i]===me?i:-1).filter(i=>i>=0),tp=T.map((b,i)=>own[i]===tr.to?i:-1).filter(i=>i>=0),none='<small class="mut">Немає ділянок</small>';
-return `<div class="ov" onclick="closeTrade()"><div class="md" onclick="event.stopPropagation()"><div class="mh"><div><small class="gd">ОБМІН</small><h2>🤝 ${esc(o.n)}</h2></div><button class="x" onclick="closeTrade()">✕</button></div><div class="tc"><div class="tcol"><b>Ти віддаєш</b><div class="chips">${mp.map(i=>chip(i,tr.give.includes(i),lvl[i]>0,`tgp('g',${i})`)).join('')||none}</div><div class="cash"><button onclick="adj('g',-500)">−</button><b>${fm(tr.gc)}</b><button onclick="adj('g',500)">+</button></div></div><div class="tcol"><b>Ти просиш</b><div class="chips">${tp.map(i=>chip(i,tr.ask.includes(i),lvl[i]>0,`tgp('a',${i})`)).join('')||none}</div><div class="cash"><button onclick="adj('a',-500)">−</button><b>${fm(tr.ac)}</b><button onclick="adj('a',500)">+</button></div></div></div><small class="mut">Ділянки із зірочками ★ обмінювати не можна</small><div class="cb"><button class="y" onclick="sendTrade()">Запропонувати</button></div></div></div>`}
+return `<div class="ov" onclick="closeTrade()"><div class="md" onclick="event.stopPropagation()"><div class="mh"><div><small class="gd">ОБМІН</small><h2>🤝 ${esc(o.n)}</h2></div><button class="x" onclick="closeTrade()">✕</button></div><div class="tc"><div class="tcol"><b>Ти віддаєш</b><div class="chips">${mp.map(i=>chip(i,tr.give.includes(i),lvl[i]>0||isMg(i),`tgp('g',${i})`)).join('')||none}</div><div class="cash"><button onclick="adj('g',-500)">−</button><b>${fm(tr.gc)}</b><button onclick="adj('g',500)">+</button></div></div><div class="tcol"><b>Ти просиш</b><div class="chips">${tp.map(i=>chip(i,tr.ask.includes(i),lvl[i]>0||isMg(i),`tgp('a',${i})`)).join('')||none}</div><div class="cash"><button onclick="adj('a',-500)">−</button><b>${fm(tr.ac)}</b><button onclick="adj('a',500)">+</button></div></div></div><small class="mut">Ділянки із зірочками ★ обмінювати не можна</small><div class="cb"><button class="y" onclick="sendTrade()">Запропонувати</button></div></div></div>`}
 const t=trIn();if(t)return `<div class="ov"><div class="md"><small class="gd">ПРОПОЗИЦІЯ ОБМІНУ</small><h2>🤝 ${esc(pname(t.fromId))}</h2><div class="stt"><b>Віддає тобі:</b> ${desc(t.give,t.gc)}</div><div class="stt"><b>Просить у тебе:</b> ${desc(t.ask,t.ac)}</div><div class="cb"><button class="y" onclick="answerTrade('${t.id}',true)">Прийняти</button><button class="n" onclick="answerTrade('${t.id}',false)">Відхилити</button></div></div></div>`;
 return ''}
 async function applyTrades(){if(!S||busy||!R||!R.trades||!driver()||!(S.ph=='roll'||S.ph=='buy'))return;
 const t=trList().find(x=>x.status=='accepted');if(!t)return;busy=true;sync();
 const a=P.findIndex(p=>p.id==t.fromId),b=P.findIndex(p=>p.id==t.toId),give=t.give||[],ask=t.ask||[],gc=+t.gc||0,ac=+t.ac||0;
-const ok=a>=0&&b>=0&&a!=b&&P[a].alive&&P[b].alive&&give.every(i=>own[i]===a&&!lvl[i])&&ask.every(i=>own[i]===b&&!lvl[i])&&P[a].m>=gc&&P[b].m>=ac;
+const ok=a>=0&&b>=0&&a!=b&&P[a].alive&&P[b].alive&&give.every(i=>own[i]===a&&!lvl[i]&&!isMg(i))&&ask.every(i=>own[i]===b&&!lvl[i]&&!isMg(i))&&P[a].m>=gc&&P[b].m>=ac;
 if(ok){give.forEach(i=>{own[i]=b});ask.forEach(i=>{own[i]=a});P[a].m+=ac-gc;P[b].m-=ac-gc;P[a].tr=(P[a].tr||0)+1;P[b].tr=(P[b].tr||0)+1;ev(a,'обмінявся з '+P[b].n+': віддав '+desc(give,gc)+', отримав '+desc(ask,ac));await save()}
 if(!ok)ev(a>=0?a:0,'обмін не вдався: умови змінились');await setTr(t.id,ok?'done':'failed');busy=false}
 setInterval(()=>{applyTrades().catch(e=>{busy=false;console.error(e)})},500);
@@ -434,7 +432,7 @@ const players={[myId]:{id:myId,name:nm(),ph:myPh,dk:SK.d,fr:SK.f,j:Date.now(),ts
 await set(ref(db,'rooms/'+code),{code,status:'waiting',ts:Date.now(),map:selMap(),cfg:selCfg(),players});enter();await startGame()}catch(e){alert('Не вдалося почати гру: '+e.message)}}
 $('botBtn').onclick=startSolo;$('addBotBtn').onclick=addBot;
 const isHost=()=>{if(!S||!R)return false;const h=S.players.find(p=>!p.bot&&p.alive&&on(p.id));return !!h&&h.id==myId};
-function botTick(){if(!S||!R||busy||S.ph=='over'||S.ph=='wait')return;sync();if(S.ph=='auc'){if(isHost())botBids();return}const k=S.cur,p=P[k];
+function botTick(){if(!S||!R||busy||S.ph=='over'||S.ph=='wait'||isPaused())return;sync();if(S.ph=='auc'){if(isHost())botBids();return}const k=S.cur,p=P[k];
 if(p&&p.bot&&p.alive&&driver()&&Date.now()>S.tend-30000+1300){
  if(S.ph=='roll')return void roll();
  if(S.ph=='buy'){const b=T[p.pos],up=own[p.pos]===k,cost=up?Math.round(b[1]/2):b[1],grp=T.every((x,i)=>x[2]!==b[2]||typeof x[1]!='number'||own[i]===k||i===p.pos);return void(p.m>=cost+(grp?600:1500)?buy():skip())}}
@@ -443,11 +441,11 @@ if(isHost()){const t=trList().find(x=>x.status=='pending'&&P.some(q=>q.id==x.toI
 setInterval(()=>{try{botTick()}catch(e){console.error(e)}},500);
 
 // ===== КАРТИ «ШАНС» =====
-function drawCard(k){const p=P[k],c=CARDS[Math.random()*CARDS.length|0],sp=c[2]||'';let tx=c[0];if(sp.indexOf('to:')==0){const q=T[+sp.slice(3)];tx=tx.replace('{n}',q?q[0]:'')}ev(k,'🎴 '+tx);toast(tx);
+function drawCard(k){const p=P[k],c=CARDS[Math.random()*CARDS.length|0],sp=c[2]||'';let tx=c[0];if(sp.indexOf('to:')==0){const q=T[tgt(sp)];tx=tx.replace('{n}',q?q[0]:'')}ev(k,'🎴 '+tx);toast(tx);
 if(sp=='go'){p.pos=0;p.m+=SAL();return false}
 if(sp=='jail'){if(p.res){p.res=0;p.rs=(p.rs||0)+1;ev(k,'🛟 рятувальна карта врятувала від в\'язниці')}else{p.pos=10;p.jail=1}return false}
 if(sp=='back3'){p.pos=(p.pos+37)%40;return true}
-if(sp.indexOf('to:')==0){const i=+sp.slice(3);if(!(i>=0))return false;if(i<p.pos)p.m+=SAL();p.pos=i;return true}
+if(sp.indexOf('to:')==0){const i=tgt(sp);if(!(i>=0))return false;if(i<p.pos)p.m+=SAL();p.pos=i;return true}
 if(sp=='eachget'){P.forEach((q,i)=>{if(i!=k&&q.alive){const a=Math.min(q.m,c[1]);q.m-=a;p.m+=a}});return false}
 if(sp=='eachpay'){P.forEach((q,i)=>{if(i!=k&&q.alive){const a=Math.min(p.m,c[1]);p.m-=a;q.m+=a}});return false}
 if(sp=='repair'){const n=lvl.reduce((s,l,i)=>s+(own[i]===k?l:0),0);if(n)pay(k,n*c[1]);else ev(k,'зірок немає — платити нічого');return false}
@@ -485,23 +483,20 @@ places:{n:'Мандрівка Україною',ico:'🏰',list:[["Хортиц�
 
 // ===== КАРТИ ПОЛЯ, СТИЛІ, ІНФО ПРО КЛІТИНКУ =====
 const BASE=T.map(x=>x.slice()),OK={};BASE[7]=['Лотерея','l','🎟'];BASE[22]=['Телепорт','t','🌀'];BASE[33]=['Рятувальна карта','r','🛟'];let curMap=null,ti=null;
-function useMap(id,perm){if(!MAPS[id])id='brands';const key=id+'|'+(perm?perm.join(','):'');if(curMap===key)return;curMap=key;const list=MAPS[id].list,slots=[];
-BASE.forEach((b,i)=>{if(typeof b[1]=='number')slots.push(i)});
-const items=slots.map((i,k)=>{const b=BASE[i];if(!list){const f=LG[b[0]];return{n:b[0],ic:b[3],c:b[4],p:f?'logos/'+f+'.png':''}}const m=list[k];return{n:m[0],ic:m[2],c:m[3],p:'maps/'+id+'/'+m[1]+'.png'}});
-BASE.forEach((b,i)=>{const k=slots.indexOf(i);if(k<0){T[i]=b.slice();return}const it=items[perm&&perm.length==items.length?perm[k]:k];T[i]=[it.n,b[1],b[2],it.ic,it.c,it.p]})}
+// useMap перенесено нижче (нова версія з розкладками)
 function tcont(b){const p=b[5],fb='<span class="em" style="color:'+b[4]+'">'+b[3]+'</span><span class="nm" style="color:'+b[4]+'">'+esc(b[0])+'</span>';
 if(p&&OK[p]!==0)return '<img class="lg" src="'+p+'" alt="'+esc(b[0])+'" data-p="'+p+'" data-e="'+esc(b[3])+'" data-c="'+b[4]+'" onerror="imgFail(this)">';return fb}
 function imgFail(el){OK[el.dataset.p]=0;el.outerHTML='<span class="em" style="color:'+el.dataset.c+'">'+el.dataset.e+'</span><span class="nm" style="color:'+el.dataset.c+'">'+el.alt+'</span>'}
-const SPEC={s:'🏁 СТАРТ — проходячи його, отримуєш {SAL}.',c:'❓ Шанс — витягни картку: бонус, штраф, переміщення або гроші від гравців.',x:'💰 Податок — сплати {TAX}.',l:'🎟 Лотерея — квиток 300 ₴, виграш до 5000 ₴.',t:'🌀 Телепорт — перенесе на випадкову клітинку.',r:'🛟 Рятувальна карта — отримай карту, що скасує одну оренду або в\'язницю.',j:'⛓ В\'язниця — тут лише відвідини. Сюди потрапляють за карткою або з клітинки «Іди в в\'язницю».',k:'🎰 Казино — 40% шанс виграти 1000 ₴, інакше втрачаєш 600 ₴.',g:'👮 Іди в в\'язницю — пропустиш наступний хід.'};
+const SPEC={s:'🏁 СТАРТ — проходячи його, отримуєш {SAL}.',c:'❓ Шанс — витягни картку: бонус, штраф, переміщення або гроші від гравців.',x:'💰 Податок — сплати {TAX}.',l:'🎟 Лотерея — квиток 300 ₴, виграш до 5000 ₴.',t:'🌀 Телепорт — перенесе на випадкову клітинку.',r:'🛟 Рятувальна карта — отримай карту, що скасує одну оренду або в\'язницю.',j:'⛓ В\'язниця — тут лише відвідини. Сюди потрапляють за карткою або з клітинки «Іди в в\'язницю».',k:'🎡 Рулетка — обери ставку (колір, парне/непарне, діапазон чи зеро) і суму, або пропусти.',g:'👮 Іди в в\'язницю — пропустиш наступний хід.'};
 function tinfo(i){ti=i;render()}
 function closeTi(){ti=null;render()}
 function ticon(b){const p=b[5];return p&&OK[p]!==0?'<img src="'+p+'" alt="" data-p="'+p+'" data-e="'+esc(b[3])+'" onerror="OK[this.dataset.p]=0;this.outerHTML=\'<b>\'+this.dataset.e+\'</b>\'">':'<b>'+esc(b[3])+'</b>'}
 function tileModal(){if(ti==null||!S||!T[ti])return '';sync();const b=T[ti],o=own[ti],pr=typeof b[1]=='number';
 let h=`<div class="ov" onclick="closeTi()"><div class="md" onclick="event.stopPropagation()"><div class="mh"><div class="ticon">${pr?ticon(b):'<b>'+esc(b[2])+'</b>'}</div><div><small class="gd">${pr?'ДІЛЯНКА':'ПОЛЕ'} №${ti}</small><h2>${esc(b[0])}</h2></div><button class="x" onclick="closeTi()">✕</button></div>`;
-if(pr){const base=Math.round(b[1]*.1),ow=o>=0?P[o]:null,grp=T.map((x,i)=>x[2]===b[2]&&typeof x[1]=='number'?i:-1).filter(i=>i>=0);
+if(pr){const base=b[6]||Math.round(b[1]*.1),ow=o>=0?P[o]:null,grp=T.map((x,i)=>x[2]===b[2]&&typeof x[1]=='number'?i:-1).filter(i=>i>=0);
 h+=`<div class="stt"><span class="dotg" style="background:${GC[b[2]]}"></span> Група: ${grp.map(i=>esc(T[i][0])+(own[i]>=0?` <i style="color:${P[own[i]].c}">●</i>`:'')).join(' · ')}</div>`;
-h+=`<table class="rtb"><tr><td>Ціна</td><td>${fm(b[1])}</td></tr><tr><td>Оренда</td><td>${fm(base)}</td></tr><tr><td>Уся група в одного власника</td><td>${fm(base*2)}</td></tr><tr><td>★ рівень 1</td><td>${fm(base*4)}</td></tr><tr><td>★★ рівень 2</td><td>${fm(base*8)}</td></tr><tr><td>★★★ рівень 3</td><td>${fm(base*14)}</td></tr><tr><td>Покращення (за ★)</td><td>${fm(Math.round(b[1]/2))}</td></tr></table>`;
-h+=`<div class="stt">${ow?`Власник: <b style="color:${ow.c}">${esc(ow.n)}</b> · ★ ${lvl[ti]||0} · оренда зараз: <b>${fm(rent(ti))}</b>`:'Вільна ділянка — її можна купити'}</div>`}
+h+=`<table class="rtb"><tr><td>Ціна</td><td>${fm(b[1])}</td></tr><tr><td>Оренда</td><td>${fm(base)}</td></tr><tr><td>Уся група в одного власника</td><td>${fm(base*RM.m)}</td></tr><tr><td>★ рівень 1</td><td>${fm(base*RM.s[1])}</td></tr><tr><td>★★ рівень 2</td><td>${fm(base*RM.s[2])}</td></tr><tr><td>★★★ рівень 3</td><td>${fm(base*RM.s[3])}</td></tr><tr><td>Покращення (за ★)</td><td>${fm(Math.round(b[1]/2))}</td></tr></table>`;
+h+=`<div class="stt">${ow?`Власник: <b style="color:${ow.c}">${esc(ow.n)}</b> · ★ ${lvl[ti]||0} · оренда зараз: <b>${fm(rent(ti))}</b>`:'Вільна ділянка — її можна купити'}</div>${mgUI(ti)}`}
 else h+=`<div class="stt">${(SPEC[b[1]]||'').replace('{SAL}',fm(SAL())).replace('{TAX}',fm(TAXB()))}</div>`;
 return h+'</div></div>'}
 const THEMES=[{id:'neon',n:'Неон',bg:'#070f22',pn:'#0e1a36',ln:'#1c2c52',bdbg:'#0a1530',tile:'#ffffff'},{id:'gold',n:'Золото',bg:'#14100a',pn:'#241b0e',ln:'#5a4617',bdbg:'linear-gradient(135deg,#2b210f,#14100a)',tile:'#fff3d1'},
@@ -546,7 +541,7 @@ return `<div class="ov" onclick="stClose()"><div class="md" onclick="event.stopP
 <small class="mut">Активи: гроші + вартість ділянок і ★ − кредит.</small></div></div>`}
 function helpModal(){if(!hpm)return '';
 return `<div class="ov" onclick="hpClose()"><div class="md" onclick="event.stopPropagation()"><div class="mh"><h2>Як грати</h2><button class="x" onclick="hpClose()">✕</button></div>
-<div class="stt">🎲 Кидай кубики й ходь по полю.<br>🏷 Вільну ділянку можна купити, на чужій платиш оренду.<br>🎨 Збери всі ділянки одного кольору — оренда ×2, далі їх можна покращувати зірками ★.<br>🏁 Пройшов СТАРТ — отримай зарплату.<br>❓ Шанс — випадкові бонуси, штрафи й переміщення.<br>🎟 Лотерея, 🌀 Телепорт, 🛟 Рятувальна карта — особливі клітинки (тап по клітинці — опис).<br>🔨 Аукціон: відмовився купувати — ділянку продають усім, ставки до кінця таймера.<br>👥 Команди: союзники не платять оренду одне одному.<br>🎖 Досягнення дають XP (кнопка в лобі).<br>🤝 Тап по гравцю — обмін ділянками, кредит або здача.<br>👆 Тап по клітинці — повна інформація про неї.</div></div></div>`}
+<div class="stt">🎲 Кидай кубики й ходь по полю.<br>🏷 Вільну ділянку можна купити, на чужій платиш оренду.<br>🎨 Збери всі ділянки одного кольору — оренда ×2, далі їх можна покращувати зірками ★.<br>🏁 Пройшов СТАРТ — отримай зарплату.<br>❓ Шанс — випадкові бонуси, штрафи й переміщення.<br>🎟 Лотерея, 🌀 Телепорт, 🛟 Рятувальна карта — особливі клітинки (тап по клітинці — опис).<br>🔨 Аукціон: відмовився купувати — ділянку продають усім, ставки до кінця таймера.<br>👥 Команди: союзники не платять оренду одне одному.<br>🎖 Досягнення дають XP (кнопка в лобі).<br>💳 Кредит: 2 000 ₴ (повернути 2 400 ₴) — погасити за 5 раундів, інакше гроші спишуться автоматично, а залишок отримає штраф +20%.<br>🏦 Застава: тап по своїй ділянці під час свого ходу — отримаєш 50% ціни, оренду з неї не беруть; викуп коштує 55%. Якщо не вистачає грошей на платіж, ділянки закладаються автоматично.<br>⏸ З ботами гру можна поставити на паузу.<br>🎟 Лотерея та 🎡 Рулетка — за бажанням: у рулетці сам обираєш, на що ставити, і яку суму.<br>🤝 Тап по гравцю — обмін ділянками, кредит або здача.<br>👆 Тап по клітинці — повна інформація про неї.</div></div></div>`}
 Object.assign(window,{stOpen,stClose,hpOpen,hpClose});
 if(/debug/.test(location.search)){const v=document.querySelector('.ver');if(v)v.style.display='block'}
 
@@ -595,7 +590,7 @@ function roundEvent(){if(Math.random()>.5){S.evt=null;return}const e=EVTS[Math.f
 if(e.k=='party')P.forEach(p=>{if(p.alive)p.m+=300});
 if(e.k=='flood')P.forEach((p,i)=>{if(p.alive){const n=own.filter(o=>o===i).length,a=Math.min(500,n*100);if(a)pay(i,a)}});
 if(e.k=='grant'){const al=[];P.forEach((p,i)=>{if(p.alive)al.push(i)});const w=al[Math.floor(Math.random()*al.length)];P[w].m+=1000;ev(w,'отримав грант +1000 ₴')}}
-function evb(){let s='';if(CF().short)s+='<span class="evb">⚡ Раунд '+Math.min(S.round||1,ROUNDS)+'/'+ROUNDS+'</span>';
+function evb(){let s='';const me0=P.find(p=>p.id==myId);if(me0&&me0.debt>0&&me0.cd)s+='<span class="evb">💳 погасити до раунду '+me0.cd+'</span>';if(CF().short)s+='<span class="evb">⚡ Раунд '+Math.min(S.round||1,ROUNDS)+'/'+ROUNDS+'</span>';
 if(S.evt&&S.evt.r===S.round){const e=EVTS.find(x=>x.k===S.evt.k);if(e)s+='<span class="evb">'+e.t.split('!')[0]+'</span>'}return s?'<div class="evr">'+s+'</div>':''}
 // --- аукціон ---
 function aucInfo(){const a=S&&S.auc;if(!a)return null;const bs=Object.keys((R&&R.bids)||{}).map(id=>({id,amt:+R.bids[id].amt||0,ts:+R.bids[id].ts||0})).filter(b=>b.amt>0).sort((x,y)=>y.amt-x.amt||x.ts-y.ts);
@@ -611,7 +606,7 @@ async function aucResolve(){busy=true;sync();const a=S.auc;
 const bs=Object.keys((R&&R.bids)||{}).map(id=>({k:P.findIndex(p=>p.id==id),amt:+R.bids[id].amt||0,ts:+R.bids[id].ts||0})).filter(b=>b.k>=0&&P[b.k].alive&&b.amt>=a.min&&P[b.k].m>=b.amt).sort((x,y)=>y.amt-x.amt||x.ts-y.ts);
 if(bs[0]&&own[a.i]===-1){const w=bs[0];P[w.k].m-=w.amt;own[a.i]=w.k;P[w.k].aw=(P[w.k].aw||0)+1;ev(w.k,'виграв аукціон: «'+T[a.i][0]+'» за '+w.amt+' ₴')}else ev(S.cur,'аукціон без ставок — ділянка лишається вільною');
 S.auc=null;try{await set(ref(db,'rooms/'+code+'/bids'),null)}catch(e){}S.ph='wait';await save();end()}
-setInterval(()=>{try{if(!S||!R||S.ph!='auc')return;const at=$('aucT');if(at)at.textContent=aucLeft()+'с';if(!busy&&driver()&&aucLeft()<=0)aucResolve()}catch(e){console.error(e)}},500);
+setInterval(()=>{try{if(!S||!R||S.ph!='auc'||isPaused())return;const at=$('aucT');if(at)at.textContent=aucLeft()+'с';if(!busy&&driver()&&aucLeft()<=0)aucResolve()}catch(e){console.error(e)}},500);
 // --- досягнення ---
 const ACH=[{id:'first',ic:'🎮',n:'Новачок',d:'Зіграй першу гру',xp:100},{id:'win1',ic:'🏆',n:'Переможець',d:'Виграй гру',xp:300},{id:'owner5',ic:'🏠',n:'Власник',d:'Май 5 ділянок одночасно',xp:150},{id:'mono',ic:'🎨',n:'Монополіст',d:'Збери всі ділянки одного кольору',xp:250},
 {id:'rich',ic:'💰',n:'Багач',d:'Май 20 000 ₴',xp:250},{id:'build',ic:'⭐',n:'Забудовник',d:'Доведи ділянку до ★★★',xp:250},{id:'trader',ic:'🤝',n:'Торговець',d:'Заверши обмін',xp:150},{id:'auction',ic:'🔨',n:'Аукціоніст',d:'Виграй аукціон',xp:150},
@@ -646,7 +641,7 @@ tax:()=>{tone(150,0,.18,'sine',.3,90);tone(120,.2,.2,'sine',.3,70)},jail:()=>{to
 event:()=>{tone(784,0,.15,'sine',.12);tone(988,.12,.15,'sine',.12);tone(1175,.24,.3,'sine',.12)},yourturn:()=>{tone(880,0,.2,'sine',.14);tone(660,.16,.3,'sine',.14)},bid:()=>tone(720,0,.07,'square',.09),chat:()=>tone(620,0,.07,'sine',.1)};
 function play(n){if(!SND_ON)return;const now=Date.now();if(lastPl[n]&&now-lastPl[n]<60)return;lastPl[n]=now;
 try{if(CUSTOM[n]){const a=new Audio('sounds/'+n+'.mp3');a.volume=VOL;a.play().catch(()=>{});return}if(SFX[n])SFX[n]()}catch(e){}}
-function sfxFor(e){const t=e.t||'';if(e.c)return 'chat';
+function sfxFor(e){const t=e.t||'';if(e.c)return 'chat';if(/заклав|автозастава/.test(t))return 'tax';if(/викупив/.test(t))return 'buy';if(/🎰 рулетка/.test(t))return null;
 if(/досягнення «/.test(t))return 'ach';if(/🏆/.test(t))return 'win';if(/збанкрутував/.test(t))return 'bankrupt';if(/виграв аукціон/.test(t))return 'gavel';if(/на аукціон/.test(t))return 'whoosh';
 if(/купує філію/.test(t))return 'buy';if(/покращив/.test(t))return 'upgrade';if(/платить оренду/.test(t))return 'rent';if(/рятувальн/.test(t))return 'rescue';
 if(/виграв у лотерею|виграв у казино|отримав грант/.test(t))return 'jackpot';if(/програв у казино|лотерея: без/.test(t))return 'lose';if(/телепорт/.test(t))return 'teleport';
@@ -678,8 +673,110 @@ function closeRoomGame(){const c=code;lvm=false;try{dc&&dc.cancel()}catch(e){}to
 // драйвер вилучає гравців, які покинули гру назавжди
 async function applyLeaves(){if(!S||busy||!R||!R.players||!driver()||!(S.ph=='roll'||S.ph=='buy'))return;sync();
 const i=P.findIndex(p=>p.alive&&R.players[p.id]&&R.players[p.id].left);if(i<0)return;busy=true;const p=P[i];
-p.alive=false;p.m=0;own.forEach((o,j)=>{if(o===i){own[j]=-1;lvl[j]=0}});ev(i,'покинув гру 🚪');
+p.alive=false;p.m=0;own.forEach((o,j)=>{if(o===i){own[j]=-1;lvl[j]=0;if(S.mg)S.mg[j]=0}});ev(i,'покинув гру 🚪');
 const al=P.filter(q=>q.alive),sides=new Set(al.map(q=>CF().team?q.tm:q.id));
 if(S.cur===i||sides.size<2||!al.some(q=>!q.bot)){S.ph='wait';await save();return end()}await save();busy=false}
 setInterval(()=>{applyLeaves().catch(e=>{busy=false;console.error(e)})},700);
 Object.assign(window,{askDel,askLeave,leaveForeverGame,closeRoomGame,delRoom,leaveForever});
+
+// ===== ЛОТЕРЕЯ/КАЗИНО ЗА БАЖАННЯМ ТА СТРОК КРЕДИТУ =====
+const CREDIT_ROUNDS=5;
+function doGame(k,t){const p=P[k];
+if(t==='l'){if(p.m<300){ev(k,'не вистачає на квиток лотереї');return}p.m-=300;const r=Math.random();let w=0;if(r<.04)w=5000;else if(r<.15)w=1500;else if(r<.4)w=500;
+if(w){p.m+=w;if(w>=1500)p.lk=(p.lk||0)+1;ev(k,'🎟 виграв у лотерею +'+w+' ₴ (квиток −300 ₴)')}else ev(k,'🎟 лотерея: без виграшу (квиток −300 ₴)')}
+else{if(Math.random()<.4){p.m+=1000;ev(k,'виграв у казино +1000 ₴')}else{ev(k,'програв у казино −600 ₴');pay(k,600)}}}
+async function gmPlay(){if(!S||S.ph!='gm'||busy||!driver())return;busy=true;sync();doGame(S.cur,S.gm);S.gm=null;S.ph='wait';await save();gt(end,900)}
+async function gmSkip(){if(!S||S.ph!='gm'||busy||!driver())return;busy=true;rlBets=[];sync();ev(S.cur,'пропустив '+(S.gm==='l'?'лотерею':'рулетку'));S.gm=null;S.ph='wait';await save();end()}
+function gmBar(){if(S.ph!='gm'||S.gm==='k'||!P[S.cur]||P[S.cur].id!=myId)return '';const l=S.gm==='l';return `<div class="buybar"><button class="y" onclick="gmPlay()">${l?'🎟 Квиток · 300 ₴':'🎰 Грати (+1000 / −600)'}</button><button class="n" onclick="gmSkip()">Пропустити</button></div>`}
+function creditCheck(){P.forEach((p,i)=>{if(!p.alive||!(p.debt>0)||!p.cd)return;const rd=S.round||1;
+if(rd>=p.cd){const x=Math.min(p.m,p.debt);p.m-=x;p.debt-=x;ev(i,'⏰ строк кредиту: автоматично списано '+x+' ₴');
+if(p.debt>0){const pen=Math.round(p.debt*.2);p.debt+=pen;p.cd=rd+3;ev(i,'⚠️ борг не погашено: штраф +'+pen+' ₴, новий строк — раунд '+p.cd)}else{p.debt=0;p.cd=0}}
+else if(rd===p.cd-1)ev(i,'⚠️ кредит треба погасити до раунду '+p.cd)})}
+Object.assign(window,{gmPlay,gmSkip});
+
+// ===== КАРТИ: РОЗКЛАДКИ, ЦІНИ, ОРЕНДА =====
+let RM={m:2,s:[0,4,8,14]},SLOTS=[];
+const SPD={s:['СТАРТ','s','🏁'],j:['В\'язниця','j','⛓️'],k:['Рулетка','k','🎡'],g:['Іди в в\'язницю','g','👮'],c:['Шанс','c','❓'],x:['Податок','x','💰'],l:['Лотерея','l','🎟'],t:['Телепорт','t','🌀'],r:['Рятувальна карта','r','🛟']};
+MAPS.cities.lay={spec:[[3,'c'],[13,'c'],[25,'c'],[5,'x'],[16,'l'],[28,'t'],[34,'r'],[38,'x']],groups:[2,3,3,2,3,3,2,3,3,2,2],pr:[1000,4800],pct:11,rm:{m:2,s:[0,5,10,16]}};
+MAPS.food.lay={spec:[[2,'c'],[8,'t'],[15,'c'],[18,'x'],[24,'l'],[27,'c'],[33,'x'],[37,'r']],groups:[3,2,3,3,2,3,2,3,3,2,2],pr:[500,3000],pct:15,rm:{m:2,s:[0,3,6,10]}};
+MAPS.places.lay={spec:[[6,'c'],[9,'x'],[12,'l'],[19,'c'],[23,'t'],[29,'r'],[32,'c'],[36,'x']],groups:[2,2,3,3,3,2,3,3,2,3,2],pr:[1800,6000],pct:9,rm:{m:3,s:[0,4,9,15]}};
+function makeLayout(id){const L=MAPS[id]&&MAPS[id].lay;
+if(!L){const types=BASE.map(b=>typeof b[1]=='number'?'p':b[1]),sl=[];types.forEach((t,i)=>{if(t==='p')sl.push(i)});return{types,gs:sl.map(i=>BASE[i][2]),prices:sl.map(i=>BASE[i][1]),pct:10,rm:{m:2,s:[0,4,8,14]}}}
+const types=Array(40).fill('p');['s','j','k','g'].forEach((t,k)=>{types[k*10]=t});L.spec.forEach(([i,t])=>{types[i]=t});
+if(types.filter(t=>t==='p').length!==28)return null;
+const gs=[];L.groups.forEach((c,gi)=>{for(let j=0;j<c;j++)gs.push(gi)});const G=L.groups.length;let pj=0,pg=-1;
+const prices=gs.map(gi=>{if(gi!==pg){pg=gi;pj=0}const b=L.pr[0]+(L.pr[1]-L.pr[0])*gi/(G-1);const v=Math.round((b+pj*100)/100)*100;pj++;return v});
+return{types,gs,prices,pct:L.pct,rm:L.rm}}
+function useMap(id,perm){if(!MAPS[id])id='brands';const key=id+'|'+(perm?perm.join(','):'');if(curMap===key)return;curMap=key;
+const lay=makeLayout(id)||makeLayout('brands'),list=MAPS[id].list;RM=lay.rm;
+const slots=[];lay.types.forEach((t,i)=>{if(t==='p')slots.push(i)});SLOTS=slots;
+const bs=[];BASE.forEach((b,i)=>{if(typeof b[1]=='number')bs.push(i)});
+const items=slots.map((_,k)=>{if(!list){const b=BASE[bs[k]],f=LG[b[0]];return{n:b[0],ic:b[3],c:b[4],p:f?'logos/'+f+'.png':''}}const m=list[k];return{n:m[0],ic:m[2],c:m[3],p:'maps/'+id+'/'+m[1]+'.png'}});
+lay.types.forEach((t,i)=>{if(t!=='p'){T[i]=SPD[t].slice();return}const k=slots.indexOf(i),it=items[perm&&perm.length==items.length?perm[k]:k],price=lay.prices[k],rb=lay.pct==10?Math.round(price*.1):Math.max(10,Math.round(price*lay.pct/1000)*10);T[i]=[it.n,price,lay.gs[k],it.ic,it.c,it.p,rb]})}
+function tgt(sp){const c=sp.charAt(3);return c==='p'?SLOTS[+sp.slice(4)]:c==='k'?20:+sp.slice(3)}
+function rentBuy(pb,isB){const b=pb[6]||Math.round(pb[1]*.1),lv=lvl[S.players[S.cur].pos]||0;
+if(isB)return '⭐ Покращити за '+fm(Math.round(pb[1]/2))+'<small class="bsub">оренда → '+fm(b*RM.s[Math.min(3,lv+1)])+'</small>';
+return '🛒 Купити «'+esc(pb[0])+'» за '+fm(pb[1])+'<small class="bsub">оренда '+fm(b)+' · уся група '+fm(b*RM.m)+'</small>'}
+// ===== РУЛЕТКА =====
+const RED=[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36],WHEEL=[0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+const rlCol=n=>n===0?'g':RED.indexOf(n)>=0?'r':'b',RLC={g:'#1f9d55',r:'#d62f3a',b:'#15171c'},RLN={g:'зелене',r:'червоне',b:'чорне'};
+const RLBETS=[['red','🔴 Червоне','×2'],['black','⚫ Чорне','×2'],['even','Парне','×2'],['odd','Непарне','×2'],['low','1–12','×3'],['mid','13–24','×3'],['high','25–36','×3'],['zero','🟢 Зеро','×36']];
+function rlMul(n,b){if(b[0]==='n')return n===+b.slice(1)?36:0;if(b==='red')return rlCol(n)==='r'?2:0;if(b==='black')return rlCol(n)==='b'?2:0;if(b==='even')return n>0&&n%2==0?2:0;if(b==='odd')return n%2==1?2:0;if(b==='low')return n>=1&&n<=12?3:0;if(b==='mid')return n>=13&&n<=24?3:0;if(b==='high')return n>=25?3:0;if(b==='zero')return n===0?36:0;return 0}
+let rlBets=[],rlStake=100,lastRl=null,rlT=null,rlT2=null;
+const rlTotal=()=>rlBets.reduce((s,b)=>s+b.s,0);
+function rlSel(k){const i=rlBets.findIndex(b=>b.k===k);if(i>=0)rlBets.splice(i,1);else{const m=P[S.cur]?P[S.cur].m:0;if(rlTotal()+rlStake>m)return alert('Не вистачає грошей на ще одну ставку');rlBets.push({k,s:rlStake})}render()}
+function rlSt(s){rlStake=s;render()}function rlClr(){rlBets=[];render()}
+function rlModal(){if(!S||S.ph!='gm'||S.gm!=='k'||!P[S.cur]||P[S.cur].id!=myId)return '';const m=P[S.cur].m,has=k=>rlBets.some(b=>b.k===k);
+const slip=rlBets.length?rlBets.map(b=>(b.k[0]==='n'?'№'+b.k.slice(1):RLBETS.find(x=>x[0]===b.k)[1])+' '+b.s).join(' · '):'Ставок ще немає';
+return `<div class="ov"><div class="md"><div class="mh"><h2>🎡 Рулетка</h2></div><div class="stt">Сума однієї ставки, потім тапай, на що ставиш (можна кілька, ще тап — зняти).</div>
+<div class="skg" style="grid-template-columns:repeat(4,1fr)">${[100,300,500,1000].map(s=>`<div class="sk${rlStake===s?' on':''}" style="${s>m?'opacity:.35':''}" onclick="${s>m?'':'rlSt('+s+')'}"><b>${s}</b></div>`).join('')}</div>
+<div class="skg" style="grid-template-columns:repeat(4,1fr)">${RLBETS.map(([k,n,x])=>`<div class="sk${has(k)?' on':''}" onclick="rlSel('${k}')"><b style="font-size:12px">${n}</b><small>${x}</small></div>`).join('')}</div>
+<div class="rngrid">${Array.from({length:37},(_,n)=>`<div class="rn ${rlCol(n)}${has('n'+n)?' on':''}" onclick="rlSel('n${n}')">${n}</div>`).join('')}</div>
+<div class="stt"><b>Ставки:</b> ${slip}<br><b>Разом:</b> ${fm(rlTotal())} <small class="mut">(число ×36)</small></div>
+<div class="cb"><button class="y" onclick="rlSpin()">🎡 Крутити</button><button class="n" onclick="rlClr()">Очистити</button><button class="n" onclick="gmSkip()">Пропустити</button></div></div></div>`}
+function rlCore(k,bets){const p=P[k],tot=bets.reduce((s,b)=>s+b.s,0);if(tot>p.m||tot<50)return false;p.m-=tot;const n=Math.floor(Math.random()*37);let win=0;bets.forEach(b=>{win+=b.s*rlMul(n,b.k)});p.m+=win;if(win-tot>=1500)p.lk=(p.lk||0)+1;
+S.rl={n,rid:Date.now()+Math.random(),k,stake:tot,win};ev(k,'🎰 рулетка: випало '+n+' ('+RLN[rlCol(n)]+') — '+(win>=tot?'виграш +'+(win-tot):'програш −'+(tot-win))+' ₴');return true}
+async function rlSpin(){if(!S||S.ph!='gm'||S.gm!=='k'||busy||!driver())return;if(!rlBets.length)return alert('Постав хоча б одну ставку');busy=true;sync();if(!rlCore(S.cur,rlBets.map(b=>({k:b.k,s:b.s})))){busy=false;return alert('Не вистачає грошей на ставки')}rlBets=[];S.gm=null;S.ph='wait';await save();gt(end,5600)}
+function botRoulette(k){const ks=['red','black','even','odd','low','mid','high'],b=[{k:ks[Math.floor(Math.random()*ks.length)],s:[100,300,500][Math.floor(Math.random()*3)]}];if(Math.random()<.3)b.push({k:'n'+Math.floor(Math.random()*37),s:100});rlCore(k,b)}
+function rlRender(){if(!S||!S.rl||S.rl.rid===lastRl)return;lastRl=S.rl.rid;if(Date.now()-S.rl.rid>9000)return;playRoulette(S.rl)}
+function playRoulette(rl){const z=$('rw');if(!z)return;clearTimeout(rlT);clearTimeout(rlT2);play('dice');
+const N=37,sl=360/N,idx=WHEEL.indexOf(rl.n),stops=WHEEL.map((n,i)=>RLC[rlCol(n)]+' '+(i*sl)+'deg '+((i+1)*sl)+'deg').join(','),nums=WHEEL.map((n,i)=>`<span style="transform:rotate(${i*sl+sl/2}deg) translateY(-98px)">${n}</span>`).join('');
+z.innerHTML=`<div class="rwb"><div class="rwp">▼</div><div class="rwh" id="rwh" style="background:conic-gradient(${stops})">${nums}<div class="rwc"></div></div><div class="rwr" id="rwr"></div></div>`;z.style.display='grid';
+const hh=$('rwh'),fin=360*6+(360-(idx*sl+sl/2));
+const go=()=>{if(hh){hh.style.transition='transform 4.2s cubic-bezier(.12,.7,.15,1)';hh.style.transform='rotate('+fin+'deg)'}};
+if(window.requestAnimationFrame)requestAnimationFrame(()=>requestAnimationFrame(go));else setTimeout(go,30);
+rlT=setTimeout(()=>{const r=$('rwr');if(r)r.innerHTML=`<div class="rwn" style="background:${RLC[rlCol(rl.n)]}">${rl.n}</div><div class="rwt ${rl.win-rl.stake>0?'w':'l'}">${rl.win-rl.stake>0?'+'+(rl.win-rl.stake):rl.win-rl.stake<0?'−'+(rl.stake-rl.win):'±0'} ₴</div>`;play(rl.win-rl.stake>0?'jackpot':'lose')},4300);
+rlT2=setTimeout(()=>{z.style.display='none'},5500)}
+// ===== ФІНАЛ ГРИ ТА РЕАКЦІЇ =====
+const resClosed={};
+function resModal(){if(!S||S.ph!='over')return '';const rk=code+':'+S.t0;if(resClosed[rk])return '';sync();
+const rows=P.map((p,i)=>({p,i,v:assets(i)})).sort((a,b)=>b.v-a.v),w=S.win!=null&&S.win>=0?P[S.win]:rows[0].p,cols=['#ffd23f','#ff4d4d','#3ddc84','#4aa8ff','#b46bff'];
+const conf=Array.from({length:30},(_,i)=>`<i style="left:${(i*37)%100}%;background:${cols[i%5]};animation-delay:${(i%9)*.18}s;animation-duration:${2.4+(i%5)*.4}s"></i>`).join('');
+return `<div class="ov"><div class="confetti">${conf}</div><div class="md" onclick="event.stopPropagation()"><div class="mh"><div><small class="gd">ГРУ ЗАВЕРШЕНО</small><h2>🏆 ${esc(w.n)}</h2></div></div>
+<table class="stt2"><tr><th></th><th>Гравець</th><th>Активи</th><th>Гроші</th></tr>${rows.map((r,k)=>`<tr class="${r.p.alive?'':'dd'}"><td>${k+1}</td><td><div class="pn"><span class="av" style="--c:${r.p.c}">${avh(r.p)}</span><b>${esc(r.p.n)}</b></div></td><td>${fm(r.v)}</td><td>${fm(r.p.m)}</td></tr>`).join('')}</table>
+<div class="cb cbc">${P[0]&&P[0].id==myId?'<button class="y" onclick="newGame()">🔁 Нова гра</button>':''}<button class="n" onclick="resClose()">Закрити</button><button class="n" onclick="leaveGame()">↩ У лобі</button></div></div></div>`}
+function resClose(){resClosed[code+':'+(S&&S.t0)]=1;render()}
+function sendEmo(e){if(!S)return;const m=S.players.findIndex(p=>p.id==myId);if(m<0)return;ev(m,e,1)}
+Object.assign(window,{rlSel,rlSt,rlSpin,resClose,sendEmo});
+
+// ===== ПАУЗА, ЗАСТАВА =====
+function gt(fn,ms){return setTimeout(function w(){if(isPaused())setTimeout(w,250);else fn()},ms)}
+const isPaused=()=>!!(S&&S.paused>0);
+const botGame=()=>!!(S&&S.players.some(p=>p.id==myId)&&S.players.every(p=>p.bot||p.id==myId));
+const isMg=i=>!!(S&&S.mg&&S.mg[i]);
+function pauseBtn(){return botGame()&&S.ph!='over'?'<button class="ib" onclick="togglePause()">'+(isPaused()?'▶':'⏸')+'</button>':''}
+async function togglePause(){if(!S||!botGame()||S.ph=='over')return;const was=busy;busy=true;sync();
+if(S.paused>0){const d=Date.now()-S.paused;S.tend+=d;if(S.auc)S.auc.end+=d;S.t0=(S.t0||Date.now())+d;S.paused=0}else S.paused=Date.now();
+await save();if(!was)busy=false;render()}
+function pauseModal(){if(!isPaused())return '';return `<div class="ov"><div class="md"><div class="mh"><h2>⏸ Гра на паузі</h2></div><div class="stt">Боти чекають, таймери зупинені.</div><div class="cb cbc"><button class="y" onclick="togglePause()">▶ Продовжити</button><button class="n" onclick="leaveGame()">↩ У лобі</button></div></div></div>`}
+function autoMortgage(k,a){const p=S.players[k];if(!S.mg)S.mg=Array(40).fill(0);const ls=[];S.own.forEach((o,i)=>{if(o===k&&!S.lvl[i]&&!S.mg[i]&&typeof T[i][1]=='number')ls.push(i)});ls.sort((x,y)=>T[x][1]-T[y][1]);
+while(p.m<a&&ls.length){const i=ls.shift(),v=Math.round(T[i][1]/2);S.mg[i]=1;p.m+=v;ev(k,'🏦 автозастава «'+T[i][0]+'» (+'+v+' ₴)')}}
+function mgUI(i){if(!S||S.ph==='over')return '';const o=own[i];if(o<0)return '';const m=isMg(i);let s=m?'<div class="stt">🏦 Під заставою: оренда не стягується.</div>':'';
+const mine=P[o]&&P[o].id==myId&&S.cur===o&&(S.ph=='roll'||S.ph=='buy')&&driver();
+if(mine){if(!m&&!lvl[i])s+=`<div class="cb"><button onclick="mort(${i})">🏦 Заставити (+${fm(Math.round(T[i][1]/2))})</button></div>`;else if(m)s+=`<div class="cb"><button class="y" onclick="redeem(${i})">🔓 Викупити (−${fm(Math.round(T[i][1]*.55))})</button></div>`;else s+='<div class="stt">Ділянки із зірками заставити не можна.</div>'}
+return s}
+async function mort(i){if(!S||busy||!driver()||!(S.ph=='roll'||S.ph=='buy'))return;sync();const k=S.cur;if(own[i]!==k||lvl[i]||isMg(i)||P[k].id!=myId)return;busy=true;if(!S.mg)S.mg=Array(40).fill(0);
+const v=Math.round(T[i][1]/2);S.mg[i]=1;P[k].m+=v;ev(k,'🏦 заклав «'+T[i][0]+'» (+'+v+' ₴)');await save();busy=false;ti=null;render()}
+async function redeem(i){if(!S||busy||!driver()||!(S.ph=='roll'||S.ph=='buy'))return;sync();const k=S.cur;if(own[i]!==k||!isMg(i)||P[k].id!=myId)return;const c=Math.round(T[i][1]*.55);if(P[k].m<c)return alert('Не вистачає грошей на викуп');
+busy=true;P[k].m-=c;S.mg[i]=0;ev(k,'🔓 викупив «'+T[i][0]+'» (−'+c+' ₴)');await save();busy=false;ti=null;render()}
+Object.assign(window,{togglePause,mort,redeem,rlClr});
