@@ -540,8 +540,11 @@ function bindTileLongPress(){
   root.querySelectorAll('.t[data-i]').forEach(el=>{
     if(el._lp)return;el._lp=1;
     let timer=null,fired=false;
-    el.addEventListener('touchstart',()=>{fired=false;timer=setTimeout(()=>{fired=true;const i=+el.dataset.i;ti=i;render();},480),{passive:true});
-    ['touchend','touchmove','touchcancel'].forEach(ev=>el.addEventListener(ev,()=>{clearTimeout(timer);if(fired){/* modal already open via render */}},{passive:true}));
+    el.addEventListener('touchstart',()=>{
+      fired=false;
+      timer=setTimeout(()=>{fired=true;const i=+el.dataset.i;ti=i;render();},480);
+    },{passive:true});
+    ['touchend','touchmove','touchcancel'].forEach(ev=>el.addEventListener(ev,()=>{clearTimeout(timer);},{passive:true}));
     el.addEventListener('contextmenu',e=>{e.preventDefault();ti=+el.dataset.i;render();});
   });
 }
