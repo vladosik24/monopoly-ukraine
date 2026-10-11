@@ -560,7 +560,6 @@ h+=`<table class="rtb"><tr><td>Ціна</td><td>${fm(b[1])}</td></tr><tr><td>О�
 h+=`<div class="stt">${ow?`Власник: <b style="color:${ow.c}">${esc(ow.n)}</b> · ★ ${lvl[ti]||0} · оренда зараз: <b>${fm(rent(ti))}</b>`:'Вільна ділянка — її можна купити'}</div>${mgUI(ti)}`;
 const canBuild=o>=0&&P[o]&&P[o].id==myId&&S.cur===o&&driver()&&(S.ph=='roll'||S.ph=='buy')&&full(ti)&&(lvl[ti]||0)<3&&!(S.mg&&S.mg[ti]);
 if(canBuild){const bc=Math.round(b[1]/2);h+=`<div class="cb"><button class="y" onclick="buildAt(${ti})">🏠 Збудувати ★ — ${fm(bc)}</button></div>`}
-if(b[5]){const u=logoUrl(b[5]);h+=`<div class="stt" style="word-break:break-all;user-select:all;-webkit-user-select:all;font-size:11px">🖼 <span style="color:var(--mut)">${esc(b[5])}</span><br><a href="${esc(u)}" target="_blank" rel="noopener" style="color:#4aa8ff">${esc(u)}</a></div>`}
 }
 else h+=`<div class="stt">${(SPEC[b[1]]||'').replace('{SAL}',fm(SAL())).replace('{TAX}',fm(TAXB()))}</div>`;
 return h+'</div></div>'}
