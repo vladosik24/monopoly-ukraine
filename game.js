@@ -37,7 +37,8 @@ const tk=P.map(p=>p.alive&&dpos(p)==i?tokn(p):'').join('');
 const corner=i%10==0,cls=(corner?'sp ':'')+s+(S&&S.mg&&S.mg[i]?' mg':'');
 if(typeof t!='number')return '<div class="t '+cls+'" data-i="'+i+'" onclick="tinfo('+i+')" style="grid-area:'+r+'/'+c+'"><div class="in"><span class="em">'+b[2]+'</span>'+(corner?'':'<span class="nm">'+b[0]+'</span>')+'</div><div class="tk">'+tk+'</div></div>';
 const bg=own[i]>=0?P[own[i]].c+'aa':'var(--tile,#fff)';
-return '<div class="t '+cls+'" data-i="'+i+'" onclick="tinfo('+i+')" style="grid-area:'+r+'/'+c+';--b:'+bg+'"><div class="in">'+tcont(b)+(lvl[i]?'<div class="st">'+'★'.repeat(lvl[i])+'</div>':'')+'</div><div class="pr" style="--g:'+GC[b[2]]+'">'+t+'</div><div class="tk">'+tk+'</div></div>'}
+const priceTxt=own[i]>=0?rent(i):t; // після купівлі — оренда
+return '<div class="t '+cls+'" data-i="'+i+'" onclick="tinfo('+i+')" style="grid-area:'+r+'/'+c+';--b:'+bg+'"><div class="in">'+tcont(b)+(lvl[i]?'<div class="st">'+'★'.repeat(lvl[i])+'</div>':'')+'</div><div class="pr" style="--g:'+GC[b[2]]+'">'+priceTxt+'</div><div class="tk">'+tk+'</div></div>'}
 
 let code='',R=null,S=null,LOGS=[],showAll=true,busy=false,started=false,P,own,lvl,prevPos={};
 const $=id=>document.getElementById(id);
@@ -305,14 +306,17 @@ const sub=ph=='over'?'Гру завершено':mine&&ph=='buy'?(isB?'Покр�
 const L=LOGS;
 let h='<div id="top">'+pn+'<button class="mn" onclick="lvOpen()">⋮</button></div>'+tbar()+'<div id="bd">'+T.map(tile).join('');
 h+='<div id="mid"><h3>Події гри <span class="hb"><span class="ib">👁 '+viewerCount()+'</span><button class="ib'+(SND_ON?'':' off')+'" onclick="tgSnd();render()">🔊</button><button class="ib'+(MUS_ON?'':' off')+'" onclick="tgMus();render()">🎵</button>'+pauseBtn()+'<button class="ib" onclick="stOpen()">📊</button><button class="ib" onclick="hpOpen()">❓</button></span></h3><div id="log">'+L.map(e=>{const q=P[e.p]||{c:'#888',n:''};return e.c?'<div class="ev c" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>':'<div class="ev" style="--c:'+q.c+'"><b>'+esc(q.n)+'</b> '+esc(e.t)+'</div>'}).join('')+'</div><div class="emo">'+(spec?'':['😂','👍','😡','🎉','💸','😱'].map(e=>'<button class="ib" onclick="sendEmo(\''+e+'\')">'+e+'</button>').join(''))+'</div><div class="row"><input id="ci" '+(spec?'disabled placeholder="Ви спостерігаєте"':'placeholder="Написати повідомлення…"')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();say()}"><button type="button" onclick="say()">➤</button></div><div id="sc"><b>'+(ph=='over'?'Кінець гри':'Хід гравця '+esc(c.n))+'</b>'+evb()+ac+'</div></div>';
-h+='</div><div id="acts">'+(mine&&ph=='roll'&&!spec?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'')+buyFab+aucBar()+gmBar()+'</div>'+modalHtml()+tradeUI()+tileModal()+statsModal()+helpModal()+leaveModal()+rlModal()+resModal()+pauseModal();
+const jailFab=mine&&ph=='roll'&&!spec&&c.jail>0?'<div class="buybar"><button class="y" onclick="payJail()">🔓 Вийти з в\'язниці — ₴500</button><button class="n" onclick="roll()">Пропустити хід</button></div>':'';
+const rollFab=mine&&ph=='roll'&&!spec&&!(c.jail>0)?'<button class="fab" onclick="roll()">🎲 Кинути кубики</button>':'';
+h+='</div><div id="acts">'+jailFab+rollFab+buyFab+aucBar()+gmBar()+'</div>'+modalHtml()+tradeUI()+tileModal()+statsModal()+helpModal()+leaveModal()+rlModal()+resModal()+pauseModal();
 const o=$('ci'),v=o?o.value:'',f=o&&document.activeElement===o;
 $('app').innerHTML=h;const n=$('ci');if(n){n.value=v;if(f)n.focus()}const lg=$('log');if(lg)lg.scrollTop=lg.scrollHeight;if(S.dice&&S.rid&&S.rid!==lastRid){lastRid=S.rid;playDice(S.dice)}
   // запам'ятати позиції для анімації фішок
-  syncTokens();}
+  syncTokens();
+  bindTileLongPress();}
 setInterval(()=>{if(!S||!R||S.ph=='over'||isPaused())return;const tm=$('tm');if(tm)tm.textContent=Math.max(0,Math.ceil((S.tend-Date.now())/1000))+' c';
 if(!busy&&Date.now()>S.tend+800&&driver()){S.ph=='roll'?roll():S.ph=='buy'?skip():S.ph=='gm'?gmSkip():0}},500);
-Object.assign(window,{roll,buy,skip,say,newGame,tgl:()=>{showAll=!showAll;render()}});
+Object.assign(window,{roll,buy,skip,say,newGame,payJail,buildAt,tgl:()=>{showAll=!showAll;render()}});
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function okp(u){return /^https:\/\/[^\s"'()<>\\]+$/.test(u||'')?u:''}
@@ -488,6 +492,60 @@ function tcont(b){const p=b[5],fb='<span class="em" style="color:'+b[4]+'">'+b[3
 if(p&&OK[p]!==0)return '<img class="lg" src="'+p+'" alt="'+esc(b[0])+'" data-p="'+p+'" data-e="'+esc(b[3])+'" data-c="'+b[4]+'" onerror="imgFail(this)">';return fb}
 function imgFail(el){OK[el.dataset.p]=0;el.outerHTML='<span class="em" style="color:'+el.dataset.c+'">'+el.dataset.e+'</span><span class="nm" style="color:'+el.dataset.c+'">'+el.alt+'</span>'}
 const SPEC={s:'🏁 СТАРТ — проходячи його, отримуєш {SAL}.',c:'❓ Шанс — витягни картку: бонус, штраф, переміщення або гроші від гравців.',x:'💰 Податок — сплати {TAX}.',l:'🎟 Лотерея — квиток 300 ₴, виграш до 5000 ₴.',t:'🌀 Телепорт — перенесе на випадкову клітинку.',r:'🛟 Рятувальна карта — отримай карту, що скасує одну оренду або в\'язницю.',j:'⛓ В\'язниця — тут лише відвідини. Сюди потрапляють за карткою або з клітинки «Іди в в\'язницю».',k:'🎡 Рулетка — обери ставку (колір, парне/непарне, діапазон чи зеро) і суму, або пропусти.',g:'👮 Іди в в\'язницю — пропустиш наступний хід.'};
+
+function logoUrl(path){
+  if(!path)return '';
+  if(/^https?:\/\//i.test(path))return path;
+  try{
+    const base=location.href.replace(/[#?].*/,'').replace(/\/[^/]*$/,'/');
+    return base+path.replace(/^\.\//,'');
+  }catch(e){return path}
+}
+async function payJail(){
+  if(!S||S.ph!='roll'||busy||!driver())return;
+  sync();
+  const k=S.cur,p=P[k];
+  if(!p||p.id!=myId||!(p.jail>0))return;
+  const fee=500;
+  if(p.m<fee){alert('Не вистачає грошей (потрібно '+fee+' ₴)');return}
+  busy=true;
+  p.m-=fee;p.jail=0;
+  ev(k,'🔓 заплатив '+fee+' ₴ і вийшов з в\'язниці');
+  await save();
+  busy=false;
+  render();
+}
+async function buildAt(i){
+  if(!S||busy||!driver())return;
+  sync();
+  const k=S.cur,p=P[k];
+  if(!p||p.id!=myId)return;
+  if(!(S.ph=='roll'||S.ph=='buy')){alert('Будувати можна лише під час свого ходу');return}
+  if(own[i]!==k){alert('Це не ваша ділянка');return}
+  if(S.mg&&S.mg[i]){alert('Спочатку викупіть із застави');return}
+  if(!full(i)){alert('Потрібна вся група кольору');return}
+  if((lvl[i]||0)>=3){alert('Максимальний рівень');return}
+  const cost=Math.round(T[i][1]/2);
+  if(p.m<cost){alert('Не вистачає коштів');return}
+  busy=true;
+  p.m-=cost;lvl[i]=(lvl[i]||0)+1;
+  ev(k,'покращив '+T[i][0]+' до рівня '+lvl[i]+' за '+cost+' ₴');
+  await save();
+  busy=false;
+  ti=i;
+  render();
+}
+function bindTileLongPress(){
+  const root=$('bd');if(!root)return;
+  root.querySelectorAll('.t[data-i]').forEach(el=>{
+    if(el._lp)return;el._lp=1;
+    let timer=null,fired=false;
+    el.addEventListener('touchstart',()=>{fired=false;timer=setTimeout(()=>{fired=true;const i=+el.dataset.i;ti=i;render();},480),{passive:true});
+    ['touchend','touchmove','touchcancel'].forEach(ev=>el.addEventListener(ev,()=>{clearTimeout(timer);if(fired){/* modal already open via render */}},{passive:true}));
+    el.addEventListener('contextmenu',e=>{e.preventDefault();ti=+el.dataset.i;render();});
+  });
+}
+
 function tinfo(i){ti=i;render()}
 function closeTi(){ti=null;render()}
 function ticon(b){const p=b[5];return p&&OK[p]!==0?'<img src="'+p+'" alt="" data-p="'+p+'" data-e="'+esc(b[3])+'" onerror="OK[this.dataset.p]=0;this.outerHTML=\'<b>\'+this.dataset.e+\'</b>\'">':'<b>'+esc(b[3])+'</b>'}
@@ -496,7 +554,11 @@ let h=`<div class="ov" onclick="closeTi()"><div class="md" onclick="event.stopPr
 if(pr){const base=b[6]||Math.round(b[1]*.1),ow=o>=0?P[o]:null,grp=T.map((x,i)=>x[2]===b[2]&&typeof x[1]=='number'?i:-1).filter(i=>i>=0);
 h+=`<div class="stt"><span class="dotg" style="background:${GC[b[2]]}"></span> Група: ${grp.map(i=>esc(T[i][0])+(own[i]>=0?` <i style="color:${P[own[i]].c}">●</i>`:'')).join(' · ')}</div>`;
 h+=`<table class="rtb"><tr><td>Ціна</td><td>${fm(b[1])}</td></tr><tr><td>Оренда</td><td>${fm(base)}</td></tr><tr><td>Уся група в одного власника</td><td>${fm(base*RM.m)}</td></tr><tr><td>★ рівень 1</td><td>${fm(base*RM.s[1])}</td></tr><tr><td>★★ рівень 2</td><td>${fm(base*RM.s[2])}</td></tr><tr><td>★★★ рівень 3</td><td>${fm(base*RM.s[3])}</td></tr><tr><td>Покращення (за ★)</td><td>${fm(Math.round(b[1]/2))}</td></tr></table>`;
-h+=`<div class="stt">${ow?`Власник: <b style="color:${ow.c}">${esc(ow.n)}</b> · ★ ${lvl[ti]||0} · оренда зараз: <b>${fm(rent(ti))}</b>`:'Вільна ділянка — її можна купити'}</div>${mgUI(ti)}`}
+h+=`<div class="stt">${ow?`Власник: <b style="color:${ow.c}">${esc(ow.n)}</b> · ★ ${lvl[ti]||0} · оренда зараз: <b>${fm(rent(ti))}</b>`:'Вільна ділянка — її можна купити'}</div>${mgUI(ti)}`;
+const canBuild=o>=0&&P[o]&&P[o].id==myId&&S.cur===o&&driver()&&(S.ph=='roll'||S.ph=='buy')&&full(ti)&&(lvl[ti]||0)<3&&!(S.mg&&S.mg[ti]);
+if(canBuild){const bc=Math.round(b[1]/2);h+=`<div class="cb"><button class="y" onclick="buildAt(${ti})">🏠 Збудувати ★ — ${fm(bc)}</button></div>`}
+if(b[5]){const u=logoUrl(b[5]);h+=`<div class="stt" style="word-break:break-all;user-select:all;-webkit-user-select:all;font-size:11px">🖼 <span style="color:var(--mut)">${esc(b[5])}</span><br><a href="${esc(u)}" target="_blank" rel="noopener" style="color:#4aa8ff">${esc(u)}</a></div>`}
+}
 else h+=`<div class="stt">${(SPEC[b[1]]||'').replace('{SAL}',fm(SAL())).replace('{TAX}',fm(TAXB()))}</div>`;
 return h+'</div></div>'}
 const THEMES=[{id:'neon',n:'Неон',bg:'#070f22',pn:'#0e1a36',ln:'#1c2c52',bdbg:'#0a1530',tile:'#ffffff'},{id:'gold',n:'Золото',bg:'#14100a',pn:'#241b0e',ln:'#5a4617',bdbg:'linear-gradient(135deg,#2b210f,#14100a)',tile:'#fff3d1'},
